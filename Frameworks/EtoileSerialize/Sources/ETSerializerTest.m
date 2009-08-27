@@ -6,6 +6,7 @@
 #import "ETSerializer.h"
 #import "ETDeserializer.h"
 #import "ETDeserializerBackendBinary.h"
+#import "ETDeserializerBackendXML.h"
 #import "ETSerializerBackendExample.h"
 #import "ETSerializerBackendXML.h"
 #import "ETSerializerBackendBinary.h"
@@ -298,7 +299,35 @@ id testRoundTrip(NSString * tempfile, id object)
 	[deserializer setBranch:@"root"];
 	[deserializer setVersion:0];
 	TestClass * bar = [deserializer restoreObjectGraph];
-	[bar methodTest];
+	if (nil == bar)
+	{
+		UKFail();
+	}
+	else
+	{
+		[bar methodTest];
+	}
+	[store release];
+}
+
+- (void) testXML
+{
+	testWithBackend([ETSerializerBackendXML class], [NSURL fileURLWithPath:@"xmltestfile"]);
+	id xmlBackend = [ETDeserializerBackendXML new];
+	id store = [[ETSerialObjectBundle alloc] initWithPath:@"xmltestfile"];
+	[xmlBackend deserializeFromStore:store];
+	ETDeserializer *deserializer = [ETDeserializer deserializerWithBackend: xmlBackend];
+	[deserializer setBranch:@"root"];
+	[deserializer setVersion:0];
+	TestClass * bar = [deserializer restoreObjectGraph];
+	if (nil == bar)
+	{
+		UKFail();
+	}
+	else
+	{
+		[bar methodTest];
+	}
 	[store release];
 }
 // Test for bug reported by Eric Wasylishen

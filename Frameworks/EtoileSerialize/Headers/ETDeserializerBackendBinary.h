@@ -15,7 +15,7 @@
 @interface ETDeserializerBackendBinary : NSObject <ETDeserializerBackend>{
 	/** The data store */
 	id store;
-	/** The name of hte current branch. */
+	/** The name of the current branch. */
 	NSString * branch;
 	/** The data from which to load the file. */
 	NSData * data;

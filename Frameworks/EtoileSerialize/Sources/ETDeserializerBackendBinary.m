@@ -306,6 +306,11 @@ enum {
 	return YES;
 }
 
+- (BOOL) deserializePrincipalObject
+{
+	return [self deserializeObjectWithID: principalObjectRef];
+}
+
 /**
   * Handle the deserialization of data with an unknown type. By defaults, skips 
   * the data and logs a warning. Overrides to handle custom type on 

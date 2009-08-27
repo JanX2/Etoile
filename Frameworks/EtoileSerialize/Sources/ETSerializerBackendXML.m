@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <inttypes.h>
+#include <locale.h>
 #include <objc/objc-api.h>
 #import <EtoileFoundation/ETUUID.h>
+#import <EtoileFoundation/NSData+Hash.h>
 #import "ETSerializerBackendXML.h"
+#import "ETDeserializerBackendXML.h"
 #import "ETDeserializerBackend.h"
 #import "ETDeserializer.h"
 #import "ETObjectStore.h"
@@ -35,8 +38,7 @@
 }
 + (Class) deserializer
 {
-	//FIXME: Not yet implemented.
-	return Nil;
+	return [ETDeserializerBackendXML class];
 }
 - (id) deserializer
 {
@@ -65,6 +67,11 @@
 }
 - (void) startVersion:(int)aVersion
 {
+	// NOTE: The locale must be set to ensure printf has consistent output in all
+	// environments.
+	locale_t cLocale = newlocale(LC_ALL_MASK,"C",NULL);
+	uselocale(cLocale);
+	freelocale(cLocale);
 	//Space for the header.
 	FORMAT("<objects xmlns='http://etoile-project.org/EtoileSerialize' version='1'>\n");
 	indentLevel = 1;
@@ -105,6 +112,9 @@
 	NSEndMapTableEnumeration(&enumerator);
 	indentLevel--;
 	FORMAT("</objects>\n");
+
+	//Reset the locale
+	uselocale(LC_GLOBAL_LOCALE);
 	[store finalize];
 }
 - (void) beginStruct:(char*)aStructName withName:(char*)aName
@@ -185,9 +195,9 @@ STORE_METHOD(Double, double, "d", "f")
 }
 - (void) storeData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName
 {
-	//FIXME: Properly escape cdata
+	NSString *b64  = [[NSData dataWithBytes: aBlob length: aSize] base64String];
 	FORMAT("<data size='%u' name='%s'><![CDATA[", (unsigned)aSize, aName);
-	[store writeBytes:aBlob count:aSize];
+	[store writeBytes: (unsigned char*)[b64 UTF8String] count: [b64 length]];
 	[store writeBytes:(unsigned char*)"]]></data>\n" count:11];
 }
 - (void) storeUUID:(unsigned char *)aUUID withName:(char *)aName

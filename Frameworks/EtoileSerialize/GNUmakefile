@@ -19,6 +19,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 				   ETUtility.h\
 				   ETDeserializerBackend.h\
 				   ETDeserializerBackendBinary.h\
+				   ETDeserializerBackendXML.h\
 				   ETSerializerBackend.h\
 				   ETSerializerBackendBinary.h\
 				   ETSerializerBackendXML.h\
@@ -26,7 +27,8 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 				   ETDeserializer.h\
 				   ETSerializer.h\
 				   ETSerializerBackendExample.h\
-				   ETObjectStore.h
+				   ETObjectStore.h\
+				   ETXMLDeserializationHandler.h
 
 
 ${DOCUMENT_NAME}_AGSDOC_FILES = $(addprefix Headers/, ${EtoileSerialize_HEADER_FILES})

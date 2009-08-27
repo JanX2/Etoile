@@ -461,8 +461,7 @@ LOAD_METHOD(Selector, SEL)
  */
 - (id) restoreObjectGraph
 {
-	CORef mainObject = [backend principalObject];
-	[backend deserializeObjectWithID:mainObject];
+	[backend deserializePrincipalObject];
 	//Also restore referenced objects
 	NSMapEnumerator enumerator = NSEnumerateMapTable(objectPointers);
 	uintptr_t ref;
@@ -492,7 +491,7 @@ LOAD_METHOD(Selector, SEL)
 	[loadedObjectList removeAllObjects];
 	//Fix up invocations with some hacks.
 	[invocations makeObjectsPerformSelector:@selector(setupInvocation)];
-	return GET_OBJ(mainObject);
+	return GET_OBJ([backend principalObject]);
 }
 @class GSMutableString;
 @class GSCBufferString;

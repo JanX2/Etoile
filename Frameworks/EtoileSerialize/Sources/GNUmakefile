@@ -8,17 +8,20 @@ libEtoileSerialize_OBJC_FILES = \
 					COProxy_NSAttributedString.m \
 					ETDeserializer.m \
 					ETDeserializerBackendBinary.m \
+					ETDeserializerBackendXML.m \
 					ETSerializer.m \
 					ETSerializerBackendBinary.m \
 					ETSerializerBackendExample.m \
 					ETSerializerBackendXML.m \
 					ETSerializerNullBackend.m \
+					ETXMLDeserializationHandler.m \
 					GSArray+ETSerializable.m \
 					GSDictionary+ETSerializable.m \
 					GSSet+ETSerializable.m \
 					GSMutableString+ETSerializable.m \
 					NSDataStatic+ETSerializable.m \
 					NSInvocation+ETSerializable.m \
+					NSString+Conversions.m \
 					NSURL+ETSerializable.m \
 					ETSerialObjectBuffer.m\
 					ETSerialObjectBundle.m\
