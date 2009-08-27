@@ -1,9 +1,8 @@
-#include <stdio.h>
-#include <inttypes.h>
-#include <locale.h>
 #include <objc/objc-api.h>
 #import <EtoileFoundation/ETUUID.h>
 #import <EtoileFoundation/NSData+Hash.h>
+#import <EtoileFoundation/Macros.h>
+#import <EtoileXML/ETXMLWriter.h>
 #import "ETSerializerBackendXML.h"
 #import "ETDeserializerBackendXML.h"
 #import "ETDeserializerBackend.h"
@@ -11,35 +10,50 @@
 #import "ETObjectStore.h"
 #import "IntMap.h"
 
-@class ETUUID;
-
-#define FORMAT(format,...) do {\
-	char * buffer;\
-	int length = asprintf(&buffer, format, ## __VA_ARGS__);\
-	WRITE(buffer, length);\
-	free(buffer);\
-	} while(0)
-#define WRITE(x,b) [self indent];[store writeBytes:(unsigned char*)x count:b]
-#define STORECOMPLEX(type, value, size) WRITE(type,1);FORMAT("%s%c",aName, '\0');WRITE(value, size)
+@interface ETSerialObjectSocket (ETSerialObjectXMLWriting)
+/**
+ * Returns an XML writer attached directly to the socket.
+ */
+- (ETXMLWriter *) xmlWriter;
 
 /**
- * Currently this back end only works on local files.  To make it work with
- * other kinds of stream you will need to modify the -initWithURL and
- * -closeFile methods to include a case for non-file URLs, and re-define the
- *  WRITE and FORMAT macros to write to the stream.  This format stores
- *  metadata at the end, with a
- * pointer to the start of the metadata at the beginning of the file.  This
- * would need to be changed for streams that don't support seeking.
+ * Returns whether the XML writer will store the XML itself so that the
+ * -writeBytes:count: method of the store does not need to be called.
+ */
+- (BOOL) xmlWriterWillStore;
+@end
+
+@implementation ETSerialObjectSocket (ETSerialObjectXMLWriting)
+- (ETXMLWriter *) xmlWriter
+{
+	ETXMLSocketWriter *aWriter = [[[ETXMLSocketWriter alloc] init] autorelease];
+	[aWriter setSocket: socket];
+	return aWriter;
+}
+
+- (BOOL) xmlWriterWillStore
+{
+	return YES;
+}
+@end
+
+/**
+ * This backend can write both to local files and to (possibly remote) sockets.
+ * Apparently it is most useful when the store provides a ETXMLWriter that does
+ * stream the serialized data right away. Otherwise the XML tree is built by the
+ * writer and written to the store when -flush is called.
  */
 @implementation ETSerializerBackendXML
 + (id) serializerBackendWithStore:(id<ETSerialObjectStore>)aStore
 {
 	return [[[ETSerializerBackendXML alloc] initWithStore:aStore] autorelease];
 }
+
 + (Class) deserializer
 {
 	return [ETDeserializerBackendXML class];
 }
+
 - (id) deserializer
 {
 	id deserializer = [[[[self class] deserializer] alloc] init];
@@ -54,27 +68,17 @@
 	}
 	return nil;
 }
-- (void) setShouldIndent:(BOOL)aFlag
+
+- (void) setShouldIndent: (BOOL)aFlag
 {
-	shouldIndent = aFlag;
+	[writer setAutoindent: aFlag];
 }
-- (void) indent
-{
-	for(int i=0 ; i<indentLevel ; i++)
-	{
-		[store writeBytes:(unsigned char*)"\t " count:2];
-	}
-}
+
 - (void) startVersion:(int)aVersion
 {
-	// NOTE: The locale must be set to ensure printf has consistent output in all
-	// environments.
-	locale_t cLocale = newlocale(LC_ALL_MASK,"C",NULL);
-	uselocale(cLocale);
-	freelocale(cLocale);
-	//Space for the header.
-	FORMAT("<objects xmlns='http://etoile-project.org/EtoileSerialize' version='1'>\n");
-	indentLevel = 1;
+	[writer startElement: @"objects"
+	          attributes: D(@"http://etoile-project.org/EtoileSerialize", @"xmlns",
+			                @"1", @"version")];
 }
 
 - (id) initWithStore:(id<ETSerialObjectStore>)aStore
@@ -91,12 +95,24 @@
 	//change 100 to a more sensible value
 	refCounts = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 
+	//If the store has it's own XML writer, we will reuse it.
+	if ([store respondsToSelector:@selector(xmlWriter)])
+	{
+		ASSIGN(writer,[(ETSerialObjectSocket*)store xmlWriter]);
+		xmlWriterWillStore = [(ETSerialObjectSocket*)store xmlWriterWillStore];
+	}
+	else
+	{
+		writer = [[ETXMLWriter alloc] init];
+		[self setShouldIndent: YES];
+	}
 	return self;
 }
 
 - (void) dealloc
 {
 	NSFreeMapTable(refCounts);
+	[writer release];
 	[super dealloc];
 }
 
@@ -107,35 +123,59 @@
 	uintptr_t refCount;
 	while(NSNextMapEnumeratorPair(&enumerator, (void*)&ref, (void*)&refCount))
 	{
-		FORMAT("<refcount object='%"PRIu32"'>%u</refcount>\n", (CORef)ref, (unsigned int)refCount);
+		[writer startAndEndElement: @"refcount"
+		        attributes: D([NSString stringWithFormat: @"%u", (CORef)ref], @"object")
+		             cdata: [NSString stringWithFormat: @"%u", (unsigned int)refCount]];
 	}
 	NSEndMapTableEnumeration(&enumerator);
-	indentLevel--;
-	FORMAT("</objects>\n");
-
-	//Reset the locale
-	uselocale(LC_GLOBAL_LOCALE);
+	[writer endElement: @"objects"];
+	if (!xmlWriterWillStore)
+	{
+		NSString *graph = [writer endDocument];
+		[store writeBytes: (unsigned char*)[graph UTF8String] count: [graph length]];
+		[writer reset];
+	}
 	[store finalize];
 }
+
 - (void) beginStruct:(char*)aStructName withName:(char*)aName
 {
-	FORMAT("<struct type='%s' name='%s'>\n",aStructName, aName);
-	indentLevel++;
+	[writer startElement: @"struct"
+	          attributes: D([NSString stringWithCString: aStructName
+	                                           encoding: NSASCIIStringEncoding],
+	                        @"type",
+                             [NSString stringWithCString: aName
+	                                            encoding: NSASCIIStringEncoding],
+	                        @"name")];
 }
+
 - (void) endStruct
 {
-	indentLevel--;
-	FORMAT("</struct>\n");
+	[writer endElement: @"struct"];
 }
+
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
-	FORMAT("<object class='%s' name='%s' ref='%"PRIu32"'>\n", aClass->name, aName, aReference);
-	indentLevel++;
+	[writer startElement: @"object"
+	          attributes: D([NSString stringWithCString: aClass->name
+	                                           encoding: NSASCIIStringEncoding],
+	                        @"class",
+	                        [NSString stringWithCString: aName
+	                                           encoding: NSASCIIStringEncoding],
+	                        @"name",
+	                        [NSString stringWithFormat: @"%u", aReference],
+	                        @"ref")];
 }
+
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName
 {
-	FORMAT("<objref name='%s'>%"PRIu32"</objref>\n",aName, aReference);
+	[writer startAndEndElement: @"objref"
+	                attributes: D([NSString stringWithCString: aName
+	                                                 encoding: NSASCIIStringEncoding],
+	                              @"name")
+	                     cdata: [NSString stringWithFormat: @"%u", aReference]];
 }
+
 - (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
 	int refCount = (int)NSIntMapGet(refCounts, anObjectID);
@@ -144,28 +184,39 @@
 
 - (void) endObject
 {
-	indentLevel--;
-	FORMAT("</object>\n");
+	[writer endElement: @"object"];
 }
 - (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength;
 {
-	FORMAT("<array name='%s' length='%u'>\n",aName,aLength);
-	indentLevel++;
+	[writer startElement: @"array"
+	          attributes: D([NSString stringWithCString: aName
+	                                           encoding: NSASCIIStringEncoding],
+	                        @"name",
+	                        [NSString stringWithFormat: @"%u", aLength],
+	                        @"length")];
 }
+
 - (void) endArray
 {
-	indentLevel--;
-	FORMAT("</array>\n");
+	[writer endElement: @"array"];
 }
+
 - (void) setClassVersion:(int)aVersion
 {
-	FORMAT("<classVersion>%d</classVersion>\n", aVersion);
+	[writer startAndEndElement: @"classVersion"
+	                     cdata: [NSString stringWithFormat: @"%d", aVersion]];
 }
+
 #define STORE_METHOD(typeName, type, typeChar, printfType)\
 - (void) store##typeName:(type)a##typeName withName:(char*)aName\
 {\
-	FORMAT("<%s name='%s'>%" printfType "</%s>\n", typeChar, aName, a##typeName, typeChar);\
+	[writer startAndEndElement: @"" typeChar ""\
+	                attributes: D([NSString stringWithCString: aName\
+	                                                 encoding: NSASCIIStringEncoding],\
+	                              @"name")\
+	                     cdata: [NSString stringWithFormat: @"%" printfType "", a##typeName]];\
 }
+
 STORE_METHOD(Char, char, "c", "hhd")
 STORE_METHOD(UnsignedChar, unsigned char, "C","hhu")
 STORE_METHOD(Short, short, "s", "hd")
@@ -177,34 +228,53 @@ STORE_METHOD(UnsignedLong, unsigned long, "L", "lu")
 STORE_METHOD(LongLong, long long, "q", "lld")
 STORE_METHOD(UnsignedLongLong, unsigned long long, "Q","llu")
 STORE_METHOD(Double, double, "d", "f")
-- (void) storeFloat:(float)aFloat withName:(char*)aName
-{
-	FORMAT("<f name='%s'>%f</f>\n", aName, (double)aFloat);
-}
+STORE_METHOD(Float, float, "f", "f")
+
 - (void) storeClass:(Class)aClass withName:(char*)aName
 {
-	FORMAT("<class name='%s'>%s</class>\n", aName, aClass->name);
+	[writer startAndEndElement: @"class"
+	                attributes: D([NSString stringWithCString: aName
+	                                                 encoding: NSASCIIStringEncoding],
+	                               @"name")
+	                    cdata: NSStringFromClass(aClass)];
 }
 - (void) storeSelector:(SEL)aSelector withName:(char*)aName
 {
-	FORMAT("<sel name='%s'>%s</sel>\n", aName, [NSStringFromSelector(aSelector) UTF8String]);
+	[writer startAndEndElement: @"sel"
+	                attributes: D([NSString stringWithCString: aName
+	                                                 encoding: NSASCIIStringEncoding],
+	                               @"name")
+	                     cdata: NSStringFromSelector(aSelector)];
 }
 - (void) storeCString:(char*)aCString withName:(char*)aName
 {
-	FORMAT("<str name='%s'>%s</str>\n", aName, aCString);
+	[writer startAndEndElement: @"str"
+	                attributes: D([NSString stringWithCString: aName
+	                                                 encoding: NSASCIIStringEncoding],
+	                               @"name")
+	                     cdata: [NSString stringWithCString: aName
+                                                   encoding: NSASCIIStringEncoding]];
 }
 - (void) storeData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName
 {
 	NSString *b64  = [[NSData dataWithBytes: aBlob length: aSize] base64String];
-	FORMAT("<data size='%u' name='%s'><![CDATA[", (unsigned)aSize, aName);
-	[store writeBytes: (unsigned char*)[b64 UTF8String] count: [b64 length]];
-	[store writeBytes:(unsigned char*)"]]></data>\n" count:11];
+	[writer startAndEndElement: @"data"
+	                attributes: D([NSString stringWithCString: aName
+	                                                 encoding: NSASCIIStringEncoding],
+	                               @"name",
+	                               [NSString stringWithFormat: @"%u", (unsigned)aSize],
+	                               @"size")
+	                    cdata: b64];
 }
 - (void) storeUUID:(unsigned char *)aUUID withName:(char *)aName
 {
 	//FORMAT("<uuid name='%s'>
 	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID:aUUID];
-	FORMAT("<uuid name='%s'>%s</uuid>\n", aName, [[uuidObj stringValue] UTF8String]);
+	[writer startAndEndElement: @"uuid"
+	                attributes: D([NSString stringWithCString: aName
+	                                                 encoding: NSASCIIStringEncoding],
+	                               @"name")
+	                     cdata: [uuidObj stringValue]];
 	[uuidObj release];
 }
 @end
