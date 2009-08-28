@@ -1,0 +1,863 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6697AB0E104768BD00456911 /* DKBezierLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AAFC104768BD00456911 /* DKBezierLayoutManager.m */; };
+		6697AB0F104768BE00456911 /* DKGeometryUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AAFD104768BD00456911 /* DKGeometryUtilities.m */; };
+		6697AB10104768BE00456911 /* DKRandom.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AAFE104768BD00456911 /* DKRandom.m */; };
+		6697AB11104768BE00456911 /* ETBezierEditingFreeLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AAFF104768BD00456911 /* ETBezierEditingFreeLayout.m */; };
+		6697AB12104768BE00456911 /* ETBezierHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB00104768BD00456911 /* ETBezierHandle.m */; };
+		6697AB13104768BE00456911 /* ETBrushStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB01104768BD00456911 /* ETBrushStyle.m */; };
+		6697AB14104768BE00456911 /* ETBrushTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB02104768BD00456911 /* ETBrushTool.m */; };
+		6697AB15104768BE00456911 /* ETDrawingActionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB03104768BD00456911 /* ETDrawingActionHandler.m */; };
+		6697AB16104768BE00456911 /* ETDrawingStrokeShape.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB04104768BD00456911 /* ETDrawingStrokeShape.m */; };
+		6697AB17104768BE00456911 /* ETFillStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB05104768BD00456911 /* ETFillStyle.m */; };
+		6697AB18104768BE00456911 /* ETPatternFillStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB06104768BD00456911 /* ETPatternFillStyle.m */; };
+		6697AB19104768BE00456911 /* ETPatternStrokeStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB07104768BD00456911 /* ETPatternStrokeStyle.m */; };
+		6697AB1A104768BE00456911 /* ETPenStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB08104768BD00456911 /* ETPenStyle.m */; };
+		6697AB1B104768BE00456911 /* ETStrokeDash.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB09104768BD00456911 /* ETStrokeDash.m */; };
+		6697AB1C104768BE00456911 /* ETStrokeStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB0A104768BD00456911 /* ETStrokeStyle.m */; };
+		6697AB1D104768BE00456911 /* NSBezierPath+Editing.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB0B104768BD00456911 /* NSBezierPath+Editing.m */; };
+		6697AB1E104768BE00456911 /* NSBezierPath+Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB0C104768BD00456911 /* NSBezierPath+Geometry.m */; };
+		6697AB1F104768BE00456911 /* NSBezierPath+Text.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB0D104768BD00456911 /* NSBezierPath+Text.m */; };
+		6697AB35104768F100456911 /* DKBezierLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB20104768F100456911 /* DKBezierLayoutManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB36104768F100456911 /* DKDrawKitMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB21104768F100456911 /* DKDrawKitMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB37104768F100456911 /* DKGeometryUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB22104768F100456911 /* DKGeometryUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB38104768F100456911 /* DKRandom.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB23104768F100456911 /* DKRandom.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB39104768F100456911 /* ETBezierEditingFreeLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB24104768F100456911 /* ETBezierEditingFreeLayout.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB3A104768F100456911 /* ETBezierHandle.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB25104768F100456911 /* ETBezierHandle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB3B104768F100456911 /* ETBrushStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB26104768F100456911 /* ETBrushStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB3C104768F100456911 /* ETBrushTool.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB27104768F100456911 /* ETBrushTool.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB3D104768F100456911 /* ETDrawingActionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB28104768F100456911 /* ETDrawingActionHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB3E104768F100456911 /* ETDrawingStrokeShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB29104768F100456911 /* ETDrawingStrokeShape.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB3F104768F100456911 /* ETFillStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB2A104768F100456911 /* ETFillStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB40104768F100456911 /* EtoilePaint.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB2B104768F100456911 /* EtoilePaint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB41104768F100456911 /* ETPatternFillStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB2C104768F100456911 /* ETPatternFillStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB42104768F100456911 /* ETPatternStrokeStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB2D104768F100456911 /* ETPatternStrokeStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB43104768F100456911 /* ETPenStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB2E104768F100456911 /* ETPenStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB44104768F100456911 /* ETStrokeDash.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB2F104768F100456911 /* ETStrokeDash.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB45104768F100456911 /* ETStrokeStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB30104768F100456911 /* ETStrokeStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB46104768F100456911 /* ETTouchAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB31104768F100456911 /* ETTouchAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB47104768F100456911 /* NSBezierPath+Editing.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB32104768F100456911 /* NSBezierPath+Editing.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB48104768F100456911 /* NSBezierPath+Geometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB33104768F100456911 /* NSBezierPath+Geometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB49104768F100456911 /* NSBezierPath+Text.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB34104768F100456911 /* NSBezierPath+Text.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6697AB5D10476AE100456911 /* EtoilePaint.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* EtoilePaint.framework */; };
+		6697ABBD10476E9000456911 /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6697ABBC10476E9000456911 /* EtoileUI.framework */; };
+		6697ABC110476EA700456911 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6697ABC010476EA700456911 /* EtoileFoundation.framework */; };
+		6697ABC610476EC900456911 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB6210476B2700456911 /* main.m */; };
+		6697ABC710476EC900456911 /* SketchController.h in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB6310476B2700456911 /* SketchController.h */; };
+		6697ABC810476EC900456911 /* SketchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB6410476B2700456911 /* SketchController.m */; };
+		6697ABCB10476F0100456911 /* SketchInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6697ABCA10476F0100456911 /* SketchInfo.plist */; };
+		6697AC101047701F00456911 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6697ABC010476EA700456911 /* EtoileFoundation.framework */; };
+		6697AC5D1047702500456911 /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6697ABBC10476E9000456911 /* EtoileUI.framework */; };
+		6697AC99104771CB00456911 /* testbrush.png in Resources */ = {isa = PBXBuildFile; fileRef = 6697AC98104771CB00456911 /* testbrush.png */; };
+		6697AC9A104771D800456911 /* testbrush.png in Resources */ = {isa = PBXBuildFile; fileRef = 6697AC98104771CB00456911 /* testbrush.png */; };
+		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6697AAE31047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073EAD10074D26007272E6;
+			remoteInfo = EtoileXML;
+		};
+		6697AAE51047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 603647AC0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
+		6697AAE71047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
+			remoteInfo = TestEtoileFoundation;
+		};
+		6697AAE91047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60EF8E9D0C5E4D0600C97C41;
+			remoteInfo = EtoileUI;
+		};
+		6697AAEB1047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 600243B90CD133420023182D;
+			remoteInfo = TestEtoileUI;
+		};
+		6697AAED1047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073C2910074B39007272E6;
+			remoteInfo = EtoileWeb;
+		};
+		6697AAEF1047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60EEB9020F09457C00EBB632;
+			remoteInfo = Collage;
+		};
+		6697AAF11047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60CF742A0D449A8A00B4CA3D;
+			remoteInfo = MarkupEditor;
+		};
+		6697AAF31047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 605F0CCA0C0F400D003AE3E6;
+			remoteInfo = ObjectManagerExample;
+		};
+		6697AAF51047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60539D940C240A7B006C57EC;
+			remoteInfo = PaneContainerExample;
+		};
+		6697AAF71047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 606B98C90C0AF831000AAA85;
+			remoteInfo = PhotoViewExample;
+		};
+		6697AAF91047683200456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60909CC90CB2DA42009CAD27;
+			remoteInfo = TableViewExample;
+		};
+		6697AB4B1047691900456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
+		6697AB4D1047691900456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41;
+			remoteInfo = EtoileUI;
+		};
+		6697AB5B10476AD900456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = EtoilePaint;
+		};
+		6697ABDE10476FD400456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41;
+			remoteInfo = EtoileUI;
+		};
+		6697ABE01047700000456911 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		32DBCF5E0370ADEE00C91783 /* EtoilePaint_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtoilePaint_Prefix.pch; sourceTree = "<group>"; };
+		6697AAD41047683200456911 /* Container.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Container.xcodeproj; path = ../EtoileUI/Container.xcodeproj; sourceTree = SOURCE_ROOT; };
+		6697AAFC104768BD00456911 /* DKBezierLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DKBezierLayoutManager.m; sourceTree = "<group>"; };
+		6697AAFD104768BD00456911 /* DKGeometryUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DKGeometryUtilities.m; sourceTree = "<group>"; };
+		6697AAFE104768BD00456911 /* DKRandom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DKRandom.m; sourceTree = "<group>"; };
+		6697AAFF104768BD00456911 /* ETBezierEditingFreeLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETBezierEditingFreeLayout.m; sourceTree = "<group>"; };
+		6697AB00104768BD00456911 /* ETBezierHandle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETBezierHandle.m; sourceTree = "<group>"; };
+		6697AB01104768BD00456911 /* ETBrushStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETBrushStyle.m; sourceTree = "<group>"; };
+		6697AB02104768BD00456911 /* ETBrushTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETBrushTool.m; sourceTree = "<group>"; };
+		6697AB03104768BD00456911 /* ETDrawingActionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETDrawingActionHandler.m; sourceTree = "<group>"; };
+		6697AB04104768BD00456911 /* ETDrawingStrokeShape.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETDrawingStrokeShape.m; sourceTree = "<group>"; };
+		6697AB05104768BD00456911 /* ETFillStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETFillStyle.m; sourceTree = "<group>"; };
+		6697AB06104768BD00456911 /* ETPatternFillStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETPatternFillStyle.m; sourceTree = "<group>"; };
+		6697AB07104768BD00456911 /* ETPatternStrokeStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETPatternStrokeStyle.m; sourceTree = "<group>"; };
+		6697AB08104768BD00456911 /* ETPenStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETPenStyle.m; sourceTree = "<group>"; };
+		6697AB09104768BD00456911 /* ETStrokeDash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETStrokeDash.m; sourceTree = "<group>"; };
+		6697AB0A104768BD00456911 /* ETStrokeStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETStrokeStyle.m; sourceTree = "<group>"; };
+		6697AB0B104768BD00456911 /* NSBezierPath+Editing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBezierPath+Editing.m"; sourceTree = "<group>"; };
+		6697AB0C104768BD00456911 /* NSBezierPath+Geometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBezierPath+Geometry.m"; sourceTree = "<group>"; };
+		6697AB0D104768BD00456911 /* NSBezierPath+Text.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBezierPath+Text.m"; sourceTree = "<group>"; };
+		6697AB20104768F100456911 /* DKBezierLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKBezierLayoutManager.h; sourceTree = "<group>"; };
+		6697AB21104768F100456911 /* DKDrawKitMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKDrawKitMacros.h; sourceTree = "<group>"; };
+		6697AB22104768F100456911 /* DKGeometryUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKGeometryUtilities.h; sourceTree = "<group>"; };
+		6697AB23104768F100456911 /* DKRandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKRandom.h; sourceTree = "<group>"; };
+		6697AB24104768F100456911 /* ETBezierEditingFreeLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETBezierEditingFreeLayout.h; sourceTree = "<group>"; };
+		6697AB25104768F100456911 /* ETBezierHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETBezierHandle.h; sourceTree = "<group>"; };
+		6697AB26104768F100456911 /* ETBrushStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETBrushStyle.h; sourceTree = "<group>"; };
+		6697AB27104768F100456911 /* ETBrushTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETBrushTool.h; sourceTree = "<group>"; };
+		6697AB28104768F100456911 /* ETDrawingActionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETDrawingActionHandler.h; sourceTree = "<group>"; };
+		6697AB29104768F100456911 /* ETDrawingStrokeShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETDrawingStrokeShape.h; sourceTree = "<group>"; };
+		6697AB2A104768F100456911 /* ETFillStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETFillStyle.h; sourceTree = "<group>"; };
+		6697AB2B104768F100456911 /* EtoilePaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtoilePaint.h; sourceTree = "<group>"; };
+		6697AB2C104768F100456911 /* ETPatternFillStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETPatternFillStyle.h; sourceTree = "<group>"; };
+		6697AB2D104768F100456911 /* ETPatternStrokeStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETPatternStrokeStyle.h; sourceTree = "<group>"; };
+		6697AB2E104768F100456911 /* ETPenStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETPenStyle.h; sourceTree = "<group>"; };
+		6697AB2F104768F100456911 /* ETStrokeDash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETStrokeDash.h; sourceTree = "<group>"; };
+		6697AB30104768F100456911 /* ETStrokeStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETStrokeStyle.h; sourceTree = "<group>"; };
+		6697AB31104768F100456911 /* ETTouchAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETTouchAction.h; sourceTree = "<group>"; };
+		6697AB32104768F100456911 /* NSBezierPath+Editing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBezierPath+Editing.h"; sourceTree = "<group>"; };
+		6697AB33104768F100456911 /* NSBezierPath+Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBezierPath+Geometry.h"; sourceTree = "<group>"; };
+		6697AB34104768F100456911 /* NSBezierPath+Text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBezierPath+Text.h"; sourceTree = "<group>"; };
+		6697AB5510476AD300456911 /* Sketch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sketch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6697AB6210476B2700456911 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Sketch/main.m; sourceTree = "<group>"; };
+		6697AB6310476B2700456911 /* SketchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SketchController.h; path = Sketch/SketchController.h; sourceTree = "<group>"; };
+		6697AB6410476B2700456911 /* SketchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SketchController.m; path = Sketch/SketchController.m; sourceTree = "<group>"; };
+		6697ABBC10476E9000456911 /* EtoileUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EtoileUI.framework; path = ../EtoileUI/build/Debug/EtoileUI.framework; sourceTree = SOURCE_ROOT; };
+		6697ABC010476EA700456911 /* EtoileFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EtoileFoundation.framework; path = ../EtoileUI/build/Debug/EtoileFoundation.framework; sourceTree = SOURCE_ROOT; };
+		6697ABCA10476F0100456911 /* SketchInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = SketchInfo.plist; path = Sketch/SketchInfo.plist; sourceTree = "<group>"; };
+		6697AC98104771CB00456911 /* testbrush.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testbrush.png; sourceTree = "<group>"; };
+		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8DC2EF5B0486A6940098B216 /* EtoilePaint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EtoilePaint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2F7E79907B2D74100F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6697AB5310476AD300456911 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6697AC5D1047702500456911 /* EtoileUI.framework in Frameworks */,
+				6697AC101047701F00456911 /* EtoileFoundation.framework in Frameworks */,
+				6697AB5D10476AE100456911 /* EtoilePaint.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DC2EF560486A6940098B216 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
+				6697ABBD10476E9000456911 /* EtoileUI.framework in Frameworks */,
+				6697ABC110476EA700456911 /* EtoileFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DC2EF5B0486A6940098B216 /* EtoilePaint.framework */,
+				6697AB5510476AD300456911 /* Sketch.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* EtoilePaint */ = {
+			isa = PBXGroup;
+			children = (
+				6697ABC010476EA700456911 /* EtoileFoundation.framework */,
+				6697ABBC10476E9000456911 /* EtoileUI.framework */,
+				6697AAD41047683200456911 /* Container.xcodeproj */,
+				08FB77AEFE84172EC02AAC07 /* Classes */,
+				32C88DFF0371C24200C91783 /* Other Sources */,
+				089C1665FE841158C02AAC07 /* Resources */,
+				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				034768DFFF38A50411DB9C8B /* Products */,
+				6697AB6110476AFD00456911 /* Sketch */,
+			);
+			name = EtoilePaint;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */,
+				1058C7B2FEA5585E11CA2CBB /* Other Frameworks */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C1665FE841158C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6697AC98104771CB00456911 /* testbrush.png */,
+				8DC2EF5A0486A6940098B216 /* Info.plist */,
+				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AEFE84172EC02AAC07 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				6697AAFC104768BD00456911 /* DKBezierLayoutManager.m */,
+				6697AAFD104768BD00456911 /* DKGeometryUtilities.m */,
+				6697AAFE104768BD00456911 /* DKRandom.m */,
+				6697AAFF104768BD00456911 /* ETBezierEditingFreeLayout.m */,
+				6697AB00104768BD00456911 /* ETBezierHandle.m */,
+				6697AB01104768BD00456911 /* ETBrushStyle.m */,
+				6697AB02104768BD00456911 /* ETBrushTool.m */,
+				6697AB03104768BD00456911 /* ETDrawingActionHandler.m */,
+				6697AB04104768BD00456911 /* ETDrawingStrokeShape.m */,
+				6697AB05104768BD00456911 /* ETFillStyle.m */,
+				6697AB06104768BD00456911 /* ETPatternFillStyle.m */,
+				6697AB07104768BD00456911 /* ETPatternStrokeStyle.m */,
+				6697AB08104768BD00456911 /* ETPenStyle.m */,
+				6697AB09104768BD00456911 /* ETStrokeDash.m */,
+				6697AB0A104768BD00456911 /* ETStrokeStyle.m */,
+				6697AB0B104768BD00456911 /* NSBezierPath+Editing.m */,
+				6697AB0C104768BD00456911 /* NSBezierPath+Geometry.m */,
+				6697AB0D104768BD00456911 /* NSBezierPath+Text.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7B2FEA5585E11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0867D6A5FE840307C02AAC07 /* AppKit.framework */,
+				D2F7E79907B2D74100F64583 /* CoreData.framework */,
+				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		32C88DFF0371C24200C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				6697AB20104768F100456911 /* DKBezierLayoutManager.h */,
+				6697AB21104768F100456911 /* DKDrawKitMacros.h */,
+				6697AB22104768F100456911 /* DKGeometryUtilities.h */,
+				6697AB23104768F100456911 /* DKRandom.h */,
+				6697AB24104768F100456911 /* ETBezierEditingFreeLayout.h */,
+				6697AB25104768F100456911 /* ETBezierHandle.h */,
+				6697AB26104768F100456911 /* ETBrushStyle.h */,
+				6697AB27104768F100456911 /* ETBrushTool.h */,
+				6697AB28104768F100456911 /* ETDrawingActionHandler.h */,
+				6697AB29104768F100456911 /* ETDrawingStrokeShape.h */,
+				6697AB2A104768F100456911 /* ETFillStyle.h */,
+				6697AB2B104768F100456911 /* EtoilePaint.h */,
+				6697AB2C104768F100456911 /* ETPatternFillStyle.h */,
+				6697AB2D104768F100456911 /* ETPatternStrokeStyle.h */,
+				6697AB2E104768F100456911 /* ETPenStyle.h */,
+				6697AB2F104768F100456911 /* ETStrokeDash.h */,
+				6697AB30104768F100456911 /* ETStrokeStyle.h */,
+				6697AB31104768F100456911 /* ETTouchAction.h */,
+				6697AB32104768F100456911 /* NSBezierPath+Editing.h */,
+				6697AB33104768F100456911 /* NSBezierPath+Geometry.h */,
+				6697AB34104768F100456911 /* NSBezierPath+Text.h */,
+				32DBCF5E0370ADEE00C91783 /* EtoilePaint_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		6697AAD51047683200456911 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6697AAE41047683200456911 /* EtoileXML.framework */,
+				6697AAE61047683200456911 /* EtoileFoundation.framework */,
+				6697AAE81047683200456911 /* TestEtoileFoundation.bundle */,
+				6697AAEA1047683200456911 /* EtoileUI.framework */,
+				6697AAEC1047683200456911 /* TestEtoileUI.bundle */,
+				6697AAEE1047683200456911 /* EtoileWeb.framework */,
+				6697AAF01047683200456911 /* Collage.app */,
+				6697AAF21047683200456911 /* MarkupEditor.app */,
+				6697AAF41047683200456911 /* ObjectManagerExample.app */,
+				6697AAF61047683200456911 /* PaneContainerExample.app */,
+				6697AAF81047683200456911 /* PhotoViewExample.app */,
+				6697AAFA1047683200456911 /* TableViewExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6697AB6110476AFD00456911 /* Sketch */ = {
+			isa = PBXGroup;
+			children = (
+				6697ABCA10476F0100456911 /* SketchInfo.plist */,
+				6697AB6210476B2700456911 /* main.m */,
+				6697AB6310476B2700456911 /* SketchController.h */,
+				6697AB6410476B2700456911 /* SketchController.m */,
+			);
+			name = Sketch;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8DC2EF500486A6940098B216 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6697AB35104768F100456911 /* DKBezierLayoutManager.h in Headers */,
+				6697AB36104768F100456911 /* DKDrawKitMacros.h in Headers */,
+				6697AB37104768F100456911 /* DKGeometryUtilities.h in Headers */,
+				6697AB38104768F100456911 /* DKRandom.h in Headers */,
+				6697AB39104768F100456911 /* ETBezierEditingFreeLayout.h in Headers */,
+				6697AB3A104768F100456911 /* ETBezierHandle.h in Headers */,
+				6697AB3B104768F100456911 /* ETBrushStyle.h in Headers */,
+				6697AB3C104768F100456911 /* ETBrushTool.h in Headers */,
+				6697AB3D104768F100456911 /* ETDrawingActionHandler.h in Headers */,
+				6697AB3E104768F100456911 /* ETDrawingStrokeShape.h in Headers */,
+				6697AB3F104768F100456911 /* ETFillStyle.h in Headers */,
+				6697AB40104768F100456911 /* EtoilePaint.h in Headers */,
+				6697AB41104768F100456911 /* ETPatternFillStyle.h in Headers */,
+				6697AB42104768F100456911 /* ETPatternStrokeStyle.h in Headers */,
+				6697AB43104768F100456911 /* ETPenStyle.h in Headers */,
+				6697AB44104768F100456911 /* ETStrokeDash.h in Headers */,
+				6697AB45104768F100456911 /* ETStrokeStyle.h in Headers */,
+				6697AB46104768F100456911 /* ETTouchAction.h in Headers */,
+				6697AB47104768F100456911 /* NSBezierPath+Editing.h in Headers */,
+				6697AB48104768F100456911 /* NSBezierPath+Geometry.h in Headers */,
+				6697AB49104768F100456911 /* NSBezierPath+Text.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		6697AB5410476AD300456911 /* Sketch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6697AB5A10476AD400456911 /* Build configuration list for PBXNativeTarget "Sketch" */;
+			buildPhases = (
+				6697AB5110476AD300456911 /* Resources */,
+				6697AB5210476AD300456911 /* Sources */,
+				6697AB5310476AD300456911 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6697AB5C10476AD900456911 /* PBXTargetDependency */,
+				6697ABDF10476FD400456911 /* PBXTargetDependency */,
+				6697ABE11047700000456911 /* PBXTargetDependency */,
+			);
+			name = Sketch;
+			productName = Sketch;
+			productReference = 6697AB5510476AD300456911 /* Sketch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8DC2EF4F0486A6940098B216 /* EtoilePaint */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91AD08733DA50010E9CD /* Build configuration list for PBXNativeTarget "EtoilePaint" */;
+			buildPhases = (
+				8DC2EF500486A6940098B216 /* Headers */,
+				8DC2EF520486A6940098B216 /* Resources */,
+				8DC2EF540486A6940098B216 /* Sources */,
+				8DC2EF560486A6940098B216 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6697AB4C1047691900456911 /* PBXTargetDependency */,
+				6697AB4E1047691900456911 /* PBXTargetDependency */,
+			);
+			name = EtoilePaint;
+			productInstallPath = "$(HOME)/Library/Frameworks";
+			productName = EtoilePaint;
+			productReference = 8DC2EF5B0486A6940098B216 /* EtoilePaint.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "EtoilePaint" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* EtoilePaint */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 6697AAD51047683200456911 /* Products */;
+					ProjectRef = 6697AAD41047683200456911 /* Container.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				8DC2EF4F0486A6940098B216 /* EtoilePaint */,
+				6697AB5410476AD300456911 /* Sketch */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		6697AAE41047683200456911 /* EtoileXML.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileXML.framework;
+			remoteRef = 6697AAE31047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAE61047683200456911 /* EtoileFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileFoundation.framework;
+			remoteRef = 6697AAE51047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAE81047683200456911 /* TestEtoileFoundation.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileFoundation.bundle;
+			remoteRef = 6697AAE71047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAEA1047683200456911 /* EtoileUI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileUI.framework;
+			remoteRef = 6697AAE91047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAEC1047683200456911 /* TestEtoileUI.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileUI.bundle;
+			remoteRef = 6697AAEB1047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAEE1047683200456911 /* EtoileWeb.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileWeb.framework;
+			remoteRef = 6697AAED1047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAF01047683200456911 /* Collage.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Collage.app;
+			remoteRef = 6697AAEF1047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAF21047683200456911 /* MarkupEditor.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = MarkupEditor.app;
+			remoteRef = 6697AAF11047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAF41047683200456911 /* ObjectManagerExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = ObjectManagerExample.app;
+			remoteRef = 6697AAF31047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAF61047683200456911 /* PaneContainerExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = PaneContainerExample.app;
+			remoteRef = 6697AAF51047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAF81047683200456911 /* PhotoViewExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = PhotoViewExample.app;
+			remoteRef = 6697AAF71047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6697AAFA1047683200456911 /* TableViewExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TableViewExample.app;
+			remoteRef = 6697AAF91047683200456911 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6697AB5110476AD300456911 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6697ABCB10476F0100456911 /* SketchInfo.plist in Resources */,
+				6697AC99104771CB00456911 /* testbrush.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DC2EF520486A6940098B216 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6697AC9A104771D800456911 /* testbrush.png in Resources */,
+				8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6697AB5210476AD300456911 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6697ABC610476EC900456911 /* main.m in Sources */,
+				6697ABC710476EC900456911 /* SketchController.h in Sources */,
+				6697ABC810476EC900456911 /* SketchController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DC2EF540486A6940098B216 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6697AB0E104768BD00456911 /* DKBezierLayoutManager.m in Sources */,
+				6697AB0F104768BE00456911 /* DKGeometryUtilities.m in Sources */,
+				6697AB10104768BE00456911 /* DKRandom.m in Sources */,
+				6697AB11104768BE00456911 /* ETBezierEditingFreeLayout.m in Sources */,
+				6697AB12104768BE00456911 /* ETBezierHandle.m in Sources */,
+				6697AB13104768BE00456911 /* ETBrushStyle.m in Sources */,
+				6697AB14104768BE00456911 /* ETBrushTool.m in Sources */,
+				6697AB15104768BE00456911 /* ETDrawingActionHandler.m in Sources */,
+				6697AB16104768BE00456911 /* ETDrawingStrokeShape.m in Sources */,
+				6697AB17104768BE00456911 /* ETFillStyle.m in Sources */,
+				6697AB18104768BE00456911 /* ETPatternFillStyle.m in Sources */,
+				6697AB19104768BE00456911 /* ETPatternStrokeStyle.m in Sources */,
+				6697AB1A104768BE00456911 /* ETPenStyle.m in Sources */,
+				6697AB1B104768BE00456911 /* ETStrokeDash.m in Sources */,
+				6697AB1C104768BE00456911 /* ETStrokeStyle.m in Sources */,
+				6697AB1D104768BE00456911 /* NSBezierPath+Editing.m in Sources */,
+				6697AB1E104768BE00456911 /* NSBezierPath+Geometry.m in Sources */,
+				6697AB1F104768BE00456911 /* NSBezierPath+Text.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6697AB4C1047691900456911 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileFoundation;
+			targetProxy = 6697AB4B1047691900456911 /* PBXContainerItemProxy */;
+		};
+		6697AB4E1047691900456911 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileUI;
+			targetProxy = 6697AB4D1047691900456911 /* PBXContainerItemProxy */;
+		};
+		6697AB5C10476AD900456911 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DC2EF4F0486A6940098B216 /* EtoilePaint */;
+			targetProxy = 6697AB5B10476AD900456911 /* PBXContainerItemProxy */;
+		};
+		6697ABDF10476FD400456911 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileUI;
+			targetProxy = 6697ABDE10476FD400456911 /* PBXContainerItemProxy */;
+		};
+		6697ABE11047700000456911 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileFoundation;
+			targetProxy = 6697ABE01047700000456911 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C1667FE841158C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91AE08733DA50010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../EtoileUI/build/Debug\"",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = EtoilePaint_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				PRODUCT_NAME = EtoilePaint;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		1DEB91AF08733DA50010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../EtoileUI/build/Debug\"",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = EtoilePaint_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				PRODUCT_NAME = EtoilePaint;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		1DEB91B208733DA50010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB91B308733DA50010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+		6697AB5810476AD400456911 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../EtoileUI/build/Debug\"",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = Sketch/SketchInfo.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Sketch;
+			};
+			name = Debug;
+		};
+		6697AB5910476AD400456911 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../EtoileUI/build/Debug\"",
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = Sketch/SketchInfo.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Sketch;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91AD08733DA50010E9CD /* Build configuration list for PBXNativeTarget "EtoilePaint" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91AE08733DA50010E9CD /* Debug */,
+				1DEB91AF08733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "EtoilePaint" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91B208733DA50010E9CD /* Debug */,
+				1DEB91B308733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6697AB5A10476AD400456911 /* Build configuration list for PBXNativeTarget "Sketch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6697AB5810476AD400456911 /* Debug */,
+				6697AB5910476AD400456911 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}
