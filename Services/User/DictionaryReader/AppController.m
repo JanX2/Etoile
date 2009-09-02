@@ -10,6 +10,7 @@
 
 #import "AppController.h"
 #import "GNUstep.h"
+#import "DictionaryHandle.h"
 #import "DictConnection.h"
 #import "LocalDictionary.h"
 #import "NSString+Clickable.h"
@@ -524,7 +525,7 @@ NSDictionary* normalAttributes;
   
 	for (i = 0; i < [dictionaries count]; i++) 
 	{
-		id dict = [dictionaries objectAtIndex: i];
+		DictionaryHandle *dict = [dictionaries objectAtIndex: i];
 		if ([dict isActive]) 
 		{
 			NSArray *array = nil;
