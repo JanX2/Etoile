@@ -49,6 +49,7 @@
 
 	if ([classString isEqual: NSStringFromClass([self class])])
 	{
+		depth++;
 		// In this case, the class is setup for the current element and we don't
 		// want to start a new one.
 		return;
@@ -60,9 +61,9 @@
 		nodeClass = [ETXMLNullHandler class];
 	}
 
-	id nextHandler = [[[nodeClass alloc] initWithXMLParser: parser
+	id nextHandler = [[nodeClass alloc] initWithXMLParser: parser
 	                                               parent: self
-	                                                  key: nodeName] autorelease];
+	                                                  key: nodeName];
 	if ([nodeClass isSubclassOfClass: [ETXMLDeserializationHandler class]])
 	{
 		[nextHandler setDeserializer: deserializer];
@@ -75,7 +76,7 @@
 
 - (void) endElement: (NSString *)nodeName
 {
-	[parser setContentHandler: parent];
+	[super endElement: nodeName];
 }
 
 - (id) rootAncestor
@@ -106,6 +107,7 @@ DEALLOC([deserializer release];
 {
 	if ([nodeName isEqual: @"objects"])
 	{
+		depth++;
 		if (![[someAttributes objectForKey: @"xmlns"] isEqual: @"http://etoile-project.org/EtoileSerialize"]
 		  || (1 != [[someAttributes objectForKey: @"version"] integerValue]))
 		{
@@ -133,6 +135,7 @@ DEALLOC([deserializer release];
 {
 	if ([nodeName isEqual: @"object"])
 	{
+		depth++;
 		CORef objRef = (CORef)[[someAttributes objectForKey: @"ref"] intValue];
 		NSString *className = [someAttributes objectForKey: @"class"];
 		[deserializer beginObjectWithID: objRef
@@ -169,6 +172,7 @@ DEALLOC([deserializer release];
 {
 	if([nodeName isEqual: @"struct"])
 	{
+		depth++;
 		char *type = (char*)[[someAttributes objectForKey: @"type"] cStringUsingEncoding: NSASCIIStringEncoding];
 		[deserializer beginStruct: type  withName: [self name]];
 	}
@@ -197,6 +201,7 @@ DEALLOC([deserializer release];
 {
 	if ([nodeName isEqual: @"array"])
 	{
+		depth++;
 		unsigned int len = [[someAttributes objectForKey: @"length"] unsignedIntValue];
 		[deserializer beginArrayNamed: [self name]
 		                   withLength: len];
@@ -217,25 +222,60 @@ DEALLOC([deserializer release];
 }
 @end
 
-@interface ETXMLclassVersionDeserializationHandler : ETXMLDeserializationHandler
+@interface ETXMLDeserializationHandlerWithCData : ETXMLDeserializationHandler
+{
+	NSMutableString *stringValue;
+}
+@end
+
+@implementation ETXMLDeserializationHandlerWithCData
+
+- (void) characters: (NSString *)chars
+{
+	if (nil == stringValue)
+	{
+		stringValue = [[NSMutableString alloc] initWithString: chars];
+	}
+	else
+	{
+		[stringValue appendString: chars];
+	}
+}
+
+- (void) endElement: (NSString *)_name
+{
+	[super endElement: _name];
+}
+DEALLOC([stringValue release];)
+@end
+
+@interface ETXMLclassVersionDeserializationHandler : ETXMLDeserializationHandlerWithCData
 @end
 
 @implementation ETXMLclassVersionDeserializationHandler
-- (void) characters: (NSString *)chars
+- (void) endElement: (NSString *)nodeName
 {
-	[deserializer setClassVersion: [chars intValue]];
+	if ([nodeName isEqualToString: @"classVersion"])
+	{
+		[deserializer setClassVersion: [stringValue intValue]];
+	}
+	[super endElement: nodeName];
 }
 @end
 
 // Macro do ease the generation of handler classes that deserialize just by
 // loading their cdata as a numeric value.
-#define CLASS_LOADING(nodeType,typeName,type,stringConversionType) @interface ETXML##nodeType##DeserializationHandler : ETXMLDeserializationHandler \
+#define CLASS_LOADING(nodeType,typeName,type,stringConversionType) @interface ETXML##nodeType##DeserializationHandler : ETXMLDeserializationHandlerWithCData \
 @end \
 \
 @implementation ETXML##nodeType##DeserializationHandler \
-- (void) characters: (NSString *)chars \
+- (void) endElement: (NSString *) _name \
 {\
-	[deserializer load##typeName: (type)[chars stringConversionType##Value] withName: [self name]]; \
+	if ([_name isEqualToString: @#nodeType]) \
+	{\
+		[deserializer load##typeName: (type)[stringValue stringConversionType##Value] withName: [self name]]; \
+	}\
+	[super endElement: _name];\
 }\
 @end
 
@@ -256,40 +296,52 @@ CLASS_LOADING(d,Double,double,double)
 CLASS_LOADING(f,Float,float,float)
 
 
-@interface ETXMLclassDeserializationHandler: ETXMLDeserializationHandler
+@interface ETXMLclassDeserializationHandler: ETXMLDeserializationHandlerWithCData
 @end
 
 @implementation ETXMLclassDeserializationHandler
-- (void) characters: (NSString *)chars
+- (void) endElement: (NSString *)nodeName
 {
-	[deserializer loadClass: NSClassFromString(chars)
-	               withName: [self name]];
+	if ([nodeName isEqualToString: @"class"])
+	{
+		[deserializer loadClass: NSClassFromString(stringValue)
+		               withName: [self name]];
+	}
+	[super endElement: nodeName];
 }
 @end
 
-@interface ETXMLselectorDeserializationHandler: ETXMLDeserializationHandler
+@interface ETXMLselectorDeserializationHandler: ETXMLDeserializationHandlerWithCData
 @end
 
 @implementation ETXMLselectorDeserializationHandler
-- (void) characters: (NSString *)chars
+- (void) endElement: (NSString *)nodeName
 {
-	[deserializer loadSelector: NSSelectorFromString(chars)
-	                  withName: [self name]];
+	if ([nodeName isEqualToString: @"selector"])
+	{
+		[deserializer loadSelector: NSSelectorFromString(stringValue)
+		                  withName: [self name]];
+	}
+	[super endElement: nodeName];
 }
 @end
 
-@interface ETXMLstrDeserializationHandler: ETXMLDeserializationHandler
+@interface ETXMLstrDeserializationHandler: ETXMLDeserializationHandlerWithCData
 @end
 
 @implementation ETXMLstrDeserializationHandler
-- (void) characters: (NSString *)chars
+- (void) endElement: (NSString *)nodeName
 {
-	[deserializer loadCString: (char*)[chars cStringUsingEncoding: NSASCIIStringEncoding]
-	                 withName: [self name]];
+	if ([nodeName isEqualToString: @"str"])
+	{
+		[deserializer loadCString: (char*)[stringValue cStringUsingEncoding: NSASCIIStringEncoding]
+		                 withName: [self name]];
+	}
+	[super endElement: nodeName];
 }
 @end
 
-@interface ETXMLdataDeserializationHandler : ETXMLDeserializationHandler
+@interface ETXMLdataDeserializationHandler : ETXMLDeserializationHandlerWithCData
 {
 	NSUInteger size;
 }
@@ -301,6 +353,7 @@ CLASS_LOADING(f,Float,float,float)
 {
 	if ([nodeName isEqual: @"data"])
 	{
+		depth++;
 		size = [[someAttributes objectForKey: @"size"] unsignedIntValue];
 	}
 	else
@@ -309,33 +362,40 @@ CLASS_LOADING(f,Float,float,float)
 	}
 }
 
-- (void) characters: (NSString*)chars
+- (void) endElement: (NSString*)nodeName
 {
-
-	NSData *theData = [chars base64DecodedData];
-	NSUInteger length = [theData length];
-	if (size != length)
+	if ([nodeName isEqualToString: @"data"])
 	{
-		NSDebugLog(@"Size inconsistency in data element named '%@' detected", name);
+		NSData *theData = [stringValue base64DecodedData];
+		NSUInteger length = [theData length];
+		if (size != length)
+		{
+			NSDebugLog(@"Size inconsistency in data element named '%@' detected", name);
+		}
+		[deserializer loadData: (void*)[theData bytes]
+		                ofSize: MIN(size,length)
+		              withName: [self name]];
 	}
-	[deserializer loadData: (void*)[theData bytes]
-	                ofSize: MIN(size,length)
-	              withName: [self name]];
+	[super endElement: nodeName];
 }
 @end
 
-@interface ETXMLuuidDeserializationHandler : ETXMLDeserializationHandler
+@interface ETXMLuuidDeserializationHandler : ETXMLDeserializationHandlerWithCData
 @end
 
 @implementation ETXMLuuidDeserializationHandler
-- (void) characters: (NSString *)chars
+- (void) endElement: (NSString *)nodeName
 {
-	[deserializer loadUUID: (unsigned char *)[chars cStringUsingEncoding: NSASCIIStringEncoding]
-	              withName: [self name]];
+	if ([nodeName isEqualToString: @"uuid"])
+	{
+		[deserializer loadUUID: (unsigned char *)[stringValue cStringUsingEncoding: NSASCIIStringEncoding]
+		              withName: [self name]];
+	}
+	[super endElement: nodeName];
 }
 @end
 
-@interface ETXMLrefcountDeserializationHandler: ETXMLDeserializationHandler
+@interface ETXMLrefcountDeserializationHandler: ETXMLDeserializationHandlerWithCData
 {
 	CORef reference;
 }
@@ -347,6 +407,7 @@ CLASS_LOADING(f,Float,float,float)
 {
 	if ([nodeName isEqual: @"refcount"])
 	{
+		depth++;
 		reference = (CORef)[[someAttributes objectForKey: @"object"] intValue];
 	}
 	else
@@ -355,9 +416,13 @@ CLASS_LOADING(f,Float,float,float)
 	}
 }
 
-- (void) characters: (NSString *)chars
+- (void) endElement: (NSString *)nodeName
 {
-	[deserializer setReferenceCountForObject: reference
-	                                      to: [chars unsignedIntValue]];
+	if ([nodeName isEqualToString: @"refcount"])
+	{
+		[deserializer setReferenceCountForObject: reference
+		                                      to: [stringValue unsignedIntValue]];
+	}
+	[super endElement: nodeName];
 }
 @end
