@@ -10,8 +10,8 @@
 {
   NSGraphicsContext     *ctxt = GSCurrentContext();
   int			howMany = [_items count];
-  int			i;
-  NSRect		previousRect;
+  int			i = 0;
+  NSRect		previousRect = NSZeroRect;
   int			previousState = 0;
   NSRect		aRect = _bounds;
 

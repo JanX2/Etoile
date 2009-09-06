@@ -46,7 +46,10 @@
 	rectangle = [propertyList objectForKey: @"rectangle"];
 	if (rectangle != nil)
 	{
-		float x, y, width, height;
+		float x = 0; 
+		float y = 0;
+		float width = 0;
+		float height = 0;
 
 		number = [rectangle objectForKey: @"x"];
 		if (number != nil) x = [number floatValue];		

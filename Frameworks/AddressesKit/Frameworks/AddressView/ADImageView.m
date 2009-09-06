@@ -177,7 +177,7 @@
 
 - (void) setPerson: (ADPerson*) person
 {
-  NSString *imgPath;
+  NSString *imgPath = @"";
 
   if(person == _person)
     return;

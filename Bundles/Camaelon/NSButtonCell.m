@@ -68,9 +68,9 @@
 {
   unsigned	mask;
   NSImage	*imageToDisplay;
-  NSRect	imageRect;
+  NSRect	imageRect = NSZeroRect;
   NSAttributedString	*titleToDisplay;
-  NSRect	titleRect;
+  NSRect	titleRect = NSZeroRect;
   NSSize	imageSize = {0, 0};
   NSSize        titleSize = {0, 0};
 //  NSColor	*backgroundColor = nil;

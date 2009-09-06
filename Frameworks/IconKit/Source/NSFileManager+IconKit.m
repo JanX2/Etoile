@@ -23,7 +23,7 @@
   NSString *pathToCheck = [NSString string];
   int i;
   int cCount = [components count];
-  BOOL result;
+  BOOL result = NO;
   
   for (i = 0; i < cCount; i++)
     {

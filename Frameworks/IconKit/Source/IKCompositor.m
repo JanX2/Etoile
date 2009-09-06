@@ -83,7 +83,8 @@
 		
 	if (dict != nil)
 	{
-		float width, height;
+		float width = 0;
+		float height = 0;
 
 		number = [dict objectForKey: @"width"];
 		if (number != nil) width = [number floatValue];		
@@ -101,7 +102,8 @@
 
 		if (dict != nil)
 		{
-			float width, height;
+			float width = 0;
+			float height = 0;
 
 			number = [dict objectForKey: @"width"];
 		 	if (number != nil) width = [number floatValue];		

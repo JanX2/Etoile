@@ -321,7 +321,7 @@
 - (void) autoselectAccordingToMode: (ADAutoselectMode) mode
 {
   int i;
-  ADPerson *p;
+  ADPerson *p = nil;
 
   [_peopleTable reloadData];
   switch(mode)

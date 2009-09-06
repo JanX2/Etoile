@@ -489,7 +489,7 @@
 {
     if (term == nil) return nil;
     /* LuceneKit implementation */
-    id <LCTermDocuments> result;
+    id <LCTermDocuments> result = nil;
     if (i >= [readerTermDocs count]) // Not Exist
     {
 		result = [self termDocumentsWithReader: [readers objectAtIndex: i]];
