@@ -27,7 +27,7 @@
 	
 	NSString *xhtmlOutput = [ETXHTMLRenderContext render: [self layoutContext]];
 	
-	[[[self webView] mainFrame] loadHTMLString: xhtmlOutput baseURL: @""];
+	[[[self webView] mainFrame] loadHTMLString: xhtmlOutput baseURL: [NSURL fileURLWithPath: @"/"]];
 }
 
 /*[ETEtoileUIRenderer rendererToXHTML]

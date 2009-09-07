@@ -6,6 +6,7 @@
 	License: Modified BSD (see COPYING)
  */
  
+#import <EtoileUI/ETLayoutItem.h>
 #import "ETXHTMLRenderContext.h"
 #import "ETXHTMLWriter.h"
 
@@ -79,12 +80,12 @@ Returns nil. */
 
 - (void) renderWindowItem: (ETWindowItem *)anItem
 {
-	return nil;
+	return;
 }
 
 - (void) renderScrollableAreaItem: (ETScrollableAreaItem *)anItem
 {
-	return nil;
+	return;
 }
 
 @end

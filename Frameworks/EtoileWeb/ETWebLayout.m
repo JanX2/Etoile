@@ -29,7 +29,7 @@
 
 - (WebView *) webView
 {
-	return [self layoutView];
+	return (WebView *)[self layoutView];
 }
 
 @end
