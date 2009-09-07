@@ -11,10 +11,19 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation Query_jabber_iq_roster
-- (id) init
+- (id) initWithXMLParser: (ETXMLParser*)aParser
+                  parent: (id <ETXMLParserDelegate>) aParent
+                     key: (id) aKey
 {
-	SUPERINIT;
+	self = [super initWithXMLParser: aParser
+	                         parent: aParent
+	                            key: aKey];
+	if (nil == self)
+	{
+		return nil;
+	}
 	identities = [NSMutableArray new];
+	[value autorelease];
 	value = identities;
 	return self;
 }

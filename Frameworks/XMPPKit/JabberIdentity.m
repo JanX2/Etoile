@@ -24,9 +24,17 @@
 	return self;
 }
 
-- (id) init
+- (id) initWithXMLParser: (ETXMLParser*) aParser
+                  parent: (id <ETXMLParserDelegate>) aParent
+                     key: (id) aKey
 {
-	SUPERINIT;
+	self = [super initWithXMLParser: aParser
+	                         parent: aParent
+	                            key: aKey];
+	if (nil == self)
+	{
+		return nil;
+	}
 	presence = [[Presence alloc] init];
 	return self;
 }

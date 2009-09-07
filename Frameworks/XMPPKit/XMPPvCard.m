@@ -14,12 +14,22 @@
 }
 @end
 @implementation XMPPvCardUpdate
-- (id) init
+- (id) initWithXMLParser: (ETXMLParser*)aParser
+                  parent: (id <ETXMLParserDelegate>) aParent
+                     key: (id) aKey
 {
-	SUPERINIT;
+	self = [super initWithXMLParser: aParser
+	                         parent: aParent
+	                            key: aKey];
+	if (nil == self)
+	{
+		return nil;
+	}
+	[value autorelease];
 	value = @"";
 	return self;
 }
+
 - (void)startElement:(NSString *)aName
 		  attributes:(NSDictionary*)attributes
 {
@@ -42,10 +52,19 @@
 @end
 
 @implementation XMPPvCard
-- (id) init
+- (id) initWithXMLParser: (ETXMLParser*)aParser
+                  parent: (id <ETXMLParserDelegate>) aParent
+                     key: (id) aKey
 {
-	SUPERINIT;
+	self = [super initWithXMLParser: aParser
+	                         parent: aParent
+	                            key: aKey];
+	if (nil == self)
+	{
+		return nil;
+	}
 	person = [[ABPerson alloc] init];
+	[value autorelease];
 	value = person;
 	return self;
 }

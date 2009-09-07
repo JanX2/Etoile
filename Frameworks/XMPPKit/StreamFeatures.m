@@ -11,11 +11,20 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation StreamFeatures
-- (id) init
+- (id) initWithXMLParser: (ETXMLParser*)aParser
+                  parent: (id <ETXMLParserDelegate>)aParent
+                     key: (id)aKey
 {
-	SUPERINIT;
+	self = [super initWithXMLParser: aParser
+	                         parent: aParent
+	                            key: aKey];
+	if (nil == self)
+	{
+		return nil;
+	}
 	features = [[NSMutableDictionary alloc] init];
 	[features setObject:[NSMutableArray array] forKey:@"mechanisms"];
+	[value autorelease];
 	value = features;
 	return self;
 }

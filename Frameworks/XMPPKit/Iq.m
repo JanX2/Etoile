@@ -23,9 +23,17 @@ static NSDictionary * TYPES;
 		[NSNumber numberWithInt:IQ_TYPE_ERROR], @"error",
 		nil] retain];
 }
-- (id) init
+- (id) initWithXMLParser: (ETXMLParser*)aParser
+                  parent: (id <ETXMLParserDelegate>)aParent
+                     key: (id)aKey
 {
-	SUPERINIT;
+	self = [super initWithXMLParser: aParser
+	                         parent: aParent
+	                            key: aKey];
+	if (nil == self)
+	{
+		return nil;
+	}
 	children = [NSMutableDictionary new];
 	return self;
 }

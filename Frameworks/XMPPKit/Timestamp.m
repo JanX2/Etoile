@@ -16,10 +16,19 @@
 }
 
 
-- (id) init
+- (id) initWithXMLParser: (ETXMLParser*)aParser
+                  parent: (id <ETXMLParserDelegate>) aParent
+                     key: (id) aKey
 {
-	SUPERINIT;
-	value = self;
+	self = [super initWithXMLParser: aParser
+	                         parent: aParent
+	                            key: aKey];
+	if (nil == self)
+	{
+		return nil;
+	}
+	[value autorelease];
+	value = [self retain];
 	reason = [[NSMutableString alloc] init];
 	return self;
 }

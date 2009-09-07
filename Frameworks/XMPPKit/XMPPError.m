@@ -11,12 +11,6 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation XMPPError
-- (id) init
-{
-	SUPERINIT;
-	value = self;
-	return self;
-}
 /*
 <error code='404' type='wait'>
  <recipient-unavailable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>

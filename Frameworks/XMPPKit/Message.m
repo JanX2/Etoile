@@ -52,9 +52,17 @@ NSDictionary * MESSAGE_TYPES;
 	return [super init];
 }
 
-- (id) init
+- (id) initWithXMLParser: (ETXMLParser*)aParser
+                  parent: (id <ETXMLParserDelegate>) aParent
+                     key: (id) aKey
 {
-	SUPERINIT;
+	self = [super initWithXMLParser: aParser
+	                         parent: aParent
+	                            key: aKey];
+	if (nil == self)
+	{
+		return nil;
+	}
 	unknownAttributes = [[NSMutableDictionary alloc] init];
 	timestamps = [[NSMutableArray alloc] init];
 	body = @"";
