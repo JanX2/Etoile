@@ -154,7 +154,7 @@
 	// FIXME: Shouldn't take some things for granted. (See the comments)
 	id superview = [self superview];
 	NSSize currentSize = [self frame].size;
-	NSSize newSize;
+	NSSize newSize = NSZeroSize;
 
 	if ([superview isKindOfClass: [NSClipView class]] == YES)
 	{

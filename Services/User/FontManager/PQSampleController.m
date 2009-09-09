@@ -273,7 +273,7 @@
 
 - (void) changeSampleText: (id)sender
 {
-	NSString *newSampleText;
+	NSString *newSampleText = nil;
 	
 	if ([sender isKindOfClass: [NSComboBox class]])
 	{
