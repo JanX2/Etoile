@@ -14,7 +14,11 @@
 		for(unsigned int i=0 ; i<_count ; i++)\
 		{\
 			char * saveName;\
-			asprintf(&saveName, "_contents_array.%d", i);\
+			if (asprintf(&saveName, "_contents_array.%d", i) == -1)\
+			{\
+				[NSException raise: NSMallocException\
+				            format: @"Not enough space to allocate buffer"];\
+			}\
 			id element = _contents_array[i];\
 			[aSerializer storeObjectFromAddress: &element withName:saveName];\
 			free(saveName);\

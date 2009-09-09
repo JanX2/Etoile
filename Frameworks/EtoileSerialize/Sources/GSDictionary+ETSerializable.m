@@ -34,11 +34,20 @@
 			id key = node->key.obj;
 			//TODO: Work out why this is needed:
 			id value = [self objectForKey:node->key.obj];//node->value.obj;
-			asprintf(&saveName, "map.%d", i);
+			if (asprintf(&saveName, "map.%d", i) == -1)
+			{
+				[NSException raise: NSMallocException
+				            format: @"Not enough space to allocate buffer"];
+			}
 			[aSerializer storeObjectFromAddress:&key withName:saveName];
 			free(saveName);
 			i++;
-			asprintf(&saveName, "map.%d", i);
+			if (asprintf(&saveName, "map.%d", i) == -1)
+			{
+				[NSException raise: NSMallocException
+				            format: @"Not enough space to allocate buffer"];
+
+			}
 			[aSerializer storeObjectFromAddress:&value withName:saveName];
 			free(saveName);
 			i++;

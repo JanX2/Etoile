@@ -30,7 +30,11 @@
 		{
 			char * saveName;
 			id key = node->key.obj;
-			asprintf(&saveName, "map.%d", i);
+			if (asprintf(&saveName, "map.%d", i) == -1)
+			{
+				[NSException raise: NSMallocException
+				            format: @"Not enough space to allocate buffer"];
+			}
 			[aSerializer storeObjectFromAddress:&key withName:saveName];
 			free(saveName);
 			i++;

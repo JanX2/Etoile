@@ -98,7 +98,11 @@ static NSFileManager * filemanager;
 	}
 	NSString * oldPath = [bundlePath stringByAppendingPathComponent:oldBranch];
 	NSString * link = [bundlePath stringByAppendingPathComponent:@"previous"];
-	symlink([link UTF8String], [oldPath UTF8String]);
+	if (symlink([link UTF8String], [oldPath UTF8String]) == -1)
+	{
+		[NSException raise: @"ETFileSystemException"
+		            format: @"Failed to create symbolic link at path %@ with error code %i", link, errno];
+	}
 }
 - (unsigned) size
 {
