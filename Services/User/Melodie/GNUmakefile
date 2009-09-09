@@ -1,7 +1,7 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_CPPFLAGS += -std=c99
-ADDITIONAL_OBJCFLAGS += -I.  -Wall -W -Wunreachable-code -Winline -Werror -Wno-unused -Wno-format
+ADDITIONAL_OBJCFLAGS += -I.  -Wall -W -Wunreachable-code -Winline -Wno-unused -Wno-format
 
 # Taglib
 # In Ubuntu, libtag_c doesn't have pkg-config data

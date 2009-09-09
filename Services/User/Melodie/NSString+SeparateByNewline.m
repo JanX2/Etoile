@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 
+#pragma GCC diagnostic ignored "-Wunreachable-code" /* For NSMakeRange macro issue */
+
 @interface NSString (SeparateByNewline)
 - (NSArray *) componentsSeparatedByNewline;
 @end
