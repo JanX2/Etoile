@@ -6,6 +6,8 @@
 //  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
 //
 
+#import <EtoileXML/ETXMLNode.h>
+#import <EtoileXML/ETXMLParser.h>
 #import "Presence.h"
 #import "PresenceStanzaFactory.h"
 

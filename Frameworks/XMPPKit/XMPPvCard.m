@@ -136,6 +136,11 @@ MULTI_PROPERTY_FROM_XML(kABURLsProperty, kABHomePageLabel, URL)
 {
 	NSArray * names;
 #define GS_GNUSTEP_V GS_API_LATEST
+// FIXME: Figure out a way to use GS_API_VERSION() without GNUstep base. 
+// The issue is that GSVersionMacros.h is LGPL-licensed.
+#ifndef GNUSTEP
+#define GS_API_VERSION(x, y) 1
+#endif
 #if GS_API_VERSION(0, 011700)
 	//Leopard method.
 	names = [aString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];

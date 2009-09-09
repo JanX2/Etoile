@@ -33,10 +33,10 @@
 		280AD04E0B7502930008F3F3 /* JID.h in Headers */ = {isa = PBXBuildFile; fileRef = 2891BCB0063BBCA700A7F522 /* JID.h */; };
 		280AD0500B7502930008F3F3 /* Message.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C0FB06D65FA100D0644B /* Message.h */; };
 		280AD0520B7502930008F3F3 /* MessageStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A55D00A24CD600056829B /* MessageStanzaFactory.h */; };
-		280AD0540B7502930008F3F3 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD66870B05725D00035263 /* NSData+Base64.h */; };
+		280AD0540B7502930008F3F3 /*  in Headers */ = {isa = PBXBuildFile; fileRef = 28DD66870B05725D00035263 /*  */; };
 		280AD0560B7502930008F3F3 /* presence.h in Headers */ = {isa = PBXBuildFile; fileRef = 2835827D063C1605008F21EA /* presence.h */; };
 		280AD0580B7502930008F3F3 /* PresenceStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A56DC0A25C4750056829B /* PresenceStanzaFactory.h */; };
-		280AD05A0B7502930008F3F3 /* query_jabber_iq_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = 281C986F0638396200732148 /* query_jabber_iq_auth.h */; };
+		280AD05A0B7502930008F3F3 /* Query_jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 281C986F0638396200732148 /* Query_jabber_iq_roster.h */; };
 		280AD05C0B7502930008F3F3 /* Query_jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */; };
 		280AD05E0B7502930008F3F3 /* Roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584B4063C4516008F21EA /* Roster.h */; };
 		280AD0600B7502930008F3F3 /* RosterGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 28C5029206B3CEED00CE9114 /* RosterGroup.h */; };
@@ -48,7 +48,6 @@
 		280AD06E0B7502930008F3F3 /* XMPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F8E9890632E612004623A5 /* XMPPConnection.h */; };
 		280AD0C80B7503A10008F3F3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2821C44507019FE60044C298 /* Security.framework */; };
 		280AD0C90B7503A90008F3F3 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28177B5E0700BFB500A694A2 /* AddressBook.framework */; };
-		280AD13D0B7506BF0008F3F3 /* EtoileXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* EtoileXML.framework */; };
 		280AD1470B7506CC0008F3F3 /* XMPPKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280AD0290B75025F0008F3F3 /* XMPPKit.framework */; };
 		2812F1000BF60FF10041AAE4 /* StepChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2812F0FF0BF60FF10041AAE4 /* StepChat.icns */; };
 		28135C9908ACE3780032967E /* XMLLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 28135C9708ACE3780032967E /* XMLLog.h */; };
@@ -57,10 +56,8 @@
 		281778D006FC963500A694A2 /* MessageWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 281778CE06FC963500A694A2 /* MessageWindowController.h */; };
 		28177ADF0700A3E800A694A2 /* XMPPAccount.h in Headers */ = {isa = PBXBuildFile; fileRef = 28177ADD0700A3E800A694A2 /* XMPPAccount.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28177B5F0700BFB500A694A2 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28177B5E0700BFB500A694A2 /* AddressBook.framework */; };
-		281C98710638396200732148 /* query_jabber_iq_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = 281C986F0638396200732148 /* query_jabber_iq_auth.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		281EF7C30BFF78D900B26B33 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		281C98710638396200732148 /* Query_jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 281C986F0638396200732148 /* Query_jabber_iq_roster.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		281EF7C40BFF78DC00B26B33 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
-		281EF7C60BFF78EA00B26B33 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
 		281EF7C90BFF78F700B26B33 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
 		2821C44607019FE60044C298 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2821C44507019FE60044C298 /* Security.framework */; };
 		2821C5330701A0190044C298 /* DefaultHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 2885B14E066113560068D300 /* DefaultHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -71,9 +68,7 @@
 		2835875F063D4D7F008F21EA /* JabberApp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2835875D063D4D7F008F21EA /* JabberApp.h */; };
 		283963E30CE8AEC0007958FA /* XMPPvCard.h in Headers */ = {isa = PBXBuildFile; fileRef = 283963E10CE8AEC0007958FA /* XMPPvCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		283963E40CE8AEC0007958FA /* XMPPvCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 283963E20CE8AEC0007958FA /* XMPPvCard.m */; };
-		2839E2790B76455100145C44 /* EtoileXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* EtoileXML.framework */; };
 		2839E27A0B76455100145C44 /* XMPPKit.framework in Copy Private Frameworks */ = {isa = PBXBuildFile; fileRef = 280AD0290B75025F0008F3F3 /* XMPPKit.framework */; };
-		2839E4320B77996C00145C44 /* EtoileXML.framework in Copy Private Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* EtoileXML.framework */; };
 		283D78CA0C8335A400986BBA /* DefaultHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 2885B14F066113560068D300 /* DefaultHandler.m */; };
 		283D78D00C8335C200986BBA /* ChatLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CCCECB0C832DC90025B407 /* ChatLog.m */; };
 		283D78D10C8335C200986BBA /* CompareHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5CC80B3571C600F5A7AB /* CompareHack.m */; };
@@ -82,7 +77,6 @@
 		283D78D40C8335C200986BBA /* GroupChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 285F6C530729A3ED00FD5D67 /* GroupChat.m */; };
 		283D78D50C8335C200986BBA /* Iq.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A582A0A2C91320056829B /* Iq.m */; };
 		283D78D60C8335C200986BBA /* IqStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A56D70A25C4050056829B /* IqStanzaFactory.m */; };
-		283D78D70C8335C200986BBA /* jabber_iq_roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A5AAA0A31C11A0056829B /* jabber_iq_roster.m */; };
 		283D78D80C8335C200986BBA /* JabberIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C0EF06D65A7400D0644B /* JabberIdentity.m */; };
 		283D78D90C8335C200986BBA /* JabberPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = 283584CD063C4642008F21EA /* JabberPerson.m */; };
 		283D78DA0C8335C200986BBA /* JabberResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2842CF03089FCFD900F2D0AA /* JabberResource.m */; };
@@ -91,10 +85,8 @@
 		283D78DD0C8335C200986BBA /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C0FC06D65FA100D0644B /* Message.m */; };
 		283D78DE0C8335C200986BBA /* MessageStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A55D10A24CD600056829B /* MessageStanzaFactory.m */; };
 		283D78DF0C8335C200986BBA /* NSAttributedString+HTML-IM.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CCCD9A0C8322310025B407 /* NSAttributedString+HTML-IM.m */; };
-		283D78E00C8335C200986BBA /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD66880B05725D00035263 /* NSData+Base64.m */; };
 		283D78E10C8335C200986BBA /* presence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835827E063C1605008F21EA /* presence.m */; };
 		283D78E20C8335C200986BBA /* PresenceStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A56DD0A25C4750056829B /* PresenceStanzaFactory.m */; };
-		283D78E30C8335C200986BBA /* query_jabber_iq_auth.m in Sources */ = {isa = PBXBuildFile; fileRef = 281C98700638396200732148 /* query_jabber_iq_auth.m */; };
 		283D78E40C8335C200986BBA /* Query_jabber_iq_roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD6AAD0B07BCD700035263 /* Query_jabber_iq_roster.m */; };
 		283D78E50C8335C200986BBA /* Roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 283584B5063C4516008F21EA /* Roster.m */; };
 		283D78E60C8335C200986BBA /* RosterGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C5029306B3CEED00CE9114 /* RosterGroup.m */; };
@@ -121,12 +113,9 @@
 		283D79E50C833E9700986BBA /* TRUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 285F6FE8073820CA00FD5D67 /* TRUserDefaults.m */; };
 		283D79E90C833E9D00986BBA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		283D7C360C838B3900986BBA /* HTMLTestWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 283D7C340C838B3900986BBA /* HTMLTestWindow.nib */; };
-		283D7C520C838CC700986BBA /* EtoileXML.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* EtoileXML.framework */; };
 		283D7CAF0C838F5C00986BBA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
-		283D7CDD0C8390AD00986BBA /* EtoileXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* EtoileXML.framework */; };
 		2842CF04089FCFD900F2D0AA /* JabberResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF02089FCFD900F2D0AA /* JabberResource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2842CF22089FD23F00F2D0AA /* JabberRootIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF20089FD23F00F2D0AA /* JabberRootIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2842CF68089FD32100F2D0AA /* Macros.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF67089FD32100F2D0AA /* Macros.h */; };
 		285A5CC90B3571C600F5A7AB /* CompareHack.h in Headers */ = {isa = PBXBuildFile; fileRef = 285A5CC70B3571C600F5A7AB /* CompareHack.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		285F6C540729A3ED00FD5D67 /* GroupChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 285F6C520729A3ED00FD5D67 /* GroupChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		285F6FE9073820CA00FD5D67 /* TRUserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 285F6FE7073820CA00FD5D67 /* TRUserDefaults.h */; };
@@ -162,7 +151,6 @@
 		28CCCE140C832BD00025B407 /* GroupChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 285F6C520729A3ED00FD5D67 /* GroupChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE160C832BD00025B407 /* Iq.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A58290A2C91310056829B /* Iq.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE180C832BD00025B407 /* IqStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A56D60A25C4050056829B /* IqStanzaFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28CCCE1A0C832BD00025B407 /* jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A5AA90A31C11A0056829B /* jabber_iq_roster.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE1C0C832BD00025B407 /* JabberIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C0EE06D65A7400D0644B /* JabberIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE1E0C832BD00025B407 /* JabberPerson.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584CC063C4642008F21EA /* JabberPerson.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE200C832BD00025B407 /* JabberResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF02089FCFD900F2D0AA /* JabberResource.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -171,10 +159,9 @@
 		28CCCE260C832BD00025B407 /* Message.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C0FB06D65FA100D0644B /* Message.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE280C832BD00025B407 /* MessageStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A55D00A24CD600056829B /* MessageStanzaFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE2A0C832BD00025B407 /* NSAttributedString+HTML-IM.h in Headers */ = {isa = PBXBuildFile; fileRef = 28CCCD990C8322310025B407 /* NSAttributedString+HTML-IM.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28CCCE2C0C832BD00025B407 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD66870B05725D00035263 /* NSData+Base64.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE2E0C832BD00025B407 /* presence.h in Headers */ = {isa = PBXBuildFile; fileRef = 2835827D063C1605008F21EA /* presence.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE300C832BD00025B407 /* PresenceStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A56DC0A25C4750056829B /* PresenceStanzaFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28CCCE320C832BD00025B407 /* query_jabber_iq_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = 281C986F0638396200732148 /* query_jabber_iq_auth.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		28CCCE320C832BD00025B407 /* Query_jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 281C986F0638396200732148 /* Query_jabber_iq_roster.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE340C832BD00025B407 /* Query_jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE360C832BD00025B407 /* Roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584B4063C4516008F21EA /* Roster.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE380C832BD00025B407 /* RosterGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 28C5029206B3CEED00CE9114 /* RosterGroup.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -185,30 +172,14 @@
 		28CCCE460C832BD00025B407 /* XMPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F8E9890632E612004623A5 /* XMPPConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28CCCE480C832BD00025B407 /* XMPPError.h in Headers */ = {isa = PBXBuildFile; fileRef = 28CCCCC40C8227010025B407 /* XMPPError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28D744B307565ED800D7EE0C /* ChatLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 28D744B107565ED800D7EE0C /* ChatLog.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28DD66890B05725D00035263 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD66870B05725D00035263 /* NSData+Base64.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28DD6AAE0B07BCD700035263 /* Query_jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28F698B60C036A6B007BE36F /* PresenceLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F698B40C036A6B007BE36F /* PresenceLogController.h */; };
 		28F8E98B0632E612004623A5 /* XMPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F8E9890632E612004623A5 /* XMPPConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28F99A210C05E2FC001D0306 /* NSTextView+ClickableLinks.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F99A1F0C05E2FC001D0306 /* NSTextView+ClickableLinks.h */; };
-		28FF62350C8DFE450050744A /* ETXMLDeclaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62250C8DFE450050744A /* ETXMLDeclaration.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28FF62360C8DFE450050744A /* ETXMLDeclaration.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF62260C8DFE450050744A /* ETXMLDeclaration.m */; };
-		28FF62370C8DFE450050744A /* ETXMLNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62270C8DFE450050744A /* ETXMLNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28FF62380C8DFE450050744A /* ETXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF62280C8DFE450050744A /* ETXMLNode.m */; };
-		28FF62390C8DFE450050744A /* ETXMLNullHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62290C8DFE450050744A /* ETXMLNullHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28FF623A0C8DFE450050744A /* ETXMLNullHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF622A0C8DFE450050744A /* ETXMLNullHandler.m */; };
-		28FF623B0C8DFE450050744A /* ETXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF622B0C8DFE450050744A /* ETXMLParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28FF623C0C8DFE450050744A /* ETXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF622C0C8DFE450050744A /* ETXMLParser.m */; };
-		28FF623D0C8DFE450050744A /* ETXMLParserDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF622D0C8DFE450050744A /* ETXMLParserDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28FF623E0C8DFE450050744A /* ETXMLString.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF622E0C8DFE450050744A /* ETXMLString.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28FF623F0C8DFE450050744A /* ETXMLString.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF622F0C8DFE450050744A /* ETXMLString.m */; };
-		28FF62400C8DFE450050744A /* ETXMLXHTML-IMParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62300C8DFE450050744A /* ETXMLXHTML-IMParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28FF62410C8DFE450050744A /* ETXMLXHTML-IMParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF62310C8DFE450050744A /* ETXMLXHTML-IMParser.m */; };
-		28FF62490C8DFE650050744A /* TRXHTMLTest.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 28FF62330C8DFE450050744A /* TRXHTMLTest.h */; };
-		28FF624A0C8DFE650050744A /* TRXHTMLTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF62340C8DFE450050744A /* TRXHTMLTest.m */; };
-		28FF625C0C8DFEBB0050744A /* NSAttributedString+HTML.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF625A0C8DFEBB0050744A /* NSAttributedString+HTML.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28FF625D0C8DFEBB0050744A /* NSAttributedString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF625B0C8DFEBB0050744A /* NSAttributedString+HTML.m */; };
 		3BC84C270BE28B6F002833ED /* AccountBox.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3BC84C250BE28B6F002833ED /* AccountBox.nib */; };
 		3BC84C2C0BE37830002833ED /* AccountWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BC84C2A0BE37830002833ED /* AccountWindowController.h */; };
+		600FA83A1057BE9600989744 /* EtoileXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 600FA81D1057BE4400989744 /* EtoileXML.framework */; };
+		600FA83B1057BE9600989744 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 600FA81F1057BE4400989744 /* EtoileFoundation.framework */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -222,26 +193,103 @@
 			remoteGlobalIDString = 280AD0280B75025F0008F3F3;
 			remoteInfo = XMPP;
 		};
-		280AD13F0B7506C20008F3F3 /* PBXContainerItemProxy */ = {
+		600FA81C1057BE4400989744 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 280ACF700B75013B0008F3F3;
-			remoteInfo = XML;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073EAD10074D26007272E6 /* EtoileXML.framework */;
+			remoteInfo = EtoileXML;
 		};
-		281EF1AC0C83972D00D07C7C /* PBXContainerItemProxy */ = {
+		600FA81E1057BE4400989744 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 280ACF700B75013B0008F3F3;
-			remoteInfo = TRXML;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 603647AC0E409244003377E0 /* EtoileFoundation.framework */;
+			remoteInfo = EtoileFoundation;
 		};
-		2839E2E90B76504300145C44 /* PBXContainerItemProxy */ = {
+		600FA8201057BE4400989744 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842 /* TestEtoileFoundation.bundle */;
+			remoteInfo = TestEtoileFoundation;
+		};
+		600FA8221057BE4400989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60EF8E9D0C5E4D0600C97C41 /* EtoileUI.framework */;
+			remoteInfo = EtoileUI;
+		};
+		600FA8241057BE4400989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 600243B90CD133420023182D /* TestEtoileUI.bundle */;
+			remoteInfo = TestEtoileUI;
+		};
+		600FA8261057BE4400989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073C2910074B39007272E6 /* EtoileWeb.framework */;
+			remoteInfo = EtoileWeb;
+		};
+		600FA8281057BE4400989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60EEB9020F09457C00EBB632 /* Collage.app */;
+			remoteInfo = Collage;
+		};
+		600FA82A1057BE4400989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60CF742A0D449A8A00B4CA3D /* MarkupEditor.app */;
+			remoteInfo = MarkupEditor;
+		};
+		600FA82C1057BE4400989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 605F0CCA0C0F400D003AE3E6 /* ObjectManagerExample.app */;
+			remoteInfo = ObjectManagerExample;
+		};
+		600FA82E1057BE4400989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60539D940C240A7B006C57EC /* PaneContainerExample.app */;
+			remoteInfo = PaneContainerExample;
+		};
+		600FA8301057BE4400989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 606B98C90C0AF831000AAA85 /* PhotoViewExample.app */;
+			remoteInfo = PhotoViewExample;
+		};
+		600FA8321057BE4400989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60909CC90CB2DA42009CAD27 /* TableViewExample.app */;
+			remoteInfo = TableViewExample;
+		};
+		600FA8341057BE5A00989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 280ACF700B75013B0008F3F3;
-			remoteInfo = TRXML;
+			remoteGlobalIDString = 60073EAC10074D26007272E6 /* EtoileXML */;
+			remoteInfo = EtoileXML;
+		};
+		600FA8361057BE5A00989744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 603647AB0E409244003377E0 /* EtoileFoundation */;
+			remoteInfo = EtoileFoundation;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -252,7 +300,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2839E4320B77996C00145C44 /* EtoileXML.framework in Copy Private Frameworks */,
 				2839E27A0B76455100145C44 /* XMPPKit.framework in Copy Private Frameworks */,
 			);
 			name = "Copy Private Frameworks";
@@ -264,8 +311,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				283D7C520C838CC700986BBA /* EtoileXML.framework in CopyFiles */,
-				28FF62490C8DFE650050744A /* TRXHTMLTest.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,12 +335,10 @@
 		280A56DD0A25C4750056829B /* PresenceStanzaFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PresenceStanzaFactory.m; path = ../../../Frameworks/XMPPKit/PresenceStanzaFactory.m; sourceTree = "<group>"; };
 		280A58290A2C91310056829B /* Iq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Iq.h; path = ../../../Frameworks/XMPPKit/Iq.h; sourceTree = "<group>"; };
 		280A582A0A2C91320056829B /* Iq.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Iq.m; path = ../../../Frameworks/XMPPKit/Iq.m; sourceTree = "<group>"; };
-		280A5AA90A31C11A0056829B /* jabber_iq_roster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jabber_iq_roster.h; path = ../../../Frameworks/XMPPKit/jabber_iq_roster.h; sourceTree = "<group>"; };
-		280A5AAA0A31C11A0056829B /* jabber_iq_roster.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = jabber_iq_roster.m; path = ../../../Frameworks/XMPPKit/jabber_iq_roster.m; sourceTree = "<group>"; };
+		280A5AA90A31C11A0056829B /* jabber_iq_roster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jabber_iq_roster.h; path = /Users/qmathe/reps/trunkEtoile/Etoile/Frameworks/XMPPKit/jabber_iq_roster.h; sourceTree = "<absolute>"; };
 		280A5D7F0A3491100056829B /* StreamFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StreamFeatures.h; path = ../../../Frameworks/XMPPKit/StreamFeatures.h; sourceTree = "<group>"; };
 		280A5D800A3491100056829B /* StreamFeatures.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StreamFeatures.m; path = ../../../Frameworks/XMPPKit/StreamFeatures.m; sourceTree = "<group>"; };
 		280ACF670B75012E0008F3F3 /* XMPP-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XMPP-Info.plist"; sourceTree = "<group>"; };
-		280ACF710B75013B0008F3F3 /* EtoileXML.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EtoileXML.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		280ACF720B75013B0008F3F3 /* XML-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XML-Info.plist"; sourceTree = "<group>"; };
 		280AD0290B75025F0008F3F3 /* XMPPKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = XMPPKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2812F0FF0BF60FF10041AAE4 /* StepChat.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = StepChat.icns; sourceTree = "<group>"; };
@@ -311,8 +354,7 @@
 		28177ADE0700A3E800A694A2 /* XMPPAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPAccount.m; path = ../../../Frameworks/XMPPKit/XMPPAccount.m; sourceTree = "<group>"; };
 		28177B090700AE5500A694A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/RosterWindow.nib; sourceTree = "<group>"; };
 		28177B5E0700BFB500A694A2 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = /System/Library/Frameworks/AddressBook.framework; sourceTree = "<absolute>"; };
-		281C986F0638396200732148 /* query_jabber_iq_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = query_jabber_iq_auth.h; path = ../../../Frameworks/XMPPKit/query_jabber_iq_auth.h; sourceTree = "<group>"; };
-		281C98700638396200732148 /* query_jabber_iq_auth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = query_jabber_iq_auth.m; path = ../../../Frameworks/XMPPKit/query_jabber_iq_auth.m; sourceTree = "<group>"; };
+		281C986F0638396200732148 /* Query_jabber_iq_roster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Query_jabber_iq_roster.h; path = ../../../Frameworks/XMPPKit/Query_jabber_iq_roster.h; sourceTree = "<group>"; };
 		2821C44507019FE60044C298 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		2821C5B40701BF1F0044C298 /* PasswordWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordWindowController.h; sourceTree = "<group>"; };
 		2821C5B50701BF1F0044C298 /* PasswordWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordWindowController.m; sourceTree = "<group>"; };
@@ -327,15 +369,12 @@
 		2835875E063D4D7F008F21EA /* JabberApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JabberApp.m; sourceTree = "<group>"; };
 		283963E10CE8AEC0007958FA /* XMPPvCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPvCard.h; path = ../../../Frameworks/XMPPKit/XMPPvCard.h; sourceTree = "<group>"; };
 		283963E20CE8AEC0007958FA /* XMPPvCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPvCard.m; path = ../../../Frameworks/XMPPKit/XMPPvCard.m; sourceTree = "<group>"; };
-		283D7C180C838A2300986BBA /* HTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "HTMLTest-Info.plist"; sourceTree = "<group>"; };
 		283D7C210C838A8200986BBA /* XHTMLTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XHTMLTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		283D7C230C838A8200986BBA /* XHTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "XHTMLTest-Info.plist"; sourceTree = "<group>"; };
 		283D7C350C838B3900986BBA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/HTMLTestWindow.nib; sourceTree = "<group>"; };
 		2842CF02089FCFD900F2D0AA /* JabberResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JabberResource.h; path = ../../../Frameworks/XMPPKit/JabberResource.h; sourceTree = "<group>"; };
 		2842CF03089FCFD900F2D0AA /* JabberResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JabberResource.m; path = ../../../Frameworks/XMPPKit/JabberResource.m; sourceTree = "<group>"; };
 		2842CF20089FD23F00F2D0AA /* JabberRootIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JabberRootIdentity.h; path = ../../../Frameworks/XMPPKit/JabberRootIdentity.h; sourceTree = "<group>"; };
 		2842CF21089FD23F00F2D0AA /* JabberRootIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JabberRootIdentity.m; path = ../../../Frameworks/XMPPKit/JabberRootIdentity.m; sourceTree = "<group>"; };
-		2842CF67089FD32100F2D0AA /* Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
 		285A5CC70B3571C600F5A7AB /* CompareHack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompareHack.h; path = ../../../Frameworks/XMPPKit/CompareHack.h; sourceTree = "<group>"; };
 		285A5CC80B3571C600F5A7AB /* CompareHack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompareHack.m; path = ../../../Frameworks/XMPPKit/CompareHack.m; sourceTree = "<group>"; };
 		285F6C520729A3ED00FD5D67 /* GroupChat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GroupChat.h; path = ../../../Frameworks/XMPPKit/GroupChat.h; sourceTree = "<group>"; };
@@ -367,7 +406,7 @@
 		289EC2AF0CEB1C9200E89CE6 /* DiscoItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DiscoItems.h; path = ../../../Frameworks/XMPPKit/DiscoItems.h; sourceTree = "<group>"; };
 		289EC2B00CEB1C9200E89CE6 /* DiscoItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DiscoItems.m; path = ../../../Frameworks/XMPPKit/DiscoItems.m; sourceTree = "<group>"; };
 		28A32C2C082E3E3B0012AD55 /* Capabilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Capabilities.h; path = ../../../Frameworks/XMPPKit/Capabilities.h; sourceTree = "<group>"; };
-		28A32C2D082E3E3B0012AD55 /* Capabilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Capabilities.m; path = xmpp/Capabilities.m; sourceTree = "<group>"; };
+		28A32C2D082E3E3B0012AD55 /* Capabilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Capabilities.m; path = ../../../Frameworks/XMPPKit/Capabilities.m; sourceTree = "<group>"; };
 		28A5470607C66A3500595357 /* ChatLogMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatLogMenuController.h; sourceTree = "<group>"; };
 		28A5470707C66A3500595357 /* ChatLogMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatLogMenuController.m; sourceTree = "<group>"; };
 		28A5476807C6780600595357 /* ServiceDiscovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServiceDiscovery.h; path = ../../../Frameworks/XMPPKit/ServiceDiscovery.h; sourceTree = "<group>"; };
@@ -384,8 +423,7 @@
 		28CD15B0079168610025B96F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		28CF42C306F777B500F46AC0 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MessageWindow.nib; sourceTree = "<group>"; };
 		28D744B107565ED800D7EE0C /* ChatLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChatLog.h; path = ../../../Frameworks/XMPPKit/ChatLog.h; sourceTree = "<group>"; };
-		28DD66870B05725D00035263 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Base64.h"; path = "../../../Frameworks/XMPPKit/NSData+Base64.h"; sourceTree = "<group>"; };
-		28DD66880B05725D00035263 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Base64.m"; path = "../../../Frameworks/XMPPKit/NSData+Base64.m"; sourceTree = "<group>"; };
+		28DD66870B05725D00035263 /*  */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ""; path = "/Users/qmathe/reps/trunkEtoile/Etoile/Frameworks/XMPPKit/NSData+Base64.h"; sourceTree = "<absolute>"; };
 		28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Query_jabber_iq_roster.h; path = ../../../Frameworks/XMPPKit/Query_jabber_iq_roster.h; sourceTree = "<group>"; };
 		28DD6AAD0B07BCD700035263 /* Query_jabber_iq_roster.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Query_jabber_iq_roster.m; path = ../../../Frameworks/XMPPKit/Query_jabber_iq_roster.m; sourceTree = "<group>"; };
 		28F698B40C036A6B007BE36F /* PresenceLogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresenceLogController.h; sourceTree = "<group>"; };
@@ -394,24 +432,6 @@
 		28F8E98A0632E612004623A5 /* XMPPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPConnection.m; path = ../../../Frameworks/XMPPKit/XMPPConnection.m; sourceTree = "<group>"; };
 		28F99A1F0C05E2FC001D0306 /* NSTextView+ClickableLinks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTextView+ClickableLinks.h"; sourceTree = "<group>"; };
 		28F99A200C05E2FC001D0306 /* NSTextView+ClickableLinks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTextView+ClickableLinks.m"; sourceTree = "<group>"; };
-		28FF62250C8DFE450050744A /* ETXMLDeclaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLDeclaration.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLDeclaration.h; sourceTree = "<group>"; };
-		28FF62260C8DFE450050744A /* ETXMLDeclaration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLDeclaration.m; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLDeclaration.m; sourceTree = "<group>"; };
-		28FF62270C8DFE450050744A /* ETXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLNode.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLNode.h; sourceTree = "<group>"; };
-		28FF62280C8DFE450050744A /* ETXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLNode.m; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLNode.m; sourceTree = "<group>"; };
-		28FF62290C8DFE450050744A /* ETXMLNullHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLNullHandler.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLNullHandler.h; sourceTree = "<group>"; };
-		28FF622A0C8DFE450050744A /* ETXMLNullHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLNullHandler.m; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLNullHandler.m; sourceTree = "<group>"; };
-		28FF622B0C8DFE450050744A /* ETXMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLParser.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLParser.h; sourceTree = "<group>"; };
-		28FF622C0C8DFE450050744A /* ETXMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLParser.m; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLParser.m; sourceTree = "<group>"; };
-		28FF622D0C8DFE450050744A /* ETXMLParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLParserDelegate.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLParserDelegate.h; sourceTree = "<group>"; };
-		28FF622E0C8DFE450050744A /* ETXMLString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLString.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLString.h; sourceTree = "<group>"; };
-		28FF622F0C8DFE450050744A /* ETXMLString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLString.m; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLString.m; sourceTree = "<group>"; };
-		28FF62300C8DFE450050744A /* ETXMLXHTML-IMParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ETXMLXHTML-IMParser.h"; path = "../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLXHTML-IMParser.h"; sourceTree = "<group>"; };
-		28FF62310C8DFE450050744A /* ETXMLXHTML-IMParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "ETXMLXHTML-IMParser.m"; path = "../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLXHTML-IMParser.m"; sourceTree = "<group>"; };
-		28FF62320C8DFE450050744A /* ParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ParserTest.m; path = ETXML/ParserTest.m; sourceTree = "<group>"; };
-		28FF62330C8DFE450050744A /* TRXHTMLTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TRXHTMLTest.h; path = ETXML/TRXHTMLTest.h; sourceTree = "<group>"; };
-		28FF62340C8DFE450050744A /* TRXHTMLTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TRXHTMLTest.m; path = ETXML/TRXHTMLTest.m; sourceTree = "<group>"; };
-		28FF625A0C8DFEBB0050744A /* NSAttributedString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+HTML.h"; path = "../../../Frameworks/EtoileFoundation/EtoileXML/NSAttributedString+HTML.h"; sourceTree = "<group>"; };
-		28FF625B0C8DFEBB0050744A /* NSAttributedString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+HTML.m"; path = "../../../Frameworks/EtoileFoundation/EtoileXML/NSAttributedString+HTML.m"; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -420,25 +440,18 @@
 		3BC84C260BE28B6F002833ED /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/AccountBox.nib; sourceTree = "<group>"; };
 		3BC84C2A0BE37830002833ED /* AccountWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AccountWindowController.h; sourceTree = "<group>"; };
 		3BC84C2B0BE37830002833ED /* AccountWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AccountWindowController.m; sourceTree = "<group>"; };
+		600FA80D1057BE4400989744 /* Container.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Container.xcodeproj; path = ../../../Frameworks/EtoileUI/Container.xcodeproj; sourceTree = SOURCE_ROOT; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* StepChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StepChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		280ACF6F0B75013B0008F3F3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				281EF7C30BFF78D900B26B33 /* Foundation.framework in Frameworks */,
-				281EF7C60BFF78EA00B26B33 /* AppKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		280AD0270B75025F0008F3F3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				280AD13D0B7506BF0008F3F3 /* EtoileXML.framework in Frameworks */,
+				600FA83A1057BE9600989744 /* EtoileXML.framework in Frameworks */,
+				600FA83B1057BE9600989744 /* EtoileFoundation.framework in Frameworks */,
 				280AD0C90B7503A90008F3F3 /* AddressBook.framework in Frameworks */,
 				280AD0C80B7503A10008F3F3 /* Security.framework in Frameworks */,
 				281EF7C40BFF78DC00B26B33 /* Foundation.framework in Frameworks */,
@@ -450,7 +463,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				283D7CDD0C8390AD00986BBA /* EtoileXML.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -458,7 +470,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2839E2790B76455100145C44 /* EtoileXML.framework in Frameworks */,
 				280AD1470B7506CC0008F3F3 /* XMPPKit.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				28177B5F0700BFB500A694A2 /* AddressBook.framework in Frameworks */,
@@ -503,7 +514,6 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				280ACF710B75013B0008F3F3 /* EtoileXML.framework */,
 				8D1107320486CEB800E47090 /* StepChat.app */,
 				280AD0290B75025F0008F3F3 /* XMPPKit.framework */,
 				283D7C210C838A8200986BBA /* XHTMLTest.app */,
@@ -536,12 +546,8 @@
 				28CCCCC50C8227010025B407 /* XMPPError.m */,
 				28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */,
 				28DD6AAD0B07BCD700035263 /* Query_jabber_iq_roster.m */,
-				28DD66870B05725D00035263 /* NSData+Base64.h */,
-				28DD66880B05725D00035263 /* NSData+Base64.m */,
 				280A5D7F0A3491100056829B /* StreamFeatures.h */,
 				280A5D800A3491100056829B /* StreamFeatures.m */,
-				280A5AA90A31C11A0056829B /* jabber_iq_roster.h */,
-				280A5AAA0A31C11A0056829B /* jabber_iq_roster.m */,
 				280A56DC0A25C4750056829B /* PresenceStanzaFactory.h */,
 				280A56DD0A25C4750056829B /* PresenceStanzaFactory.m */,
 				280A56D60A25C4050056829B /* IqStanzaFactory.h */,
@@ -577,8 +583,7 @@
 				2891BCB1063BBCA700A7F522 /* JID.m */,
 				2835827D063C1605008F21EA /* presence.h */,
 				2835827E063C1605008F21EA /* presence.m */,
-				281C986F0638396200732148 /* query_jabber_iq_auth.h */,
-				281C98700638396200732148 /* query_jabber_iq_auth.m */,
+				281C986F0638396200732148 /* Query_jabber_iq_roster.h */,
 				283584B4063C4516008F21EA /* Roster.h */,
 				283584B5063C4516008F21EA /* Roster.m */,
 				28F8E9890632E612004623A5 /* XMPPConnection.h */,
@@ -634,48 +639,20 @@
 			name = UI;
 			sourceTree = "<group>";
 		};
-		28D8D52E06AAB2AC002C2165 /* XML Parser */ = {
-			isa = PBXGroup;
-			children = (
-				28FF625A0C8DFEBB0050744A /* NSAttributedString+HTML.h */,
-				28FF625B0C8DFEBB0050744A /* NSAttributedString+HTML.m */,
-				28FF62250C8DFE450050744A /* ETXMLDeclaration.h */,
-				28FF62260C8DFE450050744A /* ETXMLDeclaration.m */,
-				28FF62270C8DFE450050744A /* ETXMLNode.h */,
-				28FF62280C8DFE450050744A /* ETXMLNode.m */,
-				28FF62290C8DFE450050744A /* ETXMLNullHandler.h */,
-				28FF622A0C8DFE450050744A /* ETXMLNullHandler.m */,
-				28FF622B0C8DFE450050744A /* ETXMLParser.h */,
-				28FF622C0C8DFE450050744A /* ETXMLParser.m */,
-				28FF622D0C8DFE450050744A /* ETXMLParserDelegate.h */,
-				28FF622E0C8DFE450050744A /* ETXMLString.h */,
-				28FF622F0C8DFE450050744A /* ETXMLString.m */,
-				28FF62300C8DFE450050744A /* ETXMLXHTML-IMParser.h */,
-				28FF62310C8DFE450050744A /* ETXMLXHTML-IMParser.m */,
-				28FF62320C8DFE450050744A /* ParserTest.m */,
-				28FF62330C8DFE450050744A /* TRXHTMLTest.h */,
-				28FF62340C8DFE450050744A /* TRXHTMLTest.m */,
-			);
-			name = "XML Parser";
-			sourceTree = "<group>";
-		};
 		29B97314FDCFA39411CA2CEA /* Jabber */ = {
 			isa = PBXGroup;
 			children = (
+				600FA80D1057BE4400989744 /* Container.xcodeproj */,
 				2842CF79089FD46D00F2D0AA /* Debug */,
 				28C501F606B2684700CE9114 /* UI */,
 				28C501F506B2680E00CE9114 /* XMPP */,
-				28D8D52E06AAB2AC002C2165 /* XML Parser */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				2842CF67089FD32100F2D0AA /* Macros.h */,
 				280ACF670B75012E0008F3F3 /* XMPP-Info.plist */,
 				280ACF720B75013B0008F3F3 /* XML-Info.plist */,
-				283D7C180C838A2300986BBA /* HTMLTest-Info.plist */,
-				283D7C230C838A8200986BBA /* XHTMLTest-Info.plist */,
 			);
 			name = Jabber;
 			sourceTree = "<group>";
@@ -714,24 +691,28 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		600FA80E1057BE4400989744 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				600FA81D1057BE4400989744 /* EtoileXML.framework */,
+				600FA81F1057BE4400989744 /* EtoileFoundation.framework */,
+				600FA8211057BE4400989744 /* TestEtoileFoundation.bundle */,
+				600FA8231057BE4400989744 /* EtoileUI.framework */,
+				600FA8251057BE4400989744 /* TestEtoileUI.bundle */,
+				600FA8271057BE4400989744 /* EtoileWeb.framework */,
+				600FA8291057BE4400989744 /* Collage.app */,
+				600FA82B1057BE4400989744 /* MarkupEditor.app */,
+				600FA82D1057BE4400989744 /* ObjectManagerExample.app */,
+				600FA82F1057BE4400989744 /* PaneContainerExample.app */,
+				600FA8311057BE4400989744 /* PhotoViewExample.app */,
+				600FA8331057BE4400989744 /* TableViewExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		280ACF6C0B75013B0008F3F3 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				28FF62350C8DFE450050744A /* ETXMLDeclaration.h in Headers */,
-				28FF62370C8DFE450050744A /* ETXMLNode.h in Headers */,
-				28FF62390C8DFE450050744A /* ETXMLNullHandler.h in Headers */,
-				28FF623B0C8DFE450050744A /* ETXMLParser.h in Headers */,
-				28FF623D0C8DFE450050744A /* ETXMLParserDelegate.h in Headers */,
-				28FF623E0C8DFE450050744A /* ETXMLString.h in Headers */,
-				28FF62400C8DFE450050744A /* ETXMLXHTML-IMParser.h in Headers */,
-				28FF625C0C8DFEBB0050744A /* NSAttributedString+HTML.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		280AD0240B75025F0008F3F3 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -753,10 +734,10 @@
 				280AD04E0B7502930008F3F3 /* JID.h in Headers */,
 				280AD0500B7502930008F3F3 /* Message.h in Headers */,
 				280AD0520B7502930008F3F3 /* MessageStanzaFactory.h in Headers */,
-				280AD0540B7502930008F3F3 /* NSData+Base64.h in Headers */,
+				280AD0540B7502930008F3F3 /*  in Headers */,
 				280AD0560B7502930008F3F3 /* presence.h in Headers */,
 				280AD0580B7502930008F3F3 /* PresenceStanzaFactory.h in Headers */,
-				280AD05A0B7502930008F3F3 /* query_jabber_iq_auth.h in Headers */,
+				280AD05A0B7502930008F3F3 /* Query_jabber_iq_roster.h in Headers */,
 				280AD05C0B7502930008F3F3 /* Query_jabber_iq_roster.h in Headers */,
 				280AD05E0B7502930008F3F3 /* Roster.h in Headers */,
 				280AD0600B7502930008F3F3 /* RosterGroup.h in Headers */,
@@ -776,7 +757,6 @@
 				28CCCE140C832BD00025B407 /* GroupChat.h in Headers */,
 				28CCCE160C832BD00025B407 /* Iq.h in Headers */,
 				28CCCE180C832BD00025B407 /* IqStanzaFactory.h in Headers */,
-				28CCCE1A0C832BD00025B407 /* jabber_iq_roster.h in Headers */,
 				28CCCE1C0C832BD00025B407 /* JabberIdentity.h in Headers */,
 				28CCCE1E0C832BD00025B407 /* JabberPerson.h in Headers */,
 				28CCCE200C832BD00025B407 /* JabberResource.h in Headers */,
@@ -785,10 +765,9 @@
 				28CCCE260C832BD00025B407 /* Message.h in Headers */,
 				28CCCE280C832BD00025B407 /* MessageStanzaFactory.h in Headers */,
 				28CCCE2A0C832BD00025B407 /* NSAttributedString+HTML-IM.h in Headers */,
-				28CCCE2C0C832BD00025B407 /* NSData+Base64.h in Headers */,
 				28CCCE2E0C832BD00025B407 /* presence.h in Headers */,
 				28CCCE300C832BD00025B407 /* PresenceStanzaFactory.h in Headers */,
-				28CCCE320C832BD00025B407 /* query_jabber_iq_auth.h in Headers */,
+				28CCCE320C832BD00025B407 /* Query_jabber_iq_roster.h in Headers */,
 				28CCCE340C832BD00025B407 /* Query_jabber_iq_roster.h in Headers */,
 				28CCCE360C832BD00025B407 /* Roster.h in Headers */,
 				28CCCE380C832BD00025B407 /* RosterGroup.h in Headers */,
@@ -811,7 +790,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28F8E98B0632E612004623A5 /* XMPPConnection.h in Headers */,
-				281C98710638396200732148 /* query_jabber_iq_auth.h in Headers */,
+				281C98710638396200732148 /* Query_jabber_iq_roster.h in Headers */,
 				2891BCB2063BBCA700A7F522 /* JID.h in Headers */,
 				2835827F063C1605008F21EA /* presence.h in Headers */,
 				283584B6063C4516008F21EA /* Roster.h in Headers */,
@@ -840,7 +819,6 @@
 				28A32C2E082E3E3B0012AD55 /* Capabilities.h in Headers */,
 				2842CF04089FCFD900F2D0AA /* JabberResource.h in Headers */,
 				2842CF22089FD23F00F2D0AA /* JabberRootIdentity.h in Headers */,
-				2842CF68089FD32100F2D0AA /* Macros.h in Headers */,
 				28135C9908ACE3780032967E /* XMLLog.h in Headers */,
 				280A55C80A24CCA80056829B /* StanzaFactory.h in Headers */,
 				280A55D20A24CD600056829B /* MessageStanzaFactory.h in Headers */,
@@ -848,7 +826,6 @@
 				280A56DE0A25C4750056829B /* PresenceStanzaFactory.h in Headers */,
 				280A582B0A2C91320056829B /* Iq.h in Headers */,
 				280A5D810A3491100056829B /* StreamFeatures.h in Headers */,
-				28DD66890B05725D00035263 /* NSData+Base64.h in Headers */,
 				28DD6AAE0B07BCD700035263 /* Query_jabber_iq_roster.h in Headers */,
 				285A5CC90B3571C600F5A7AB /* CompareHack.h in Headers */,
 				3BC84C2C0BE37830002833ED /* AccountWindowController.h in Headers */,
@@ -860,24 +837,6 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		280ACF700B75013B0008F3F3 /* EtoileXML */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 280ACF730B75013C0008F3F3 /* Build configuration list for PBXNativeTarget "EtoileXML" */;
-			buildPhases = (
-				280ACF6C0B75013B0008F3F3 /* Headers */,
-				280ACF6D0B75013B0008F3F3 /* Resources */,
-				280ACF6E0B75013B0008F3F3 /* Sources */,
-				280ACF6F0B75013B0008F3F3 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = EtoileXML;
-			productName = XML;
-			productReference = 280ACF710B75013B0008F3F3 /* EtoileXML.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		280AD0280B75025F0008F3F3 /* XMPPKit */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 280AD02C0B75027D0008F3F3 /* Build configuration list for PBXNativeTarget "XMPPKit" */;
@@ -890,7 +849,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				280AD1400B7506C20008F3F3 /* PBXTargetDependency */,
+				600FA8351057BE5A00989744 /* PBXTargetDependency */,
+				600FA8371057BE5A00989744 /* PBXTargetDependency */,
 			);
 			name = XMPPKit;
 			productName = XMPP;
@@ -909,7 +869,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				281EF1AD0C83972D00D07C7C /* PBXTargetDependency */,
 			);
 			name = XHTMLTest;
 			productName = XHTMLTest;
@@ -930,7 +889,6 @@
 			);
 			dependencies = (
 				280AD0710B75029C0008F3F3 /* PBXTargetDependency */,
-				2839E2EA0B76504300145C44 /* PBXTargetDependency */,
 			);
 			name = StepChat;
 			productInstallPath = "$(HOME)/Applications";
@@ -948,24 +906,109 @@
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Jabber */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 600FA80E1057BE4400989744 /* Products */;
+					ProjectRef = 600FA80D1057BE4400989744 /* Container.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* StepChat */,
-				280ACF700B75013B0008F3F3 /* EtoileXML */,
 				280AD0280B75025F0008F3F3 /* XMPPKit */,
 				283D7C200C838A8200986BBA /* XHTMLTest */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		280ACF6D0B75013B0008F3F3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
+/* Begin PBXReferenceProxy section */
+		600FA81D1057BE4400989744 /* EtoileXML.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileXML.framework;
+			remoteRef = 600FA81C1057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		600FA81F1057BE4400989744 /* EtoileFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileFoundation.framework;
+			remoteRef = 600FA81E1057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		600FA8211057BE4400989744 /* TestEtoileFoundation.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileFoundation.bundle;
+			remoteRef = 600FA8201057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		600FA8231057BE4400989744 /* EtoileUI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileUI.framework;
+			remoteRef = 600FA8221057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		600FA8251057BE4400989744 /* TestEtoileUI.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileUI.bundle;
+			remoteRef = 600FA8241057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		600FA8271057BE4400989744 /* EtoileWeb.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileWeb.framework;
+			remoteRef = 600FA8261057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		600FA8291057BE4400989744 /* Collage.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Collage.app;
+			remoteRef = 600FA8281057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		600FA82B1057BE4400989744 /* MarkupEditor.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = MarkupEditor.app;
+			remoteRef = 600FA82A1057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		600FA82D1057BE4400989744 /* ObjectManagerExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = ObjectManagerExample.app;
+			remoteRef = 600FA82C1057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		600FA82F1057BE4400989744 /* PaneContainerExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = PaneContainerExample.app;
+			remoteRef = 600FA82E1057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		600FA8311057BE4400989744 /* PhotoViewExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = PhotoViewExample.app;
+			remoteRef = 600FA8301057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		600FA8331057BE4400989744 /* TableViewExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TableViewExample.app;
+			remoteRef = 600FA8321057BE4400989744 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
 		280AD0250B75025F0008F3F3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -998,20 +1041,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		280ACF6E0B75013B0008F3F3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				28FF62360C8DFE450050744A /* ETXMLDeclaration.m in Sources */,
-				28FF62380C8DFE450050744A /* ETXMLNode.m in Sources */,
-				28FF623A0C8DFE450050744A /* ETXMLNullHandler.m in Sources */,
-				28FF623C0C8DFE450050744A /* ETXMLParser.m in Sources */,
-				28FF623F0C8DFE450050744A /* ETXMLString.m in Sources */,
-				28FF62410C8DFE450050744A /* ETXMLXHTML-IMParser.m in Sources */,
-				28FF625D0C8DFEBB0050744A /* NSAttributedString+HTML.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		283D78C40C83357A00986BBA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1024,7 +1053,6 @@
 				283D78D40C8335C200986BBA /* GroupChat.m in Sources */,
 				283D78D50C8335C200986BBA /* Iq.m in Sources */,
 				283D78D60C8335C200986BBA /* IqStanzaFactory.m in Sources */,
-				283D78D70C8335C200986BBA /* jabber_iq_roster.m in Sources */,
 				283D78D80C8335C200986BBA /* JabberIdentity.m in Sources */,
 				283D78D90C8335C200986BBA /* JabberPerson.m in Sources */,
 				283D78DA0C8335C200986BBA /* JabberResource.m in Sources */,
@@ -1033,10 +1061,8 @@
 				283D78DD0C8335C200986BBA /* Message.m in Sources */,
 				283D78DE0C8335C200986BBA /* MessageStanzaFactory.m in Sources */,
 				283D78DF0C8335C200986BBA /* NSAttributedString+HTML-IM.m in Sources */,
-				283D78E00C8335C200986BBA /* NSData+Base64.m in Sources */,
 				283D78E10C8335C200986BBA /* presence.m in Sources */,
 				283D78E20C8335C200986BBA /* PresenceStanzaFactory.m in Sources */,
-				283D78E30C8335C200986BBA /* query_jabber_iq_auth.m in Sources */,
 				283D78E40C8335C200986BBA /* Query_jabber_iq_roster.m in Sources */,
 				283D78E50C8335C200986BBA /* Roster.m in Sources */,
 				283D78E60C8335C200986BBA /* RosterGroup.m in Sources */,
@@ -1083,7 +1109,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				283D7CAF0C838F5C00986BBA /* main.m in Sources */,
-				28FF624A0C8DFE650050744A /* TRXHTMLTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1095,20 +1120,15 @@
 			target = 280AD0280B75025F0008F3F3 /* XMPPKit */;
 			targetProxy = 280AD0700B75029C0008F3F3 /* PBXContainerItemProxy */;
 		};
-		280AD1400B7506C20008F3F3 /* PBXTargetDependency */ = {
+		600FA8351057BE5A00989744 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 280ACF700B75013B0008F3F3 /* EtoileXML */;
-			targetProxy = 280AD13F0B7506C20008F3F3 /* PBXContainerItemProxy */;
+			name = EtoileXML;
+			targetProxy = 600FA8341057BE5A00989744 /* PBXContainerItemProxy */;
 		};
-		281EF1AD0C83972D00D07C7C /* PBXTargetDependency */ = {
+		600FA8371057BE5A00989744 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 280ACF700B75013B0008F3F3 /* EtoileXML */;
-			targetProxy = 281EF1AC0C83972D00D07C7C /* PBXContainerItemProxy */;
-		};
-		2839E2EA0B76504300145C44 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 280ACF700B75013B0008F3F3 /* EtoileXML */;
-			targetProxy = 2839E2E90B76504300145C44 /* PBXContainerItemProxy */;
+			name = EtoileFoundation;
+			targetProxy = 600FA8361057BE5A00989744 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1172,66 +1192,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		280ACF740B75013C0008F3F3 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				INFOPLIST_FILE = "XML-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				LINK_WITH_STANDARD_LIBRARIES = YES;
-				PRODUCT_NAME = EtoileXML;
-				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation/EtoileXML;
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		280ACF750B75013C0008F3F3 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				INFOPLIST_FILE = "XML-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				LINK_WITH_STANDARD_LIBRARIES = YES;
-				PRODUCT_NAME = EtoileXML;
-				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation/EtoileXML;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		280ACF760B75013C0008F3F3 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				INFOPLIST_FILE = "XML-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				LINK_WITH_STANDARD_LIBRARIES = YES;
-				PRODUCT_NAME = EtoileXML;
-				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation/EtoileXML;
-				ZERO_LINK = YES;
-			};
-			name = Default;
-		};
-		280AD02D0B75027D0008F3F3 /* Development */ = {
+		280AD02D0B75027D0008F3F3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -1262,9 +1223,9 @@
 				USER_HEADER_SEARCH_PATHS = "";
 				ZERO_LINK = YES;
 			};
-			name = Development;
+			name = Debug;
 		};
-		280AD02E0B75027D0008F3F3 /* Deployment */ = {
+		280AD02E0B75027D0008F3F3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
@@ -1293,7 +1254,7 @@
 				USER_HEADER_SEARCH_PATHS = "";
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = Release;
 		};
 		280AD02F0B75027D0008F3F3 /* Default */ = {
 			isa = XCBuildConfiguration;
@@ -1324,7 +1285,7 @@
 			};
 			name = Default;
 		};
-		283D7C250C838A8200986BBA /* Development */ = {
+		283D7C250C838A8200986BBA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -1348,9 +1309,9 @@
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
-			name = Development;
+			name = Debug;
 		};
-		283D7C260C838A8200986BBA /* Deployment */ = {
+		283D7C260C838A8200986BBA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
@@ -1372,7 +1333,7 @@
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = Release;
 		};
 		283D7C270C838A8200986BBA /* Default */ = {
 			isa = XCBuildConfiguration;
@@ -1396,7 +1357,7 @@
 			};
 			name = Default;
 		};
-		28F8E8DE0867708100948872 /* Development */ = {
+		28F8E8DE0867708100948872 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -1422,7 +1383,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
 				GCC_SHORT_ENUMS = YES;
 				GCC_STRICT_ALIASING = NO;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
@@ -1460,9 +1421,9 @@
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
-			name = Development;
+			name = Debug;
 		};
-		28F8E8DF0867708100948872 /* Deployment */ = {
+		28F8E8DF0867708100948872 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
@@ -1503,7 +1464,7 @@
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = Release;
 		};
 		28F8E8E00867708100948872 /* Default */ = {
 			isa = XCBuildConfiguration;
@@ -1546,16 +1507,17 @@
 			};
 			name = Default;
 		};
-		28F8E8E20867708100948872 /* Development */ = {
+		28F8E8E20867708100948872 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH)";
+				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				OTHER_LDFLAGS = "";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 			};
-			name = Development;
+			name = Debug;
 		};
-		28F8E8E30867708100948872 /* Deployment */ = {
+		28F8E8E30867708100948872 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -1564,7 +1526,7 @@
 				);
 				OTHER_LDFLAGS = "";
 			};
-			name = Deployment;
+			name = Release;
 		};
 		28F8E8E40867708100948872 /* Default */ = {
 			isa = XCBuildConfiguration;
@@ -1580,21 +1542,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		280ACF730B75013C0008F3F3 /* Build configuration list for PBXNativeTarget "EtoileXML" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				280ACF740B75013C0008F3F3 /* Development */,
-				280ACF750B75013C0008F3F3 /* Deployment */,
-				280ACF760B75013C0008F3F3 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
 		280AD02C0B75027D0008F3F3 /* Build configuration list for PBXNativeTarget "XMPPKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				280AD02D0B75027D0008F3F3 /* Development */,
-				280AD02E0B75027D0008F3F3 /* Deployment */,
+				280AD02D0B75027D0008F3F3 /* Debug */,
+				280AD02E0B75027D0008F3F3 /* Release */,
 				280AD02F0B75027D0008F3F3 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1603,8 +1555,8 @@
 		283D7C240C838A8200986BBA /* Build configuration list for PBXNativeTarget "XHTMLTest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				283D7C250C838A8200986BBA /* Development */,
-				283D7C260C838A8200986BBA /* Deployment */,
+				283D7C250C838A8200986BBA /* Debug */,
+				283D7C260C838A8200986BBA /* Release */,
 				283D7C270C838A8200986BBA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1613,8 +1565,8 @@
 		28F8E8DD0867708100948872 /* Build configuration list for PBXNativeTarget "StepChat" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				28F8E8DE0867708100948872 /* Development */,
-				28F8E8DF0867708100948872 /* Deployment */,
+				28F8E8DE0867708100948872 /* Debug */,
+				28F8E8DF0867708100948872 /* Release */,
 				28F8E8E00867708100948872 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1623,8 +1575,8 @@
 		28F8E8E10867708100948872 /* Build configuration list for PBXProject "Jabber" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				28F8E8E20867708100948872 /* Development */,
-				28F8E8E30867708100948872 /* Deployment */,
+				28F8E8E20867708100948872 /* Debug */,
+				28F8E8E30867708100948872 /* Release */,
 				28F8E8E40867708100948872 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;

@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <EtoileXML/ETXMLNode.h>
 #import "Stanza.h"
 #import "JID.h"
 
