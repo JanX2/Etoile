@@ -61,7 +61,7 @@
 	}
 
 	/* Draw Icon */
-	NSPoint p;
+	NSPoint p = NSZeroPoint;
 	if (icon)
 	{
 		p.x = NSMinX(cellFrame)+PAD;

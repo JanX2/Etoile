@@ -1072,7 +1072,7 @@ NSLog(@"XWindow app did terminate %@", not);
 
 	/* Remember the application on dock */
 	NSMutableArray *array = [[NSMutableArray alloc] init];
-	NSDictionary *dict;
+	NSDictionary *dict = nil;
 	int i, count = [apps count];
 	AZDockApp *app;
 
