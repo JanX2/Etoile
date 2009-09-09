@@ -283,9 +283,9 @@
 - (void) drawIconAtX: (int) px y: (int) py width: (int) pw height: (int) ph
 {
     int _x, _y;
-    unsigned int rown, n;
-    unsigned int horz_inc;
-    unsigned int vert_inc;
+    unsigned int rown, n = 0;
+    unsigned int horz_inc = 0;
+    unsigned int vert_inc = 0;
     unsigned int r, c;
     int eachw, eachh;
     AZScreen *screen = [AZScreen defaultScreen];

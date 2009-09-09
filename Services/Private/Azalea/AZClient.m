@@ -1407,7 +1407,7 @@
     unsigned int num;
     unsigned long *data;
     BOOL got = NO;
-    StrutPartial _strut;
+    StrutPartial _strut = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
 
     if (PROP_GETA32(window, net_wm_strut_partial, cardinal,
                     &data, &num)) {
@@ -1439,11 +1439,7 @@
                               a->x, a->x + a->width - 1);
         }
         free(data);
-    }
-
-    if (!got)
-        STRUT_PARTIAL_SET(_strut, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0);
+    }   
 
     if (!STRUT_EQUAL(_strut, strut)) {
         strut = _strut;

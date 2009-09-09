@@ -426,7 +426,7 @@ static BOOL place_transient(AZClient *client, int *x, int *y)
             return YES;
         } else {
             BOOL first = YES;
-            int l, r, t, b;
+            int l = 0, r = 0, t = 0, b = 0;
             int i, count = [[[client group] members] count];
 	    for (i = 0; i < count; i++) {
 	      AZClient *m = [[client group] memberAtIndex: i];

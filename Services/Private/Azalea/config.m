@@ -303,7 +303,7 @@ static void bind_default_mouse()
     };
 
     for (it = binds; it->button; ++it) {
-        ObUserAction uact;
+        ObUserAction uact = OB_USER_ACTION_NONE;
         switch (it->mact) {
         case OB_MOUSE_ACTION_PRESS:
             uact = OB_USER_ACTION_MOUSE_PRESS; break;

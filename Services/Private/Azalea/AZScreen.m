@@ -826,7 +826,7 @@ done_cycle:
 
     for (i = 0; i < screen_num_desktops + 1; ++i) {
         Strut *struts;
-        int l, r, t, b;
+        int l = 0, r = 0, t = 0, b = 0;
 
         struts = calloc(sizeof(Strut), screen_num_monitors);
 

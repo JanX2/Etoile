@@ -93,7 +93,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
 - (void) startWithClient: (AZClient *) c x: (int) x y: (int) y
                 button: (unsigned int) b corner: (unsigned int) cnr
 {
-	ObCursor cur;
+	ObCursor cur = OB_CURSOR_NONE;
 
 	moving = (cnr == prop_atoms.net_wm_moveresize_move ||
 	          cnr == prop_atoms.net_wm_moveresize_move_keyboard);
