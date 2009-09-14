@@ -199,6 +199,13 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
   
   if ([parser parse] == NO)
     {
+      rssVersion = @"Malformed RSS?";
+      status = RSSFeedIsIdle;
+      [[NSNotificationCenter defaultCenter]
+          postNotificationName: RSSFeedFetchFailedNotification
+                        object: self
+          userInfo: [NSDictionary dictionaryWithObject: @"Malformed RSS"
+                                                forKey: @"Reason"]];
       return [self setError: RSSFeedErrorMalformedRSS];
     }
   
