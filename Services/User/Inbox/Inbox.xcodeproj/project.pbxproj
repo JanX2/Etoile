@@ -1,0 +1,632 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		66A30DF3105CD9910000845A /* RSSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A30DEA105CD9470000845A /* RSSKit.framework */; };
+		66A30DF4105CD9980000845A /* Pantomime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A30CF4105CD3EE0000845A /* Pantomime.framework */; };
+		66A30DF7105CD9A50000845A /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A30D07105CD4160000845A /* EtoileFoundation.framework */; };
+		66A30DF8105CD9A80000845A /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A30D0B105CD4160000845A /* EtoileUI.framework */; };
+		66A30EDA105D9B8C0000845A /* InboxController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A30ED9105D9B8C0000845A /* InboxController.m */; };
+		66A30F0F105D9F040000845A /* ETMailAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A30F0E105D9F040000845A /* ETMailAccount.m */; };
+		66A30F4D105DAD710000845A /* ETMailFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A30F4C105DAD710000845A /* ETMailFolder.m */; };
+		66A30F50105DAD7A0000845A /* ETMailMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A30F4F105DAD7A0000845A /* ETMailMessage.m */; };
+		66A30F59105DAEF00000845A /* ETNewsFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A30F58105DAEF00000845A /* ETNewsFeed.m */; };
+		66A30F5E105DB2D70000845A /* ETChatMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A30F5D105DB2D70000845A /* ETChatMessage.m */; };
+		66A30F61105DB2F30000845A /* ETMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A30F60105DB2F30000845A /* ETMessage.m */; };
+		66A30F66105DB3A90000845A /* ETNewsArticle.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A30F65105DB3A90000845A /* ETNewsArticle.m */; };
+		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		66A30CF3105CD3EE0000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CEC105CD3EE0000845A /* Pantomime.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D92C8C470A5C66A40015DF49;
+			remoteInfo = Pantomime;
+		};
+		66A30D04105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073EAD10074D26007272E6;
+			remoteInfo = EtoileXML;
+		};
+		66A30D06105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 603647AC0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
+		66A30D08105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
+			remoteInfo = TestEtoileFoundation;
+		};
+		66A30D0A105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60EF8E9D0C5E4D0600C97C41;
+			remoteInfo = EtoileUI;
+		};
+		66A30D0C105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 600243B90CD133420023182D;
+			remoteInfo = TestEtoileUI;
+		};
+		66A30D0E105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073C2910074B39007272E6;
+			remoteInfo = EtoileWeb;
+		};
+		66A30D10105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60EEB9020F09457C00EBB632;
+			remoteInfo = Collage;
+		};
+		66A30D12105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60CF742A0D449A8A00B4CA3D;
+			remoteInfo = MarkupEditor;
+		};
+		66A30D14105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 605F0CCA0C0F400D003AE3E6;
+			remoteInfo = ObjectManagerExample;
+		};
+		66A30D16105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60539D940C240A7B006C57EC;
+			remoteInfo = PaneContainerExample;
+		};
+		66A30D18105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 606B98C90C0AF831000AAA85;
+			remoteInfo = PhotoViewExample;
+		};
+		66A30D1A105CD4160000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60909CC90CB2DA42009CAD27;
+			remoteInfo = TableViewExample;
+		};
+		66A30DE9105CD9470000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30DE2105CD9460000845A /* RSSKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = RSSKit;
+		};
+		66A30DEB105CD9760000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30DE2105CD9460000845A /* RSSKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = RSSKit;
+		};
+		66A30DED105CD9790000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
+		66A30DEF105CD97B0000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41;
+			remoteInfo = EtoileUI;
+		};
+		66A30DF1105CD97E0000845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66A30CEC105CD3EE0000845A /* Pantomime.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D92C8BA50A5C66A40015DF49;
+			remoteInfo = Pantomime;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		256AC3F00F4B6AF500CF3369 /* Inbox_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Inbox_Prefix.pch; sourceTree = "<group>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		66A30CEC105CD3EE0000845A /* Pantomime.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pantomime.xcodeproj; path = Pantomime/Pantomime.xcodeproj; sourceTree = "<group>"; };
+		66A30CF5105CD4160000845A /* Container.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Container.xcodeproj; path = ../../../Frameworks/EtoileUI/Container.xcodeproj; sourceTree = SOURCE_ROOT; };
+		66A30DE2105CD9460000845A /* RSSKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RSSKit.xcodeproj; path = ../../../Frameworks/RSSKit/RSSKit.xcodeproj; sourceTree = SOURCE_ROOT; };
+		66A30ED8105D9B8C0000845A /* InboxController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InboxController.h; sourceTree = "<group>"; };
+		66A30ED9105D9B8C0000845A /* InboxController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InboxController.m; sourceTree = "<group>"; };
+		66A30F0D105D9F040000845A /* ETMailAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETMailAccount.h; sourceTree = "<group>"; };
+		66A30F0E105D9F040000845A /* ETMailAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETMailAccount.m; sourceTree = "<group>"; };
+		66A30F4B105DAD710000845A /* ETMailFolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETMailFolder.h; sourceTree = "<group>"; };
+		66A30F4C105DAD710000845A /* ETMailFolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETMailFolder.m; sourceTree = "<group>"; };
+		66A30F4E105DAD7A0000845A /* ETMailMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETMailMessage.h; sourceTree = "<group>"; };
+		66A30F4F105DAD7A0000845A /* ETMailMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETMailMessage.m; sourceTree = "<group>"; };
+		66A30F57105DAEF00000845A /* ETNewsFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETNewsFeed.h; sourceTree = "<group>"; };
+		66A30F58105DAEF00000845A /* ETNewsFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETNewsFeed.m; sourceTree = "<group>"; };
+		66A30F5C105DB2D70000845A /* ETChatMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETChatMessage.h; sourceTree = "<group>"; };
+		66A30F5D105DB2D70000845A /* ETChatMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETChatMessage.m; sourceTree = "<group>"; };
+		66A30F5F105DB2F30000845A /* ETMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETMessage.h; sourceTree = "<group>"; };
+		66A30F60105DB2F30000845A /* ETMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETMessage.m; sourceTree = "<group>"; };
+		66A30F64105DB3A90000845A /* ETNewsArticle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETNewsArticle.h; sourceTree = "<group>"; };
+		66A30F65105DB3A90000845A /* ETNewsArticle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETNewsArticle.m; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Inbox-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Inbox-Info.plist"; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* Inbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Inbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66A30DF7105CD9A50000845A /* EtoileFoundation.framework in Frameworks */,
+				66A30DF8105CD9A80000845A /* EtoileUI.framework in Frameworks */,
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				66A30DF4105CD9980000845A /* Pantomime.framework in Frameworks */,
+				66A30DF3105CD9910000845A /* RSSKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				66A30ED8105D9B8C0000845A /* InboxController.h */,
+				66A30ED9105D9B8C0000845A /* InboxController.m */,
+				66A30F0D105D9F040000845A /* ETMailAccount.h */,
+				66A30F0E105D9F040000845A /* ETMailAccount.m */,
+				66A30F4B105DAD710000845A /* ETMailFolder.h */,
+				66A30F4C105DAD710000845A /* ETMailFolder.m */,
+				66A30F4E105DAD7A0000845A /* ETMailMessage.h */,
+				66A30F4F105DAD7A0000845A /* ETMailMessage.m */,
+				66A30F64105DB3A90000845A /* ETNewsArticle.h */,
+				66A30F65105DB3A90000845A /* ETNewsArticle.m */,
+				66A30F57105DAEF00000845A /* ETNewsFeed.h */,
+				66A30F58105DAEF00000845A /* ETNewsFeed.m */,
+				66A30F5C105DB2D70000845A /* ETChatMessage.h */,
+				66A30F5D105DB2D70000845A /* ETChatMessage.m */,
+				66A30F5F105DB2F30000845A /* ETMessage.h */,
+				66A30F60105DB2F30000845A /* ETMessage.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* Inbox.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* Inbox */ = {
+			isa = PBXGroup;
+			children = (
+				66A30CF5105CD4160000845A /* Container.xcodeproj */,
+				66A30CEC105CD3EE0000845A /* Pantomime.xcodeproj */,
+				66A30DE2105CD9460000845A /* RSSKit.xcodeproj */,
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = Inbox;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				256AC3F00F4B6AF500CF3369 /* Inbox_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107310486CEB800E47090 /* Inbox-Info.plist */,
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		66A30CED105CD3EE0000845A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				66A30CF4105CD3EE0000845A /* Pantomime.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		66A30CF6105CD4160000845A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				66A30D05105CD4160000845A /* EtoileXML.framework */,
+				66A30D07105CD4160000845A /* EtoileFoundation.framework */,
+				66A30D09105CD4160000845A /* TestEtoileFoundation.bundle */,
+				66A30D0B105CD4160000845A /* EtoileUI.framework */,
+				66A30D0D105CD4160000845A /* TestEtoileUI.bundle */,
+				66A30D0F105CD4160000845A /* EtoileWeb.framework */,
+				66A30D11105CD4160000845A /* Collage.app */,
+				66A30D13105CD4160000845A /* MarkupEditor.app */,
+				66A30D15105CD4160000845A /* ObjectManagerExample.app */,
+				66A30D17105CD4160000845A /* PaneContainerExample.app */,
+				66A30D19105CD4160000845A /* PhotoViewExample.app */,
+				66A30D1B105CD4160000845A /* TableViewExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		66A30DE3105CD9460000845A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				66A30DEA105CD9470000845A /* RSSKit.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* Inbox */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Inbox" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				66A30DEC105CD9760000845A /* PBXTargetDependency */,
+				66A30DEE105CD9790000845A /* PBXTargetDependency */,
+				66A30DF0105CD97B0000845A /* PBXTargetDependency */,
+				66A30DF2105CD97E0000845A /* PBXTargetDependency */,
+			);
+			name = Inbox;
+			productInstallPath = "$(HOME)/Applications";
+			productName = Inbox;
+			productReference = 8D1107320486CEB800E47090 /* Inbox.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Inbox" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Inbox */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 66A30CF6105CD4160000845A /* Products */;
+					ProjectRef = 66A30CF5105CD4160000845A /* Container.xcodeproj */;
+				},
+				{
+					ProductGroup = 66A30CED105CD3EE0000845A /* Products */;
+					ProjectRef = 66A30CEC105CD3EE0000845A /* Pantomime.xcodeproj */;
+				},
+				{
+					ProductGroup = 66A30DE3105CD9460000845A /* Products */;
+					ProjectRef = 66A30DE2105CD9460000845A /* RSSKit.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				8D1107260486CEB800E47090 /* Inbox */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		66A30CF4105CD3EE0000845A /* Pantomime.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Pantomime.framework;
+			remoteRef = 66A30CF3105CD3EE0000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D05105CD4160000845A /* EtoileXML.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileXML.framework;
+			remoteRef = 66A30D04105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D07105CD4160000845A /* EtoileFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileFoundation.framework;
+			remoteRef = 66A30D06105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D09105CD4160000845A /* TestEtoileFoundation.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileFoundation.bundle;
+			remoteRef = 66A30D08105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D0B105CD4160000845A /* EtoileUI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileUI.framework;
+			remoteRef = 66A30D0A105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D0D105CD4160000845A /* TestEtoileUI.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileUI.bundle;
+			remoteRef = 66A30D0C105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D0F105CD4160000845A /* EtoileWeb.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileWeb.framework;
+			remoteRef = 66A30D0E105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D11105CD4160000845A /* Collage.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Collage.app;
+			remoteRef = 66A30D10105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D13105CD4160000845A /* MarkupEditor.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = MarkupEditor.app;
+			remoteRef = 66A30D12105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D15105CD4160000845A /* ObjectManagerExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = ObjectManagerExample.app;
+			remoteRef = 66A30D14105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D17105CD4160000845A /* PaneContainerExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = PaneContainerExample.app;
+			remoteRef = 66A30D16105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D19105CD4160000845A /* PhotoViewExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = PhotoViewExample.app;
+			remoteRef = 66A30D18105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30D1B105CD4160000845A /* TableViewExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TableViewExample.app;
+			remoteRef = 66A30D1A105CD4160000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66A30DEA105CD9470000845A /* RSSKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = RSSKit.framework;
+			remoteRef = 66A30DE9105CD9470000845A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				66A30EDA105D9B8C0000845A /* InboxController.m in Sources */,
+				66A30F0F105D9F040000845A /* ETMailAccount.m in Sources */,
+				66A30F4D105DAD710000845A /* ETMailFolder.m in Sources */,
+				66A30F50105DAD7A0000845A /* ETMailMessage.m in Sources */,
+				66A30F59105DAEF00000845A /* ETNewsFeed.m in Sources */,
+				66A30F5E105DB2D70000845A /* ETChatMessage.m in Sources */,
+				66A30F61105DB2F30000845A /* ETMessage.m in Sources */,
+				66A30F66105DB3A90000845A /* ETNewsArticle.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		66A30DEC105CD9760000845A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = RSSKit;
+			targetProxy = 66A30DEB105CD9760000845A /* PBXContainerItemProxy */;
+		};
+		66A30DEE105CD9790000845A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileFoundation;
+			targetProxy = 66A30DED105CD9790000845A /* PBXContainerItemProxy */;
+		};
+		66A30DF0105CD97B0000845A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileUI;
+			targetProxy = 66A30DEF105CD97B0000845A /* PBXContainerItemProxy */;
+		};
+		66A30DF2105CD97E0000845A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Pantomime;
+			targetProxy = 66A30DF1105CD97E0000845A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C165DFE840E0CC02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C01FCF4B08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Inbox_Prefix.pch;
+				INFOPLIST_FILE = "Inbox-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = Inbox;
+			};
+			name = Debug;
+		};
+		C01FCF4C08A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Inbox_Prefix.pch;
+				INFOPLIST_FILE = "Inbox-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = Inbox;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Inbox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Debug */,
+				C01FCF4C08A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Inbox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

@@ -1,0 +1,4 @@
+  branch "com.collaboration-world.pantomime"
+database "/var/db/monotone/server.mtn"
+     key ""
+  keydir "/etc/monotone/private-keys"

@@ -1,0 +1,10 @@
+Inbox
+=======
+
+I've wanted to help start the unified messaging sysem for quite a while,
+but never produced any code.
+
+So, today I wrote ths simple EtoileUI app, with some model objects that
+wrap Pantomime and RSSKit. It seemed like a good first step to ignore
+persistency and threading/process seperation for now, and just get something
+basic working (but with a nice API - see how simple InboxController.m is :) 

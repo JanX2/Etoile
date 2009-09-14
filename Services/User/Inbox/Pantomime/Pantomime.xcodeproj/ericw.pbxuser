@@ -1,0 +1,357 @@
+// !$*UTF8*$!
+{
+	0867D690FE84028FC02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = debug;
+		activeTarget = D92C8BA50A5C66A40015DF49 /* Pantomime */;
+		breakpoints = (
+		);
+		codeSenseManager = 66A3104D105DE54D0000845A /* Code sense */;
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					510,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					301,
+					60,
+					20,
+					48.16259765625,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 274588935;
+			PBXWorkspaceStateSaveDate = 274588935;
+		};
+		perUserProjectItems = {
+			66A31129105DFA120000845A /* PBXTextBookmark */ = 66A31129105DFA120000845A /* PBXTextBookmark */;
+			66A3112B105DFA120000845A /* PBXTextBookmark */ = 66A3112B105DFA120000845A /* PBXTextBookmark */;
+			66A3112C105DFA120000845A /* PBXTextBookmark */ = 66A3112C105DFA120000845A /* PBXTextBookmark */;
+			66A3112D105DFA120000845A /* PBXTextBookmark */ = 66A3112D105DFA120000845A /* PBXTextBookmark */;
+			66A3112E105DFA120000845A /* PBXTextBookmark */ = 66A3112E105DFA120000845A /* PBXTextBookmark */;
+			66A3112F105DFA120000845A /* PBXTextBookmark */ = 66A3112F105DFA120000845A /* PBXTextBookmark */;
+			66A31130105DFA120000845A /* PBXTextBookmark */ = 66A31130105DFA120000845A /* PBXTextBookmark */;
+			66A31131105DFA120000845A /* PBXTextBookmark */ = 66A31131105DFA120000845A /* PBXTextBookmark */;
+			66A31132105DFA120000845A /* PBXTextBookmark */ = 66A31132105DFA120000845A /* PBXTextBookmark */;
+			66A31133105DFA120000845A /* PBXTextBookmark */ = 66A31133105DFA120000845A /* PBXTextBookmark */;
+			66A31134105DFA120000845A /* PBXTextBookmark */ = 66A31134105DFA120000845A /* PBXTextBookmark */;
+			66A31135105DFA120000845A /* PBXTextBookmark */ = 66A31135105DFA120000845A /* PBXTextBookmark */;
+			66A31136105DFA120000845A /* PBXTextBookmark */ = 66A31136105DFA120000845A /* PBXTextBookmark */;
+			66A3113A105DFA270000845A /* PBXTextBookmark */ = 66A3113A105DFA270000845A /* PBXTextBookmark */;
+			66A31142105DFAF50000845A /* PBXTextBookmark */ = 66A31142105DFAF50000845A /* PBXTextBookmark */;
+			66A31179105E014A0000845A /* PBXTextBookmark */ = 66A31179105E014A0000845A /* PBXTextBookmark */;
+			66A3117A105E014A0000845A /* PBXTextBookmark */ = 66A3117A105E014A0000845A /* PBXTextBookmark */;
+		};
+		sourceControlManager = 66A3104C105DE54D0000845A /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	43B6E9FF07592AAD00A80164 /* CWDNSManager.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {688, 1512}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{1592, 927}";
+		};
+	};
+	43B6EA0007592AAD00A80164 /* CWDNSManager.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 9940}}";
+			sepNavSelRange = "{4765, 0}";
+			sepNavVisRange = "{4627, 471}";
+		};
+	};
+	43B6EA0607592AAD00A80164 /* CWFolderInformation.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {688, 952}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1067}";
+		};
+	};
+	43B6EA0A07592AAD00A80164 /* CWIMAPFolder.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {688, 6748}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{780, 822}";
+		};
+	};
+	43B6EA0B07592AAD00A80164 /* CWIMAPMessage.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {688, 1162}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1243}";
+		};
+	};
+	43B6EA0D07592AAD00A80164 /* CWIMAPStore.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {726, 4284}}";
+			sepNavSelRange = "{6323, 0}";
+			sepNavVisRange = "{6246, 1364}";
+		};
+	};
+	43B6EA0E07592AAD00A80164 /* CWIMAPStore.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {984, 44506}}";
+			sepNavSelRange = "{24510, 0}";
+			sepNavVisRange = "{19433, 653}";
+		};
+	};
+	43B6EA0F07592AAD00A80164 /* CWInternetAddress.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {688, 2828}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1259}";
+			sepNavWindowFrame = "{{134, 0}, {633, 668}}";
+		};
+	};
+	43B6EA5907592AAD00A80164 /* CWService.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {688, 8624}}";
+			sepNavSelRange = "{9446, 6}";
+			sepNavVisRange = "{8703, 1086}";
+		};
+	};
+	43B6EA5A07592AAD00A80164 /* CWService.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {688, 13748}}";
+			sepNavSelRange = "{4713, 0}";
+			sepNavVisRange = "{4517, 751}";
+		};
+	};
+	43B6EA5D07592AAD00A80164 /* CWStore.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {688, 3220}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{1211, 907}";
+		};
+	};
+	66A3104C105DE54D0000845A /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	66A3104D105DE54D0000845A /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	66A31129105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 66A3112A105DFA120000845A /* SimplePOP3.m */;
+		name = "SimplePOP3.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 309;
+		vrLoc = 4470;
+	};
+	66A3112A105DFA120000845A /* SimplePOP3.m */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.objc;
+		name = SimplePOP3.m;
+		path = /Users/ericw/dev/etoile/trunk/Etoile/Services/User/Inbox/Pantomime/Examples/SimplePOP3/SimplePOP3.m;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {738, 2800}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{2665, 827}";
+		};
+	};
+	66A3112B105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA5D07592AAD00A80164 /* CWStore.h */;
+		name = "CWStore.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 907;
+		vrLoc = 1211;
+	};
+	66A3112C105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0A07592AAD00A80164 /* CWIMAPFolder.m */;
+		name = "CWIMAPFolder.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 822;
+		vrLoc = 780;
+	};
+	66A3112D105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0B07592AAD00A80164 /* CWIMAPMessage.h */;
+		name = "CWIMAPMessage.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1243;
+		vrLoc = 0;
+	};
+	66A3112E105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0D07592AAD00A80164 /* CWIMAPStore.h */;
+		name = "CWIMAPStore.h: 167";
+		rLen = 0;
+		rLoc = 6323;
+		rType = 0;
+		vrLen = 1364;
+		vrLoc = 6246;
+	};
+	66A3112F105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA5907592AAD00A80164 /* CWService.h */;
+		name = "CWService.h: 275";
+		rLen = 6;
+		rLoc = 9446;
+		rType = 0;
+		vrLen = 1086;
+		vrLoc = 8703;
+	};
+	66A31130105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6E9FF07592AAD00A80164 /* CWDNSManager.h */;
+		name = "CWDNSManager.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 927;
+		vrLoc = 1592;
+	};
+	66A31131105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0007592AAD00A80164 /* CWDNSManager.m */;
+		name = "CWDNSManager.m: 221";
+		rLen = 0;
+		rLoc = 4765;
+		rType = 0;
+		vrLen = 471;
+		vrLoc = 4627;
+	};
+	66A31132105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA5A07592AAD00A80164 /* CWService.m */;
+		name = "CWService.m: 190";
+		rLen = 0;
+		rLoc = 4713;
+		rType = 0;
+		vrLen = 751;
+		vrLoc = 4517;
+	};
+	66A31133105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0607592AAD00A80164 /* CWFolderInformation.m */;
+		name = "CWFolderInformation.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1067;
+		vrLoc = 0;
+	};
+	66A31134105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0F07592AAD00A80164 /* CWInternetAddress.h */;
+		name = "CWInternetAddress.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1259;
+		vrLoc = 0;
+	};
+	66A31135105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0E07592AAD00A80164 /* CWIMAPStore.m */;
+		name = "CWIMAPStore.m: 965";
+		rLen = 0;
+		rLoc = 24469;
+		rType = 0;
+		vrLen = 876;
+		vrLoc = 24110;
+	};
+	66A31136105DFA120000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0E07592AAD00A80164 /* CWIMAPStore.m */;
+		name = "CWIMAPStore.m: 965";
+		rLen = 0;
+		rLoc = 24469;
+		rType = 0;
+		vrLen = 876;
+		vrLoc = 24110;
+	};
+	66A3113A105DFA270000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0E07592AAD00A80164 /* CWIMAPStore.m */;
+		name = "CWIMAPStore.m: 965";
+		rLen = 0;
+		rLoc = 24469;
+		rType = 0;
+		vrLen = 876;
+		vrLoc = 24110;
+	};
+	66A31142105DFAF50000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0E07592AAD00A80164 /* CWIMAPStore.m */;
+		name = "CWIMAPStore.m: 965";
+		rLen = 0;
+		rLoc = 24469;
+		rType = 0;
+		vrLen = 876;
+		vrLoc = 24110;
+	};
+	66A31179105E014A0000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 43B6EA0E07592AAD00A80164 /* CWIMAPStore.m */;
+		name = "CWIMAPStore.m: 966";
+		rLen = 0;
+		rLoc = 24510;
+		rType = 0;
+		vrLen = 653;
+		vrLoc = 19433;
+	};
+	66A3117A105E014A0000845A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 66A3112A105DFA120000845A /* SimplePOP3.m */;
+		name = "SimplePOP3.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 827;
+		vrLoc = 2665;
+	};
+	D92C8BA50A5C66A40015DF49 /* Pantomime */ = {
+		activeExec = 0;
+	};
+}
