@@ -1,0 +1,7 @@
+TODO
+---------
+- Add XMPPKit support
+- Add message sending for XMPPKit and Pantomime
+- Figure out how to set up an ETPaneLayout for a typical mail/newsreader UI
+- Investigate crash from RSSKit on GNUstep
+- Pantomime bug: calling forderForName: repeatedly (once for each folder name in a loop) causes a crash
