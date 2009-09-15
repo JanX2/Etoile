@@ -252,7 +252,7 @@ STORE_METHOD(Float, float, "f", "f")
 	                attributes: D([NSString stringWithCString: aName
 	                                                 encoding: NSASCIIStringEncoding],
 	                               @"name")
-	                     cdata: [NSString stringWithCString: aName
+	                     cdata: [NSString stringWithCString: aCString
                                                    encoding: NSASCIIStringEncoding]];
 }
 - (void) storeData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName
