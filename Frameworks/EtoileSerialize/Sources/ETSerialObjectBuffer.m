@@ -69,7 +69,7 @@
 	[super dealloc];
 }
 // Methods that don't apply to buffers
-- (void) finalize {}
+- (void) commit {}
 - (void) createBranch:(NSString*)newBranch from:(NSString*)oldBranch {}
 - (NSString*) parentOfBranch:(NSString*)aBranch { return nil; }
 @end

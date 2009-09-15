@@ -31,7 +31,7 @@
 /**
  * Guarantees that the data is committed to the backing store.
  */
-- (void) finalize;
+- (void) commit;
 /**
  * Returns the version currently being written, or the last version to be
  * written if the version is finalised.

@@ -28,7 +28,7 @@
 - (void) startVersion:(int)aVersion {}
 - (void) flush 
 {
-	[store finalize];
+	[store commit];
 }
 - (id) deserializer
 {

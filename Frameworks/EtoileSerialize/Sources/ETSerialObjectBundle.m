@@ -80,7 +80,7 @@ static NSFileManager * filemanager;
 	fwrite(bytes, aRange.length, 1, file);
 }
 
-- (void) finalize 
+- (void) commit 
 {
 	if(file != 0)
 	{
@@ -126,7 +126,7 @@ static NSFileManager * filemanager;
 - (void) dealloc
 {
 	[branch release];
-	[self finalize];
+	[self commit];
 	[super dealloc];
 }
 @end

@@ -135,7 +135,7 @@
 		[store writeBytes: (unsigned char*)[graph UTF8String] count: [graph length]];
 		[writer reset];
 	}
-	[store finalize];
+	[store commit];
 }
 
 - (void) beginStruct:(char*)aStructName withName:(char*)aName

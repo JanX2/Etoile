@@ -16,7 +16,7 @@
 	return self;
 }
 
-- (void) finalize 
+- (void) commit
 {
 	[socket sendData: buffer];
 }

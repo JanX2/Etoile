@@ -123,7 +123,7 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 	}
 	NSEndMapTableEnumeration(&enumerator);
 	[(id<ETSeekableObjectStore>)store replaceRange:NSMakeRange(0,4) withBytes:(unsigned char*)&indexOffset];
-	[store finalize];
+	[store commit];
 }
 - (void) beginStruct:(char*)aStructName withName:(char*)aName
 {
