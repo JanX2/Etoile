@@ -68,7 +68,7 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
  * URL client 
  */
 - (void) URL: (NSURL *) sender 
-         resourceDidFailedLoadingWithReason: (NSString *) reason
+         resourceDidFailLoadingWithReason: (NSString *) reason
 {
   /* Make sure it is ours */
   if (sender != feedURL) 
