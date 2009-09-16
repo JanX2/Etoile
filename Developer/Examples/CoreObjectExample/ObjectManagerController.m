@@ -41,7 +41,7 @@
 	[mainContainerItem setHeight: 200];
 	[mainContainerItem setWidth: 775];
 
-	[navigatorItem setLayout: [ETStackLayout layout]];
+	[navigatorItem setLayout: [ETColumnLayout layout]];
 	[(ETComputedLayout *)[navigatorItem layout] setItemMargin: 15];
 	[(ETComputedLayout *)[navigatorItem layout] setItemSizeConstraintStyle: ETSizeConstraintStyleNone];
 	[navigatorItem addItem: mainContainerItem];
