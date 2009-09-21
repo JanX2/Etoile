@@ -14,13 +14,6 @@
 
 @implementation ETWebRendererLayout
 
-- (ETLayout *) initWithLayoutView: (NSView *)view
-{
-	SUPERINIT;
-	
-	return self;
-}
-
 - (void) renderWithLayoutItems: (NSArray *)items isNewContent: (BOOL)isNewContent
 {
 	[self setUpLayoutView];
