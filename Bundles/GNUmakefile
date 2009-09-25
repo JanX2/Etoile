@@ -9,7 +9,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 -include ../modules.make
 
-export camaelon ?= yes
+export camaelon ?= no
 export etoilebehavior ?= yes
 export etoilewildmenus ?= yes
 export powermenulet ?= no
