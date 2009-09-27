@@ -1,6 +1,7 @@
 #include "LCTermScorer.h"
 #include "LCTermQuery.h"
 #include "GNUstep.h"
+#include <limits.h>
 
 static int SCORE_CACHE_SIZE = 32;
 

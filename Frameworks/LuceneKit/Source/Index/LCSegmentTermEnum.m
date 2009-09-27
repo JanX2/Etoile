@@ -1,6 +1,7 @@
 #include "LCSegmentTermEnum.h"
 #include "LCTermInfosWriter.h"
 #include "GNUstep.h"
+#include <limits.h>
 
 @implementation LCSegmentTermEnumerator
 
