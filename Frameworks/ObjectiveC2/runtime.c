@@ -846,3 +846,25 @@ BOOL protocol_isEqual(Protocol *p, Protocol *other)
 	}
 	return NO;
 }
+
+const char *sel_getName(SEL sel)
+{
+	return sel_get_name(sel);
+}
+
+SEL sel_getUid(const char *selName)
+{
+	return sel_get_uid(selName);
+}
+
+BOOL sel_isEqual(SEL sel1, SEL sel2)
+{
+	// FIXME: Is this correct?
+	return (0 == strcmp(sel_get_name(sel1), sel_get_name(sel2)));
+}
+
+SEL sel_registerName(const char *selName)
+{
+	return sel_register_name(selName);
+}
+
