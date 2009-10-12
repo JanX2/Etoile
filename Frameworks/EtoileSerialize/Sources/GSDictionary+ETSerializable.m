@@ -1,7 +1,11 @@
+#include <GNUstepBase/GSUnion.h>
+#define GSI_MAP_KTYPES GSUNION_ALL
+#define GSI_MAP_VTYPES GSUNION_ALL
+#include <GNUstepBase/GSIMap.h>
+
 #import "ETSerializer.h"
 #import "ETSerializerBackend.h"
 #import "ETDeserializer.h"
-#import <GNUstepBase/GSIMap.h>
 @interface GSDictionary : NSDictionary
 {
 	@public

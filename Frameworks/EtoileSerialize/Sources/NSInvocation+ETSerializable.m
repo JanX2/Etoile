@@ -2,6 +2,18 @@
 #import "ETSerializer.h"
 #import "ETSerializerBackend.h"
 
+#ifndef NSArgumentInfo
+typedef struct  {
+  int           offset;
+  unsigned      size;
+  const char    *type;
+  const char    *qtype;
+  unsigned      align;
+  unsigned      qual;
+  BOOL          isReg;
+} NSArgumentInfo;
+#endif 
+
 #define SET_SUFFIX(suf) strcpy(suffix, suf); suffix[strlen(suf)] = '\0' 
 #define STORE_FIELD(type, name) SET_SUFFIX(#name); [aBackend store ## type:sig[i].name withName:saveName];
 /**
