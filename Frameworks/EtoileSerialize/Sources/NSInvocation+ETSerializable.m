@@ -100,8 +100,6 @@ void deserializeArgumentInfo(NSArgumentInfo * sig, char * name, void * aBlob)
 }
 @end
 
-static void * discardRetVal = NULL;
-static int discardRetValSize = 0;
 @implementation NSInvocation (ETSerializable)
 /**
  * Most of this method is responsible for discarding instance variables that
@@ -116,10 +114,14 @@ static int discardRetValSize = 0;
 		//when we deserialize.
 		return YES;
 	}
+	CASE(_retptr) 
+	{
+		return YES;
+	}
 	CASE(_retval)
 	{
 		//Don't store retval, but use this as a trigger to re-create it.
-		[[aSerializer backend] storeInt:0 withName:aVariable];
+		[[aSerializer backend] storeInt: [_sig methodReturnLength] withName:aVariable];
 		return YES;
 	}
 	CASE(_cframe)
@@ -135,19 +137,11 @@ static int discardRetValSize = 0;
  */
 - (void*) deserialize:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion 
 {
-	if(discardRetVal == NULL)
-	{
-		discardRetVal = malloc(1024);
-		discardRetValSize = 1024;
-	}
 	CASE(_retval)
 	{
-		//TODO: We should check that this is big enough, but 
-		//if you're returning more than 1KB on the stack you're doing something
-		//deeply wrong so I don't mind breaking your code for now.
-		//FIXME: This should be done in the custom deserializer, which knows
-		//how big the retval is.
-		_retval = discardRetVal;
+		int size = (*(int*)aBlob);
+		_retptr = NSAllocateCollectable(size, NSScannedOption);
+		_retval = _retptr;
 		return MANUAL_DESERIALIZE;
 	}
 	return [super deserialize:aVariable fromPointer:aBlob version:aVersion];
