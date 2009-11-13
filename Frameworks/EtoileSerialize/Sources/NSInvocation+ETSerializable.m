@@ -74,11 +74,10 @@ void deserializeArgumentInfo(NSArgumentInfo * sig, char * name, void * aBlob)
  */
 - (BOOL) serialize:(char*)aVariable using:(ETSerializer*)aSerializer
 {
-	CASE(_info)
-	{
-		serializeArgumentInfos(_info, _numArgs + 1, aVariable, [aSerializer backend]);
-		return YES;
-	}
+	// Note: We don't actually need to bother storing anything other than the
+	// type string here...
+	// Ignore _info; the object will recreate it lazily when it's required.
+	CASE(_info) { return YES; }
 	return [super serialize:aVariable using:aSerializer];
 }
 /**
@@ -86,16 +85,6 @@ void deserializeArgumentInfo(NSArgumentInfo * sig, char * name, void * aBlob)
  */
 - (void*) deserialize:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion 
 {
-	CASE(_numArgs)
-	{
-		//Allocate space for _info when we know how much space we need
-		_info = calloc(*(int*)aBlob + 1, sizeof(NSArgumentInfo));
-	}
-	if(strncmp("_info", aVariable, 5) == 0)
-	{
-		NSAssert(_numArgs, @"Can't deserialize _info before _numArgs in NSMethodSignature");
-		deserializeArgumentInfo(_info, aVariable + 5, aBlob);
-	}
 	return [super deserialize:aVariable fromPointer:aBlob version:aVersion];
 }
 @end
