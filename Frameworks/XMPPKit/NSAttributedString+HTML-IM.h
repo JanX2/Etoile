@@ -10,6 +10,6 @@
 
 @class ETXMLWriter;
 @interface NSAttributedString (XHTML_IM)
-- (void)writeToXMLWriter: (ETXMLWriter*)xmlWriter;
+- (void)writeXHTMLIMToXMLWriter: (ETXMLWriter*)xmlWriter;
 - (NSString*) stringValueWithExpandedLinks;
 @end
