@@ -113,7 +113,7 @@ NSDictionary * MESSAGE_TYPES;
 	}
 	if(html != nil)
 	{
-		[html writeToXMLWriter: xmlWriter];
+		[html writeXHTMLIMToXMLWriter: xmlWriter];
 	}
 	[xmlWriter endElement];
 }

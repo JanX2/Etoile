@@ -135,12 +135,12 @@ void addCdataWithLineBreaksToNode(ETXMLWriter *xmlWriter, NSString *cdata)
 }
 
 @implementation NSAttributedString (XHTML_IM)
-- (void)writeToXMLWriter: (ETXMLWriter*)xmlWriter
+- (void)writeXHTMLIMToXMLWriter: (ETXMLWriter*)xmlWriter
 {
 	NSLog(@"Writing XHTML...");
 	[xmlWriter startElement: @"html" 
 		         attributes: D(@"http://jabber.org/protocol/xhtml-im", @"xmlns")];
-	[xmlWriter startElement: @"bidy" 
+	[xmlWriter startElement: @"body" 
 				 attributes: D(@"http://www.w3.org/1999/xhtml", @"xmlns")];
 	NSString * plainText = [self string];
 	NSRange attributeRange;
