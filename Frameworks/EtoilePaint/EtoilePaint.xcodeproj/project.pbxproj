@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		662C41C010B0D03500F060E4 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 662C413C10B0D00600F060E4 /* EtoileFoundation.framework */; };
+		662C41C110B0D03900F060E4 /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 662C411C10B0CFF000F060E4 /* EtoileUI.framework */; };
+		662C41C310B0D04400F060E4 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 662C413C10B0D00600F060E4 /* EtoileFoundation.framework */; };
+		662C41C410B0D04600F060E4 /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 662C411C10B0CFF000F060E4 /* EtoileUI.framework */; };
 		6697AB0E104768BD00456911 /* DKBezierLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AAFC104768BD00456911 /* DKBezierLayoutManager.m */; };
 		6697AB0F104768BE00456911 /* DKGeometryUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AAFD104768BD00456911 /* DKGeometryUtilities.m */; };
 		6697AB10104768BE00456911 /* DKRandom.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AAFE104768BD00456911 /* DKRandom.m */; };
@@ -47,14 +51,10 @@
 		6697AB48104768F100456911 /* NSBezierPath+Geometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB33104768F100456911 /* NSBezierPath+Geometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6697AB49104768F100456911 /* NSBezierPath+Text.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB34104768F100456911 /* NSBezierPath+Text.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6697AB5D10476AE100456911 /* EtoilePaint.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* EtoilePaint.framework */; };
-		6697ABBD10476E9000456911 /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6697ABBC10476E9000456911 /* EtoileUI.framework */; };
-		6697ABC110476EA700456911 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6697ABC010476EA700456911 /* EtoileFoundation.framework */; };
 		6697ABC610476EC900456911 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB6210476B2700456911 /* main.m */; };
 		6697ABC710476EC900456911 /* SketchController.h in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB6310476B2700456911 /* SketchController.h */; };
 		6697ABC810476EC900456911 /* SketchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB6410476B2700456911 /* SketchController.m */; };
 		6697ABCB10476F0100456911 /* SketchInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6697ABCA10476F0100456911 /* SketchInfo.plist */; };
-		6697AC101047701F00456911 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6697ABC010476EA700456911 /* EtoileFoundation.framework */; };
-		6697AC5D1047702500456911 /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6697ABBC10476E9000456911 /* EtoileUI.framework */; };
 		6697AC99104771CB00456911 /* testbrush.png in Resources */ = {isa = PBXBuildFile; fileRef = 6697AC98104771CB00456911 /* testbrush.png */; };
 		6697AC9A104771D800456911 /* testbrush.png in Resources */ = {isa = PBXBuildFile; fileRef = 6697AC98104771CB00456911 /* testbrush.png */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
@@ -62,103 +62,117 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		6697AAE31047683200456911 /* PBXContainerItemProxy */ = {
+		662C411B10B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60073EAD10074D26007272E6;
-			remoteInfo = EtoileXML;
-		};
-		6697AAE51047683200456911 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 603647AC0E409244003377E0;
-			remoteInfo = EtoileFoundation;
-		};
-		6697AAE71047683200456911 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
-			remoteInfo = TestEtoileFoundation;
-		};
-		6697AAE91047683200456911 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 60EF8E9D0C5E4D0600C97C41;
+			remoteGlobalIDString = 60EF8E9D0C5E4D0600C97C41 /* EtoileUI.framework */;
 			remoteInfo = EtoileUI;
 		};
-		6697AAEB1047683200456911 /* PBXContainerItemProxy */ = {
+		662C411D10B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 600243B90CD133420023182D;
+			remoteGlobalIDString = 600243B90CD133420023182D /* TestEtoileUI.bundle */;
 			remoteInfo = TestEtoileUI;
 		};
-		6697AAED1047683200456911 /* PBXContainerItemProxy */ = {
+		662C411F10B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60073C2910074B39007272E6;
+			remoteGlobalIDString = 60073C2910074B39007272E6 /* EtoileWeb.framework */;
 			remoteInfo = EtoileWeb;
 		};
-		6697AAEF1047683200456911 /* PBXContainerItemProxy */ = {
+		662C412110B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60EEB9020F09457C00EBB632;
+			remoteGlobalIDString = 60EEB9020F09457C00EBB632 /* Collage.app */;
 			remoteInfo = Collage;
 		};
-		6697AAF11047683200456911 /* PBXContainerItemProxy */ = {
+		662C412310B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60CF742A0D449A8A00B4CA3D;
+			remoteGlobalIDString = 60CF742A0D449A8A00B4CA3D /* MarkupEditor.app */;
 			remoteInfo = MarkupEditor;
 		};
-		6697AAF31047683200456911 /* PBXContainerItemProxy */ = {
+		662C412510B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 605F0CCA0C0F400D003AE3E6;
+			remoteGlobalIDString = 605F0CCA0C0F400D003AE3E6 /* ObjectManagerExample.app */;
 			remoteInfo = ObjectManagerExample;
 		};
-		6697AAF51047683200456911 /* PBXContainerItemProxy */ = {
+		662C412710B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60539D940C240A7B006C57EC;
+			remoteGlobalIDString = 60539D940C240A7B006C57EC /* PaneContainerExample.app */;
 			remoteInfo = PaneContainerExample;
 		};
-		6697AAF71047683200456911 /* PBXContainerItemProxy */ = {
+		662C412910B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 606B98C90C0AF831000AAA85;
+			remoteGlobalIDString = 606B98C90C0AF831000AAA85 /* PhotoViewExample.app */;
 			remoteInfo = PhotoViewExample;
 		};
-		6697AAF91047683200456911 /* PBXContainerItemProxy */ = {
+		662C412B10B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60909CC90CB2DA42009CAD27;
+			remoteGlobalIDString = 60909CC90CB2DA42009CAD27 /* TableViewExample.app */;
 			remoteInfo = TableViewExample;
 		};
-		6697AB4B1047691900456911 /* PBXContainerItemProxy */ = {
+		662C412D10B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 603647AB0E409244003377E0;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60FC2925105C112D008D2EFF /* FormExample.app */;
+			remoteInfo = FormExample;
+		};
+		662C413910B0D00600F060E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073EAD10074D26007272E6 /* EtoileXML.framework */;
+			remoteInfo = EtoileXML;
+		};
+		662C413B10B0D00600F060E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 603647AC0E409244003377E0 /* EtoileFoundation.framework */;
 			remoteInfo = EtoileFoundation;
 		};
-		6697AB4D1047691900456911 /* PBXContainerItemProxy */ = {
+		662C413D10B0D00600F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
+			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842 /* TestEtoileFoundation.bundle */;
+			remoteInfo = TestEtoileFoundation;
+		};
+		662C41BC10B0D02800F060E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41;
+			remoteGlobalIDString = 603647AB0E409244003377E0 /* EtoileFoundation */;
+			remoteInfo = EtoileFoundation;
+		};
+		662C41BE10B0D02B00F060E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41 /* EtoileUI */;
 			remoteInfo = EtoileUI;
+		};
+		662C41C910B0D09300F060E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 60073EAC10074D26007272E6 /* EtoileXML */;
+			remoteInfo = EtoileXML;
 		};
 		6697AB5B10476AD900456911 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -166,20 +180,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = EtoilePaint;
-		};
-		6697ABDE10476FD400456911 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41;
-			remoteInfo = EtoileUI;
-		};
-		6697ABE01047700000456911 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6697AAD41047683200456911 /* Container.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 603647AB0E409244003377E0;
-			remoteInfo = EtoileFoundation;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -189,7 +189,8 @@
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCF5E0370ADEE00C91783 /* EtoilePaint_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtoilePaint_Prefix.pch; sourceTree = "<group>"; };
-		6697AAD41047683200456911 /* Container.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Container.xcodeproj; path = ../EtoileUI/Container.xcodeproj; sourceTree = SOURCE_ROOT; };
+		662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileUI.xcodeproj; path = ../EtoileUI/EtoileUI.xcodeproj; sourceTree = SOURCE_ROOT; };
+		662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		6697AAFC104768BD00456911 /* DKBezierLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DKBezierLayoutManager.m; sourceTree = "<group>"; };
 		6697AAFD104768BD00456911 /* DKGeometryUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DKGeometryUtilities.m; sourceTree = "<group>"; };
 		6697AAFE104768BD00456911 /* DKRandom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DKRandom.m; sourceTree = "<group>"; };
@@ -233,8 +234,6 @@
 		6697AB6210476B2700456911 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Sketch/main.m; sourceTree = "<group>"; };
 		6697AB6310476B2700456911 /* SketchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SketchController.h; path = Sketch/SketchController.h; sourceTree = "<group>"; };
 		6697AB6410476B2700456911 /* SketchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SketchController.m; path = Sketch/SketchController.m; sourceTree = "<group>"; };
-		6697ABBC10476E9000456911 /* EtoileUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EtoileUI.framework; path = ../EtoileUI/build/Debug/EtoileUI.framework; sourceTree = SOURCE_ROOT; };
-		6697ABC010476EA700456911 /* EtoileFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EtoileFoundation.framework; path = ../EtoileUI/build/Debug/EtoileFoundation.framework; sourceTree = SOURCE_ROOT; };
 		6697ABCA10476F0100456911 /* SketchInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = SketchInfo.plist; path = Sketch/SketchInfo.plist; sourceTree = "<group>"; };
 		6697AC98104771CB00456911 /* testbrush.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testbrush.png; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -247,8 +246,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6697AC5D1047702500456911 /* EtoileUI.framework in Frameworks */,
-				6697AC101047701F00456911 /* EtoileFoundation.framework in Frameworks */,
+				662C41C410B0D04600F060E4 /* EtoileUI.framework in Frameworks */,
+				662C41C310B0D04400F060E4 /* EtoileFoundation.framework in Frameworks */,
 				6697AB5D10476AE100456911 /* EtoilePaint.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -257,9 +256,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				662C41C110B0D03900F060E4 /* EtoileUI.framework in Frameworks */,
+				662C41C010B0D03500F060E4 /* EtoileFoundation.framework in Frameworks */,
 				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
-				6697ABBD10476E9000456911 /* EtoileUI.framework in Frameworks */,
-				6697ABC110476EA700456911 /* EtoileFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,9 +277,8 @@
 		0867D691FE84028FC02AAC07 /* EtoilePaint */ = {
 			isa = PBXGroup;
 			children = (
-				6697ABC010476EA700456911 /* EtoileFoundation.framework */,
-				6697ABBC10476E9000456911 /* EtoileUI.framework */,
-				6697AAD41047683200456911 /* Container.xcodeproj */,
+				662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */,
+				662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */,
 				08FB77AEFE84172EC02AAC07 /* Classes */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				089C1665FE841158C02AAC07 /* Resources */,
@@ -382,21 +380,29 @@
 			name = "Other Sources";
 			sourceTree = "<group>";
 		};
-		6697AAD51047683200456911 /* Products */ = {
+		662C410F10B0CFF000F060E4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6697AAE41047683200456911 /* EtoileXML.framework */,
-				6697AAE61047683200456911 /* EtoileFoundation.framework */,
-				6697AAE81047683200456911 /* TestEtoileFoundation.bundle */,
-				6697AAEA1047683200456911 /* EtoileUI.framework */,
-				6697AAEC1047683200456911 /* TestEtoileUI.bundle */,
-				6697AAEE1047683200456911 /* EtoileWeb.framework */,
-				6697AAF01047683200456911 /* Collage.app */,
-				6697AAF21047683200456911 /* MarkupEditor.app */,
-				6697AAF41047683200456911 /* ObjectManagerExample.app */,
-				6697AAF61047683200456911 /* PaneContainerExample.app */,
-				6697AAF81047683200456911 /* PhotoViewExample.app */,
-				6697AAFA1047683200456911 /* TableViewExample.app */,
+				662C411C10B0CFF000F060E4 /* EtoileUI.framework */,
+				662C411E10B0CFF000F060E4 /* TestEtoileUI.bundle */,
+				662C412010B0CFF000F060E4 /* EtoileWeb.framework */,
+				662C412210B0CFF000F060E4 /* Collage.app */,
+				662C412410B0CFF000F060E4 /* MarkupEditor.app */,
+				662C412610B0CFF000F060E4 /* ObjectManagerExample.app */,
+				662C412810B0CFF000F060E4 /* PaneContainerExample.app */,
+				662C412A10B0CFF000F060E4 /* PhotoViewExample.app */,
+				662C412C10B0CFF000F060E4 /* TableViewExample.app */,
+				662C412E10B0CFF000F060E4 /* FormExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		662C413410B0D00600F060E4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				662C413A10B0D00600F060E4 /* EtoileXML.framework */,
+				662C413C10B0D00600F060E4 /* EtoileFoundation.framework */,
+				662C413E10B0D00600F060E4 /* TestEtoileFoundation.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -458,8 +464,6 @@
 			);
 			dependencies = (
 				6697AB5C10476AD900456911 /* PBXTargetDependency */,
-				6697ABDF10476FD400456911 /* PBXTargetDependency */,
-				6697ABE11047700000456911 /* PBXTargetDependency */,
 			);
 			name = Sketch;
 			productName = Sketch;
@@ -478,8 +482,9 @@
 			buildRules = (
 			);
 			dependencies = (
-				6697AB4C1047691900456911 /* PBXTargetDependency */,
-				6697AB4E1047691900456911 /* PBXTargetDependency */,
+				662C41BD10B0D02800F060E4 /* PBXTargetDependency */,
+				662C41BF10B0D02B00F060E4 /* PBXTargetDependency */,
+				662C41CA10B0D09300F060E4 /* PBXTargetDependency */,
 			);
 			name = EtoilePaint;
 			productInstallPath = "$(HOME)/Library/Frameworks";
@@ -500,8 +505,12 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 6697AAD51047683200456911 /* Products */;
-					ProjectRef = 6697AAD41047683200456911 /* Container.xcodeproj */;
+					ProductGroup = 662C413410B0D00600F060E4 /* Products */;
+					ProjectRef = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
+				},
+				{
+					ProductGroup = 662C410F10B0CFF000F060E4 /* Products */;
+					ProjectRef = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -513,88 +522,95 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		6697AAE41047683200456911 /* EtoileXML.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = EtoileXML.framework;
-			remoteRef = 6697AAE31047683200456911 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		6697AAE61047683200456911 /* EtoileFoundation.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = EtoileFoundation.framework;
-			remoteRef = 6697AAE51047683200456911 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		6697AAE81047683200456911 /* TestEtoileFoundation.bundle */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = TestEtoileFoundation.bundle;
-			remoteRef = 6697AAE71047683200456911 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		6697AAEA1047683200456911 /* EtoileUI.framework */ = {
+		662C411C10B0CFF000F060E4 /* EtoileUI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = EtoileUI.framework;
-			remoteRef = 6697AAE91047683200456911 /* PBXContainerItemProxy */;
+			remoteRef = 662C411B10B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6697AAEC1047683200456911 /* TestEtoileUI.bundle */ = {
+		662C411E10B0CFF000F060E4 /* TestEtoileUI.bundle */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = TestEtoileUI.bundle;
-			remoteRef = 6697AAEB1047683200456911 /* PBXContainerItemProxy */;
+			remoteRef = 662C411D10B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6697AAEE1047683200456911 /* EtoileWeb.framework */ = {
+		662C412010B0CFF000F060E4 /* EtoileWeb.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = EtoileWeb.framework;
-			remoteRef = 6697AAED1047683200456911 /* PBXContainerItemProxy */;
+			remoteRef = 662C411F10B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6697AAF01047683200456911 /* Collage.app */ = {
+		662C412210B0CFF000F060E4 /* Collage.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = Collage.app;
-			remoteRef = 6697AAEF1047683200456911 /* PBXContainerItemProxy */;
+			remoteRef = 662C412110B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6697AAF21047683200456911 /* MarkupEditor.app */ = {
+		662C412410B0CFF000F060E4 /* MarkupEditor.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = MarkupEditor.app;
-			remoteRef = 6697AAF11047683200456911 /* PBXContainerItemProxy */;
+			remoteRef = 662C412310B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6697AAF41047683200456911 /* ObjectManagerExample.app */ = {
+		662C412610B0CFF000F060E4 /* ObjectManagerExample.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = ObjectManagerExample.app;
-			remoteRef = 6697AAF31047683200456911 /* PBXContainerItemProxy */;
+			remoteRef = 662C412510B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6697AAF61047683200456911 /* PaneContainerExample.app */ = {
+		662C412810B0CFF000F060E4 /* PaneContainerExample.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = PaneContainerExample.app;
-			remoteRef = 6697AAF51047683200456911 /* PBXContainerItemProxy */;
+			remoteRef = 662C412710B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6697AAF81047683200456911 /* PhotoViewExample.app */ = {
+		662C412A10B0CFF000F060E4 /* PhotoViewExample.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = PhotoViewExample.app;
-			remoteRef = 6697AAF71047683200456911 /* PBXContainerItemProxy */;
+			remoteRef = 662C412910B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6697AAFA1047683200456911 /* TableViewExample.app */ = {
+		662C412C10B0CFF000F060E4 /* TableViewExample.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = TableViewExample.app;
-			remoteRef = 6697AAF91047683200456911 /* PBXContainerItemProxy */;
+			remoteRef = 662C412B10B0CFF000F060E4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		662C412E10B0CFF000F060E4 /* FormExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = FormExample.app;
+			remoteRef = 662C412D10B0CFF000F060E4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		662C413A10B0D00600F060E4 /* EtoileXML.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileXML.framework;
+			remoteRef = 662C413910B0D00600F060E4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		662C413C10B0D00600F060E4 /* EtoileFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileFoundation.framework;
+			remoteRef = 662C413B10B0D00600F060E4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		662C413E10B0D00600F060E4 /* TestEtoileFoundation.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileFoundation.bundle;
+			remoteRef = 662C413D10B0D00600F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -659,30 +675,25 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		6697AB4C1047691900456911 /* PBXTargetDependency */ = {
+		662C41BD10B0D02800F060E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = EtoileFoundation;
-			targetProxy = 6697AB4B1047691900456911 /* PBXContainerItemProxy */;
+			targetProxy = 662C41BC10B0D02800F060E4 /* PBXContainerItemProxy */;
 		};
-		6697AB4E1047691900456911 /* PBXTargetDependency */ = {
+		662C41BF10B0D02B00F060E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = EtoileUI;
-			targetProxy = 6697AB4D1047691900456911 /* PBXContainerItemProxy */;
+			targetProxy = 662C41BE10B0D02B00F060E4 /* PBXContainerItemProxy */;
+		};
+		662C41CA10B0D09300F060E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileXML;
+			targetProxy = 662C41C910B0D09300F060E4 /* PBXContainerItemProxy */;
 		};
 		6697AB5C10476AD900456911 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8DC2EF4F0486A6940098B216 /* EtoilePaint */;
 			targetProxy = 6697AB5B10476AD900456911 /* PBXContainerItemProxy */;
-		};
-		6697ABDF10476FD400456911 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = EtoileUI;
-			targetProxy = 6697ABDE10476FD400456911 /* PBXContainerItemProxy */;
-		};
-		6697ABE11047700000456911 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = EtoileFoundation;
-			targetProxy = 6697ABE01047700000456911 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

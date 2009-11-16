@@ -12,10 +12,17 @@
 #include <math.h>
 #import "DKDrawKitMacros.h"
 
-// this point constant is arbitrary but it is intended to be very unlikely to arise by chance. It can be used to signal "not found" when
-// returning a point value from a function.
+#ifdef CGFLOAT_IS_DOUBLE
+#define HUGE_CGFLOAT HUGE_VAL
+#else
+#define HUGE_CGFLOAT HUGE_VALF
+#endif
 
-const NSPoint		NSNotFoundPoint = {-10000000.2,-999999.6};
+/**
+ * Define a point which can be returned to indicate an error.
+ */
+const NSPoint NSNotFoundPoint = {HUGE_CGFLOAT, HUGE_CGFLOAT};
+
 
 
 ///*********************************************************************************************************************
