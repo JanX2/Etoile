@@ -78,6 +78,10 @@ static void createNSBlockSubclass(Class newClass, char *name)
 #endif
 
 #if __has_feature(blocks)
+- (id) value
+{
+	return ((id(^)(void))self)();
+}
 - (id) value: (id)anObject
 {
 	return ((id(^)(id))self)(anObject);
