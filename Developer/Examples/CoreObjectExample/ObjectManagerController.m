@@ -19,42 +19,36 @@
 /* Builds the UI */
 - (ETLayoutItemGroup *) objectNavigatorItem
 {
-	ETLayoutItemGroup *navigatorItem = [ETLayoutItem itemGroupWithContainer];
-	ETLayoutItem *selectionVersionFieldItem = [ETLayoutItem textField];
-	/*ETLayoutItem *explanationLabelItem = [ETLayoutItem labelWithTitle: 
+	ETLayoutItemFactory *itemFactory = [ETLayoutItemFactory factory];
+	ETLayoutItemGroup *navigatorItem = [itemFactory itemGroup];
+	ETLayoutItem *selectionVersionFieldItem = [itemFactory textField];
+	/*ETLayoutItem *explanationLabelItem = [itemFactory labelWithTitle: 
 		_(@"You can restore a single object or the entire model object graph to "
 		   "a past version by typing it respectively in Selection Version field "
 		   "or Context Version field.\n"
 		   "Each object is versionned independently of the object graph that "
 		   "itself versionned as part of the Object Context.")];*/
-	ETLayoutItem *selectionVersionLabelItem = [ETLayoutItem labelWithTitle: _(@"Selection Version:")];
-	ETLayoutItem *ctxtVersionFieldItem = [ETLayoutItem textField];
-	ETLayoutItem *ctxtVersionLabelItem = [ETLayoutItem labelWithTitle: _(@"Context Version:")];
-	ETLayoutItem *restoredCtxtVersionFieldItem = [ETLayoutItem textField];
-	ETLayoutItem *restoredCtxtVersionLabelItem = [ETLayoutItem labelWithTitle: _(@"Restored Context Version:")];
-	ETLayoutItemGroup *mainContainerItem = [ETLayoutItem itemGroupWithContainer];
+	ETLayoutItem *selectionVersionLabelItem = [itemFactory labelWithTitle: _(@"Selection Version:")];
+	ETLayoutItem *ctxtVersionFieldItem = [itemFactory textField];
+	ETLayoutItem *ctxtVersionLabelItem = [itemFactory labelWithTitle: _(@"Context Version:")];
+	ETLayoutItem *restoredCtxtVersionFieldItem = [itemFactory textField];
+	ETLayoutItem *restoredCtxtVersionLabelItem = [itemFactory labelWithTitle: _(@"Restored Context Version:")];
+	ETLayoutItemGroup *mainViewItem = [itemFactory itemGroup];
 
-	[navigatorItem setHeight: 500];
-	[navigatorItem setWidth: 800];
-	[(ETContainer *)[navigatorItem supervisorView] setEnablesHitTest: YES];
-	[[mainContainerItem view] setAutoresizingMask: NSViewWidthSizable];
-	[mainContainerItem setHeight: 200];
-	[mainContainerItem setWidth: 775];
+	[navigatorItem setSize: NSMakeSize(800, 500)];
+	[mainViewItem setAutoresizingMask: NSViewWidthSizable];
+	[mainViewItem setSize: NSMakeSize(775, 200)];
 
 	[navigatorItem setLayout: [ETColumnLayout layout]];
 	[(ETComputedLayout *)[navigatorItem layout] setItemMargin: 15];
 	[(ETComputedLayout *)[navigatorItem layout] setItemSizeConstraintStyle: ETSizeConstraintStyleNone];
-	[navigatorItem addItem: mainContainerItem];
+	[navigatorItem addItems: A(mainViewItem, selectionVersionLabelItem, 
+		selectionVersionFieldItem, ctxtVersionLabelItem, ctxtVersionFieldItem, 
+		restoredCtxtVersionLabelItem, restoredCtxtVersionFieldItem)];
 	//[navigatorItem addItem: explanationLabelItem];
-	[navigatorItem addItem: selectionVersionLabelItem];
-	[navigatorItem addItem: selectionVersionFieldItem];
-	[navigatorItem addItem: ctxtVersionLabelItem];
-	[navigatorItem addItem: ctxtVersionFieldItem];
-	[navigatorItem addItem: restoredCtxtVersionLabelItem];
-	[navigatorItem addItem: restoredCtxtVersionFieldItem];
+
 	[navigatorItem updateLayout];
 
-	mainContainer = (id)[mainContainerItem supervisorView];
 	selectionVersionField = (NSTextField *)[selectionVersionFieldItem view];
 	ctxtVersionField = (NSTextField *)[ctxtVersionFieldItem view];
 	restoredCtxtVersionField = (NSTextField *)[restoredCtxtVersionFieldItem view];
@@ -161,40 +155,39 @@
 
 	/* Set up UI */
 
-	// TODO: Add a return type to -windowGroup to work around NSMenuItem 
-	// protocol and excessive type checking of GCC. Or better fix GCC :-)
-	[(ETLayoutItemGroup *)[ETLayoutItem windowGroup] addItem: [self objectNavigatorItem]];
+	ETLayoutItemGroup *objectNavigatorItem = [self objectNavigatorItem];
 
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	/* Memorize the main view item in an ivar */
+	objectGraphViewItem = (ETLayoutItemGroup *)[objectNavigatorItem firstItem];
 
-    [nc addObserver: self 
-           selector: @selector(mainContainerDidResize:) 
-               name: NSViewFrameDidChangeNotification 
-             object: mainContainer];
-
-	ETLayout *layout = AUTORELEASE([[ETOutlineLayout alloc] init]);
+	ETLayout *layout = [ETOutlineLayout layout];
 
 	// TODO: At later point, work out something like...
 	// [layout setDisplayedProperties: [startGroup displayProperties]];
 	[layout setDisplayedProperties: 
 		A(@"icon", @"displayName", @"otherObjects", @"objectVersion", @"kCOUIDProperty")];
 
-	[mainContainer setAllowsMultipleSelection: NO];
-	[[mainContainer layoutItem] setRepresentedObject: startGroup];
-	[(ETLayoutItemGroup *)[mainContainer layoutItem] setShouldMutateRepresentedObject: YES];
-	[mainContainer setSource: [mainContainer layoutItem]];
-	[mainContainer setHasVerticalScroller: YES];
-	[mainContainer setHasHorizontalScroller: YES];
-	[mainContainer setLayout: layout];
-	[mainContainer setDelegate: self];
-	[mainContainer reloadAndUpdateLayout];
+	// FIXME: Not working yet...
+	[[[objectGraphViewItem layout] attachedInstrument] setAllowsMultipleSelection: NO];
+	[objectGraphViewItem setRepresentedObject: startGroup];
+	[objectGraphViewItem setShouldMutateRepresentedObject: YES];
+	[objectGraphViewItem setSource: objectGraphViewItem];
+	[objectGraphViewItem setHasVerticalScroller: YES];
+	[objectGraphViewItem setHasHorizontalScroller: YES];
+	[objectGraphViewItem setLayout: layout];
+	[objectGraphViewItem setDelegate: self];
+	[objectGraphViewItem reloadAndUpdateLayout];
+
+	// TODO: Add a return type to -windowGroup to work around NSMenuItem 
+	// protocol and excessive type checking of GCC. Or better fix GCC :-)
+	[[[ETLayoutItemFactory factory] windowGroup] addItem: objectNavigatorItem];
 
 	[self updateUI];
 }
 
 - (NSArray *) firstSelectedModelObject
 {
-	ETLayoutItem *selectedItem = [[mainContainer selectedItemsInLayout] firstObject];
+	ETLayoutItem *selectedItem = [[objectGraphViewItem selectedItemsInLayout] firstObject];
 
 	return [selectedItem representedObject];
 }
@@ -217,17 +210,17 @@
 
 - (void) objectContextDidMergeObjects: (NSNotification *)notif
 {
-	id startGroup = [[mainContainer layoutItem] representedObject];
+	COGroup *startGroup = [objectGraphViewItem representedObject];
 	// NOTE: the next line is equivalent to...
 	// [[[notif object] objectServer] cachedObjectForUUID: [startGroup UUID]]
-	id newStartGroup = [[notif object] objectForUUID: [startGroup UUID]];
+	COGroup *newStartGroup = [[notif object] objectForUUID: [startGroup UUID]];
 
 	ETLog(@"Did merge old %@ with %@ in %@ - %@", startGroup, newStartGroup, 
 		[notif object], [notif userInfo]);
 	ETLog(@"New start group members: %@", [newStartGroup allObjects]);
 
-	[[mainContainer layoutItem] setRepresentedObject: newStartGroup];
-	[mainContainer reloadAndUpdateLayout];
+	[objectGraphViewItem setRepresentedObject: newStartGroup];
+	[objectGraphViewItem reloadAndUpdateLayout];
 
 	[self updateUI];
 }
@@ -253,15 +246,9 @@
 	}
 }
 
-- (void) containerSelectionDidChange: (NSNotification *)notif
+- (void) itemGroupSelectionDidChange: (NSNotification *)notif
 {
 	[self updateUI];
-}
-
-- (void) mainContainerDidResize: (NSNotification *)notif
-{
-	if ([mainContainer canUpdateLayout])
-		[mainContainer updateLayout];
 }
 
 @end

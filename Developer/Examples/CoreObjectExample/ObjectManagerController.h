@@ -15,7 +15,7 @@
 
 @interface ObjectManagerController : NSObject 
 {
-	ETContainer *mainContainer;
+	ETLayoutItemGroup *objectGraphViewItem;
 	NSTextField *ctxtVersionField;
 	NSTextField *restoredCtxtVersionField;
 	NSTextField *selectionVersionField;
