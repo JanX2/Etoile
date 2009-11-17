@@ -6,14 +6,14 @@
 struct objc_class _NSConcreteGlobalBlock;
 struct objc_class _NSConcreteStackBlock;
 
-@interface NSBlockPrivate : NSObject @end
+@interface NSBlock : NSObject @end
 
 void __objc_update_dispatch_table_for_class(Class);
 extern struct sarray *__objc_uninstalled_dtable;
 extern objc_mutex_t __objc_runtime_mutex;
 static void createNSBlockSubclass(Class newClass, char *name)
 {
-	Class superclass = [NSBlockPrivate class];
+	Class superclass = [NSBlock class];
 	// Create the metaclass
 	Class metaClass = calloc(1, sizeof(struct objc_class));
 
@@ -44,56 +44,11 @@ static void createNSBlockSubclass(Class newClass, char *name)
 	objc_mutex_unlock(__objc_runtime_mutex);
 }
 
-@implementation NSBlockPrivate
+@implementation NSBlock
 + (void)load
 {
 	createNSBlockSubclass(&_NSConcreteGlobalBlock, "NSConcreteGlobalBlockPrivate");
 	createNSBlockSubclass(&_NSConcreteStackBlock, "NSConcreteStackBlockPrivate");
 }
-- (id)copyWithZone: (NSZone*)aZone
-{
-	return Block_copy(self);
-}
-- (id)copy
-{
-	return Block_copy(self);
-}
-- (id)retain
-{
-	return Block_copy(self);
-}
-- (void)release
-{
-	Block_release(self);
-}
-- (void)dealloc 
-{
-	// Hack to get rid of compiler warning.
-	if (0) [super dealloc];
-}
-
-// Define __has_feature() for compilers that don't support it.
-#ifndef __has_feature
-#define __has_feature(x) 0
-#endif
-
-#if __has_feature(blocks)
-- (id) value
-{
-	return ((id(^)(void))self)();
-}
-- (id) value: (id)anObject
-{
-	return ((id(^)(id))self)(anObject);
-}
-- (id) value: (id)anObject value: (id)obj2
-{
-	return ((id(^)(id,id))self)(anObject, obj2);
-}
-- (id) value: (id)anObject value: (id)obj2 value: (id)obj3
-{
-	return ((id(^)(id,id,id))self)(anObject, obj2, obj3);
-}
-#endif
 @end
 
