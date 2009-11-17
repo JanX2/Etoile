@@ -214,10 +214,10 @@ static NSString *kETChannelsProperty = @"kETChannelsProperty";
 
 #define GET_CSTRING_TAG(key, value)\
 do {\
-	const char *str = value;\
-	if (value != NULL && *value != '\0')\
+	const char *str = str;\
+	if (str != NULL && *str != '\0')\
 	{\
-		[metadata setValue: [NSString stringWithUTF8String: value]\
+		[metadata setValue: [NSString stringWithUTF8String: str]\
 		            forKey: key];\
 	}\
 } while (0);
