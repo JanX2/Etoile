@@ -1,6 +1,7 @@
 #import "MKSoundDevice.h"
-@class OSSDevice;
-Class OSSDeviceClass;
+@interface OSSDevice : NSObject<MKSoundDevice>
+@end
+Class  OSSDeviceClass;
 @implementation SoundService
 + (void) initialize
 {

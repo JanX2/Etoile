@@ -1,9 +1,12 @@
 #import <Foundation/NSObject.h>
-// NOTE: Ugly hack to get rid of deprecation warnings on Ubuntu
-// See https://bugs.launchpad.net/ubuntu/+source/ffmpeg/+bug/122266
-#define attribute_deprecated
-#include <avcodec.h>
-#include <avformat.h>
+
+// Make sure that the AVCodec things are void* in files that haven't included
+// the avcodec header.
+#ifndef LIBAVCODEC_VERSION
+#define AVFormatContext void
+#define AVCodecContext void
+#define AVCodecContext void
+#endif
 
 @class NSURL, NSMutableDictionary;
 /**
@@ -90,3 +93,8 @@
 - (NSDictionary *)metadata;
 @end
 
+#ifndef LIBAVCODEC_VERSION
+#undef AVFormatContext 
+#undef AVCodecContext
+#undef AVCodecContext
+#endif
