@@ -5,7 +5,7 @@
 #ifndef LIBAVCODEC_VERSION
 #define AVFormatContext void
 #define AVCodecContext void
-#define AVCodecContext void
+#define AVCodec void
 #endif
 
 @class NSURL, NSMutableDictionary;
