@@ -1,0 +1,79 @@
+{
+    GSThemeDomain = {
+	GSBackHandlesWindowDecorations = NO;
+        GSScrollerButtonsOffset = 0.0;
+    };
+    GSThemeAuthors = ("Jesse Ross", "Eric Wasylishen");
+    GSThemeIcon = Thematic.png;
+    GSThemeVersion = 0.1;
+    GSThemeTiles = {
+	GSButton = {
+	  NinePatch = YES;
+          FileName = "Button-unselected.9.png";
+	};
+	GSGrayBezel = {
+	  NinePatch = YES;
+          FileName = "Textbox.9.png";
+	};
+      NSButton = {
+        NinePatch = YES;
+        FileName = "Button-unselected.9.png";
+        //FillStyle = ScaleAll;
+        //HorizontalDivision = 15;
+        //VerticalDivision = 20; 
+      };
+      NSButtonSelected = {
+        NinePatch = YES;
+        FileName = "Button-selected.9.png";
+      };
+      NSButtonHighlighted = {
+        NinePatch = YES;
+        FileName = "Button-selected.9.png";
+      };
+      GSScrollerVerticalSlot = {
+        NinePatch = YES;
+        FileName = "Scrollbar-vertical-slot.9.png";
+      };
+      GSScrollerHorizontalSlot = {
+        NinePatch = YES;
+        FileName = "Scrollbar-horizontal-slot.9.png";
+      };
+      GSScrollerVerticalKnob = {
+        NinePatch = YES;
+        FileName = "Scrollbar-vertical-thumb.9.png";
+      };
+      GSScrollerHorizontalKnob = {
+        NinePatch = YES;
+        FileName = "Scrollbar-horizontal-thumb.9.png";
+      };
+      GSWindowResizeBar = {
+        NinePatch = YES;
+        FileName = "WindowResize.9.png";
+      };
+      GSWindowBackground = {
+	//NinePatch = YES;
+	FileName = "WindowBackground.png";
+        //FileName = "Ugly.9.png";
+        //FillStyle = ScaleAll;
+        HorizontalDivision = 20;
+        VerticalDivision = 20;
+      };
+      GSWindowBackgroundSelected = {
+	//NinePatch = YES;
+	//FileName = "WindowBackground.9.png";
+	//FileName = "Ugly.9.png"; 
+        FileName = "WindowBackgroundSelected.png";
+        FillStyle = ScaleAll;
+        HorizontalDivision = 20;
+        VerticalDivision = 20; 
+      };
+      GSWindowTitleBar = {
+        NinePatch = YES;
+        FileName = "Titlebar.9.png";
+      };
+      GSProgressIndicatorBarDeterminate = {
+        NinePatch = YES;
+        FileName = "Progress-horizontal.9.png";
+      };
+    };
+}
