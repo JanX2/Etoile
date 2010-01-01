@@ -103,8 +103,6 @@ static NSDictionary * STANZA_KEYS;
 
 	SUPERINIT;
 	ASSIGN(res, [[NSHost currentHost] name]);
-	connectionMutex = [[NSLock alloc] init];
-	messageIDMutex = [[NSLock alloc] init];
 	//Get the log class, if it has been built
 	xmlLog = NSClassFromString(@"XMLLog");
 	account = _account;

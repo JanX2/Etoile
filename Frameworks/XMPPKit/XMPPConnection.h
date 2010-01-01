@@ -24,16 +24,10 @@
 	ETSocket *socket;
 	ETXMLSocketWriter *xmlWriter;
 	NSTimer *keepalive;
-	NSLock * connectionMutex;
 
-	NSLock * messageIDMutex;
 	unsigned int messageID;
-	
-	//XML Parser
-	//id parser;
 	NSString* sessionID;
 	
-	NSThread * connectThread;
 	NSMutableString * unsentBuffer;
 	NSDictionary * streamFeatures;
 	//Current account details
