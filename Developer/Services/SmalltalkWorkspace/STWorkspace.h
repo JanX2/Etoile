@@ -12,7 +12,8 @@
 - (IBAction) printSelection: (id)sender;
 
 - (id) runCode: (NSString *)code;
-- (NSString *) selection;
+- (NSRange) selectedRange;
+- (NSString *) selectedString;
 
 @end
 

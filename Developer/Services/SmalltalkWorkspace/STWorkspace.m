@@ -36,20 +36,30 @@
 
 - (IBAction) printSelection: (id)sender
 {
-  NSString *printed = [[self runCode: [self selection]] description];
-  NSLog(@"result: %@", printed);  
+  NSString *printed = [[self runCode: [self selectedString]] description];
+  NSLog(@"result: %@", printed);
+  
+  // Insert the result after the code that was run
+  NSRange codeRange = [self selectedRange];
   [_textView setSelectedRange:
-    NSMakeRange([_textView selectedRange].location + [_textView selectedRange].length, 0)];
+    NSMakeRange(codeRange.location + codeRange.length, 0)];
   [_textView insertText: printed];
+  
+  // Select the inserted result
   [_textView setSelectedRange:
-    NSMakeRange([_textView selectedRange].location, [printed length])];
+    NSMakeRange(codeRange.location + codeRange.length, [printed length])];
 }
 
 /**
  * Returns the currently selected string, or the text between the start of the
  * last newline and the cursor if there is no selection.
  */
-- (NSString *) selection
+- (NSString *) selectedString
+{
+  return [[_textView string] substringWithRange: [self selectedRange]];
+}
+ 
+- (NSRange) selectedRange
 {
   NSRange selectedRange = [_textView selectedRange];
   if (selectedRange.length == 0)
@@ -69,7 +79,7 @@
     selectedRange = NSMakeRange(previousNewline.location, 
         selectedRange.location - previousNewline.location);
   }
-  return [[_textView string] substringWithRange: selectedRange];
+  return selectedRange;
 }
 
 - (id) runCode: (NSString *)code
