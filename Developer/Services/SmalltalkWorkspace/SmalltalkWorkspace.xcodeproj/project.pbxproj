@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1DDD582C0DA1D0D100B32029 /* STWorkspace.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58280DA1D0D100B32029 /* STWorkspace.xib */; };
-		1DDD582D0DA1D0D100B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD582A0DA1D0D100B32029 /* MainMenu.xib */; };
 		660D2DC710EF13BF0022F82C /* LanguageKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 660D2DB910EF13910022F82C /* LanguageKit.framework */; };
 		660D2DC810EF13C20022F82C /* LanguageKitRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 660D2DBB10EF13910022F82C /* LanguageKitRuntime.framework */; };
 		660D2DC910EF13C40022F82C /* SmalltalkSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 660D2DBD10EF13910022F82C /* SmalltalkSupport.framework */; };
+		660D2F4210EF3AF80022F82C /* STWorkspace.nib in Resources */ = {isa = PBXBuildFile; fileRef = 660D2F4010EF3AF80022F82C /* STWorkspace.nib */; };
+		660D2F4610EF3B200022F82C /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 660D2F4410EF3B200022F82C /* MainMenu.nib */; };
 		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
 		8D15AC310486D014006FF6A4 /* STWorkspace.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* STWorkspace.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -23,77 +23,77 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DAE10EF13910022F82C /* LanguageKit.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 6697AFAC1048CF6200456911 /* edlc */;
+			remoteGlobalIDString = 6697AFAC1048CF6200456911;
 			remoteInfo = edlc;
 		};
 		660D2DB810EF13910022F82C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DAE10EF13910022F82C /* LanguageKit.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 6697AFB51048CF6C00456911 /* LanguageKit.framework */;
+			remoteGlobalIDString = 6697AFB51048CF6C00456911;
 			remoteInfo = LanguageKit;
 		};
 		660D2DBA10EF13910022F82C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DAE10EF13910022F82C /* LanguageKit.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 6697AFCA1048CF9200456911 /* LanguageKitRuntime.framework */;
+			remoteGlobalIDString = 6697AFCA1048CF9200456911;
 			remoteInfo = LanguageKitRuntime;
 		};
 		660D2DBC10EF13910022F82C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DAE10EF13910022F82C /* LanguageKit.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 6697AFD61048CFB100456911 /* SmalltalkSupport.framework */;
+			remoteGlobalIDString = 6697AFD61048CFB100456911;
 			remoteInfo = SmalltalkSupport;
 		};
 		660D2DBE10EF13910022F82C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DAE10EF13910022F82C /* LanguageKit.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 6697AFDF1048CFC800456911 /* Smalltalk.bundle */;
+			remoteGlobalIDString = 6697AFDF1048CFC800456911;
 			remoteInfo = Smalltalk;
 		};
 		660D2DC110EF13A40022F82C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DAE10EF13910022F82C /* LanguageKit.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 6697AFB41048CF6C00456911 /* LanguageKit */;
+			remoteGlobalIDString = 6697AFB41048CF6C00456911;
 			remoteInfo = LanguageKit;
 		};
 		660D2DC310EF13A40022F82C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DAE10EF13910022F82C /* LanguageKit.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 6697AFC91048CF9200456911 /* LanguageKitRuntime */;
+			remoteGlobalIDString = 6697AFC91048CF9200456911;
 			remoteInfo = LanguageKitRuntime;
 		};
 		660D2DC510EF13A40022F82C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DAE10EF13910022F82C /* LanguageKit.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 6697AFD51048CFB100456911 /* SmalltalkSupport */;
+			remoteGlobalIDString = 6697AFD51048CFB100456911;
 			remoteInfo = SmalltalkSupport;
 		};
 		660D2DED10EF14620022F82C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DE710EF14620022F82C /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60073EAD10074D26007272E6 /* EtoileXML.framework */;
+			remoteGlobalIDString = 60073EAD10074D26007272E6;
 			remoteInfo = EtoileXML;
 		};
 		660D2DEF10EF14620022F82C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DE710EF14620022F82C /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 603647AC0E409244003377E0 /* EtoileFoundation.framework */;
+			remoteGlobalIDString = 603647AC0E409244003377E0;
 			remoteInfo = EtoileFoundation;
 		};
 		660D2DF110EF14620022F82C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 660D2DE710EF14620022F82C /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 609B66D70FEE80CE0007F842 /* TestEtoileFoundation.bundle */;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
 			remoteInfo = TestEtoileFoundation;
 		};
 /* End PBXContainerItemProxy section */
@@ -102,8 +102,6 @@
 		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FBA07B3F13500E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
-		1DDD58290DA1D0D100B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/STWorkspace.xib; sourceTree = "<group>"; };
-		1DDD582B0DA1D0D100B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		2A37F4ACFDCFA73011CA2CEA /* STWorkspace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STWorkspace.m; sourceTree = "<group>"; };
 		2A37F4AEFDCFA73011CA2CEA /* STWorkspace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STWorkspace.h; sourceTree = "<group>"; };
 		2A37F4B0FDCFA73011CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -111,6 +109,8 @@
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		660D2DAE10EF13910022F82C /* LanguageKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LanguageKit.xcodeproj; path = ../../../Languages/LanguageKit/LanguageKit.xcodeproj; sourceTree = SOURCE_ROOT; };
 		660D2DE710EF14620022F82C /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
+		660D2F4110EF3AF80022F82C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/STWorkspace.nib; sourceTree = "<group>"; };
+		660D2F4510EF3B200022F82C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* SmalltalkWorkspace-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SmalltalkWorkspace-Info.plist"; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* SmalltalkWorkspace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmalltalkWorkspace.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -190,10 +190,10 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				660D2F4010EF3AF80022F82C /* STWorkspace.nib */,
+				660D2F4410EF3B200022F82C /* MainMenu.nib */,
 				8D15AC360486D014006FF6A4 /* SmalltalkWorkspace-Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
-				1DDD58280DA1D0D100B32029 /* STWorkspace.xib */,
-				1DDD582A0DA1D0D100B32029 /* MainMenu.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -345,8 +345,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
-				1DDD582C0DA1D0D100B32029 /* STWorkspace.xib in Resources */,
-				1DDD582D0DA1D0D100B32029 /* MainMenu.xib in Resources */,
+				660D2F4210EF3AF80022F82C /* STWorkspace.nib in Resources */,
+				660D2F4610EF3B200022F82C /* MainMenu.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -391,20 +391,20 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		1DDD58280DA1D0D100B32029 /* STWorkspace.xib */ = {
+		660D2F4010EF3AF80022F82C /* STWorkspace.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1DDD58290DA1D0D100B32029 /* English */,
+				660D2F4110EF3AF80022F82C /* English */,
 			);
-			name = STWorkspace.xib;
+			name = STWorkspace.nib;
 			sourceTree = "<group>";
 		};
-		1DDD582A0DA1D0D100B32029 /* MainMenu.xib */ = {
+		660D2F4410EF3B200022F82C /* MainMenu.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1DDD582B0DA1D0D100B32029 /* English */,
+				660D2F4510EF3B200022F82C /* English */,
 			);
-			name = MainMenu.xib;
+			name = MainMenu.nib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
