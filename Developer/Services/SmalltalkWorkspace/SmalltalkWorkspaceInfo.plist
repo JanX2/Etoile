@@ -1,0 +1,20 @@
+{
+   ApplicationDescription = "Étoilé Smalltalk Workspace";
+   ApplicationName = SmalltalkWorkspace;
+   ApplicationRelease = 0.1;
+   Authors = ("Eric Wasylishen");
+   Copyright = "Copyright (C) 2010 by Eric Wasylishen";
+   CopyrightDescription = "Released under BSD Licence";
+   FullVersionID = 0.1;
+   URL = "";
+   NSTypes = (
+      {
+         NSName = "Workspace";
+         NSHumanReadableName = "Smalltalk Workspace";
+         NSUnixExtensions = ("st");
+         NSRole = Editor;
+         NSDocumentClass = STWorkspace;
+      }
+   );
+}
+

@@ -1,0 +1,26 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    Controller = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "doSelection:",
+	    "printSelection:"
+	);
+	Super = NSObject;
+    };
+    STWorkspace = {
+	Actions = (
+	    "doSelection:",
+	    "printSelection:"
+	);
+	Outlets = (
+	);
+	Super = NSDocument;
+    };
+}
