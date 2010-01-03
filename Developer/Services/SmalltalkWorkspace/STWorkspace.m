@@ -106,9 +106,16 @@
 
   NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
   id transcriptDelegate = [threadDict objectForKey: kTranscriptDelegate];
+  NSRange codeRange = [self selectedRange];
+  // Select the bit after the code, so that the transcript will not overwrite anything
+  [_textView setSelectedRange:
+    NSMakeRange(codeRange.location + codeRange.length, 0)];
+  
   [threadDict setObject: self forKey: kTranscriptDelegate];
   id result = [method executeInContext: _interpreterContext];
   [threadDict setValue: transcriptDelegate forKey: kTranscriptDelegate];
+  // Reset the selection.
+  [_textView setSelectedRange: codeRange];
 
   return result;
 }
