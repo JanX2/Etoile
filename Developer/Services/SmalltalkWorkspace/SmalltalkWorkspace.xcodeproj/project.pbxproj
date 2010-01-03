@@ -12,6 +12,7 @@
 		660D2DC910EF13C40022F82C /* SmalltalkSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 660D2DBD10EF13910022F82C /* SmalltalkSupport.framework */; };
 		660D2F4210EF3AF80022F82C /* STWorkspace.nib in Resources */ = {isa = PBXBuildFile; fileRef = 660D2F4010EF3AF80022F82C /* STWorkspace.nib */; };
 		660D2F4610EF3B200022F82C /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 660D2F4410EF3B200022F82C /* MainMenu.nib */; };
+		660D2FB610F1358E0022F82C /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 660D2DF010EF14620022F82C /* EtoileFoundation.framework */; };
 		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
 		8D15AC310486D014006FF6A4 /* STWorkspace.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* STWorkspace.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -120,6 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				660D2FB610F1358E0022F82C /* EtoileFoundation.framework in Frameworks */,
 				660D2DC710EF13BF0022F82C /* LanguageKit.framework in Frameworks */,
 				660D2DC810EF13C20022F82C /* LanguageKitRuntime.framework in Frameworks */,
 				660D2DC910EF13C40022F82C /* SmalltalkSupport.framework in Frameworks */,
