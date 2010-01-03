@@ -28,3 +28,4 @@ generatedWarning: (NSString*)aWarning
          details: (NSDictionary*)info;
 
 @end
+

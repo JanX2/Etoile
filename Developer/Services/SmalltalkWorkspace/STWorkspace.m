@@ -1,4 +1,5 @@
 #import <EtoileFoundation/EtoileFoundation.h>
+#import <EtoileFoundation/ETTranscript.h>
 #import <LanguageKit/LanguageKit.h>
 #import "STWorkspace.h"
 
@@ -102,9 +103,18 @@
   BOOL ok = [method check];
  
   NSLog(@"Method: %@ ok %d", method, ok);
+
+  NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
+  id transcriptDelegate = [threadDict objectForKey: kTranscriptDelegate];
+  [threadDict setObject: self forKey: kTranscriptDelegate];
   id result = [method executeInContext: _interpreterContext];
+  [threadDict setValue: transcriptDelegate forKey: kTranscriptDelegate];
 
   return result;
+}
+- (void)appendTranscriptString: (NSString*)aString
+{
+	[_textView insertText: aString];
 }
 
 @end
