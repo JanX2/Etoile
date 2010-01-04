@@ -85,12 +85,18 @@
 
 - (id) runCode: (NSString *)code
 {
+  id result = nil;
+
+  NSRange codeRange = [self selectedRange];
+  // Select the bit after the code, so that the transcript will not overwrite anything
+  [_textView setSelectedRange:
+    NSMakeRange(codeRange.location + codeRange.length, 0)];
+ 
   LKMethod *method = [_parser parseMethod: 
     [NSString stringWithFormat: @"workspaceMethod [ %@ ]", code]];
-    
-  NSMutableArray *statements = [method statements];
   
   // Make the last statement an implicit return
+  NSMutableArray *statements = [method statements];
   if ([statements count] > 0)
   {
     if (![[statements lastObject] isKindOfClass: [LKReturn class]])
@@ -104,21 +110,29 @@
 
   BOOL ok = [method check];
  
-  NSLog(@"Method: %@ ok %d", method, ok);
-
+  NSLog(@"Parsed method: %@ check result: %d", method, ok);
+ 
+  if (ok)
+  {
   NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
   id transcriptDelegate = [threadDict objectForKey: kTranscriptDelegate];
-  NSRange codeRange = [self selectedRange];
-  // Select the bit after the code, so that the transcript will not overwrite anything
-  [_textView setSelectedRange:
-    NSMakeRange(codeRange.location + codeRange.length, 0)];
-  
+
+ 
   [threadDict setObject: self forKey: kTranscriptDelegate];
-  id result = [method executeInContext: _interpreterContext];
+
+ NS_DURING
+    result = [method executeInContext: _interpreterContext];
+  NS_HANDLER
+    result = [NSString stringWithFormat: @"%@: %@", 
+	[localException name],
+	[localException reason]]; 
+  NS_ENDHANDLER
+
   [threadDict setValue: transcriptDelegate forKey: kTranscriptDelegate];
+ }
   // Reset the selection.
   [_textView setSelectedRange: codeRange];
-
+ 
   return result;
 }
 - (void)appendTranscriptString: (NSString*)aString
@@ -136,7 +150,7 @@
 generatedWarning: (NSString*)aWarning
          details: (NSDictionary*)info
 {
-  NSLog(@"Warning %@ %@", aWarning, info);
+  [self appendTranscriptString: [info valueForKey: kLKHumanReadableDescription]];
   return YES;
 }
 
@@ -163,7 +177,7 @@ generatedWarning: (NSString*)aWarning
     return YES;
   }
 
-  NSLog(@"Error %@ %@", anError, info);
+  [self appendTranscriptString: [info valueForKey: kLKHumanReadableDescription]];
   return NO;
 }
 
