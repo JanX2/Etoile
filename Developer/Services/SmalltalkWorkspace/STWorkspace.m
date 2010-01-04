@@ -95,8 +95,10 @@
   {
     if (![[statements lastObject] isKindOfClass: [LKReturn class]])
     {
+      NSLog(@"Last object before: '%@'", [statements lastObject]);
       [statements replaceObjectAtIndex: [statements count] - 1
                             withObject: [LKReturn returnWithExpr: [statements lastObject]]];
+      NSLog(@"Last object after: '%@'", [statements lastObject]);
     }
   }
 
@@ -143,14 +145,27 @@ generatedWarning: (NSString*)aWarning
          details: (NSDictionary*)info
 {
   LKAST *ast = [info valueForKey: kLKASTNode];
+
+  if ([ast isKindOfClass: [LKDeclRef class]])
+  {
+    if ([_interpreterContext hasSymbol: [ast symbol]])
+    {
+      [[ast symbols] addSymbol: [ast symbol]];
+      return YES;
+    }
+  }
+
   if ([[ast parent] isKindOfClass: [LKAssignExpr class]] &&
       ast == [[ast parent] target])
   {
-    NSLog(@"FIXME: Assign to %@", [info valueForKey:kLKHumanReadableDescription]);
-    return NO;
+    [_interpreterContext addSymbol: [ast symbol]];
+    [[ast symbols] addSymbol: [ast symbol]];
+    return YES;
   }
+
   NSLog(@"Error %@ %@", anError, info);
   return NO;
 }
 
 @end
+
