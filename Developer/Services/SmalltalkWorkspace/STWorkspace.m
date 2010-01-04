@@ -32,7 +32,7 @@
 
 - (IBAction) doSelection: (id)sender
 {
-	[self runCode: [self selection]];
+	[self runCode: [self selectedString]];
 }
 
 - (IBAction) printSelection: (id)sender
@@ -160,18 +160,18 @@ generatedWarning: (NSString*)aWarning
 
 	if ([ast isKindOfClass: [LKDeclRef class]])
 	{
-		if ([_interpreterContext hasSymbol: [ast symbol]])
+		if ([_interpreterContext hasSymbol: [(LKDeclRef*)ast symbol]])
 		{
-			[[ast symbols] addSymbol: [ast symbol]];
+			[[ast symbols] addSymbol: [(LKDeclRef*)ast symbol]];
 			return YES;
 		}
 	}
 
 	if ([[ast parent] isKindOfClass: [LKAssignExpr class]] &&
-	    ast == [[ast parent] target])
+	    ast == [(LKAssignExpr*)[ast parent] target])
 	{
-		[_interpreterContext addSymbol: [ast symbol]];
-		[[ast symbols] addSymbol: [ast symbol]];
+		[_interpreterContext addSymbol: [(LKDeclRef*)ast symbol]];
+		[[ast symbols] addSymbol: [(LKDeclRef*)ast symbol]];
 		return YES;
 	}
 
