@@ -64,7 +64,7 @@
 {
   if (!win)
   {
-    win = *(Window *)[server windowDevice: [self windowNumber]];
+    win = (Window)[server windowDevice: [self windowNumber]];
   }
   return win;
 }
