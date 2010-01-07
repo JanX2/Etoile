@@ -754,7 +754,9 @@ Class objc_allocateClassPair(Class superclass, const char *name, size_t extraByt
 
 	// Set up the new class
 	newClass->class_pointer = metaClass;
-	newClass->super_class = superclass;
+	// Set the superclass pointer to the name.  The runtime will fix this when
+	// the class links are resolved.
+	newClass->super_class = superclass->name;
 	newClass->name = strdup(name);
 	newClass->info = _CLS_CLASS;
 	newClass->dtable = __objc_uninstalled_dtable;
