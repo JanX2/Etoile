@@ -47,74 +47,6 @@
 
 @implementation NSMenu (HorizontalHackery)
 
-#define SHIFT_DELTA 18.0
-
-- (void) shiftOnScreen
-{
-  NSWindow *theWindow = _transient ? _bWindow : _aWindow;
-  NSRect    frameRect = [theWindow frame];
-  NSRect    screenRect = [[NSScreen mainScreen] frame];
-  NSPoint   vector    = {0.0, 0.0};
-  BOOL      moveIt    = NO;
-
-  // If we are the main menu forget about moving.
-  if ([self isEqual: [NSApp mainMenu]])
-    return;
-
-  // 1 - determine the amount we need to shift in the y direction.
-  if (NSMinY (frameRect) < 0)
-    {
-      vector.y = MIN (SHIFT_DELTA, -NSMinY (frameRect));
-      moveIt = YES;
-    }
-  else if (NSMaxY (frameRect) > NSMaxY (screenRect))
-    {
-      vector.y = -MIN (SHIFT_DELTA, NSMaxY (frameRect) - NSMaxY (screenRect));
-      moveIt = YES;   
-    }
-
-  // 2 - determine the amount we need to shift in the x direction.
-  if (NSMinX (frameRect) < 0)
-    {
-      vector.x = MIN (SHIFT_DELTA, -NSMinX (frameRect));
-      moveIt = YES;
-    }
-  // Note the -3.  This is done so the menu, after shifting completely
-  // has some spare room on the right hand side.  This is needed otherwise
-  // the user can never access submenus of this menu.   
-  else if (NSMaxX (frameRect) > NSMaxX (screenRect) - 3)
-    {
-      vector.x
-        = -MIN (SHIFT_DELTA, NSMaxX (frameRect) - NSMaxX (screenRect) + 3);
-      moveIt = YES;
-    }
-     
-  // This has been hacked for horizontal menus, i.e. we only scroll the 
-  // menu that is off the screen.
-  if (moveIt)
-    {
-      NSPoint  masterLocation;
-      NSPoint  destinationPoint;
-     
-      masterLocation = [[self window] frame].origin;
-      destinationPoint.x = masterLocation.x + vector.x;
-      destinationPoint.y = masterLocation.y + vector.y;
-
-      [self nestedSetFrameOrigin: destinationPoint];
-    }
-}
-
-- (void) _rightMouseDisplay: (NSEvent*)theEvent 
-{
-  // enable context menus to function
-  if (_horizontal == NO && [(NSMenuView *) _view isHorizontal] == NO)
-    {
-      [self displayTransient];
-      [_view mouseDown: theEvent];
-      [self closeTransient];
-    }
-}
-
 - (void) _setGeometry
 {
   [self setGeometry];
@@ -172,16 +104,6 @@
 
   return menuBarWindowFrame;
 }
-
-//-(void) _updateUserDefaults:(id)notification
-//{
-  
-  /*
-    NSLog(@"not going to update because we don't use this and might mess
-    something up for other menu layouts since they seem to draw from the
-    bottom up and our bottom is really close to the top");
-  */
-//}
 
 - (void) _organizeMenu
 {

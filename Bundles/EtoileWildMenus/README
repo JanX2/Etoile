@@ -6,4 +6,6 @@ EtoileWildMenus provides applications with horizontal menu display
 which plugs into the EtoileMenuServer looks. After compilation, 
 put it into the GSAppKitUserBundles defaults array
 (or run with -GSAppKitUserBundles argument, you know the story...).
+You also need to set NSMenuInterfaceStyle to NSMacintoshInterfaceStyle: 
+defaults write NSGlobalDomain NSMenuInterfaceStyle NSMacintoshInterfaceStyle
 
