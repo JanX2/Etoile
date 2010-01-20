@@ -114,47 +114,6 @@ enum {
     }
 }
 
-- (void) itemAdded: (NSNotification*)notification
-{
-  int         index  = [[[notification userInfo] 
-                          objectForKey: @"NSMenuItemIndex"] intValue];
-  NSMenuItem *anItem = [_items_link objectAtIndex: index];
-  id          aCell;
-  int wasHighlighted = _highlightedItemIndex;
-
-  if (![_attachedMenu _ownedByPopUp])
-    aCell = [MHMenuItemCell new];
-  else
-    aCell = [NSMenuItemCell new];
-
-  [aCell setMenuItem: anItem];
-  [aCell setMenuView: self];
-  [aCell setFont: _font];
-
-  /* Unlight the previous highlighted cell if the index of the highlighted
-   * cell will be ruined up by the insertion of the new cell.  */
-  if (wasHighlighted >= index)
-    {
-      [self setHighlightedItemIndex: -1];
-    }
- 
-  [_itemCells insertObject: aCell atIndex: index];
-                          
-  /* Restore the highlighted cell, with the new index for it.  */
-  if (wasHighlighted >= index)
-    {
-      /* Please note that if wasHighlighted == -1, it shouldn't be possible
-       * to be here.  */
-      [self setHighlightedItemIndex: ++wasHighlighted];
-    }
-
-  [aCell setNeedsSizing: YES];
-  RELEASE(aCell);
-
-  // Mark the menu view as needing to be resized.
-  [self setNeedsSizing: YES];
-}
-
 - (void) sizeToFit
 {
   unsigned i;

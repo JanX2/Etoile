@@ -22,15 +22,15 @@
 
 #include "MHMenuItemCell.h"
 
-@implementation MHMenuItemCell
-- (NSRect) drawingRectForBounds: (NSRect)theRect
+@implementation GSTheme (NSMenuItemCell)
+
+- (void) drawBorderAndBackgroundForMenuItemCell: (NSMenuItemCell *)cell
+                                      withFrame: (NSRect)cellFrame
+                                         inView: (NSView *)controlView
+                                          state: (GSThemeControlState)state
+                                   isHorizontal: (BOOL)isHorizontal
 {
-  return theRect;
+
 }
 
-- (void) drawBorderAndBackgroundWithFrame: (NSRect)cellFrame
-                                   inView: (NSView *)controlView
-{
-  //NSLog(@"WildMenus - NHMenuItemCell %@ -drawBorderAndBackgroundWithFrame:inView:", [[self menuItem] title]);
-}
 @end

@@ -23,9 +23,10 @@
 #ifndef __MHMENUITEMCELL_H__
 #define __MHMENUITEMCELL_H__
 
-#include <AppKit/NSMenuItemCell.h>
+#include <GNUstepGUI/GSTheme.h>
 
-@interface MHMenuItemCell : NSMenuItemCell
+// TODO: Rework and move into Nesedah and Narcissus
+@interface GSTheme (NSMenuItemCell)
 @end
 
 #endif
