@@ -1,9 +1,8 @@
 {
     GSThemeDomain = {
-	GSBackHandlesWindowDecorations = YES;
+	GSBackHandlesWindowDecorations = NO;
         GSScrollerButtonsOffset = 0.0;
     };
-    NSPrincipalClass = "GSTiledTheme";
     GSThemeAuthors = ("Jesse Ross", "Eric Wasylishen");
     GSThemeIcon = Thematic.png;
     GSThemeVersion = 0.1;
@@ -12,24 +11,10 @@
 	  NinePatch = YES;
           FileName = "Button-unselected.9.png";
 	};
-        GSButtonSelected = {
-	  NinePatch = YES;
-          FileName = "Button-selected.9.png";
-	};
-
 	GSGrayBezel = {
 	  NinePatch = YES;
           FileName = "Textbox.9.png";
 	};
-	GSMenuItemSelected = {
-	  NinePatch = YES;
-          FileName = "GSMenuItemSelected.png";
-	};
-	GSMenuItemHighlighted = {
-	  NinePatch = YES;
-          FileName = "GSMenuItemSelected.png";
-	};
-
       NSButton = {
         NinePatch = YES;
         FileName = "Button-unselected.9.png";
@@ -66,21 +51,21 @@
         FileName = "WindowResize.9.png";
       };
       GSWindowBackground = {
-	//NinePatch = YES;
-	FileName = "WindowBackground.png";
+	NinePatch = YES;
+	FileName = "WindowBackground.9.png";
         //FileName = "Ugly.9.png";
         //FillStyle = ScaleAll;
-        HorizontalDivision = 20;
-        VerticalDivision = 20;
+        //HorizontalDivision = 20;
+        //VerticalDivision = 20;
       };
       GSWindowBackgroundSelected = {
-	//NinePatch = YES;
-	//FileName = "WindowBackground.9.png";
+	NinePatch = YES;
+	FileName = "WindowBackground.9.png";
 	//FileName = "Ugly.9.png"; 
-        FileName = "WindowBackgroundSelected.png";
-        FillStyle = ScaleAll;
-        HorizontalDivision = 20;
-        VerticalDivision = 20; 
+        //FileName = "WindowBackgroundSelected.png";
+        //FillStyle = ScaleAll;
+        //HorizontalDivision = 20;
+        //VerticalDivision = 20; 
       };
       GSWindowTitleBar = {
         NinePatch = YES;
@@ -89,10 +74,6 @@
       GSProgressIndicatorBarDeterminate = {
         NinePatch = YES;
         FileName = "Progress-horizontal.9.png";
-      };
-      GSMenu = {
-        NinePatch = YES;
-        FileName = "Menu.9.png";
       };
     };
 }
