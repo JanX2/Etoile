@@ -8,6 +8,15 @@
     GSThemeIcon = Thematic.png;
     GSThemeVersion = 0.1;
     GSThemeTiles = {
+         NSTexturedSquareBezelStyle = {
+	  NinePatch = YES;
+	   FileName = "SquareButton.9.png";
+      };
+    NSTexturedSquareBezelStyleSelected = {
+	  NinePatch = YES;
+	   FileName = "SquareButtonSelected.9.png";
+      };
+
 	GSButton = {
 	  NinePatch = YES;
           FileName = "Button-unselected.9.png";
@@ -21,11 +30,28 @@
 	  NinePatch = YES;
           FileName = "Textbox.9.png";
 	};
-	GSMenuItemSelected = {
+	
+        GSMenuVerticalItem = {
+	  NinePatch = YES;
+          FileName = "Blank.9.png";
+	};
+	GSMenuVerticalItemSelected = {
 	  NinePatch = YES;
           FileName = "GSMenuItemSelected.png";
 	};
-	GSMenuItemHighlighted = {
+	GSMenuVerticalItemHighlighted = {
+	  NinePatch = YES;
+          FileName = "GSMenuItemSelected.png";
+	};
+        GSMenuHorizontalItem = {
+	  NinePatch = YES;
+          FileName = "Blank.9.png";
+	};
+	GSMenuHorizontalItemSelected = {
+	  NinePatch = YES;
+          FileName = "GSMenuItemSelected.png";
+	};
+	GSMenuHorizontalItemHighlighted = {
 	  NinePatch = YES;
           FileName = "GSMenuItemSelected.png";
 	};
@@ -90,9 +116,26 @@
         NinePatch = YES;
         FileName = "Progress-horizontal.9.png";
       };
-      GSMenu = {
+      GSMenuVerticalBackground = {
         NinePatch = YES;
         FileName = "Menu.9.png";
       };
+      GSMenuHorizontalBackground = {
+        NinePatch = YES;
+        FileName = "MenuBackgroundHorizontal.9.png";
+     };
+      GSTableHeader = {
+        NinePatch = YES;
+        FileName = "TableHeader.9.png";
+     };
+      GSTableHeaderHighlighted = {
+        NinePatch = YES;
+        FileName = "TableHeaderSelected.9.png";
+     };
+      GSTableCorner = {
+        NinePatch = YES;
+        FileName = "TableHeader.9.png";
+     };
+ 
     };
 }
