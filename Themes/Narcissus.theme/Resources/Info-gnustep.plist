@@ -8,7 +8,17 @@
     GSThemeIcon = Thematic.png;
     GSThemeVersion = 0.1;
     GSThemeTiles = {
-         NSTexturedSquareBezelStyle = {
+
+    NSSegmentStyleTexturedSquare = { NinePatch = YES; FileName = "SegmentedCell-unselected.9.png"; };
+    NSSegmentStyleTexturedSquareRoundedLeft = { NinePatch = YES; FileName = "SegmentedCellRoundedLeft-unselected.9.png"; };
+    NSSegmentStyleTexturedSquareRoundedRight = { NinePatch = YES; FileName = "SegmentedCell-unselected.9.png"; };
+    NSSegmentStyleTexturedSquareRoundedLeftRoundedRight = { NinePatch = YES; FileName = "SegmentedCell-unselected.9.png"; };
+    NSSegmentStyleTexturedSquareSelected = { NinePatch = YES; FileName = "SegmentedCell-selected.9.png"; };
+    NSSegmentStyleTexturedSquareRoundedLeftSelected = { NinePatch = YES; FileName = "SegmentedCellRoundedLeft-selected.9.png"; };
+    NSSegmentStyleTexturedSquareRoundedRightSelected = { NinePatch = YES; FileName = "SegmentedCell-selected.9.png"; };
+    NSSegmentStyleTexturedSquareRoundedLeftRoundedRightSelected = { NinePatch = YES; FileName = "SegmentedCell-selected.9.png"; };
+
+      NSTexturedSquareBezelStyle = {
 	  NinePatch = YES;
 	   FileName = "SquareButton.9.png";
       };
@@ -59,17 +69,19 @@
       NSButton = {
         NinePatch = YES;
         FileName = "Button-unselected.9.png";
-        //FillStyle = ScaleAll;
-        //HorizontalDivision = 15;
-        //VerticalDivision = 20; 
       };
+
       NSButtonSelected = {
         NinePatch = YES;
         FileName = "Button-selected.9.png";
       };
       NSButtonHighlighted = {
         NinePatch = YES;
-        FileName = "Button-selected.9.png";
+        FileName = "Button-highlighted.9.png";
+      };
+      NSButtonDisabled = {
+        NinePatch = YES;
+        FileName = "Button-disabled.9.png";
       };
       GSScrollerVerticalSlot = {
         NinePatch = YES;
