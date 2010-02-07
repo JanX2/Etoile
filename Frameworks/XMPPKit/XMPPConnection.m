@@ -402,6 +402,16 @@ static NSDictionary * STANZA_KEYS;
 
 - (void) dealloc
 {
+	[res release];
+	[user release];
+	[server release];
+	[pass release];
+	[sessionID release];
+	[unsentBuffer release];
+	[serverHost release];
+	[streamFeatures release];
+	[socket release];
+	[dispatcher release];
 	[super dealloc];
 }
 @end

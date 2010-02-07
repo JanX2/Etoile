@@ -36,9 +36,6 @@
 	NSString * user;
 	NSString * pass;
 	NSString * res;
-	NSString * serverID;
-	//XML node currently being parsed
-	id currentNode;
 	//Roster
 	Roster * roster;
 	Dispatcher * dispatcher;
