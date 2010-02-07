@@ -45,11 +45,13 @@
 
   id historySlider;
 }
+- (void) updateGorm;
 #ifdef COREOBJECT
 - (void) updateHistory;
 - (void) changeHistory: (id)sender;
 - (void) setHistory: (id) sender;
 #endif
+- (void) generateBundle: (id) sender;
 - (void) loadFile: (NSString*) path;
 - (void) addCategory: (id)sender;
 - (void) addClass: (id)sender;

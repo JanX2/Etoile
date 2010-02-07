@@ -21,12 +21,14 @@
 	LKSubclass* ast;
 }
 
+- (NSArray*) actions;
 - (id) initWithName: (NSString*) aName;
 - (void) setAST: (LKSubclass*) aClassAST;
 - (LKSubclass*) ast;
 - (void) generateAST;
 - (void) setName: (NSString*) aName;
 - (NSString*) name;
+- (NSString*) parent;
 - (void) setupDocumentation;
 - (void) setDocumentation: (NSMutableAttributedString*) aDocumentation;
 - (NSMutableAttributedString*) documentation;

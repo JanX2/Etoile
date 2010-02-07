@@ -1,4 +1,8 @@
 2010-02-07 Nicolas Roard <nicolas@roard.com>
+	Added some support to generate an application bundle
+	Added basic communication with Gorm
+
+2010-02-07 Nicolas Roard <nicolas@roard.com>
 	Lots of fixes for CoreObject support, history slider functional.
 
 2009-05-15 Nicolas Roard <nicolas@roard.com>

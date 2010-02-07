@@ -179,6 +179,31 @@ static int CLASS_VIEW = 1;
 	[self setAST: classAST];
 }
 
+- (NSArray*) actions
+{
+	NSMutableArray* actions = [NSMutableArray new];
+	for (int i=0; i<[methods count]; i++) {
+		ModelMethod* method = [methods objectAtIndex: i];
+		NSString* sig = [NSString stringWithString: [method signature]];
+		NSLog (@"sig: <%@>", sig);
+		NSArray* components = [sig componentsSeparatedByString: @" "];
+		NSMutableString* finalSig = [NSMutableString new];
+		for (int j=0; j<[components count]; j++) {
+			NSString* component = [components objectAtIndex: j];
+			NSLog(@"component: <%@>", component);
+			if ([component hasSuffix: @":"]) {
+				[finalSig appendString: component];
+			}
+		}
+		if ([finalSig length]) {
+			[actions addObject: finalSig];
+		}
+		[finalSig autorelease];
+		NSLog(@"%@ -> sig: %@ => finalSig %@", [self name], sig, finalSig);
+	}
+	return [actions autorelease];
+}
+
 - (void) setName: (NSString*) aName
 {
 	[aName retain];
@@ -189,6 +214,11 @@ static int CLASS_VIEW = 1;
 - (NSString*) name
 {
 	return name;
+}
+
+- (NSString*) parent
+{
+	return parent;
 }
 
 - (void) setDocumentation: (NSMutableAttributedString*) aDocumentation

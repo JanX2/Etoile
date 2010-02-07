@@ -21,6 +21,10 @@
 - (NSMutableAttributedString*) prettyprint;
 @end
 
+@protocol GormServer
+- (void) addClass: (NSDictionary *)dict;
+@end
+
 @implementation Controller
 
 - (void) awakeFromNib
@@ -61,6 +65,52 @@
 	//id obj = [NSClassFromString(@"Test") new];
 	//NSLog (@"ivars: %@", [obj instanceVariableNames]);
 	//[obj inspect: self];
+}
+
+- (void) generateBundle: (id) sender
+{
+	NSSavePanel* panel = [NSSavePanel savePanel];
+	[panel setRequiredFileType: @"app"];
+	if ([panel runModal] == NSFileHandlingPanelOKButton) 
+	{
+		NSLog(@" save file <%@>", [panel filename]);
+		NSFileManager* fm = [NSFileManager defaultManager];
+		[fm createDirectoryAtPath: [panel filename] attributes: nil];
+		NSString* executable = [[[panel filename] lastPathComponent] stringByDeletingPathExtension];
+		NSString* mainPath = [NSString stringWithFormat: @"%@/%@", [panel filename], executable];
+		NSString* edlc = @"#!/bin/sh\nedlc -b `dirname $0`";
+		[edlc writeToFile: mainPath atomically: YES];
+		[fm changeFileAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithInt: 511] forKey: NSFilePosixPermissions] atPath: mainPath];
+		NSString* rscPath = [NSString stringWithFormat: @"%@/Resources", [panel filename]];
+		[fm createDirectoryAtPath: rscPath attributes: nil];
+		NSMutableString* lkclasses = [NSMutableString stringWithString: @"{\nSources = ("];
+		NSArray* classes = [[IDE default] classes];
+		NSString* principalClass = nil;
+		for (int i=0; i<[classes count]; i++) {
+		    ModelClass* class = [classes objectAtIndex: i];
+	            NSMutableString* output = [NSMutableString new];
+		    NSString* representation = [class representation];
+		    id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
+		    id parser = [[[compiler parserClass] new] autorelease];
+		    LKAST* ast = [parser parseString: representation];
+		    [output appendString: [[ast prettyprint] string]];
+		    NSString* fileName = [NSString stringWithFormat: @"%@/Resources/%@.st", [panel filename], [class name]];
+		    [output writeToFile: fileName atomically: YES];
+		    if (i>0)
+			[lkclasses appendString: @", "];
+		    [lkclasses appendString: [NSString stringWithFormat: @"\"%@.st\"", [class name]]];
+		    if (i==0)
+			principalClass = [NSString stringWithString: [class name]];
+		}
+		[lkclasses appendString: [NSString stringWithFormat: @");\nPrincipalClass=%@;\n}", principalClass]];
+		NSString* lkclassesPath = [NSString stringWithFormat: @"%@/Resources/LKInfo.plist", [panel filename]];
+		[lkclasses writeToFile: lkclassesPath atomically: YES];
+
+		NSString* infoGnustepPath = [NSString stringWithFormat: @"%@/Resources/Info-gnustep.plist", [panel filename]];
+		NSString* infoGnustepContent = [NSString stringWithFormat: 
+			@"{ NSExecutable=\"%@\"; NSPrincipalClass=%@; NSMainNibFile=test; }", executable, principalClass];
+		[infoGnustepContent writeToFile: infoGnustepPath atomically: YES]; 
+	}
 }
 
 - (void) loadFile: (NSString*) path
@@ -167,6 +217,31 @@
 	return nil;
 }
 
+static id <GormServer> GormProxy = nil;
+
+- (void) updateGorm
+{
+    if (GormProxy == nil) {
+        GormProxy = [[NSConnection rootProxyForConnectionWithRegisteredName:@"GormServer" host:nil] retain];
+	//[GormProxy setProtocolForProxy:@protocol(GormServer)];
+    }
+
+    NSArray* classes = [[IDE default] classes];
+    for (int i=0; i<[classes count]; i++) {
+        NSMutableDictionary* sClass = [NSMutableDictionary new];
+	ModelClass* class = [classes objectAtIndex: i];
+        [sClass setObject: [class name] forKey: @"className"];
+	[sClass setObject: [class parent] forKey: @"superClass"];
+	NSArray* properties = [class properties];
+	NSLog(@"properties: %@", properties);
+	[sClass setObject: properties forKey: @"outlets"];
+	[sClass setObject: [class actions] forKey: @"actions"];
+	NSDictionary* toSend = [NSDictionary dictionaryWithDictionary: sClass];
+	[GormProxy addClass: toSend];
+        [sClass release];
+    } 
+}
+
 - (void) update
 {
         NSLog(@"update");
@@ -177,6 +252,7 @@
 	[categoriesList sizeToFit];
 	[methodsList reloadData];
 	[methodsList sizeToFit];
+	[self updateGorm];
         NSLog(@"update done");
 
 	// If we have a selected method, show it
