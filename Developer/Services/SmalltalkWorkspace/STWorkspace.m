@@ -8,10 +8,12 @@
 - (id)init
 {
 	SUPERINIT;
-	_interpreterContext = 
-		[[LKInterpreterContext alloc] initWithSelf: nil
-		                                   symbols: [NSArray array]
-		                                    parent: nil];
+
+	LKSymbolTable *table = [[LKMethodSymbolTable alloc] initWithLocals: nil
+	                                                               args: nil];
+
+	_interpreterContext = [[LKInterpreterContext alloc] initWithSymbolTable: table
+	                                                                 parent: nil];
 	[LKCompiler setDefaultDelegate: self];
 	_parser = [[[[LKCompiler compilerForLanguage: @"Smalltalk"] parserClass] alloc] init];
 
@@ -95,6 +97,8 @@
 	LKMethod *method = [_parser parseMethod: 
 		[NSString stringWithFormat: @"workspaceMethod [ %@ ]", code]];
 
+	[method inheritSymbolTable: [_interpreterContext symbolTable]];
+
 	// Make the last statement an implicit return
 	NSMutableArray *statements = [method statements];
 	if ([statements count] > 0)
@@ -158,20 +162,11 @@ generatedWarning: (NSString*)aWarning
 {
 	LKAST *ast = [info valueForKey: kLKASTNode];
 
-	if ([ast isKindOfClass: [LKDeclRef class]])
-	{
-		if ([_interpreterContext hasSymbol: [(LKDeclRef*)ast symbol]])
-		{
-			[[ast symbols] addSymbol: [(LKDeclRef*)ast symbol]];
-			return YES;
-		}
-	}
-
 	if ([[ast parent] isKindOfClass: [LKAssignExpr class]] &&
-	    ast == [(LKAssignExpr*)[ast parent] target])
+	    ast == [(LKAssignExpr*)[ast parent] target] &&
+	    [[ast symbols] scopeOfSymbol: [(LKDeclRef*)ast symbol]] == LKSymbolScopeInvalid)
 	{
-		[_interpreterContext addSymbol: [(LKDeclRef*)ast symbol]];
-		[[ast symbols] addSymbol: [(LKDeclRef*)ast symbol]];
+		[[_interpreterContext symbolTable] addSymbol: [(LKDeclRef*)ast symbol]];
 		return YES;
 	}
 
