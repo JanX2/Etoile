@@ -18,7 +18,11 @@
 	    "addClassMethod:",
 	    "changeHistory:",
 	    "setHistory:",
-	    "generateBundle:"
+	    "generateBundle:",
+	    "addNib:",
+	    "removeNib:",
+	    "editNibInGorm:",
+	    "markNibAsMainNib:"
 	);
 	Outlets = (
 	    categoriesList,
@@ -46,7 +50,10 @@
 	    signatureTextField,
 	    mainWindow,
 	    historySlider,
-	    historyTextField
+	    historyTextField,
+	    applicationNameField,
+	    principalClassPopup,
+	    nibsList
 	);
 	Super = NSObject;
     };
@@ -56,13 +63,17 @@
 	    "addClass:",
 	    "addClassMethod:",
 	    "addInstanceMethod:",
+	    "addNib:",
 	    "addProperty:",
 	    "changeHistory:",
-	    "load:",
+	    "editNibInGorm:",
 	    "generateBundle:",
+	    "load:",
+	    "markNibAsMainNib:",
 	    "removeCategory:",
 	    "removeClass:",
 	    "removeMethod:",
+	    "removeNib:",
 	    "removeProperty:",
 	    "runClass:",
 	    "save:",

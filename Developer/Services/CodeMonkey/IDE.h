@@ -8,12 +8,15 @@
 #include <AppKit/AppKit.h>
 
 @class ModelClass;
+@class ModelApplication;
 
 @interface IDE : NSObject
 {
   NSMutableArray* classes;
+  ModelApplication* application;
 }
 + (IDE*) default;
+- (ModelApplication*) application;
 - (NSMutableArray*) classes;
 - (void) loadContent: (NSString*) aContent;
 - (void) addClass: (NSString*) className;

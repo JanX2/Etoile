@@ -15,6 +15,7 @@
   id categoriesList;
   id classesList;
   id methodsList;
+  id nibsList;
   id content;
   id newClassNameField;
   id newCategoryNameField;
@@ -30,6 +31,8 @@
   id infoVersion;
   id infoAuthors;
   id historyTextField;
+  id principalClassPopup;
+  id applicationNameField;
 
   id mainWindow;
 
@@ -45,6 +48,10 @@
 
   id historySlider;
 }
+- (void) markNibAsMainNib: (id) sender;
+- (void) addNib: (id) sender;
+- (void) removeNib: (id) sender;
+- (void) editNibInGorm: (id) sender;
 - (void) updateGorm;
 #ifdef COREOBJECT
 - (void) updateHistory;

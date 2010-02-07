@@ -4,7 +4,7 @@ APP_NAME = CodeMonkey
 
 $(APP_NAME)_OBJC_FILES = $(wildcard *.m)
 $(APP_NAME)_MAIN_MODEL_FILE = Browser.gorm
-$(APP_NAME)_RESOURCE_FILES = Browser.gorm PrettyPrintCategories.st PrettyPrintWriter.st
+$(APP_NAME)_RESOURCE_FILES = default.gorm Browser.gorm LKInfo.plist PrettyPrintCategories.st PrettyPrintWriter.st
 $(APP_NAME)_GUI_LIBS = -lSmalltalkSupport -lLanguageKit -lCoreObject
  # -lMediaKit -lEtoileUI -lCoreObject -lIconKit
 $(APP_NAME)_INCLUDE_DIRS = -I`pg_config --includedir`

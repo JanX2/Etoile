@@ -33,6 +33,7 @@ static COProxy* MyCOProxy;
 {
 	self = [super init];
 	classes = [NSMutableArray new];
+	application = [ModelApplication new];
 #ifdef COREOBJECT
 	self = [COProxy proxyWithObject: self];
 	MyCOProxy = (COProxy*)self;
@@ -49,8 +50,14 @@ static COProxy* MyCOProxy;
 
 - (void) dealloc
 {
+	[application release];
 	[classes release];
 	[super dealloc];
+}
+
+- (ModelApplication*) application
+{
+	return application;
 }
 
 - (ModelClass*) classForName: (NSString*) aClassName

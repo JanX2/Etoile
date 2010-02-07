@@ -1,4 +1,10 @@
 2010-02-07 Nicolas Roard <nicolas@roard.com>
+	* Use LKCompiler to load the pretty print smalltalk files from
+	the bundle, so we get the automatic compilation...
+	* Added a ModelApplication class -- add nibs to your program,
+	a default nib will be copied over and can then be edited.
+
+2010-02-07 Nicolas Roard <nicolas@roard.com>
 	Added some support to generate an application bundle
 	Added basic communication with Gorm
 

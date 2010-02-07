@@ -10,6 +10,7 @@
 #import <EtoileUI/EtoileUI.h>
 #import <CoreObject/CoreObject.h>
 #import "Controller.h"
+#import "ModelApplication.h"
 #import "ModelClass.h"
 #import "ModelMethod.h"
 #import "ASTModel.h"
@@ -36,9 +37,9 @@
 	[self setTitle: @"Methods" for: methodsList];
 
 	[infoPanel setBackgroundColor: [NSColor blackColor]];
-	[infoVersion setStringValue: @"v 0.1"];
+	[infoVersion setStringValue: @"v 0.2"];
 	[infoVersion setTextColor: [NSColor whiteColor]];
-	[infoAuthors setStringValue: @"(c) 2009 Nicolas Roard. Art from digitalart (flickr)"];
+	[infoAuthors setStringValue: @"(c) 2009,2010 Nicolas Roard. Art from digitalart (flickr)"];
 	[infoAuthors setTextColor: [NSColor whiteColor]];
 
 	[historySlider setAllowsTickMarkValuesOnly: YES];
@@ -74,6 +75,10 @@
 	if ([panel runModal] == NSFileHandlingPanelOKButton) 
 	{
 		NSLog(@" save file <%@>", [panel filename]);
+		[[[IDE default] application] setPath: [panel filename]];
+		[[[IDE default] application] generateAppBundle]; 
+/*
+
 		NSFileManager* fm = [NSFileManager defaultManager];
 		[fm createDirectoryAtPath: [panel filename] attributes: nil];
 		NSString* executable = [[[panel filename] lastPathComponent] stringByDeletingPathExtension];
@@ -110,6 +115,7 @@
 		NSString* infoGnustepContent = [NSString stringWithFormat: 
 			@"{ NSExecutable=\"%@\"; NSPrincipalClass=%@; NSMainNibFile=test; }", executable, principalClass];
 		[infoGnustepContent writeToFile: infoGnustepPath atomically: YES]; 
+*/
 	}
 }
 
@@ -252,6 +258,8 @@ static id <GormServer> GormProxy = nil;
 	[categoriesList sizeToFit];
 	[methodsList reloadData];
 	[methodsList sizeToFit];
+	[nibsList reloadData];
+	[nibsList sizeToFit];
 	[self updateGorm];
         NSLog(@"update done");
 
@@ -338,6 +346,10 @@ static id <GormServer> GormProxy = nil;
 			return ret;
 		}
 	}
+	if (tv == nibsList)
+	{
+		return [[[[IDE default] application] nibs] count];
+	}
 	return 0;
 }
 
@@ -369,7 +381,23 @@ static id <GormServer> GormProxy = nil;
 			}
 		}
 	}
+	if (tv == nibsList)
+	{
+		return [[[[IDE default] application] nibs] objectAtIndex: row];
+	}
 	return nil;
+}
+
+- (void) tableView: (NSTableView *)tv
+    setObjectValue: (id)anObject
+    forTableColumn: (NSTableColumn *)tc
+               row: (int)rowIndex
+{
+	if (tv == nibsList)
+	{
+	        int selected = [nibsList selectedRow];
+		[[[IDE default] application] renameNibAtIndex: selected withName: anObject];
+	}
 }
 
 #ifdef COREOBJECT
@@ -794,6 +822,32 @@ static id <GormServer> GormProxy = nil;
 		cursorPosition = length - (affectedRange.location + affectedRange.length);
 	}
 	return YES;
+}
+
+- (void) addNib: (id) sender
+{
+	NSLog(@"addNib");
+	[[[IDE default] application] addNib];
+	[self update];
+}
+
+- (void) removeNib: (id) sender
+{
+	int selected = [nibsList selectedRow];
+	[[[IDE default] application] removeNibAtIndex: selected];
+	[self update];
+}
+
+- (void) editNibInGorm: (id) sender
+{
+	int selected = [nibsList selectedRow];
+	[[[IDE default] application] editNibAtIndex: selected];
+}
+
+- (void) markNibAsMainNib: (id) sender
+{
+	int selected = [nibsList selectedRow];
+	[[[IDE default] application] makeMainNibAtIndex: selected];
 }
 
 @end

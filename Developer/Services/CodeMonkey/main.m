@@ -58,8 +58,9 @@ void loadScript(NSString* name) {
 int main (int argc, char** argv)
 {
 	NSAutoreleasePool* pool = [NSAutoreleasePool new];
-	loadScript(@"PrettyPrintWriter");
-	loadScript(@"PrettyPrintCategories");
+	[LKCompiler loadLanguageKitBundle: [NSBundle mainBundle]];
+	//loadScript(@"PrettyPrintWriter");
+	//loadScript(@"PrettyPrintCategories");
 	[pool release];
 	return NSApplicationMain(argc, (const char**) argv);
 }
