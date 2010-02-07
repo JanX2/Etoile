@@ -75,14 +75,14 @@ static NSDictionary * STANZA_KEYS;
 + (id) connectionWithAccount:(NSString*)_account
 {
 	XMPPConnection * connection;
-	if(connections == nil)
+	if (connections == nil)
 	{
 		connections = [[NSMutableDictionary alloc] init];
 	}
 	
 	connection = [connections objectForKey:_account];
 	
-	if(connection == nil)
+	if (connection == nil)
 	{
 		connection = [XMPPConnection alloc];
 		[connections setObject:connection forKey:_account];
@@ -95,7 +95,7 @@ static NSDictionary * STANZA_KEYS;
 
 - (id) initWithAccount:(id)_account
 {
-	if(![_account isKindOfClass:[XMPPAccount class]])
+	if (![_account isKindOfClass:[XMPPAccount class]])
 	{
 		[self release];
 		return nil;
@@ -165,7 +165,7 @@ static NSDictionary * STANZA_KEYS;
 	ASSIGN(user, [aJID node]);
 	ASSIGN(server, [aJID domain]);
 	ASSIGN(pass, [password retain]);
-	if(jabberServer == nil)
+	if (jabberServer == nil)
 	{
 		ASSIGN(serverHost, server);
 	}
@@ -207,12 +207,12 @@ static NSDictionary * STANZA_KEYS;
 {
 	NSLog(@"Parsing element: %@", aName);
 	
-	if([aName isEqualToString:@"stream:stream"])
+	if ([aName isEqualToString:@"stream:stream"])
 	{
 		sessionID = [[_attributes objectForKey:@"id"] retain];
 		[server release];
 		server = [[_attributes objectForKey:@"from"] retain];
-		if(![[_attributes objectForKey:@"version"] isEqualToString:@"1.0"])
+		if (![[_attributes objectForKey:@"version"] isEqualToString:@"1.0"])
 		{
 			[self legacyLogIn];
 		}
@@ -228,7 +228,7 @@ static NSDictionary * STANZA_KEYS;
 - (void)logInWithMechansisms:(NSSet*) aFeatureSet
 {
 	//TODO: DIGEST-MD5 auth
-	if([aFeatureSet containsObject:@"PLAIN"])
+	if ([aFeatureSet containsObject:@"PLAIN"])
 	{
 		NSMutableData * authData = [NSMutableData dataWithBytes:"\0" length:1];
 		[authData appendData:[user dataUsingEncoding:NSUTF8StringEncoding]];
@@ -294,7 +294,7 @@ static NSDictionary * STANZA_KEYS;
 
 - (void)endElement:(NSString *)_Name
 {
-	if([_Name isEqualToString:@"stream:stream"])
+	if ([_Name isEqualToString:@"stream:stream"])
 	{
 			/*
 		if(connectionState != loggedIn)
@@ -333,7 +333,7 @@ static NSDictionary * STANZA_KEYS;
 {
 	[xmlLog logOutgoingXML:buffer];
 	//If we are not connected, buffer the input until we are.
-	if(unsentBuffer == nil)
+	if (unsentBuffer == nil)
 	{
 		unsentBuffer = [[NSMutableString alloc] init];
 	}
@@ -344,20 +344,20 @@ static NSDictionary * STANZA_KEYS;
 - (void) setStatus:(unsigned char)aStatus withMessage:(NSString*)aMessage
 {
 	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
-	if(aStatus == PRESENCE_OFFLINE)
+	if (aStatus == PRESENCE_OFFLINE)
 	{
 		[attributes setObject: @"unavailable" forKey: @"type"];
 	}
 	[xmlWriter startElement: @"presence"
 	             attributes: attributes];
 
-	if(aStatus != PRESENCE_ONLINE)
+	if (aStatus != PRESENCE_ONLINE)
 	{
 		[xmlWriter startAndEndElement: @"show"
 		                        cdata: [Presence xmppStringForPresence: aStatus]];
 	}
 	NSDictionary * presenceDictionary;
-	if(aMessage != nil)
+	if (aMessage != nil)
 	{
 		[xmlWriter startAndEndElement: @"status"
 		                        cdata: aMessage];
@@ -478,7 +478,7 @@ static NSDictionary * STANZA_KEYS;
 		SET_STATE(Encrypting);
 	}
 	//Hack for broken servers
-	else if([[aFeatureSet objectForKey:@"auth"] isEqualToString:@"http://jabber.org/features/iq-auth"])
+	else if ([[aFeatureSet objectForKey:@"auth"] isEqualToString:@"http://jabber.org/features/iq-auth"])
 	{
 		[self legacyLogIn];
 	}
@@ -497,7 +497,7 @@ static NSDictionary * STANZA_KEYS;
 }
 - (void)endElement:(NSString *)_Name
 {
-	if([_Name isEqualToString:@"stream:stream"])
+	if ([_Name isEqualToString:@"stream:stream"])
 	{
 		//If we have not manually disconnected, try to reconnect.
 		[self reconnectToJabberServer];
@@ -532,7 +532,7 @@ static NSDictionary * STANZA_KEYS;
 }
 - (void) handleIq:(Iq*)anIq
 {
-	if(([anIq type] == IQ_TYPE_RESULT))
+	if (([anIq type] == IQ_TYPE_RESULT))
 	{
 		NSString * newMessageID = [self newMessageID];
 		[dispatcher addIqResultHandler:roster forID:newMessageID];
@@ -553,7 +553,7 @@ static NSDictionary * STANZA_KEYS;
 - (void) XMPPSend: (NSString*) buffer
 {
 	[xmlLog logOutgoingXML:buffer];
-	if(unsentBuffer != nil)
+	if (unsentBuffer != nil)
 	{
 		[self sendString: unsentBuffer];
 		[unsentBuffer release];

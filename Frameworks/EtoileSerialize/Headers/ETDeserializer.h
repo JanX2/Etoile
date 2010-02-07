@@ -5,7 +5,7 @@
 #import <EtoileSerialize/ETUtility.h>
 
 @protocol ETDeserializerBackend;
-
+@class ETUUID;
 
 //TODO: Move this into the implementation file and make it an opaque data type.
 typedef struct 
@@ -69,6 +69,7 @@ typedef void*(*custom_deserializer)(char*,void*,void*);
 	 * invocations have been fired. */
 	NSMutableArray * invocations;
 }
+
 /**
  * Returns a new deserializer using the specified backend.
  */
@@ -227,4 +228,35 @@ typedef void*(*custom_deserializer)(char*,void*,void*);
   * implement a custom strategy that resolve objects associated with UUIDs. 
   */
 - (id) lookUpObjectForUUID:(unsigned char *)aUUID;
+
+/**
+ * Returns the backend in use by the deserializer.
+ */
+- (id<ETDeserializerBackend>) backend;
+@end
+
+
+/**
+ * Processes that want to vend out ETDeserializer instances via Distributed
+ * Objects shall implement the ETDeserializerVendor protocol.
+ */
+@protocol ETDeserializerVendor
+
+/**
+ * Creates a deserializer for the named backend. The vending application may use
+ * the uuid and sender variables to determine additional details. If the
+ * application requesting the object is using an XMPPObjectStore, sender will
+ * refer to the JID of the user that is trying to sent an object graph.
+ */
+- (ETDeserializer*) deserializerWithBackend: (NSString*) backendClassString
+                          forObjectWithUUID: (ETUUID*)uuid
+                                       from: (NSString*)sender;
+
+/**
+ * This method can be called by the requesting application to inform the vending
+ * process about successful deserialization.
+ */
+- (void) obtainedObject: (id) object
+               withUUID: (ETUUID*)uuid
+                   from: (NSString*)senderJID;
 @end

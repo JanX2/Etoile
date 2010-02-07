@@ -3,6 +3,8 @@
 #include <objc/objc.h>
 #include <objc/objc-api.h>
 #include <objc/Object.h>
+#import <EtoileFoundation/ETUUID.h>
+#import <EtoileFoundation/Macros.h>
 #import "ETSerializer.h"
 #import "ETDeserializer.h"
 #import "ETSerializerNullBackend.h"
@@ -18,6 +20,25 @@
 #else
 #define GUESSWARN(...)
 #endif
+
+//Define the name of the (as of yet non-existant) XMPP daemon:
+#define XMPP_DAEMON_NAME @"ETXMPPService"
+
+/**
+ * Private protocol to make EtoileSerialize aware of the API that the XMPP
+ * daemon uses to distribute XMPPObjectStores.
+ */
+@protocol XMPPStoreVendor
+/**
+ * Returns an XMPPObjectStore attached to the conversation between senderJID and
+ * receiverJID, passing the UUID and the registered name of the serializing
+ * application as metadata.
+ */
+-(id<ETSerialObjectStore>) xmppObjectStoreForUUID: (ETUUID*)anUUID
+                                           andApp: (NSString*)registeredName
+                                             from: (NSString*)senderJID
+                                               to: (NSString*)receiverJID;
+@end
 
 /**
  * Objects that inherit from Object instead of NSObject don't understand
@@ -148,12 +169,38 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 	branch = @"root";
 	objectVersion = -1;
 
-	/* Only works on local files for now */
-	if(![anURL isFileURL])
+	// The URL of an object send via xmpp has the following form:
+	// xmpp-object://<UUID>/;from=<JID>;to=<JID>;app=<RegisteredNameOfApp>
+	// Please remember to escape reserved characters.
+	if ([[anURL scheme] isEqualToString: @"xmpp-object"])
 	{
-		store = [[ETSerialObjectStdout alloc] init];
+		// Factor out the UUID, app, from and to parts from the URL.
+		ETUUID *uuid = [ETUUID UUIDWithString: [anURL host]];
+		NSArray *parameterString = [[anURL parameterString] componentsSeparatedByString: @";"];
+		NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+		FOREACH(parameterString,param,NSString*)
+		{
+			NSArray *pseudoDict = [param componentsSeparatedByString: @"="];
+			if ([pseudoDict count] > 1)
+			{
+				[parameters setObject: [(NSString*)[pseudoDict objectAtIndex: 1]
+				stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]
+				               forKey: [pseudoDict objectAtIndex: 0]];
+			}
+		}
+		// Obtain a proxy object for the XMPP daemon
+		id xmppProxy = nil;
+		xmppProxy = [[NSConnection rootProxyForConnectionWithRegisteredName: XMPP_DAEMON_NAME
+		                                                               host: nil] retain];
+		[xmppProxy setProtocolForProxy:@protocol(XMPPStoreVendor)];
+		// Request a store for the parameters above.
+		store = [[xmppProxy xmppObjectStoreForUUID: uuid
+		                                    andApp: [parameters objectForKey: @"app"]
+		                                      from: [parameters objectForKey: @"from"]
+		                                        to: [parameters objectForKey: @"to"]] retain];
+		[xmppProxy release];
 	}
-	else
+	else if ([anURL isFileURL])
 	{
 		NSFileManager * manager = [NSFileManager defaultManager];
 		NSString * path = [anURL path];
@@ -164,6 +211,10 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 		}
 		store = [[ETSerialObjectBundle alloc] init];
 		[store setPath:path];
+	}
+	else
+	{
+		store = [[ETSerialObjectStdout alloc] init];
 	}
 	[self setBackend:[aBackend serializerBackendWithStore:store]];
 	return self;

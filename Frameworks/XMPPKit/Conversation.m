@@ -7,6 +7,7 @@
 //
 
 #import "Conversation.h"
+#import "XMPPObjectStore.h"
 #import "Message.h"
 
 static NSMutableDictionary * conversations = nil;
@@ -113,6 +114,18 @@ static NSMutableArray * filters;
 	Message * newMessage = [Message messageWithBody:_message for:remoteJID withSubject:nil type:MESSAGE_TYPE_CHAT];
 	[delegate displayMessage:newMessage incoming:NO];
 	[newMessage writeToXMLWriter: [connection xmlWriter]];
+}
+
+- (XMPPObjectStore*) objectStoreForObjectWithUUID: (ETUUID*)uuid
+                                   andApplication: (NSString*)registeredName
+{
+	Message *newMessage = [Message messageWithBody: nil  for:remoteJID
+	                                   withSubject: nil type: MESSAGE_TYPE_CHAT];
+	[newMessage beginWritingToXMLWriter: [connection xmlWriter]];
+	XMPPObjectStore *store = [[[XMPPObjectStore alloc] initWithXMLWriter: [connection xmlWriter]
+	                                                      inConversation: self] autorelease];
+	[store beginObjectWithUUID: uuid andApplication: registeredName];
+	return store;
 }
 
 //If the corespondent's presence changes, we may wish to talk to a different one of their identities.  Check this, then update the UI.

@@ -124,6 +124,16 @@ DEALLOC([deserializer release];
 	}
 }
 
+- (void) endElement: (NSString *)nodeName
+{
+	[super endElement: nodeName];
+	if ([nodeName isEqualToString: @"objects"])
+	{
+		// The end of the </objects> element is passed down to the deserializer
+		// because it might need to forward the end to an eventual parent.
+		[parent endElement: nodeName];
+	}
+}
 @end
 
 @interface ETXMLobjectDeserializationHandler : ETXMLDeserializationHandler

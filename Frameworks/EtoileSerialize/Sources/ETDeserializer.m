@@ -432,6 +432,7 @@ LOAD_METHOD(Selector, SEL)
 	ASSIGN(backend, aBackend);
 	[backend setDeserializer:self];
 }
+
 + (ETDeserializer*) deserializerWithBackend:(id<ETDeserializerBackend>)aBackend
 {
 	ETDeserializer * deserializer = [[[self alloc] init] autorelease];
@@ -771,6 +772,11 @@ LOAD_METHOD(Selector, SEL)
 - (id) lookUpObjectForUUID:(unsigned char *)aUUID
 {
 	return [[ETUUID alloc] initWithUUID:aUUID];
+}
+
+- (id<ETDeserializerBackend>) backend
+{
+	return backend;
 }
 
 - (void) dealloc

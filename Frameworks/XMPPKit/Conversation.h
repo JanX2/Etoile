@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "XMPPAccount.h"
 #import "ChatLog.h"
+
+@class XMPPObjectStore;
+
 /**
  * The ConversationDelegate formal protocol should be implemented by any user
  * interface representing a conversation.  Events in the associated conversation
@@ -97,6 +100,16 @@
  * Send a string as a message to the remote party.
  */
 - (void) sendText:(id)_message;
+
+/**
+ * Returns an XMPPObjectStore that can be vended via DO to processes that want
+ * send serialized objects to the correspondent of the conversation object.
+ * NOTE: You can't use the XMPP connection for anything but sending the
+ * serialized object graph until you have called -finalize on the store.
+ */
+-(XMPPObjectStore*) objectStoreForObjectWithUUID: (ETUUID*)uuid
+                                  andApplication: (NSString*)registeredName;
+
 /**
  * Returns the delegate.
  */

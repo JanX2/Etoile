@@ -77,7 +77,7 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
 /**
  * Sets a flag indicating that this message is destined for display.
  */
-- (void) setShouldDisplay:(BOOL)aFlag;
+- (void) setShouldDisplay: (BOOL)aFlag;
 /**
  * Indicates whether the message should be displayed.  Messages of supported
  * types where the plain text and HTML elements are purely for fall-back 
@@ -91,9 +91,19 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
 /**
  * Compare messages to determine their order of sending.
  */
-- (NSComparisonResult) compareByTimestamp:(Message*)_other;
+- (NSComparisonResult) compareByTimestamp: (Message*)_other;
 /**
  * Writes the message in XML form to the specified XML writer.
  */
-- (void)writeToXMLWriter: (ETXMLWriter*)xmlWriter;
+- (void )writeToXMLWriter: (ETXMLWriter*)xmlWriter;
+
+/**
+ * Only write the beginning of the message but don't send the closing tag.
+ */
+- (void) beginWritingToXMLWriter: (ETXMLWriter*)xmlWriter;
+
+/**
+ * Finish writing the message by sending the closing tag.
+ */
+ - (void) finishWritingToXMLWriter: (ETXMLWriter*)xmlWriter;
 @end

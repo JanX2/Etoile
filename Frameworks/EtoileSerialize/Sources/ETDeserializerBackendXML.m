@@ -16,6 +16,12 @@
 #import <EtoileXML/ETXMLParser.h>
 #import <EtoileXML/ETXMLParserDelegate.h>
 
+
+@protocol ETSerialXMLReading
+- (ETXMLParser*) xmlParser;
+- (BOOL) xmlParserWillRead;
+@end
+
 /**
  * XML backend for the deserializer.
  */
@@ -23,11 +29,22 @@
 
 - (id) init
 {
-	SUPERINIT
+	self = [super initWithXMLParser: [[[ETXMLParser alloc] initWithContentHandler: nil] autorelease]
+	                         parent: nil
+	                            key: @"ETDeserializerBackendXML"];
+	if (nil == self)
+	{
+		return nil;
+	}
+	[parser setContentHandler: self];
 	buffer = nil;
 	principalObjectRef = 0;
 	principalObjectClass = Nil;
-	parser = [[ETXMLParser alloc] initWithContentHandler: self];
+
+	// NOTE: We set the depth to 1 because the deserializer is either the root of
+	// the tree and won't have it's own -startElement:attributes: call or it has
+	// been swapped in for an XMPPObjectStore at depth 1. 
+	depth = 1;
 	return self;
 }
 
@@ -36,11 +53,25 @@
  */
 - (BOOL) deserializeFromStore:(id)aStore
 {
-	if (![aStore conformsToProtocol:@protocol(ETSerialObjectStore)])
+	if (![aStore conformsToProtocol: @protocol(ETSerialObjectStore)])
 	{
 		return NO;
 	}
 	ASSIGN(store, aStore);
+
+	// If the store responds to the appropriate selectors, we take over parsing
+	// duties from it. (This is what happens in case of the XMPPObjectStore.)
+	if ([store respondsToSelector: @selector(xmlParserWillRead)])
+	{
+		if([store xmlParserWillRead])
+		{
+			[self setParent: store];
+			// NOTE: If the parser is obtained from the store, we need to retain
+			// it.
+			[self setParser: [[(id<ETSerialXMLReading>)store xmlParser] retain]];
+			[parser setContentHandler: self];
+		}
+	}
 	return YES;
 }
 
@@ -103,6 +134,7 @@
 - (int) setVersion:(int)aVersion
 {
 	//FIXME: Get the branch sensibly.
+
 	if ([self deserializeFromData:[store dataForVersion:aVersion inBranch:branch]])
 	{
 		return aVersion;
@@ -137,6 +169,7 @@
 {
 	return (char*)[NSStringFromClass(principalObjectClass) cStringUsingEncoding: NSASCIIStringEncoding];
 }
+
 
 /**
  * Since we deserialize at parse time, this does nothing.
@@ -184,6 +217,7 @@
 - (void) startElement: (NSString *)name
            attributes: (NSDictionary*)attributes
 {
+	// NOTE: There is no depth++ anywhere here. Cf. note in the initializer.
 	if ([name isEqual: @"objects"])
 	{
 		ETXMLDeserializationHandler *handler =
@@ -199,22 +233,17 @@
 	}
 }
 
-- (void) endElement: (NSString *)name
+- (void) endElement: (NSString*) anElement
 {
-	//Ignore
+	[super endElement: anElement];
+	if (0 == depth)
+	{
+		// We get rid of the parser because we either created it ourselves or
+		// received it via DO. In both cases we needed to retain it.
+		[parser release];
+		parser = nil;
+	}
 }
-
-- (void) setParser: (ETXMLParser *)aParser
-{
-	[parser autorelease];
-	parser = [aParser retain];
-}
-
-- (void) setParent: (id)aParent
-{
-	//Ignore
-}
-
 //Setter methods used by deserialization handlers
 
 - (void) setPrincipalObjectClass: (NSString *)className

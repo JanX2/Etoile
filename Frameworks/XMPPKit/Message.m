@@ -70,7 +70,7 @@ NSDictionary * MESSAGE_TYPES;
 	return self;
 }
 
-- (void)writeToXMLWriter: (ETXMLWriter*)xmlWriter
+- (void) beginWritingToXMLWriter: (ETXMLWriter*)xmlWriter
 {
 	NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
 	
@@ -115,9 +115,18 @@ NSDictionary * MESSAGE_TYPES;
 	{
 		[html writeXHTMLIMToXMLWriter: xmlWriter];
 	}
+}
+
+- (void) finishWritingToXMLWriter: (ETXMLWriter*) xmlWriter
+{
 	[xmlWriter endElement];
 }
 
+- (void)writeToXMLWriter: (ETXMLWriter*)xmlWriter
+{
+	[self beginWritingToXMLWriter: (ETXMLWriter*) xmlWriter];
+	[self finishWritingToXMLWriter: (ETXMLWriter*) xmlWriter];
+}
 
 
 - (JID*) correspondent
