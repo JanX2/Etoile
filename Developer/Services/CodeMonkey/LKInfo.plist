@@ -1,0 +1,4 @@
+{
+	Sources = ("PrettyPrintWriter.st", "PrettyPrintCategories.st");
+	PrincipalClass = PrettyPrintWriter;
+}
