@@ -7,6 +7,7 @@
 
 #import <LanguageKit/LanguageKit.h>
 #import <EtoileSerialize/EtoileSerialize.h>
+#import "IDE.h"
 #import "ModelClass.h"
 #import "ModelMethod.h"
 
@@ -16,14 +17,62 @@ static NSString* AYU = @"<< As yet Undefined >>";
 static int INSTANCE_VIEW = 0;
 static int CLASS_VIEW = 1;
 
+@interface GSTextStorage : NSTextStorage
+{
+  NSString              *_textChars;
+  NSMutableArray        *_infoArray;
+}
+@end
+
+@implementation GSTextStorage (serialize)
+- (BOOL) serialize: (char *)aVariable using: (ETSerializer *)aSerializer
+{
+        NSLog(@"GS serialize %s", aVariable);
+        if (strcmp(aVariable, "_infoArray")==0)
+	{
+		NSLog(@"not serializing _infoArray");
+		return YES;
+	}
+        if (strcmp(aVariable, "_textChars")==0)
+	{
+        	return [super serialize: aVariable using: aSerializer];
+	}
+	return YES;
+}
+
+- (void*) deserialize:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
+{
+        NSLog(@"GS deserialize %s", aVariable);
+        return [super deserialize: aVariable fromPointer: aBlob version: aVersion];
+}
+
+- (void) finishedDeserializing
+{
+	NSLog(@"finished deserializing GSTextStorage");
+	NSString* str = [_textChars retain];
+	NSLog(@"code stored: %@", str);
+	[self initWithString: str];
+	[str release];
+	NSLog(@"code after deserialization: %@", self);
+}
+@end
+
 @implementation ModelClass
 
 - (BOOL) serialize: (char *)aVariable using: (ETSerializer *)aSerializer
 {
+        NSLog(@"Model class serialize %s", aVariable);
+
 	if (strcmp(aVariable, "name")==0)
 	{
 		// Just for debugging
 		NSLog(@"Serialize class name: %@", name);
+	}
+
+	if (strcmp(aVariable, "methods")==0)
+	{
+		// Just for debugging
+		NSLog(@"Serialize class methods: %@", methods);
 	}
 	
 	if (strcmp(aVariable, "ast")==0)
@@ -36,8 +85,9 @@ static int CLASS_VIEW = 1;
 		[aSerializer storeObjectFromAddress: &tmp withName: "documentation"];
 		return YES;
 	}
-	return NO;
+	return [super serialize: aVariable using: aSerializer];
 }
+
 - (void*) deserialize:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
 {
 	if (strcmp(aVariable, "ast")==0)
@@ -55,6 +105,11 @@ static int CLASS_VIEW = 1;
 
 	NSLog(@"Deserialized class documentation: %@", documentation);
 	documentation = [[NSMutableAttributedString alloc] initWithString: (NSString*)documentation];
+	NSLog(@"Deserialized methods: %@", methods);
+	for (int i=0; i < [methods count]; i++) {
+		NSLog(@"Deserialized method %d is: %@", i, 
+			[methods objectAtIndex: i]);
+	}
 	
 	[self generateAST];
 }
@@ -149,8 +204,16 @@ static int CLASS_VIEW = 1;
 
 - (void) addMethod: (ModelMethod*) aMethod
 {
+	if ([self methodWithSignature: [aMethod signature]]) return;
+	NSLog(@"Adding method on the class: %@", aMethod);
 	[methods addObject: aMethod];
 	[self reloadCategories];
+	NSLog(@"(%x) representation: %@", self, [self representation]);
+	NSLog(@"IDE is %x", [[IDE default] _realObject]);
+	for (int i=0; i<[[[IDE default] classes] count]; i++) {
+		id cls = [[[IDE default] classes] objectAtIndex: i];
+		NSLog(@"in addMethod, class %d (%x) is: %@", i, cls, [cls representation]);
+	}
 }
 
 - (void) removeMethod: (ModelMethod*) aMethod
@@ -211,13 +274,18 @@ static int CLASS_VIEW = 1;
 		NSMutableArray* category = [categories objectForKey: key];
 		[category removeAllObjects];
 	}
+	[categories removeAllObjects];
+	[[self setCategory: ALL] removeAllObjects];
+	[[self setCategory: AYU] removeAllObjects];
+
 	NSMutableArray* all = [self setCategory: ALL];
+	NSLog(@"reload all %d", [all count]);
 	for (int i=0; i<[methods count]; i++)
 	{
 		ModelMethod* method = [methods objectAtIndex: i];
 		NSString* categoryName = [method category];
 		if ((categoryName == nil)
-			|| (categoryName == ALL))
+			|| ([categoryName isEqualToString: ALL]))
 		{
 			categoryName = AYU;
 		}
@@ -225,7 +293,9 @@ static int CLASS_VIEW = 1;
 		[category addObject: method];
 		[all addObject: method];
 	}
+	NSLog(@"reload catg, %d, %d methods", [all count], [methods count]);
 	NSMutableArray* props = [self setCategory: PROPERTIES];
+	[props removeAllObjects];
 	for (int i=0; i<[properties count]; i++)
 	{
 		NSString* property = [properties objectAtIndex: i];

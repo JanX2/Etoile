@@ -13,17 +13,21 @@
 
 - (BOOL) serialize: (char *)aVariable using: (ETSerializer *)aSerializer
 {
+	NSLog(@"model method serialize %s", aVariable);
 	if (strcmp(aVariable, "ast")==0)
 	{
 		return YES;
 	}
+/*
     if (strcmp(aVariable, "code")==0)
 	{
+		NSLog(@"code class in ModelMethod: %@", [code class]);
 		NSString* tmp = [code string];
 		[aSerializer storeObjectFromAddress: &tmp withName: "code"];
 		return YES;
 	}
-	return NO;
+*/
+	return [super serialize: aVariable using: aSerializer];
 }
 
 - (void *) deserialize: (char *)aVariable
@@ -41,8 +45,8 @@
 - (void) finishedDeserializing
 {
 	NSLog(@"Deserialized code string: %@", code);
-	NSMutableAttributedString* ncode = [[NSMutableAttributedString alloc] initWithString: (NSString *)code];
-	[self setCode: ncode];
+//	NSMutableAttributedString* ncode = [[NSMutableAttributedString alloc] initWithString: (NSString *)code];
+//	[self setCode: ncode];
 }
 
 

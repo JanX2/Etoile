@@ -45,8 +45,11 @@
 
   id historySlider;
 }
+#ifdef COREOBJECT
+- (void) updateHistory;
 - (void) changeHistory: (id)sender;
 - (void) setHistory: (id) sender;
+#endif
 - (void) loadFile: (NSString*) path;
 - (void) addCategory: (id)sender;
 - (void) addClass: (id)sender;
@@ -71,4 +74,5 @@
 - (ModelMethod*) currentMethod;
 - (void) setTitle: (NSString*) title for: (NSTableView*) tv;
 - (void) setStatus: (NSString*) text;
+- (void) recreateMethodAST;
 @end

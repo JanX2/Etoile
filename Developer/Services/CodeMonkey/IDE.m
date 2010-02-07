@@ -22,22 +22,28 @@
 - (NSMutableAttributedString*) prettyprint;
 @end
 
-@interface IDE (COProxy)
-- (void) setPersistencyMethodNames: (NSArray *)names;
-- (unsigned int) objectVersion;
-@end
 
 @implementation IDE
 
+#ifdef COREOBJECT
 static COProxy* MyCOProxy;
+#endif
 
 - (id) init
 {
 	self = [super init];
 	classes = [NSMutableArray new];
+#ifdef COREOBJECT
 	self = [COProxy proxyWithObject: self];
 	MyCOProxy = (COProxy*)self;
-	[self setPersistencyMethodNames: A(@"replaceMethod:withSignature:andCode:onClass:")];
+	[self setPersistencyMethodNames: A(@"replaceMethod:withSignature:andCode:onClass:",
+                                           @"addMethod:withSignature:withCategory:onClass:",
+                                           @"addClassMethod:withSignature:withCategory:onClass:",
+                                           @"addClass:",
+                                           @"addCategory:onClass:",
+                                           @"addProperty:onClass:",
+                                           @"loadContent:")];
+#endif
 	return self;
 }
 
@@ -45,6 +51,27 @@ static COProxy* MyCOProxy;
 {
 	[classes release];
 	[super dealloc];
+}
+
+- (ModelClass*) classForName: (NSString*) aClassName
+{
+	for (int i=0; i<[classes count]; i++) {
+		if ([[[classes objectAtIndex: i] name] isEqualToString: aClassName]) {
+			return [classes objectAtIndex:i ];
+		}
+	}
+        return nil;
+}
+
+- (void) removeClassAtIndex: (int) row
+{
+	[[self classes] removeObjectAtIndex: row];
+}
+
+- (BOOL) serialize: (char *)aVariable using: (ETSerializer *)aSerializer
+{
+        NSLog(@"IDE serialize %s", aVariable);
+        return [super serialize: aVariable using: aSerializer];
 }
 
 + (IDE*) default
@@ -106,18 +133,26 @@ static COProxy* MyCOProxy;
 	[aClass generateAST];
 	[classes addObject: aClass];
 	[aClass release];
+        NSLog(@"class %@ added", className);
+        NSLog(@"current nb of classes: %d", [classes count]);
+	//NSLog(@"current object version %d", [(COProxy*)[IDE default] objectVection]);
 }
 
-- (void) addCategory: (NSString*) categoryName onClass: (ModelClass*) aClass
+- (void) addCategory: (NSString*) categoryName onClass: (NSString*) aClassName
 {
+	ModelClass* aClass = [self classForName: aClassName];
 	[aClass setCategory: categoryName];
 }
 
 - (void) addMethod: (NSMutableAttributedString*) code 
 	withSignature: (NSString*) signature
 	withCategory: (NSString*) categoryName
-	onClass: (ModelClass*) aClass
+	onClass: (NSString*) aClassName
 {
+	NSLog(@"SHOULD BE PROXIED ADD METHOD!");
+	ModelClass* aClass = [self classForName: aClassName];
+	NSLog(@"(%x) addMethod: %@ withSignature: %@ on class %@", self, code, signature, aClass);
+	if (aClass == nil) return;
 	ModelMethod* aMethod = [ModelMethod new];
 	[aMethod setCode: code]; 
         [aMethod setSignature: signature];
@@ -132,13 +167,16 @@ static COProxy* MyCOProxy;
 
 	[aClass addMethod: aMethod];
 	[aMethod release];
+	NSLog(@"should have finished the addMethod");
 }
 
 - (void) addClassMethod: (NSMutableAttributedString*) code 
 	withSignature: (NSString*) signature
 	withCategory: (NSString*) categoryName
-	onClass: (ModelClass*) aClass
+	onClass: (NSString*) aClassName
 {
+	ModelClass* aClass = [self classForName: aClassName];
+        if (aClass == nil) return;
 	ModelMethod* aMethod = [ModelMethod new];
 	[aMethod setClassMethod: YES];
 	[aMethod setCode: code];
@@ -156,37 +194,44 @@ static COProxy* MyCOProxy;
 	[aMethod release];
 }
 
-- (void) addProperty: (NSString*) propertyName onClass: (ModelClass*) aClass
+- (void) addProperty: (NSString*) propertyName onClass: (NSString*) aClassName
 {
+	ModelClass* aClass = [self classForName: aClassName];
 	[aClass addProperty: propertyName];
 }
 
 - (NSMutableString*) allClassesContent
 {
 	NSMutableString* output = [NSMutableString new];
+        NSLog(@"%d classes found", [classes count]);
 	for (int i=0; i<[classes count]; i++)
 	{
 		ModelClass* class = [classes objectAtIndex: i];
 		NSString* representation = [class representation];
+                NSLog(@"representation %@", representation); 
 		id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
 		id parser = [[[compiler parserClass] new] autorelease];
 		LKAST* ast = [parser parseString: representation];
+                NSLog(@"parsing done");
 		[output appendString: [[ast prettyprint] string]];
-		/*
-		NSString* representation = [[[class ast] prettyprint] string];
-		NSLog (@"rep1: %@", representation);
-		[output appendString: representation];
-		*/
+		//NSString* rep = [[[class ast] prettyprint] string];
+		//NSLog (@"rep1: %@", rep);
+		//[output appendString: rep];
 		[output appendString: @"\n\n"];
 	}
+        NSLog(@"end of allClassesContent: %@", output);
 	return [output autorelease];
 }
 
-- (void) replaceMethod: (ModelMethod*) method 
+- (void) replaceMethod: (NSString*) methodSignature
 	withSignature: (NSString*) signature
 	andCode: (NSString*) code
-	onClass: (ModelClass*) aClass
+	onClass: (NSString*) aClassName
 {
+	ModelClass* aClass = [self classForName: aClassName];
+	if (aClass == nil) return;
+	ModelMethod* method = [aClass methodWithSignature: methodSignature];
+        NSLog(@"replace Method");
 	id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
 	id parser = [[[compiler parserClass] new] autorelease];
 	NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, code];
@@ -195,7 +240,10 @@ static COProxy* MyCOProxy;
 	[ASTReplace replace: [method ast] with: methodAST on: [aClass ast]];
 	[method setAST: (LKMethod*)methodAST];
 	[method setCode: [methodAST prettyprint]];
+NSLog(@"replace method");
+#ifdef COREOBJECT
 	NSLog(@"VERSION %d", [MyCOProxy objectVersion]);
+#endif
 }
 
 @end

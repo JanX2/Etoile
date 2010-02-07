@@ -1,3 +1,6 @@
+2010-02-07 Nicolas Roard <nicolas@roard.com>
+	Lots of fixes for CoreObject support, history slider functional.
+
 2009-05-15 Nicolas Roard <nicolas@roard.com>
 	Gorm updates and resize fix for the pluggable contentview.
 	Added an history slider and corresponding methods.

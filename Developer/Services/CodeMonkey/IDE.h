@@ -8,7 +8,6 @@
 #include <AppKit/AppKit.h>
 
 @class ModelClass;
-@class ModelMethod;
 
 @interface IDE : NSObject
 {
@@ -18,19 +17,29 @@
 - (NSMutableArray*) classes;
 - (void) loadContent: (NSString*) aContent;
 - (void) addClass: (NSString*) className;
-- (void) addCategory: (NSString*) categoryName onClass: (ModelClass*) aClass;
+
+- (ModelClass*) classForName: (NSString*) aClassName;
+
+- (void) addCategory: (NSString*) categoryName onClass: (NSString*) aClassName;
 - (void) addMethod: (NSMutableAttributedString*) code 
 	withSignature: (NSString*) signature
 	withCategory: (NSString*) categoryName
-	onClass: (ModelClass*) aClass;
+	onClass: (NSString*) aClassName;
 - (void) addClassMethod: (NSMutableAttributedString*) code 
 	withSignature: (NSString*) signature
 	withCategory: (NSString*) categoryName
-	onClass: (ModelClass*) aClass;
-- (void) addProperty: (NSString*) propertyName onClass: (ModelClass*) aClass;
+	onClass: (NSString*) aClassName;
+- (void) addProperty: (NSString*) propertyName onClass: (NSString*) aClassName;
 - (NSMutableString*) allClassesContent;
-- (void) replaceMethod: (ModelMethod*) method 
+- (void) removeClassAtIndex: (int) row;
+- (void) replaceMethod: (NSString*) methodSignature
 	withSignature: (NSString*) signature
 	andCode: (NSString*) code
-	onClass: (ModelClass*) aClass;
+	onClass: (NSString*) aClassName;
+@end
+
+@interface IDE (COProxy)
+- (void) setPersistencyMethodNames: (NSArray *)names;
+- (unsigned int) objectVersion;
+- (IDE*) _realObject;
 @end

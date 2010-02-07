@@ -169,12 +169,15 @@
 
 - (void) update
 {
+        NSLog(@"update");
+	[self updateHistory];
 	[classesList reloadData];
 	[classesList sizeToFit];
 	[categoriesList reloadData];
 	[categoriesList sizeToFit];
 	[methodsList reloadData];
 	[methodsList sizeToFit];
+        NSLog(@"update done");
 
 	// If we have a selected method, show it
         if ([self currentMethod])
@@ -197,6 +200,7 @@
 
 
 	[self setStatus: @"Ready"];
+        NSLog(@"end of update");
 }
 
 // TableView delegate
@@ -238,7 +242,9 @@
 {
 	if (tv == classesList) 
 	{
-		return [[[IDE default] classes] count];
+		int ret = [[[IDE default] classes] count];
+                NSLog(@"nb classes: %d", ret);
+                return ret;
 	}
 	if (tv == categoriesList)
 	{
@@ -251,7 +257,9 @@
 	{
 		if ([self currentCategory] != nil)
 		{
-			return [[self currentCategory] count];
+			int ret = [[self currentCategory] count];
+			NSLog(@"display %d methods", ret);
+			return ret;
 		}
 	}
 	return 0;
@@ -288,12 +296,35 @@
 	return nil;
 }
 
-///////
+#ifdef COREOBJECT
+
+- (void) updateHistory
+{
+	COProxy *proxy = (COProxy *)[IDE default];
+	if ([proxy objectVersion] > 0) {
+		[historyTextField setIntValue: [proxy objectVersion]];
+		[historySlider setIntValue: [proxy objectVersion]];
+	}
+}
+
 - (void) changeHistory: (id)sender
 {
 	NSLog(@"Slider changed to %d", [historySlider intValue]);
+	if ([[IDE default] objectVersion] == [historySlider intValue]) return;
 	COProxy *proxy = (COProxy *)[IDE default];
+	NSLog(@"changeHistory, IDE1 %x", [[IDE default] _realObject]);
 	[proxy restoreObjectToVersion: [historySlider intValue]];
+	NSLog(@"changeHistory, IDE2 %x", [[IDE default] _realObject]);
+
+	//NSLog(@"changeHistory, IDE3 %x", [[IDE default] _realObject]);
+	//[historyTextField setIntValue:
+	//	[historySlider intValue]];
+
+	for (int i=0; i<[[[IDE default] classes] count]; i++) {
+		id cls = [[[IDE default] classes] objectAtIndex: i];
+		[cls reloadCategories];
+		NSLog(@"class %d (%x) is: %@", i, cls, [cls representation]);
+	}
 	[self update];
 }
 
@@ -302,8 +333,10 @@
 	NSLog(@"Set history to %d",  [historyTextField intValue]);
 	COProxy *proxy = (COProxy *)[IDE default];
 	[proxy restoreObjectToVersion: [historyTextField intValue]];
+	//[historySlider setIntValue: [historyTextField intValue]];
 	[self update];
 }
+#endif
 
 - (void) addCategory: (id)sender
 {
@@ -312,7 +345,7 @@
 
 	if ([self currentClass] && [categoryName length] > 0)
 	{
-		[[IDE default] addCategory: categoryName onClass: [self currentClass]];
+		[[IDE default] addCategory: categoryName onClass: [[self currentClass] name]];
 		[self update];
 	}
 }
@@ -356,7 +389,7 @@
 					addMethod: code
 					withSignature: signature
 					withCategory: [self currentCategoryName]
-					onClass: [self currentClass]];
+					onClass: [[self currentClass] name]];
 			}
 			else
 			{
@@ -364,7 +397,7 @@
 					addClassMethod: code
 					withSignature: signature
 					withCategory: [self currentCategoryName]
-					onClass: [self currentClass]];
+					onClass: [[self currentClass] name]];
 			}
 			[self update];
 		}
@@ -387,7 +420,7 @@
 	{
   		NSString* propertyName = [newPropertyNameField stringValue];
 		NSLog (@"propertyName added: %@", propertyName);
-		[[IDE default] addProperty: propertyName onClass: class];
+		[[IDE default] addProperty: propertyName onClass: [class name]];
 		[self showClassDetails];
 		[self update];
 	}
@@ -423,7 +456,7 @@
 	int row = [classesList selectedRow];
 	if (row > -1) 
 	{
-		[[[IDE default] classes] removeObjectAtIndex: row];
+                [[IDE default] removeClassAtIndex: row];
 		[self update];
 	}
 }
@@ -454,12 +487,15 @@
 	{
 		NSLog(@" save file <%@>", [panel filename]);
 	        NSMutableString* output = [[IDE default] allClassesContent];
+                NSLog(@" classes content %@", output);
 		[output writeToFile: [panel filename] atomically: YES];	
 	}
 }
 
 - (void) save: (id)sender
 {
+	[self recreateMethodAST];
+	return;
 	if ([self currentClass]) 
 	{
 		NSMutableAttributedString* code = [codeTextView textStorage];
@@ -562,6 +598,7 @@
  */
 - (void) recreateMethodAST
 {
+	NSLog(@"recreateMethodAST");
 	if ([self currentClass]) 
 	{
 		NSMutableAttributedString* code = [codeTextView textStorage];
@@ -571,21 +608,21 @@
 			NS_DURING
 				if ([[self currentClass] hasMethodWithSignature: signature])
 				{
-					ModelMethod* method = [[self currentClass] methodWithSignature: signature];
-					[[IDE default] replaceMethod: method
+					[[IDE default] replaceMethod: signature
 						withSignature: signature
 						andCode: [code string]
-						onClass: [self currentClass]];
+						onClass: [[self currentClass] name]];
 				}
 				else // we add a new method
 				{
 					// TODO: refactor addMethod
 					// FIXME: there is a crash if sig but no body
+                                        NSLog(@" we add a new method: %@ %@", code, [code class]);
 				        [[IDE default]
 					    addMethod: code
 					    withSignature: signature
 					    withCategory: [self currentCategoryName]
-					    onClass: [self currentClass]];
+					    onClass: [[self currentClass] name]];
 				}
 				[self update];
 				[self setStatus: @"Valid code"];
@@ -609,6 +646,7 @@
 	// We are modifying the codeTextView's attributed string
 	if (doingPrettyPrint) {
 		[self recreateMethodAST];
+                NSLog(@"we recreated the ast");
 		doingPrettyPrint = NO;
 		NSUInteger index = [[codeTextView textStorage] length] - cursorPosition;
 		NSRange range = NSMakeRange(index, 0);
@@ -632,13 +670,18 @@
 	}
 
 	
+#ifdef COREOBJECT
+        NSLog(@"in textdidchange, before the proxy call");
 	COProxy *proxy = (COProxy *)[IDE default];
 	int maxValue = _max([proxy objectVersion], [historySlider intValue]);
+        NSLog(@"max value for the versions: %d (object version %d)", maxValue, [proxy objectVersion]);
+	[historySlider setMinValue: 0];
 	[historySlider setMaxValue: maxValue];
-	[historySlider setNumberOfTickMarks: maxValue + 1]; 
+	[historySlider setNumberOfTickMarks: maxValue]; 
 	[historySlider setIntValue: [proxy objectVersion]];
 
 	[historyTextField setIntValue: [proxy objectVersion]];
+#endif
 }
 
 - (void) redisplayAST

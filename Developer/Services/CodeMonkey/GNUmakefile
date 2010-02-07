@@ -9,7 +9,7 @@ $(APP_NAME)_GUI_LIBS = -lSmalltalkSupport -lLanguageKit -lCoreObject
  # -lMediaKit -lEtoileUI -lCoreObject -lIconKit
 $(APP_NAME)_INCLUDE_DIRS = -I`pg_config --includedir`
 $(APP_NAME)_LIB_DIRS = -I`pg_config --libdir`
-OBJCFLAGS += -std=c99
+OBJCFLAGS += -std=c99 -DCOREOBJECT
 
 include $(GNUSTEP_MAKEFILES)/application.make
 -include ../../../etoile.make
