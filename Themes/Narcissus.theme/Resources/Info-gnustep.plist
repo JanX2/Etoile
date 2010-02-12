@@ -1,153 +1,174 @@
 {
+    GSThemeAuthors = (
+	"Jesse Ross",
+	"Eric Wasylishen"
+    );
     GSThemeDomain = {
-	GSBackHandlesWindowDecorations = YES;
-        GSScrollerButtonsOffset = 0.0;
+	GSBackHandlesWindowDecorations = NO;
+	GSScrollerButtonsOffset = 0.0;
     };
-    NSPrincipalClass = "GSTiledTheme";
-    GSThemeAuthors = ("Jesse Ross", "Eric Wasylishen");
     GSThemeIcon = Thematic.png;
-    GSThemeVersion = 0.1;
     GSThemeTiles = {
-
-    NSSegmentStyleTexturedSquare = { NinePatch = YES; FileName = "SegmentedCell-unselected.9.png"; };
-    NSSegmentStyleTexturedSquareRoundedLeft = { NinePatch = YES; FileName = "SegmentedCellRoundedLeft-unselected.9.png"; };
-    NSSegmentStyleTexturedSquareRoundedRight = { NinePatch = YES; FileName = "SegmentedCell-unselected.9.png"; };
-    NSSegmentStyleTexturedSquareRoundedLeftRoundedRight = { NinePatch = YES; FileName = "SegmentedCell-unselected.9.png"; };
-    NSSegmentStyleTexturedSquareSelected = { NinePatch = YES; FileName = "SegmentedCell-selected.9.png"; };
-    NSSegmentStyleTexturedSquareRoundedLeftSelected = { NinePatch = YES; FileName = "SegmentedCellRoundedLeft-selected.9.png"; };
-    NSSegmentStyleTexturedSquareRoundedRightSelected = { NinePatch = YES; FileName = "SegmentedCell-selected.9.png"; };
-    NSSegmentStyleTexturedSquareRoundedLeftRoundedRightSelected = { NinePatch = YES; FileName = "SegmentedCell-selected.9.png"; };
-
-      NSTexturedSquareBezelStyle = {
-	  NinePatch = YES;
-	   FileName = "SquareButton.9.png";
-      };
-    NSTexturedSquareBezelStyleSelected = {
-	  NinePatch = YES;
-	   FileName = "SquareButtonSelected.9.png";
-      };
-
 	GSButton = {
-	  NinePatch = YES;
-          FileName = "Button-unselected.9.png";
+	    FileName = "Button-unselected.9.png";
+	    NinePatch = YES;
 	};
-        GSButtonSelected = {
-	  NinePatch = YES;
-          FileName = "Button-selected.9.png";
+	GSButtonSelected = {
+	    FileName = "Button-selected.9.png";
+	    NinePatch = YES;
 	};
-
-	GSGrayBezel = {
-	  NinePatch = YES;
-          FileName = "Textbox.9.png";
+	GSMenuHorizontalBackground = {
+	    FileName = MenuBackgroundHorizontal.9.png;
+	    NinePatch = YES;
 	};
-	
-        GSMenuVerticalItem = {
-	  NinePatch = YES;
-          FileName = "Blank.9.png";
-	};
-	GSMenuVerticalItemSelected = {
-	  NinePatch = YES;
-          FileName = "GSMenuItemSelected.png";
-	};
-	GSMenuVerticalItemHighlighted = {
-	  NinePatch = YES;
-          FileName = "GSMenuItemSelected.png";
-	};
-        GSMenuHorizontalItem = {
-	  NinePatch = YES;
-          FileName = "Blank.9.png";
-	};
-	GSMenuHorizontalItemSelected = {
-	  NinePatch = YES;
-          FileName = "GSMenuItemSelected.png";
+	GSMenuHorizontalItem = {
+	    FileName = Blank.9.png;
+	    NinePatch = YES;
 	};
 	GSMenuHorizontalItemHighlighted = {
-	  NinePatch = YES;
-          FileName = "GSMenuItemSelected.png";
+	    FileName = GSMenuItemSelected.png;
+	    NinePatch = YES;
 	};
-
-      NSButton = {
-        NinePatch = YES;
-        FileName = "Button-unselected.9.png";
-      };
-
-      NSButtonSelected = {
-        NinePatch = YES;
-        FileName = "Button-selected.9.png";
-      };
-      NSButtonHighlighted = {
-        NinePatch = YES;
-        FileName = "Button-highlighted.9.png";
-      };
-      NSButtonDisabled = {
-        NinePatch = YES;
-        FileName = "Button-disabled.9.png";
-      };
-      GSScrollerVerticalSlot = {
-        NinePatch = YES;
-        FileName = "Scrollbar-vertical-slot.9.png";
-      };
-      GSScrollerHorizontalSlot = {
-        NinePatch = YES;
-        FileName = "Scrollbar-horizontal-slot.9.png";
-      };
-      GSScrollerVerticalKnob = {
-        NinePatch = YES;
-        FileName = "Scrollbar-vertical-thumb.9.png";
-      };
-      GSScrollerHorizontalKnob = {
-        NinePatch = YES;
-        FileName = "Scrollbar-horizontal-thumb.9.png";
-      };
-      GSWindowResizeBar = {
-        NinePatch = YES;
-        FileName = "WindowResize.9.png";
-      };
-      GSWindowBackground = {
-	//NinePatch = YES;
-	FileName = "WindowBackground.png";
-        //FileName = "Ugly.9.png";
-        //FillStyle = ScaleAll;
-        HorizontalDivision = 20;
-        VerticalDivision = 20;
-      };
-      GSWindowBackgroundSelected = {
-	//NinePatch = YES;
-	//FileName = "WindowBackground.9.png";
-	//FileName = "Ugly.9.png"; 
-        FileName = "WindowBackgroundSelected.png";
-        FillStyle = ScaleAll;
-        HorizontalDivision = 20;
-        VerticalDivision = 20; 
-      };
-      GSWindowTitleBar = {
-        NinePatch = YES;
-        FileName = "Titlebar.9.png";
-      };
-      GSProgressIndicatorBarDeterminate = {
-        NinePatch = YES;
-        FileName = "Progress-horizontal.9.png";
-      };
-      GSMenuVerticalBackground = {
-        NinePatch = YES;
-        FileName = "Menu.9.png";
-      };
-      GSMenuHorizontalBackground = {
-        NinePatch = YES;
-        FileName = "MenuBackgroundHorizontal.9.png";
-     };
-      GSTableHeader = {
-        NinePatch = YES;
-        FileName = "TableHeader.9.png";
-     };
-      GSTableHeaderHighlighted = {
-        NinePatch = YES;
-        FileName = "TableHeaderSelected.9.png";
-     };
-      GSTableCorner = {
-        NinePatch = YES;
-        FileName = "TableHeader.9.png";
-     };
- 
+	GSMenuHorizontalItemSelected = {
+	    FileName = GSMenuItemSelected.png;
+	    NinePatch = YES;
+	};
+	GSMenuVerticalBackground = {
+	    FileName = Menu.9.png;
+	    NinePatch = YES;
+	};
+	GSMenuVerticalItem = {
+	    FileName = Blank.9.png;
+	    NinePatch = YES;
+	};
+	GSMenuVerticalItemHighlighted = {
+	    FileName = GSMenuItemSelected.png;
+	    NinePatch = YES;
+	};
+	GSMenuVerticalItemSelected = {
+	    FileName = GSMenuItemSelected.png;
+	    NinePatch = YES;
+	};
+	GSProgressIndicatorBarDeterminate = {
+	    FileName = "Progress-horizontal.9.png";
+	    NinePatch = YES;
+	};
+	GSScrollerHorizontalKnob = {
+	    FileName = "Scrollbar-horizontal-thumb.9.png";
+	    NinePatch = YES;
+	};
+	GSScrollerHorizontalSlot = {
+	    FileName = "Scrollbar-horizontal-slot.9.png";
+	    NinePatch = YES;
+	};
+	GSScrollerVerticalKnob = {
+	    FileName = "Scrollbar-vertical-thumb.9.png";
+	    NinePatch = YES;
+	};
+	GSScrollerVerticalSlot = {
+	    FileName = "Scrollbar-vertical-slot.9.png";
+	    NinePatch = YES;
+	};
+	GSTableCorner = {
+	    FileName = TableHeader.9.png;
+	    NinePatch = YES;
+	};
+	GSTableHeader = {
+	    FileName = TableHeader.9.png;
+	    NinePatch = YES;
+	};
+	GSTableHeaderHighlighted = {
+	    FileName = TableHeaderSelected.9.png;
+	    NinePatch = YES;
+	};
+	GSWindowBackground = {
+	    FileName = WindowBackground.png;
+	    HorizontalDivision = 20;
+	    VerticalDivision = 20;
+	};
+	GSWindowBackgroundSelected = {
+	    FileName = WindowBackgroundSelected.png;
+	    FillStyle = ScaleAll;
+	    HorizontalDivision = 20;
+	    VerticalDivision = 20;
+	};
+	GSWindowResizeBar = {
+	    FileName = WindowResize.9.png;
+	    NinePatch = YES;
+	};
+	GSWindowTitleBar = {
+	    FileName = Titlebar.9.png;
+	    NinePatch = YES;
+	};
+	NSButton = {
+	    FileName = "Button-unselected.9.png";
+	    NinePatch = YES;
+	};
+	NSButtonDisabled = {
+	    FileName = "Button-disabled.9.png";
+	    NinePatch = YES;
+	};
+	NSButtonHighlighted = {
+	    FileName = "Button-highlighted.9.png";
+	    NinePatch = YES;
+	};
+	NSButtonSelected = {
+	    FileName = "Button-selected.9.png";
+	    NinePatch = YES;
+	};
+	NSSegmentStyleTexturedSquare = {
+	    FileName = "SegmentedCell-unselected.9.png";
+	    NinePatch = YES;
+	};
+	NSSegmentStyleTexturedSquareRoundedLeft = {
+	    FileName = "SegmentedCellRoundedLeft-unselected.9.png";
+	    NinePatch = YES;
+	};
+	NSSegmentStyleTexturedSquareRoundedLeftRoundedRight = {
+	    FileName = "SegmentedCell-unselected.9.png";
+	    NinePatch = YES;
+	};
+	NSSegmentStyleTexturedSquareRoundedLeftRoundedRightSelected = {
+	    FileName = "SegmentedCell-selected.9.png";
+	    NinePatch = YES;
+	};
+	NSSegmentStyleTexturedSquareRoundedLeftSelected = {
+	    FileName = "SegmentedCellRoundedLeft-selected.9.png";
+	    NinePatch = YES;
+	};
+	NSSegmentStyleTexturedSquareRoundedRight = {
+	    FileName = "SegmentedCell-unselected.9.png";
+	    NinePatch = YES;
+	};
+	NSSegmentStyleTexturedSquareRoundedRightSelected = {
+	    FileName = "SegmentedCell-selected.9.png";
+	    NinePatch = YES;
+	};
+	NSSegmentStyleTexturedSquareSelected = {
+	    FileName = "SegmentedCell-selected.9.png";
+	    NinePatch = YES;
+	};
+	NSTextFieldRoundedBezel = {
+	    FileName = Textbox.9.png;
+	    NinePatch = YES;
+	};
+	NSTextFieldSquareBezel = {
+	    FileName = Textbox.9.png;
+	    NinePatch = YES;
+	};
+	NSTexturedSquareBezelStyle = {
+	    FileName = SquareButton.9.png;
+	    NinePatch = YES;
+	};
+	NSTexturedSquareBezelStyleSelected = {
+	    FileName = SquareButtonSelected.9.png;
+	    NinePatch = YES;
+	};
+	SNSBezelBorder = {
+	    FileName = Textbox.9.png;
+	    NinePatch = YES;
+	};
     };
+    GSThemeVersion = 0.1;
+    NSPrincipalClass = GSTiledTheme;
 }
