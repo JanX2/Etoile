@@ -17,6 +17,14 @@
 	    FileName = "Button-selected.9.png";
 	    NinePatch = YES;
 	};
+	GSColorWell = {
+	    FileName = "Button-unselected.9.png";
+	    NinePatch = YES;
+	};
+	GSColorWellHighlighted = {
+	    FileName = "Button-highlighted.9.png";
+	    NinePatch = YES;
+	};
 	GSMenuHorizontalBackground = {
 	    FileName = MenuBackgroundHorizontal.9.png;
 	    NinePatch = YES;
@@ -53,12 +61,20 @@
 	    FileName = "Progress-horizontal.9.png";
 	    NinePatch = YES;
 	};
+	GSScrollerDownArrow = {
+	    FileName = GSScrollerDownArrow.9.png;
+	    NinePatch = YES;
+	};
 	GSScrollerHorizontalKnob = {
 	    FileName = "Scrollbar-horizontal-thumb.9.png";
 	    NinePatch = YES;
 	};
 	GSScrollerHorizontalSlot = {
 	    FileName = "Scrollbar-horizontal-slot.9.png";
+	    NinePatch = YES;
+	};
+	GSScrollerUpArrow = {
+	    FileName = GSScrollerUpArrow.9.png;
 	    NinePatch = YES;
 	};
 	GSScrollerVerticalKnob = {
