@@ -54,8 +54,4 @@
  * Returns the name of the current account.
  */
 - (NSString*) name;
-/**
- * Returns the JID for this account.
- */
-- (JID*) jid;
 @end
