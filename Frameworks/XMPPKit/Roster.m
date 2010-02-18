@@ -18,25 +18,20 @@
 @implementation Roster
 - (Roster*) initWithAccount:(id)_account
 {
-	self = [self init];
-	if(self == nil || ![_account isKindOfClass:[XMPPAccount class]])
+	SUPERINIT
+	if(![_account isKindOfClass: [XMPPAccount class]])
 	{
 		[self release];
 		return nil;
 	}
 	account = _account;
-	return self;
-}
-
-- (id) init
-{
 	peopleByJID = [[NSMutableDictionary alloc] init];
 	groups = [[NSMutableArray alloc] init];
 	groupsByName = [[NSMutableDictionary alloc] init];
 	queriedServers = [[NSMutableSet alloc] init];
 	initialMessage = nil;
 	initialStatus = PRESENCE_ONLINE;
-	return [super init];
+	return self;
 }
 
 - (void) setInitialStatus:(unsigned char)_status withMessage:(NSString*)_message
