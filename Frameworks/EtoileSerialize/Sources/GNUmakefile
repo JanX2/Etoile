@@ -27,6 +27,8 @@ libEtoileSerialize_OBJC_FILES = \
 					ETSerialObjectBundle.m\
 					ETSerialObjectStdout.m\
 					ETSerialObjectSocket.m\
+					NSData+Varint.m\
+					NSNumber+Varint.m\
 					StringMap.m
 
 ifeq ($(test), yes)
