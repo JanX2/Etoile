@@ -16,10 +16,8 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
-@protocol UKTest;
 
-
-@interface IKIconTheme : NSObject <UKTest>
+@interface IKIconTheme : NSObject
 {
 	NSString *_themeName;
 	NSBundle *_themeBundle;
