@@ -9,7 +9,7 @@ PACKAGE_NAME = Frameworks
 
 -include ../modules.make
 
-export objc-2 ?= yes
+export objc-2 ?= no
 export addresseskit ?= yes
 export bookmarkkit ?= no
 export coreobject ?= yes
