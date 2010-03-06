@@ -47,7 +47,7 @@ typedef struct _GSCellRect {
   NSZone *zone;
   
   self = [super initWithFrame: aFrame];
-  zone = GSObjCZone(self);
+  zone = [self zone];
   _cellRects = NSZoneMalloc(zone, sizeof(GSIArray_t));
   GSIArrayInitWithZoneAndCapacity(_cellRects, zone, 8);
 
@@ -57,7 +57,7 @@ typedef struct _GSCellRect {
 - (void) dealloc
 {
   GSIArrayEmpty(_cellRects);
-  NSZoneFree(GSObjCZone(self), _cellRects);
+  NSZoneFree([self zone], _cellRects);
   [super dealloc];
 }
 
