@@ -252,7 +252,7 @@
 	long diff = endPtr - startPtr;
 	if (diff != length)
 	{
-		NSLog(@"Difference in the output file offsets %l does not match the original file length %l", diff, length);
+		NSLog(@"Difference in the output file offsets %ld does not match the original file length %ld", diff, length);
 		return;
 	}
 	

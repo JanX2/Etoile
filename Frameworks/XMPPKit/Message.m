@@ -7,7 +7,8 @@
 //
 
 #import "Message.h"
-#import <wctype.h>
+#include <wchar.h>
+#include <wctype.h>
 #import <AppKit/AppKit.h>
 #import <EtoileXML/ETXMLString.h>
 #import "MessageStanzaFactory.h"

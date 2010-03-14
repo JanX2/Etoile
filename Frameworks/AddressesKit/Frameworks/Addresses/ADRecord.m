@@ -14,10 +14,12 @@
 
 /* my includes */
 #include "ADAddressBook.h"
-#include "ADRecord.h"
-#include "ADGlobals.h"
 #include "ADConverter.h"
+#include "ADGlobals.h"
+#include "ADGroup.h"
 #include "ADMultiValue.h"
+#include "ADPerson.h"
+#include "ADRecord.h"
 
 @implementation ADRecord
 - init

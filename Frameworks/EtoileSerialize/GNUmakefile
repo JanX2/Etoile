@@ -9,8 +9,8 @@ ${FRAMEWORK_NAME}_SUBPROJECTS = Sources
 
 ${FRAMEWORK_NAME}_HEADER_FILES_DIR = Headers
 
-${FRAMEWORK_NAME}_LDFLAGS += -lEtoileFoundation
-${FRAMEWORK_NAME}_LIBRARIES_DEPEND_UPON += -lEtoileFoundation
+${FRAMEWORK_NAME}_LDFLAGS += -lEtoileFoundation -lEtoileXML
+${FRAMEWORK_NAME}_LIBRARIES_DEPEND_UPON += -lEtoileFoundation -lEtoileXML
 
 ${FRAMEWORK_NAME}_HEADER_FILES = \
 				   EtoileSerialize.h\

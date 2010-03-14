@@ -158,7 +158,7 @@ static COProxy* MyCOProxy;
 {
 	NSLog(@"SHOULD BE PROXIED ADD METHOD!");
 	ModelClass* aClass = [self classForName: aClassName];
-	NSLog(@"(%x) addMethod: %@ withSignature: %@ on class %@", self, code, signature, aClass);
+	NSLog(@"(%p) addMethod: %@ withSignature: %@ on class %@", self, code, signature, aClass);
 	if (aClass == nil) return;
 	ModelMethod* aMethod = [ModelMethod new];
 	[aMethod setCode: code]; 

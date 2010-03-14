@@ -20,9 +20,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-
-@protocol UKTest;
-
+#import <UnitKit/UKTest.h>
 
 @interface IKApplicationIconProvider : NSObject <UKTest>
 {

@@ -12,44 +12,7 @@ char _dig_vec[] =
 
 + (NSString *) stringWithLongLong: (long long) v
 {
-	char *buffer = malloc(sizeof(char)*(STR_SIZE+1));
-	register char *p;
-	long long new_val;
-	long long val = (v < 0) ? (v + LLONG_MAX + 1) : v;
-	
-	bzero(buffer, (STR_SIZE+1));
-	memset(buffer, '0', STR_SIZE);
-	
-	/*  The slightly contorted code which follows is due to the
-		*  fact that few machines directly support unsigned long / and %.
-		*  Certainly the VAX C compiler generates a subroutine call.  In
-		*  the interests of efficiency (hollow laugh) I let this happen
-		*  for the first digit only; after that "val" will be in range so
-		*  that signed integer division will do.  Sorry 'bout that.
-		*  CHECK THE CODE PRODUCED BY YOUR C COMPILER.  The first % and /
-		*  should be unsigned, the second % and / signed, but C compilers
-		*  tend to be extraordinarily sensitive to minor details of style.
-		*  This works on a VAX, that's all I claim for it.
-		**/
-	p = buffer+STR_SIZE;
-	new_val= val / RADIX;
-	//  long long t = val-new_val*RADIX;
-	*--p = _dig_vec[(unsigned char) (val-new_val* RADIX)];
-	val = new_val;
-	while (val != 0)
-    {
-		new_val=val/RADIX;
-		*--p = _dig_vec[(unsigned char) (val-new_val*RADIX)];
-		val= new_val;
-    }
-	NSString *s;
-	if (v < 0)
-		s = [NSString stringWithFormat: @"%@%s", NEGATIVE_PREFIX, buffer];
-	else
-		s = [NSString stringWithFormat: @"%@%s", POSITIVE_PREFIX, buffer];
-	free(buffer);
-	buffer = NULL;
-	return s;
+	return [NSString stringWithFormat: @"%lld", v];
 }
 
 /**

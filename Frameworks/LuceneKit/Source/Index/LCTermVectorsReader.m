@@ -53,7 +53,7 @@
     long format = [input readInt];
     if (format > TERM_VECTORS_WRITER_FORMAT_VERSION)
     {
-		NSLog(@"Incompatible format version: %d expected or less", format);
+		NSLog(@"Incompatible format version: %ld expected or less", format);
 		return -1;
     }
     return format;

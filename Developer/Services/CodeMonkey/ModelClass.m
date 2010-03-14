@@ -238,11 +238,11 @@ static int CLASS_VIEW = 1;
 	NSLog(@"Adding method on the class: %@", aMethod);
 	[methods addObject: aMethod];
 	[self reloadCategories];
-	NSLog(@"(%x) representation: %@", self, [self representation]);
-	NSLog(@"IDE is %x", [[IDE default] _realObject]);
+	NSLog(@"(%p) representation: %@", self, [self representation]);
+	NSLog(@"IDE is %p", [[IDE default] _realObject]);
 	for (int i=0; i<[[[IDE default] classes] count]; i++) {
 		id cls = [[[IDE default] classes] objectAtIndex: i];
-		NSLog(@"in addMethod, class %d (%x) is: %@", i, cls, [cls representation]);
+		NSLog(@"in addMethod, class %d (%p) is: %@", i, cls, [cls representation]);
 	}
 }
 

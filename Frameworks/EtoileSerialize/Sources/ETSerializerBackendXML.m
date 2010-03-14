@@ -246,7 +246,7 @@ STORE_METHOD(Float, float, "f", "f")
 	                               @"name")
 	                     cdata: NSStringFromSelector(aSelector)];
 }
-- (void) storeCString:(char*)aCString withName:(char*)aName
+- (void) storeCString:(const char*)aCString withName:(char*)aName
 {
 	[writer startAndEndElement: @"str"
 	                attributes: D([NSString stringWithCString: aName

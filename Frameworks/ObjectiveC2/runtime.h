@@ -258,6 +258,8 @@ static const id self = nil;
 
 #endif
 
+#undef objc_msgSend
+#undef objc_msgSendSuper
 #define objc_msgSend(theReceiver, theSelector, ...) objc_msg_lookup(theReceiver, theSelector)(theReceiver, theSelector, ## __VA_ARGS__)
 #define objc_msgSendSuper(super, op, ...) objc_msg_lookup_super(super, op)(super->receiver, op, ## __VA_ARGS__)
 

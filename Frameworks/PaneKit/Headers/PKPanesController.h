@@ -28,9 +28,8 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <PaneKit/PKPane.h>
 
-@protocol PKPaneOwner;
-@class PKPane;
 @class PKPresentationBuilder;
 @class PKPaneRegistry;
 

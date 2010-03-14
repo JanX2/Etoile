@@ -162,7 +162,7 @@
 
 /** To know whether two local dictionaries are equal we check if they have the
 	the same host. */
-- (unsigned long) hash
+- (NSUInteger) hash
 {
 	return [dictFile hash] ^ [indexFile hash];
 }

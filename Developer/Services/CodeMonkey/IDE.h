@@ -5,10 +5,10 @@
    modify it under the terms of the MIT license. See COPYING.
 */
 
-#include <AppKit/AppKit.h>
+#import <AppKit/AppKit.h>
+#import "ModelApplication.h"
 
 @class ModelClass;
-@class ModelApplication;
 
 @interface IDE : NSObject
 {

@@ -24,27 +24,24 @@ include $(GNUSTEP_MAKEFILES)/common.make
 # Remove LDFLAGS so that it will not try to link in subproject
 ADDITIONAL_LDFLAGS =
 
-# use cplusplus compiler
-CC = ${CXX}
-
 SUBPROJECT_NAME=bindings
 
 bindings_CFLAGS = -g  -Wno-write-strings
 
 bindings_OBJCFLAGS = -Wno-import
 
-bindings_C_FILES = \
-poppler.c \
-poppler_document.c \
-poppler_page.c \
-poppler_splash_renderer.c \
-poppler_text.c 
+bindings_CC_FILES = \
+poppler.cpp \
+poppler_document.cpp \
+poppler_page.cpp \
+poppler_splash_renderer.cpp \
+poppler_text.cpp
 
 bindings_OBJC_FILES = \
 poppler_objc.m
 
 ifeq ($(HAVE_CAIRO), YES)
-   bindings_C_FILES += poppler_cairo_img_renderer.cc
+   bindings_CC_FILES += poppler_cairo_img_renderer.cpp
 endif
 
 ifeq ($(POPPLER_0_6), YES)

@@ -143,7 +143,7 @@ BOOL DBus_powerManagementCall(NSString *msgName)
 	/* Call method */
 	if ([msgName isEqual: @"Suspend"])
 		reply_timeout = INT_MAX;
-	NSDebugLog(@"SCHardware", "DBus sends %@ with timeout %d", msgName, 
+	NSDebugLLog(@"SCHardware", @"DBus sends %@ with timeout %d", msgName,
 		reply_timeout);
 	reply = dbus_connection_send_with_reply_and_block(connection, message, 
 		reply_timeout, &error);
@@ -163,7 +163,7 @@ BOOL DBus_powerManagementCall(NSString *msgName)
 		return NO;
 	}
 
-	NSDebugLog(@"SCHardware", "DBus reply is %d", reply);
+	NSDebugLLog(@"SCHardware", @"DBus reply is %@", reply);
 
 	dbus_message_unref(reply);
 	dbus_message_unref(message);
@@ -185,7 +185,7 @@ BOOL SCHardwareShutDown()
 {
 	if (DBus_isSupportedPowerManagementCall(@"shutdown"))
 	{
-		NSDebugLog(@"SCHardware", @"Shutdown supported");
+		NSDebugLLog(@"SCHardware", @"Shutdown supported");
 
 		return DBus_powerManagementCall(@"Shutdown");
 	}
@@ -197,7 +197,7 @@ BOOL SCHardwareReboot()
 {
 	if (DBus_isSupportedPowerManagementCall(@"reboot"))
 	{
-		NSDebugLog(@"SCHardware", @"Reboot supported");
+		NSDebugLLog(@"SCHardware", @"Reboot supported");
 
 		return DBus_powerManagementCall(@"Reboot");
 	}
@@ -213,7 +213,7 @@ BOOL SCHardwareSuspend()
 	if ([defaults boolForKey: @"EtoileSleepEnabled"]
 		&& DBus_isSupportedPowerManagementCall(@"suspend"))
 	{
-		NSDebugLog(@"SCHardware", @"Suspend supported");
+		NSDebugLLog(@"SCHardware", @"Suspend supported");
 
 		return DBus_powerManagementCall(@"Suspend");
 	}

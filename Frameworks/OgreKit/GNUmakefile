@@ -12,7 +12,7 @@ OgreKit_VERSION = 1.2.1
 
 OgreKit_SUBPROJECTS = Source
 
-OgreKit_LIBRARIES_DEPEND_UPON = `onig-config --libs`
+OgreKit_LIBRARIES_DEPEND_UPON = $(GUI_LIBS) `onig-config --libs`
 
 ifeq ($(FOUNDATION_LIB), apple)
 ifeq ($(test), yes)

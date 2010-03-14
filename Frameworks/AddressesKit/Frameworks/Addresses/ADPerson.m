@@ -93,7 +93,7 @@ static ADScreenNameFormat _scrNameFormat = ADScreenNameLastNameFirst;
       else
 	{
 	  NSLog(@"Unknown value %@ for ScreenNameFormat. "
-		@"Using LastNameFirst.\n");
+	        @"Using LastNameFirst.\n", scrName);
 	  _scrNameFormat = ADScreenNameFirstNameFirst;
 	  scrName = @"LastNameFirst";
 	}

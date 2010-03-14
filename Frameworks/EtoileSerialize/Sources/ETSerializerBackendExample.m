@@ -183,7 +183,7 @@
 	[self indent];
 	FORMAT("SEL %s=@selector(%s);\n",aName,sel_get_name(aSelector));
 }
-- (void) storeCString:(char*)aCString withName:(char*)aName
+- (void) storeCString:(const char*)aCString withName:(char*)aName
 {
 	[self indent];
 	FORMAT("char* %s=\"%s\";\n",aName, aCString);

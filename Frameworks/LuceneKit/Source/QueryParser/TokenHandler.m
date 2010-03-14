@@ -69,7 +69,7 @@
     }
   else
     {
-      NSLog(@"Error: %s is not allowed", s);
+      NSLog(@"Error: %@ is not allowed", s);
     }
 
   _preSymbol = 0;

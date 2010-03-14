@@ -10,6 +10,7 @@
 #import <EtoileXML/ETXMLNullHandler.h>
 #import <EtoileSerialize/ETDeserializerBackend.h>
 #import <EtoileSerialize/ETUtility.h>
+#import <EtoileXML/ETXMLParserDelegate.h>
 
 @class ETDeserializer,ETXMLParser,ETDeserializableobjectsXMLNode;
 /**

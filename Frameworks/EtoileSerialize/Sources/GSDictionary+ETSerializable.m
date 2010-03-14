@@ -12,7 +12,8 @@
 		  GSIMapTable_t map;
 }
 @end
-@class GSMutableDictionary;
+@interface GSMutableDictionary : NSMutableDictionary
+@end
 
 
 #define MAP_IVAR (((GSDictionary*)self)->map)

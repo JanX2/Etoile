@@ -7,6 +7,7 @@
  */
 #import <Foundation/Foundation.h>
 #import <EtoileXML/ETXMLNullHandler.h>
+#import <EtoileSerialize/ETObjectStore.h>
 
 @class ETXMLWriter,ETXMLParser,ETUUID,Conversation;
 @protocol ETSerialObjectStore;

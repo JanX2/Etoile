@@ -416,18 +416,18 @@ static id <GormServer> GormProxy = nil;
 	NSLog(@"Slider changed to %d", [historySlider intValue]);
 	if ([[IDE default] objectVersion] == [historySlider intValue]) return;
 	COProxy *proxy = (COProxy *)[IDE default];
-	NSLog(@"changeHistory, IDE1 %x", [[IDE default] _realObject]);
+	NSLog(@"changeHistory, IDE1 %p", [[IDE default] _realObject]);
 	[proxy restoreObjectToVersion: [historySlider intValue]];
-	NSLog(@"changeHistory, IDE2 %x", [[IDE default] _realObject]);
+	NSLog(@"changeHistory, IDE2 %p", [[IDE default] _realObject]);
 
-	//NSLog(@"changeHistory, IDE3 %x", [[IDE default] _realObject]);
+	//NSLog(@"changeHistory, IDE3 %p", [[IDE default] _realObject]);
 	//[historyTextField setIntValue:
 	//	[historySlider intValue]];
 
 	for (int i=0; i<[[[IDE default] classes] count]; i++) {
 		id cls = [[[IDE default] classes] objectAtIndex: i];
 		[cls reloadCategories];
-		NSLog(@"class %d (%x) is: %@", i, cls, [cls representation]);
+		NSLog(@"class %d (%p) is: %@", i, cls, [cls representation]);
 	}
 	[self update];
 }

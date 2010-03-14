@@ -152,7 +152,7 @@ static float MenuTitleFillerWidth = 0;
     }
 }
 
-- (BOOL) isTitleVisible;
+- (BOOL) isTitleVisible
 {
   return titleVisible;
 }

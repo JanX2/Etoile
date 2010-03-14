@@ -16,7 +16,7 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 {
 	//Find a real iVar
 	Class class = anObject->class_pointer;
-	while(class != Nil && class != class->super_class)
+	while(class != Nil && class != (Class)class->super_class)
 	{
 		struct objc_ivar_list* ivarlist = class->ivars;
 		if(ivarlist != NULL) 

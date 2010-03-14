@@ -15,16 +15,11 @@
     modify it under the terms of the 3-clause BSD license. See COPYING.
 */
 
+#include <math.h>
 #import "IKCompat.h"
 #import <IconKit/IKIcon.h>
 #import <IconKit/IKIconTheme.h>
 #import <IconKit/IKIconProvider.h>
-
-/* For truncf on Linux and other platforms probably...
-   #import <math.h> doesn't work on many Linux systems since truncf is often 
-   not part of this header currently. That's why we rely on GCC equivalent builtin 
-   function. */
-#define truncf(x)  __builtin_truncf(x)
 
 /* The values of the following should probably be the file names of the icon 
    files... However, the names I've chosen so far are the ones that

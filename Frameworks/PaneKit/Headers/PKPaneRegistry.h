@@ -28,8 +28,7 @@
  */
 
 #import <Foundation/Foundation.h>
-
-@protocol UKTest;
+#import <UnitKit/UKTest.h>
 
 @interface PKPaneRegistry : NSObject <UKTest>
 {

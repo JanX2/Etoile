@@ -207,7 +207,7 @@ STORE_METHOD(UnsignedLongLong, unsigned long long, "Q")
 {
 	FORMAT(":%s%c%s%c", aName, 0, [NSStringFromSelector(aSelector) UTF8String], 0);
 }
-- (void) storeCString:(char*)aCString withName:(char*)aName
+- (void) storeCString:(const char*)aCString withName:(char*)aName
 {
 	FORMAT("*%s%c%s%c", aName, 0, aCString, 0);
 }

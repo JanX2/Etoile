@@ -62,7 +62,7 @@
   NSPoint origin;
   NSRect menuBarRect = [self _menuServerWindowFrame];
 
-  NSDebugLog(@"WildMenus", @"MenuServer menu bar rect %@", 
+  NSDebugLLog(@"WildMenus", @"MenuServer menu bar rect %@",
     NSStringFromRect(menuBarRect));
 
   if (NSEqualRects(menuBarRect, NSZeroRect) == NO)

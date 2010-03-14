@@ -987,7 +987,7 @@ BOOL SCHardwareSuspend();
 	}
 	else
 	{
-		NSLog(_(@"WARNING: no usable workspace process set file found. "
+		NSLog(@"%@", _(@"WARNING: no usable workspace process set file found. "
 			@"I'm not going to do workspace process management."));
 	}
 }
@@ -1092,7 +1092,7 @@ BOOL SCHardwareSuspend();
 	}
 	else
 	{
-		NSLog(_(@"WARNING: unable to read SystemTaskList file."));
+		NSLog(@"%@", _(@"WARNING: unable to read SystemTaskList file."));
 	}
 
 	ASSIGN(modificationDate, [fileAttributes fileModificationDate]);

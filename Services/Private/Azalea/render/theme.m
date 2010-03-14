@@ -122,8 +122,9 @@ RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
     }
     theme->win_font_height = RrFontHeight(theme->win_font_focused);
 
-    if (!read_string(db, "window.inactive.label.text.font", &font_str))
-        /* font_str will already be set to the last one */;
+    if (!read_string(db, "window.inactive.label.text.font", &font_str)) {
+        /* font_str will already be set to the last one */
+	}
 
     if (!(theme->win_font_unfocused = RrFontOpen(inst, font_str))) {
         RrThemeFree(theme);

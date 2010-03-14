@@ -62,7 +62,7 @@ static ADLocalAddressBook *_localAB = nil;
       while((fname = [e nextObject]))
 	if([[fname pathExtension] isEqualToString: @"mfaddr"])
 	  next = MAX(next, [[fname stringByDeletingPathExtension] intValue]);
-      NSLog(@"New NEXTID is %d\n", next);
+      NSLog(@"New NEXTID is %ld\n", next);
     }
   next++;
 
