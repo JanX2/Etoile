@@ -5,7 +5,9 @@ include $(GNUSTEP_MAKEFILES)/common.make
 FRAMEWORK_NAME = IconKit
 VERSION = 0.2
 
-IconKit_LIBRARIES_DEPEND_UPON += $(GUI_LIBS) $(FND_LIBS) $(OBJC_LIBS) $(SYSTEM_LIBS)
+IconKit_LIBRARIES_DEPEND_UPON = $(GUI_LIBS) $(FND_LIBS) $(OBJC_LIBS) $(SYSTEM_LIBS)
+IconKit_OBJCFLAGS = -std=c99
+IconKit_LDFFLAGS = -lm
 
 ifeq ($(test), yes)
 BUNDLE_NAME = IconKit
