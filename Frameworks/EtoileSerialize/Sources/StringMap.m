@@ -1,23 +1,29 @@
 #import "StringMap.h"
-
+#include <stdint.h>
 /**
  * A trivial hash from a string, made by casting the first few characters of a
  * string to an integer.
  */
-unsigned simpleStringHash(NSMapTable *table, const void *anObject)
+NSUInteger simpleStringHash(NSMapTable *table, const void *anObject)
 {
 	int len = strlen(anObject) + 1;
-	if(len >= sizeof(unsigned))
+	// NOTE: NSUInteger is unsigned long on 64bit and unsigned int on 32bit
+	// platforms.
+	if(len >= sizeof(NSUInteger))
 	{
-		return *(unsigned *)anObject;
+		return *(NSUInteger *)anObject;
 	}
-	if(len >= sizeof(unsigned short))
+	if(len >= sizeof(uint32_t))
 	{
-		return (unsigned)*(unsigned short*)anObject;
+		return (NSUInteger)*(uint32_t*)anObject;
 	}
-	if(len >= sizeof(unsigned char))
+	if(len >= sizeof(uint16_t))
 	{
-		return (unsigned)*(unsigned char*)anObject;
+		return (NSUInteger)*(uint16_t*)anObject;
+	}
+	if (len >= sizeof(uint8_t))
+	{
+		return (NSUInteger)*(uint8_t*)anObject;
 	}
 	//Should never be reached
 	return 0;

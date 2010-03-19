@@ -79,7 +79,7 @@ static ESCORefTable *_sharedCORefTable;
 	return self;
 }
 
-- (unsigned int) retainCount
+- (NSUInteger) retainCount
 {
 	return UINT_MAX;
 }
