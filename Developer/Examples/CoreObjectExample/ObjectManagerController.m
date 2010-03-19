@@ -168,7 +168,7 @@
 		A(@"icon", @"displayName", @"otherObjects", @"objectVersion", @"kCOUIDProperty")];
 
 	// FIXME: Not working yet...
-	[[[objectGraphViewItem layout] attachedInstrument] setAllowsMultipleSelection: NO];
+	[[[objectGraphViewItem layout] attachedTool] setAllowsMultipleSelection: NO];
 	[objectGraphViewItem setRepresentedObject: startGroup];
 	[objectGraphViewItem setShouldMutateRepresentedObject: YES];
 	[objectGraphViewItem setSource: objectGraphViewItem];
