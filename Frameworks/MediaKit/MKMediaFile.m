@@ -1,6 +1,12 @@
 // NOTE: Ugly hack to get rid of deprecation warnings on Ubuntu
 // See https://bugs.launchpad.net/ubuntu/+source/ffmpeg/+bug/122266
 #define attribute_deprecated
+
+// Define __has_include() for legacy compilers:
+#ifndef __has_include
+#define __has_include(x) 0
+#endif
+
 #include <avcodec.h>
 #include <avformat.h>
 #import "MKMediaFile.h"
@@ -9,7 +15,13 @@
 // Ugly hack to prevent tag_c.h from redefining BOOL
 #define BOOL BOOL
 #include <tag_c.h>
+
+// Be graceful for different locations of libmp4 headers (only for clang).
+#if __has_include(<mp4v2/mp4v2.h>)
+#include <mp4v2/mp4v2.h>
+#else
 #include <mp4.h>
+#endif
 
 // If we're building for an old version of libavcodec, use the old API
 #if LIBAVCODEC_VERSION_INT  < ((52<<16)+(25<<8)+0)
