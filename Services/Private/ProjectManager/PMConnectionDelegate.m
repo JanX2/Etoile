@@ -1,213 +1,264 @@
-#import <EtoileFoundation/EtoileFoundation.h>
+/**
+ * Étoilé ProjectManager - PMConnectionDelegate.m
+ *
+ * Copyright (C) 2009 David Chisnall
+ * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ **/
 #import "PMConnectionDelegate.h"
-#import "PMDecoratedWindow.h"
-#import "XCBWindow.h"
+#import "PMScreen.h"
 #import "PMCompositeWindow.h"
-#include  <xcb/xcb.h>
-#include <xcb/damage.h>
-#include <xcb/composite.h>
+#import "XCBConnection.h"
+#import "XCBDamage.h"
+#import "XCBRender.h"
+#import "XCBFixes.h"
+#import "XCBComposite.h"
+#import "XCBPixmap.h"
+#import "XCBGeometry.h"
+#import "XCBWindow.h"
+
+#import <Foundation/NSArray.h>
+#import <Foundation/NSDictionary.h>
+#import <Foundation/NSException.h>
+#import <Foundation/NSNotification.h>
+#import <EtoileFoundation/EtoileFoundation.h>
+
+@interface PMConnectionDelegate (Private)
+
+- (void)redirectRootsForWindow: (XCBWindow*)rootWindow;
+- (void)newWindow: (XCBWindow*)window;
+- (PMScreen*)findScreenWithRootWindow: (XCBWindow*)root;
+- (void)paintAllWithRegion: (XCBFixesRegion*)region onScreen: (PMScreen*)screen;
+- (PMCompositeWindow*)findCompositeWindow: (XCBWindow*)window;
+
+- (void)XCBConnection: (XCBConnection*)connection damageAdd: (xcb_damage_add_request_t*)event;
+- (void)handleQueryTree: (xcb_query_tree_reply_t*)query_tree_reply;
+@end
+
 
 @implementation PMConnectionDelegate
-- (void)newWindow: (XCBWindow*)window
-{
-	if (![decorationWindows objectForKey: window] 
-		 && ![decoratedWindows objectForKey: window])
-	{
-		//xcb_set_input_focus([XCBConn connection], XCB_INPUT_FOCUS_PARENT, [window xcbWindowId], 0);
-		NSLog(@"New window: %@", window);
-		[window addToSaveSet];
-		PMDecoratedWindow *win = [PMDecoratedWindow windowDecoratingWindow: window];
-		XCBWindow *decorationWindow = [win decorationWindow];
-		NSLog(@"New decoration window: %@", decorationWindow);
-		[decorationWindows setObject: window forKey: decorationWindow];
-		[decoratedWindows setObject: decorationWindow forKey: window];
-		NSLog(@"Creating composite window for decoration window %@", decorationWindow);
-		PMCompositeWindow *compositeWin = 
-			[PMCompositeWindow compositeWindowWithXCBWindow: decorationWindow];
-		[compositeWindows addObject: compositeWin];
-		[compositers setObject: compositeWin forKey: decorationWindow];
-		NSNotificationCenter *center =
-			[NSNotificationCenter defaultCenter];
-		[center addObserver: self
-				   selector: @selector(windowDidUnMap:)
-					   name: XCBWindowDidUnMapNotification
-					 object: decorationWindow];
-		[center addObserver: self
-				   selector: @selector(windowDidDestroy:)
-					   name: XCBWindowDidDestroyNotification
-					 object: window];
-		NSLog(@"%@, %@, %@", window, decorationWindow, compositeWin);
-		[win mapDecoratedWindow];
-	}
-}
-- (void)redirectRoots
-{
-	xcb_connection_t *conn = [XCBConn connection];
-	FOREACH([XCBConn screens], screen, XCBScreen*)
-	{
-		xcb_window_t root = [[screen rootWindow] xcbWindowId];
 
-
-		xcb_composite_redirect_subwindows(conn, root, XCB_COMPOSITE_REDIRECT_MANUAL);
-		xcb_query_tree_cookie_t cookie = xcb_query_tree(conn, root);
-		[XCBConn setHandler: self
-				   forReply: cookie.sequence
-				   selector: @selector(handleQueryTree:)];
-	}
-	xcb_flush(conn);
-}
-- (void)handleQueryTree: (xcb_query_tree_reply_t*)reply
-{
-	NSLog(@"Query tree reply received.");
-	xcb_window_t *windows = xcb_query_tree_children(reply);
-	int end = xcb_query_tree_children_length(reply);
-	xcb_window_t window = windows[0];
-	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-	for (int i=0; i<end ; window = windows[++i])
-	{
-		NSLog(@"Querying geometry for %x", window);
-		XCBWindow *win = [XCBWindow windowWithXCBWindow: window];
-		[center addObserver: self
-				   selector: @selector(geometryChanged:)
-					   name: XCBWindowFrameDidChangeNotification
-					 object: win];
-	}
-	xcb_flush([XCBConn connection]);
-}
-- (void) geometryChanged: (NSNotification*)aNotification
-{
-	id win = [aNotification object];
-	[self newWindow: win];
-	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-	[center removeObserver: self
-	                  name: XCBWindowFrameDidChangeNotification
-	                object: win];
-}
-- (void)dealloc
-{
-	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-	[center removeObserver: self];
-	[documentWindows release];
-	[panelWindows release];
-	[decorationWindows release];
-	[compositeWindows release];
-	[compositers release];
-	[decoratedWindows release];
-	[super dealloc];
-}
 - (id)init
 {
 	SUPERINIT;
-	documentWindows = [NSMutableSet new];
-	panelWindows = [NSMutableSet new];
-	decorationWindows = [NSMutableDictionary new];
-	compositeWindows = [NSMutableArray new];
-	decoratedWindows = [NSMutableDictionary new];
-	compositers = [NSMutableDictionary new];
-	[[XCBConnection sharedConnection] setDelegate: self];
+	compositeWindows = [NSMutableDictionary new];
+	[[XCBConnection sharedConnection] setDelegate:self];
+	[XCBDamage initializeExtensionWithConnection: XCBConn];
+	[XCBComposite initializeExtensionWithConnection: XCBConn];
+	[XCBRender initializeExtensionWithConnection: XCBConn];
+	[XCBFixes initializeExtensionWithConnection: XCBConn];
 
-	xcb_connection_t *connection = [XCBConn connection];
-	const char *damageName = "DAMAGE";
-	xcb_query_extension_cookie_t cookie = 
-		xcb_query_extension(connection, strlen(damageName), damageName);
-	// FIXME: Check for error
-	xcb_query_extension_reply_t *reply = 
-		xcb_query_extension_reply(connection, cookie, NULL);
+	NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
 
-	NSLog(@"First event: %d", reply->first_event);
-	[XCBConn setSelector: @selector(XCBConnection:damageAdd:)
-	           forXEvent: reply->first_event + XCB_DAMAGE_NOTIFY];
-	free(reply);
-	xcb_damage_query_version(connection, 1, 1);
+	[defaultCenter addObserver: self
+	                  selector: @selector(windowDidMap:)
+	                      name: XCBWindowDidMapNotification
+	                    object: nil];
+	[defaultCenter addObserver: self
+	                  selector: @selector(windowDidCreate:)
+	                      name: XCBWindowDidCreateNotification
+	                    object: nil];
 
-	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-	[center addObserver: self
-			   selector: @selector(windowDidMap:)
-				   name: XCBWindowDidMapNotification 
-				 object: nil];
-	/*
-	[center addObserver: self
-    		   selector: @selector(windowPlacedOnBottom:)
-				   name: XCBWindowWindowPlacedOnBottomNotification
-				 object: nil];
-	[center addObserver: self
-			   selector: @selector(windowPlacedOnTop:)
-				   name: XCBWindowWindowPlacedOnTopNotification
-				 object: nil];
-				 */
+	self->screens = [NSMutableDictionary new];
 
-	PMApp = self;
-	[self redirectRoots];
+	FOREACH([XCBConn screens], screen, XCBScreen*)
+	{
+		XCBRenderPicture *rootPicture;
+		PMScreen *pm_screen = [[PMScreen alloc] initWithScreen:screen];
+		[screens setObject:pm_screen forKey:screen];
+		[pm_screen release];
+
+		[defaultCenter addObserver: self
+		                  selector: @selector(windowDidExpose:)
+		                      name: XCBWindowExposeNotification
+		                    object: [screen rootWindow]];
+
+		[self redirectRootsForWindow: [screen rootWindow]];
+	}
+	xcb_flush([XCBConn connection]);
+	
 	return self;
 }
-- (void)redraw
-{
-	[PMCompositeWindow drawBackground];
-	XCBRect big = XCBMakeRect(0, 0, 0xffff, 0xffff);
-	FOREACH(compositeWindows, win, PMCompositeWindow*)
-	{
-		[win drawXCBRect: big];
-	}
-}
-- (void)setNeedsDisplayInXCBRect: (XCBRect)aRect
-{
-	/*
-	 * This should add the rectangle to the clip regions and post a damage
-	 * notification thingy.
-	xcb_connection_t *conn = [XCBConn connection];
-	xcb_xfixes_region_t region = xcb_generate_id(conn);
-	xcb_rectangle_t rect = XCBRectangleFromRect(aRect);
-	xcb_xfixes_create_region(conn, region, 1, &rect);
 
-	xcb_xfixes_destroy_region(conn, region);
-	*/
-	[PMCompositeWindow clearClipRegion];
-	[self redraw];
-}
-- (void)XCBConnection: (XCBConnection*)connection 
-            damageAdd: (struct xcb_damage_notify_event_t*)request
+- (void)dealloc
 {
-	// FIXME: This does a full redraw for any screen update, which is painfully
-	// slow.  The point of the damage extension is to avoid this.  Set the clip
-	// region on the root Picture before painting and the server will eliminate
-	// redundant operations.
-	//NSLog(@"Adding damage in %x", (int)request->drawable);
-	//NSLog(@"Composite windows: %@", compositeWindows);
-	[PMCompositeWindow setClipRegionFromDamage: request];
-	[self redraw];
-	[PMCompositeWindow clearClipRegion];
+	[[NSNotificationCenter defaultCenter] 
+		removeObserver: self];
+	[screens release];
+	[compositeWindows release];
+	[super dealloc];
 }
-- (void)windowDidMap: (NSNotification*)aNotification
+
+
+- (void)redirectRootsForWindow: (XCBWindow*)rootWindow
 {
-	XCBWindow *window = [aNotification object];
-	[self newWindow: window];
+	[XCBComposite redirectSubwindows: rootWindow 
+	                          method: XCB_COMPOSITE_REDIRECT_MANUAL];
+	xcb_query_tree_cookie_t query_tree_cookie = 
+	xcb_query_tree_unchecked([XCBConn connection], [rootWindow xcbWindowId]);
+	[XCBConn 
+		setHandler: self
+		  forReply: query_tree_cookie.sequence
+		  selector: @selector(handleQueryTree:)];
 }
-- (void)removeCompositingForWindow: (XCBWindow*)win
+- (void)handleQueryTree: (xcb_query_tree_reply_t*)query_tree_reply
 {
-	PMCompositeWindow *comp = [compositers objectForKey: win];
-	if (nil != comp)
+	int c_length = xcb_query_tree_children_length(query_tree_reply);
+	xcb_window_t *windows = xcb_query_tree_children(query_tree_reply);
+	for (int i = 0; i < c_length; i++)
 	{
-		[compositeWindows removeObject: comp];
-		[compositers removeObjectForKey: win];
-		[self setNeedsDisplayInXCBRect: [win frame]];
+		[self newWindow:
+			[XCBWindow windowWithXCBWindow: windows[i]
+			                       // We really shouldn't use root,
+			                       // but we know its valid as we only
+			                       // send xcb_query_tree() to root windows
+			                        parent: query_tree_reply->root]];
+	}
+	[XCBConn setNeedsFlush:YES];
+}
+
+- (void)windowDidMap: (NSNotification*)notification 
+{
+}
+- (void)windowDidCreate: (NSNotification*)notification 
+{
+	NSLog(@"-[XCBConnection windowDidCreate:]");
+	[self newWindow: [notification object]];	
+}
+- (void)windowDidExpose: (NSNotification*)notification
+{
+	NSLog(@"-[XCBConnection windowDidExpose:]");
+	// FIXME: Apparently we can optimize by accumulating the
+  	// the rects according to the anEvent->count parameter (see XLib manual)
+	XCBRect exposeRect;
+	xcb_rectangle_t exposeRectangle;
+	[[[notification userInfo] objectForKey: @"Rect"] 
+		getValue: &exposeRect];
+	exposeRectangle = XCBRectangleFromRect(exposeRect);
+
+	PMScreen *screen = [self findScreenWithRootWindow: [notification object]];
+	XCBFixesRegion *exposeRegion = [XCBFixesRegion 
+		regionWithRectangles: &exposeRectangle 
+		               count: 1];
+	[screen appendDamage: exposeRegion];
+}
+- (void)XCBConnection: (XCBConnection*)connection damageNotify: (xcb_damage_notify_event_t*)event
+{
+	//NSLog(@"Damage notify {%d, %d, %d, %d}", 
+	//	event->area.x, event->area.y, event->area.width, event->area.height);
+	XCBWindow *damagedWindow = [XCBWindow findXCBWindow: event->drawable];
+	PMCompositeWindow *compositeWindow = [self findCompositeWindow: damagedWindow];
+	if (compositeWindow != nil)
+	{
+		PMScreen *screen = [self findScreenWithRootWindow: [damagedWindow parent]];
+		if (nil == screen)
+			NSLog(@"-[PMConnectionDelegate damageNotify:] ERROR screen not found.");
+		// FIXME: Find out why we don't deal with the area that was damaged
+		// I'm thinking the XServer knows automatically, but I cannot understand
+		// the spec (carmstrong)
+		XCBFixesRegion *partsRegion = [compositeWindow windowDamaged];
+		[screen appendDamage: partsRegion];
+	}
+	else
+		NSLog(@"-[PMConnectionDelegate damageNotify:] ERROR compositewindow for XCBWindow %@ not found.", damagedWindow);
+}
+
+- (void)newWindow: (XCBWindow*)window
+{
+	PMCompositeWindow *compositeWindow = [PMCompositeWindow windowWithXCBWindow: window];
+	[compositeWindows setObject: compositeWindow forKey: window];
+	PMScreen *screen = [self findScreenWithRootWindow: [window parent]];
+	if (screen == nil)
+	{
+		// Can't be top-level. Ignore it.
+		NSLog(@"-[PMConnectionDelegate newWindow: ignoring non-top level window");
+		return;
+	}
+	[screen childWindowDiscovered: compositeWindow];
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+		   selector: @selector(windowFrameDidChange:)
+		       name: XCBWindowFrameDidChangeNotification
+		     object: window];
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+		   selector: @selector(windowFrameWillChange:)
+		       name: XCBWindowFrameWillChangeNotification
+		     object: window];
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+		   selector: @selector(windowAttributesDidChange:)
+		       name: XCBWindowAttributesDidChangeNotification
+		     object: window];
+
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+		   selector: @selector(windowDidDestroy:)
+		       name: XCBWindowDidDestroyNotification
+		     object: window];
+}
+
+- (void)windowFrameWillChange: (NSNotification*)notification
+{
+}
+- (void)windowFrameDidChange: (NSNotification*)notification
+{
+}
+
+- (void)windowAttributesDidChange: (NSNotification*)notification
+{
+}
+
+- (void)windowDidDestroy: (NSNotification*)notification
+{
+	XCBWindow *window = [notification object];
+	[compositeWindows removeObjectForKey:window];
+	XCBREM_OBSERVER(WindowDidDestroy, window);
+	XCBREM_OBSERVER(WindowFrameWillChange, window);
+	XCBREM_OBSERVER(WindowFrameDidChange, window);
+	XCBREM_OBSERVER(WindowAttributesDidChange, window);
+}
+
+
+- (void)finishedProcessingEvents: (XCBConnection*)connection
+{
+	// NSLog(@"Finished processing events.");
+	FOREACH(screens, screen, PMScreen*)
+	{
+		[screen paintAllDamaged];
 	}
 }
-- (void)windowDidUnMap: (NSNotification*)aNotification
+
+- (PMCompositeWindow*)findCompositeWindow: (XCBWindow*)window
 {
-	[self removeCompositingForWindow: [aNotification object]];
+	return [compositeWindows objectForKey: window];
 }
-- (void)windowDidDestroy: (NSNotification*)aNotification
+
+- (PMScreen*)findScreenWithRootWindow: (XCBWindow*)root
 {
-	XCBWindow *win = [aNotification object];
-	XCBWindow *decoratedWin = [decoratedWindows objectForKey: win];
-	[self removeCompositingForWindow: win];
-	[self removeCompositingForWindow: decoratedWin];
-	[decorationWindows removeObjectForKey: decoratedWin];
-	[decoratedWindows removeObjectForKey: win];
-}
-- (void)windowPlacedOnBottom: (NSNotification*)aNotification
-{
-	XCBWindow *win = [aNotification object];
-//	PMCompositeWindow *comp = 
+	FOREACH(screens, screen, PMScreen*)
+	{
+		if ([[screen rootWindow] isEqual:root])
+			return screen;
+	}
+	return nil;
 }
 @end

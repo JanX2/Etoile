@@ -1,8 +1,7 @@
 /**
- * Étoilé ProjectManager - XCBScreen.m
+ * Étoilé ProjectManager - XCBPixmap.m
  *
  * Copyright (C) 2009 David Chisnall
- * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,49 +22,56 @@
  * THE SOFTWARE.
  *
  **/
-#import "XCBScreen.h"
-#import "XCBWindow.h"
-#import "XCBVisual.h"
+#import "XCBPixmap.h"
+#import <Foundation/NSObject.h>
 
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@implementation XCBScreen 
-- (id) initWithXCBScreen: (xcb_screen_t*)aScreen
+@implementation XCBPixmap
+
+- (id)initWithPixmapId: (xcb_pixmap_t)id
 {
-	SELFINIT;
-	screen = *aScreen;
-	root = [[XCBWindow windowWithXCBWindow: screen.root parent: XCB_NONE] 
-		retain];
+	self = [super init]; 
+	if (!self) return 0;
+	pixmap_id = id;
 	return self;
 }
-+ (XCBScreen*) screenWithXCBScreen: (xcb_screen_t*)aScreen
+
+- (id)initWithDepth: (uint8_t)depth
+            drawable: (id<XCBDrawable>)drawable
+               width: (uint16_t)width
+              height: (uint16_t)height
 {
-	return [[[self alloc] initWithXCBScreen: aScreen] autorelease];
+	SUPERINIT;
+	XCBConnection* connection = XCBConn;
+
+	pixmap_id = xcb_generate_id([connection connection]);
+	xcb_create_pixmap(
+		[connection connection], 
+		depth, 
+		pixmap_id, 
+		[drawable xcbDrawableId], 
+		width, 
+		height);
+	return self;
 }
+
 - (id)copyWithZone: (NSZone*)zone
 {
 	return [self retain];
 }
-- (void) dealloc
+- (void)dealloc
 {
-	[root release];
+	xcb_free_pixmap([XCBConn connection], pixmap_id);
 	[super dealloc];
 }
-- (XCBWindow*)rootWindow
+- (xcb_pixmap_t)xcbPixmapId
 {
-	return root;
+	return pixmap_id;
 }
-- (xcb_screen_t*)screenInfo
+- (xcb_drawable_t)xcbDrawableId
 {
-	return &screen;
+	return pixmap_id;
 }
 
-- (xcb_visualid_t)defaultVisual
-{
-	return screen.root_visual;
-}
-- (uint8_t)defaultDepth
-{
-	return screen.root_depth;
-}
 @end

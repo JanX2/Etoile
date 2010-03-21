@@ -1,7 +1,6 @@
 /**
- * Étoilé ProjectManager - XCBScreen.m
+ * Étoilé ProjectManager - XCBComposite.h
  *
- * Copyright (C) 2009 David Chisnall
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,49 +22,17 @@
  * THE SOFTWARE.
  *
  **/
-#import "XCBScreen.h"
-#import "XCBWindow.h"
-#import "XCBVisual.h"
+#import <Foundation/NSObject.h>
+#import "XCBConnection.h"
 
-#import <EtoileFoundation/EtoileFoundation.h>
+@class XCBPixmap;
 
-@implementation XCBScreen 
-- (id) initWithXCBScreen: (xcb_screen_t*)aScreen
-{
-	SELFINIT;
-	screen = *aScreen;
-	root = [[XCBWindow windowWithXCBWindow: screen.root parent: XCB_NONE] 
-		retain];
-	return self;
-}
-+ (XCBScreen*) screenWithXCBScreen: (xcb_screen_t*)aScreen
-{
-	return [[[self alloc] initWithXCBScreen: aScreen] autorelease];
-}
-- (id)copyWithZone: (NSZone*)zone
-{
-	return [self retain];
-}
-- (void) dealloc
-{
-	[root release];
-	[super dealloc];
-}
-- (XCBWindow*)rootWindow
-{
-	return root;
-}
-- (xcb_screen_t*)screenInfo
-{
-	return &screen;
-}
+#include <xcb/composite.h>
 
-- (xcb_visualid_t)defaultVisual
+@interface XCBComposite : NSObject
 {
-	return screen.root_visual;
 }
-- (uint8_t)defaultDepth
-{
-	return screen.root_depth;
-}
++ (void)initializeExtensionWithConnection: (XCBConnection*)connection;
++ (void)redirectSubwindows: (XCBWindow*)root method: (xcb_composite_redirect_t)method;
++ (XCBPixmap*)nameWindowPixmap: (XCBWindow*)window;
 @end

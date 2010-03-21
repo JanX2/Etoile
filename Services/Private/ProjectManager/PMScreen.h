@@ -1,7 +1,6 @@
 /**
- * Étoilé ProjectManager - XCBScreen.m
+ * Étoilé ProjectManager - PMScreen.h
  *
- * Copyright (C) 2009 David Chisnall
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,49 +22,39 @@
  * THE SOFTWARE.
  *
  **/
-#import "XCBScreen.h"
-#import "XCBWindow.h"
-#import "XCBVisual.h"
+#import "PMCompositeWindow.h"
 
-#import <EtoileFoundation/EtoileFoundation.h>
+@class XCBScreen;
+@class XCBRenderPicture;
+@class XCBFixesRegion;
+@class NSMutableArray;
 
-@implementation XCBScreen 
-- (id) initWithXCBScreen: (xcb_screen_t*)aScreen
+@interface PMScreen : NSObject
 {
-	SELFINIT;
-	screen = *aScreen;
-	root = [[XCBWindow windowWithXCBWindow: screen.root parent: XCB_NONE] 
-		retain];
-	return self;
-}
-+ (XCBScreen*) screenWithXCBScreen: (xcb_screen_t*)aScreen
-{
-	return [[[self alloc] initWithXCBScreen: aScreen] autorelease];
-}
-- (id)copyWithZone: (NSZone*)zone
-{
-	return [self retain];
-}
-- (void) dealloc
-{
-	[root release];
-	[super dealloc];
-}
-- (XCBWindow*)rootWindow
-{
-	return root;
-}
-- (xcb_screen_t*)screenInfo
-{
-	return &screen;
+	XCBScreen *screen;
+	XCBRenderPicture *rootBuffer, *rootPicture;
+	XCBRenderPicture *rootTile;
+	XCBFixesRegion *allDamage;
+	NSMutableArray *childWindows;
+	
+	BOOL clipChanged;
 }
 
-- (xcb_visualid_t)defaultVisual
-{
-	return screen.root_visual;
-}
-- (uint8_t)defaultDepth
-{
-	return screen.root_depth;
-}
+- (id)initWithScreen: (XCBScreen*)screen;
+- (XCBScreen*)screen;
+- (XCBWindow*)rootWindow;
+- (XCBRenderPicture*)rootBuffer;
+- (void)setRootBuffer: (XCBRenderPicture*)rb;
+- (XCBRenderPicture*)rootPicture;
+- (void)setRootPicture: (XCBRenderPicture*)rp;
+- (NSArray*)childWindows;
+- (void)appendDamage: (XCBFixesRegion*)damage;
+
+// Event handlers
+- (void)childWindowDiscovered: (PMCompositeWindow*)child;
+
+// Paint the damaged areas and remove accumulated damage
+- (void)paintAllDamaged;
+// Paint everything regardless of accumulated damage
+- (void)paintAll;
 @end

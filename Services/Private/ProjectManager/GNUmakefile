@@ -14,17 +14,22 @@ TOOL_NAME = ProjectManager
 $(TOOL_NAME)_LANGUAGES = English
 
 $(TOOL_NAME)_OBJC_FILES = \
-				 PMDecoratedWindow.m\
-				 PMDecorationWindow.m\
-				 PMConnectionDelegate.m\
-				 PMCompositeWindow.m\
-				 PMCompositeDefaultDecorator.m\
 				 PMNotifications.m\
+				 PMConnectionDelegate.m \
+				 PMScreen.m \
+				 PMCompositeWindow.m \
 				 XCBAtomCache.m\
 				 XCBConnection.m\
 				 XCBNotifications.m\
 				 XCBWindow.m\
 				 XCBScreen.m\
+				 XCBDamage.m \
+				 XCBExtension.m \
+				 XCBComposite.m \
+				 XCBRender.m \
+				 XCBFixes.m \
+				 XCBPixmap.m \
+				 XCBVisual.m \
 				 main.m
 
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Wno-unused  -Werror

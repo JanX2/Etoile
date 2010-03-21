@@ -1,3 +1,28 @@
+/**
+ * Étoilé ProjectManager - XCBConnection.m
+ *
+ * Copyright (C) 2009 David Chisnall
+ * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ **/
 #import "XCBConnection.h"
 #import "XCBScreen.h"
 #import "XCBWindow.h"
@@ -8,10 +33,16 @@
 #include <xcb/damage.h>
 
 @interface XCBConnection (EventHandlers)
-- (void) handleMapNotify: (xcb_map_notify_event_t*)anEvent;
-- (void) handleCreateNotify: (xcb_create_notify_event_t*)anEvent;
-- (void) handleButtonPress: (xcb_map_notify_event_t*)anEvent;
+- (void)handleMapNotify: (xcb_map_notify_event_t*)anEvent;
+- (void)handleCreateNotify: (xcb_create_notify_event_t*)anEvent;
+- (void)handleButtonPress: (xcb_map_notify_event_t*)anEvent;
+- (void)handleExpose: (xcb_expose_event_t*)anEvent;
 @end
+
+@interface XCBConnection (Private)
+- (void)flush;
+@end
+
 @implementation XCBConnection (EventHandlers)
 - (void) handleFocusIn: (xcb_map_notify_event_t*)anEvent
 {
@@ -67,20 +98,28 @@
 {
 	NSLog(@"Created window %x", anEvent->window);
 	XCBWindow *win  = [XCBWindow windowWithCreateEvent: anEvent];
+	// No need to post notification, as this is handled by XCBWindow itself.
+
 	//FIXME: Inefficient; track damaged regions in the client.
-	xcb_damage_damage_t damageid = xcb_generate_id(connection);
-	xcb_damage_create(connection, damageid, anEvent->window, XCB_DAMAGE_REPORT_LEVEL_RAW_RECTANGLES);
-	xcb_flush(connection);
-	NSLog(@"Registering for damage...");
+	//xcb_damage_damage_t damageid = xcb_generate_id(connection);
+	//xcb_damage_create(connection, damageid, anEvent->window, XCB_DAMAGE_REPORT_LEVEL_RAW_RECTANGLES);
+	//xcb_flush(connection);
+	//NSLog(@"Registering for damage...");
+}
+- (void) handleExpose: (xcb_expose_event_t*)anEvent
+{
+	XCBWindow *win = [self windowForXCBId:anEvent->window];
+	[win handleExpose:anEvent];
 }
 @end
 
 XCBConnection *XCBConn;
 
+
 @implementation XCBConnection
 + (XCBConnection*)sharedConnection
 {
-	if (XCBConn == nil)
+	if (nil == XCBConn)
 	{
 	NSLog(@"Creating shared connection...");
 		[[self alloc] init];
@@ -99,6 +138,13 @@ XCBConnection *XCBConn;
 		return nil;
 	}
 
+	if (xcb_connection_has_error(connection)) 
+	{
+		NSLog(@"Unknown error creating connection.");
+		[self release];
+		return nil;
+	}
+
 	replyHandlers = [NSMutableArray new];
 	windows = NSCreateMapTable(NSIntMapKeyCallBacks,
 			NSObjectMapValueCallBacks, 100);
@@ -110,6 +156,12 @@ XCBConnection *XCBConn;
 
 	// Set up event delivery
 	int fd = xcb_get_file_descriptor(connection);
+	if (-1 == fd)
+	{
+		NSLog(@"Received invalid file descriptor for XCBConnection");
+		[self release];
+		return nil;
+	}
 	handle = [[NSFileHandle alloc] initWithFileDescriptor:fd
 	                                       closeOnDealloc:NO];
 	NSNotificationCenter *center =
@@ -130,12 +182,13 @@ XCBConnection *XCBConn;
 		[screens addObject: [XCBScreen screenWithXCBScreen: screen]];
 		NSLog(@"Root %x (%dx%d)", screen->root, screen->width_in_pixels, 
 				screen->height_in_pixels);
-		[self registerWindow: [XCBWindow windowWithXCBWindow: screen->root]];
+		[self registerWindow: [XCBWindow windowWithXCBWindow: screen->root parent:XCB_NONE]];
 
 		uint32_t events = 
 			XCB_EVENT_MASK_FOCUS_CHANGE |
 			XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_BUTTON_PRESS |
-		   	XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY;
+		   	XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
+			XCB_EVENT_MASK_STRUCTURE_NOTIFY;
 
 		xcb_change_window_attributes(connection, screen->root,
 			XCB_CW_EVENT_MASK, &events);
@@ -184,7 +237,7 @@ XCBConnection *XCBConn;
 			HANDLE(CONFIGURE_NOTIFY, ConfigureNotify)
 			HANDLE(CIRCULATE_NOTIFY, CirculateNotify)
 
-			//HANDLE(EXPOSE, Expose)
+			HANDLE(EXPOSE, Expose)
 			default:
 				{
 					SEL extSel = 
@@ -222,25 +275,46 @@ XCBConnection *XCBConn;
 		// FIXME: Handle errors.
 		if (1 == xcb_poll_for_reply(connection, sequenceNumber, &reply, &error))
 		{
+			if (NULL == reply) 
+			{
+				// It is now safe to free the handler
+				[replyHandlers removeObjectAtIndex: i];
+				i--;
+				continue;
+			}
 			NSLog(@"Got reply for %d", sequenceNumber);
+			if (error) 
+			{
+				NSLog(@"ERROR for request seq %d: %d (response type %d)",
+				error->sequence,
+				error->error_code,
+				error->response_type);
+				free(error);
+				continue;
+			}
 			id obj = [handler objectAtIndex: 1];
 			SEL selector;
 			[[handler objectAtIndex: 2] getValue: &selector];
 			[obj performSelector: selector withObject: (id)reply];
 			free(reply);
-			[replyHandlers removeObjectAtIndex: i];
-			i--;
+			// Don't remove the handler just yet
 			repliesHandled = YES;
 		}
 	}
 	return repliesHandled;
 }
-- (void) eventsReady: (NSNotification*)notification
+- (void)eventsReady: (NSNotification*)notification
 {
 	// Poll while there is data left in the buffer
 	while ([self handleEvents] || [self handleReplies]) {}
-	//NSLog(@"Finished handling events");
-	xcb_flush(connection);
+	// NSLog(@"Finished handling events");
+	if ([delegate respondsToSelector:@selector(finishedProcessingEvents:)])
+		[delegate finishedProcessingEvents:self];
+	if (needsFlush)
+	{
+		[self flush];
+		needsFlush = NO;
+	}
 	[handle waitForDataInBackgroundAndNotify];
 }
 - (void)setHandler: (id)anObject 
@@ -255,31 +329,60 @@ XCBConnection *XCBConn;
 		nil];
 	[replyHandlers addObject: value];
 }
+- (void)cancelHandlersForObject: (id)anObject
+{
+	// FIXME: This would be slow
+	NSMutableIndexSet *removeObjects = [NSMutableIndexSet new];
+	NSUInteger count = [replyHandlers count];
+	for (NSUInteger i = 0; i < count; i++)
+	{
+		id replyHandler = [replyHandlers objectAtIndex:i];
+		id handlerObject = [replyHandler objectAtIndex:2];
+		if ([handlerObject isEqual: anObject])
+			[removeObjects addIndex:i];
+
+	}
+	[replyHandlers removeObjectsAtIndexes:removeObjects];
+	[removeObjects release];
+}
 - (void)unregisterWindow: (XCBWindow*)aWindow
 {
 	NSLog(@"Unregistering window: %@", aWindow);
 	NSMapRemove(windows, (void*)(intptr_t)[aWindow xcbWindowId]);
 }
-- (void) registerWindow: (XCBWindow*)aWindow
+- (void)registerWindow: (XCBWindow*)aWindow
 {
 	NSLog(@"Registered window: %@", aWindow);
 	NSMapInsert(windows, (void*)(intptr_t)[aWindow xcbWindowId], aWindow);
 }
-- (XCBWindow*) windowForXCBId: (xcb_window_t)anId;
+- (XCBWindow*)windowForXCBId: (xcb_window_t)anId;
 {
 	return NSMapGet(windows, (void*)(intptr_t)anId);
 }
-- (void) setDelegate:(id) aDelegate
+- (void)setDelegate:(id) aDelegate
 {
 	delegate = aDelegate;
 }
-- (void) setSelector: (SEL)aSelector forXEvent: (uint8_t)anEvent
+- (id)delegate 
+{
+	return delegate;
+}
+- (void)setSelector: (SEL)aSelector forXEvent: (uint8_t)anEvent
 {
 	extensionSelectors[anEvent] = aSelector;
 }
-- (NSArray*) screens
+- (NSArray*)screens
 {
 	return screens;
+}
+- (void)grab
+{
+	xcb_grab_server(connection);
+}
+
+- (void)ungrab
+{
+	xcb_ungrab_server(connection);
 }
 - (xcb_connection_t*) connection
 {
@@ -291,5 +394,21 @@ XCBConnection *XCBConn;
 	[handle release];
 	[replyHandlers release];
 	[super dealloc];
+}
+- (void)setNeedsFlush: (BOOL)shouldFlush
+{
+	needsFlush = shouldFlush;
+}
+- (BOOL)needsFlush
+{
+	return needsFlush;
+}
+
+@end
+
+@implementation XCBConnection(Private)
+- (void)flush
+{
+	xcb_flush(connection);
 }
 @end

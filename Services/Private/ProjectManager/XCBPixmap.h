@@ -1,7 +1,6 @@
 /**
- * Étoilé ProjectManager - XCBScreen.m
+ * Étoilé ProjectManager - XCBPixmap.h
  *
- * Copyright (C) 2009 David Chisnall
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,49 +22,20 @@
  * THE SOFTWARE.
  *
  **/
-#import "XCBScreen.h"
-#import "XCBWindow.h"
-#import "XCBVisual.h"
+#import "XCBConnection.h"
+#import <Foundation/NSObject.h>
+#import "XCBDrawable.h"
+#include <xcb/xcb.h>
 
-#import <EtoileFoundation/EtoileFoundation.h>
-
-@implementation XCBScreen 
-- (id) initWithXCBScreen: (xcb_screen_t*)aScreen
+@interface XCBPixmap : NSObject <XCBDrawable>
 {
-	SELFINIT;
-	screen = *aScreen;
-	root = [[XCBWindow windowWithXCBWindow: screen.root parent: XCB_NONE] 
-		retain];
-	return self;
+	xcb_pixmap_t pixmap_id;
 }
-+ (XCBScreen*) screenWithXCBScreen: (xcb_screen_t*)aScreen
-{
-	return [[[self alloc] initWithXCBScreen: aScreen] autorelease];
-}
-- (id)copyWithZone: (NSZone*)zone
-{
-	return [self retain];
-}
-- (void) dealloc
-{
-	[root release];
-	[super dealloc];
-}
-- (XCBWindow*)rootWindow
-{
-	return root;
-}
-- (xcb_screen_t*)screenInfo
-{
-	return &screen;
-}
-
-- (xcb_visualid_t)defaultVisual
-{
-	return screen.root_visual;
-}
-- (uint8_t)defaultDepth
-{
-	return screen.root_depth;
-}
+- (id)initWithPixmapId: (xcb_pixmap_t)id;
+- (id)initWithDepth: (uint8_t)depth
+           drawable: (id<XCBDrawable>)drawable
+              width: (uint16_t)width
+             height: (uint16_t)height;
+- (xcb_pixmap_t)xcbPixmapId;
+- (xcb_drawable_t)xcbDrawableId;
 @end
