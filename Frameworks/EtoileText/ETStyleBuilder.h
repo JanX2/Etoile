@@ -14,7 +14,7 @@
  * The current style.  This can be modified externally if required.  It should
  * be reset to nil if you wish to reuse the style builder.  
  */
-@property (nonatomic, retain) NSMutableDictionary *style
+@property (nonatomic, retain) NSMutableDictionary *style;
 /**
  * Adds attributes from the specified style.  This method is empty in the
  * superclass.  Subclasses implementing different styling policies should
