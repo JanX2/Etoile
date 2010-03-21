@@ -7,7 +7,14 @@
 {
 	SUPERINIT;
 	styleTransformers = [NSMutableDictionary new];
+	types = [NSMutableSet new];
 	return self;
+}
+- (void)dealloc
+{
+	[types release];
+	[styleTransformers release];
+	[super dealloc];
 }
 - (void)registerTransformer: (ETStyleTransformer*)aTransformer
               forStyleNamed: (NSString*)styleName
@@ -15,9 +22,15 @@
 	[styleTransformers setObject: aTransformer
 	                      forKey: styleName];
 }
-- (id)styleFromDictionary: (NSDictionary*)aDictionary
+- (id)typeFromDictionary: (NSDictionary*)aDictionary
 {
-	return [styles member: aDictionary];
+	id type = [types member: aDictionary];
+	if (nil == type)
+	{
+		[types addObject: aDictionary];
+		type = aDictionary;
+	}
+	return type;
 }
 @end
 

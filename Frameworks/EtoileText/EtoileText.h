@@ -4,3 +4,4 @@
 #import "ETTextProtocols.h"
 #import "ETTextStorage.h"
 #import "ETTextTree.h"
+#import "ETXMLTextParser.h"

@@ -17,6 +17,10 @@
 - (NSString*)description
 {
 	NSString *typeName = [type objectForKey: @"typeName"];
+	if (nil == typeName)
+	{
+		return text;
+	}
 	return [NSString stringWithFormat: @"<%@>%@</%@>", typeName, text, typeName];
 }
 - (void)setCustomAttributes: (NSDictionary*)attributes 

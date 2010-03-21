@@ -8,7 +8,8 @@ EtoileText_OBJC_FILES = \
 					   ETTextFragment.m\
 					   ETTextDocument.m\
 					   ETTextTree.m\
-					   ETTextStorage.m
+					   ETTextStorage.m\
+					   ETXMLTextParser.m
 
 EtoileText_HEADER_FILES = \
 

@@ -8,10 +8,10 @@
 @interface ETTextDocument : COObject 
 {
 	NSMutableDictionary *styleTransformers;
-	NSMutableSet *styles;
+	NSMutableSet *types;
 }
 @property (nonatomic, retain) id<ETText> text;
 - (void)registerTransformer: (ETStyleTransformer*)aTransformer
               forStyleNamed: (NSString*)styleName;
-- (id)styleFromDictionary: (NSDictionary*)aDictionary;
+- (id)typeFromDictionary: (NSDictionary*)aDictionary;
 @end

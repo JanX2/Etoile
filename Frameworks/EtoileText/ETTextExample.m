@@ -36,6 +36,31 @@
 }
 @end
 
+@interface HTMLParser : NSObject
+{
+	id<ETText>html;
+}
+@end
+@implementation HTMLParser
+- (id<ETText>)parseHTMLFromString: (NSString*)aString
+{
+	html = nil;
+	ETXMLParser *parser = [ETXMLParser new];
+	ETXMLTextParser *delegate = 
+		[[ETXMLTextParser alloc] initWithXMLParser: parser
+		                                    parent: (id)self
+		                                       key: @"HTML"];
+	delegate.document = [ETTextDocument new];
+	[parser parseFromSource: aString];
+	[parser release];
+	return html;
+}
+- (void)addChild: (id<ETText>)aNode forKey: (NSString*)aKey
+{
+	html = [[aNode retain] autorelease];
+}
+@end
+
 int main(void)
 {
 	[NSAutoreleasePool new];
@@ -51,4 +76,7 @@ int main(void)
 	NSLog(@"%@", tree);
 	id<ETText>tree1 = [tree splitAtIndex: 8];
 	NSLog(@"%@%@", tree1, tree);
+	HTMLParser *parser = [HTMLParser new];
+	id<ETText> html = [parser parseHTMLFromString: @"<p>This is a string containing <b>bold</b> text</p>"];
+	NSLog(@"%@", html);
 }
