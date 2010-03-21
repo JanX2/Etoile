@@ -24,7 +24,17 @@
 	return [NSString stringWithFormat: @"<%@>%@</%@>", typeName, text, typeName];
 }
 - (void)setCustomAttributes: (NSDictionary*)attributes 
-                      range: (NSRange)aRange {}
+                      range: (NSRange)aRange
+{
+	if (aRange.location != 0 || aRange.length != [text length])
+	{
+		[NSException raise: NSRangeException
+		            format: @"Range for custom attributes must be entire leaf "
+		                     "node.  You should split leaf nodes before modfying"
+		                     "them if you need to modify a subrange"];
+	}
+	self.customAttributes = attributes;
+}
 - (void)replaceCharactersInRange: (NSRange)range
                       withString: (NSString*)aString
 {

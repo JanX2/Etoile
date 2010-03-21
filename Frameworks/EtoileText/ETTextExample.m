@@ -17,7 +17,11 @@
 }
 - (void)startTextNode: (id<ETText>)aNode
 {
-	[tex appendFormat: @"\\%@{", [aNode.type objectForKey: @"typeName"]];
+	NSString *typeName = [aNode.type valueForKey: @"typeName"];
+	if (nil != typeName)
+	{
+		[tex appendFormat: @"\\%@{", typeName];
+	}
 	depth++;
 }
 - (void)visitTextNode: (id<ETText>)aNode
@@ -26,7 +30,11 @@
 }
 - (void)endTextNode: (id<ETText>)aNode
 {
-	[tex appendString: @"}"];
+	;
+	if (nil != [aNode.type valueForKey: @"typeName"])
+	{
+		[tex appendString: @"}"];
+	}
 	depth--;
 	if (depth == 0)
 	{
@@ -79,4 +87,5 @@ int main(void)
 	HTMLParser *parser = [HTMLParser new];
 	id<ETText> html = [parser parseHTMLFromString: @"<p>This is a string containing <b>bold</b> text</p>"];
 	NSLog(@"%@", html);
+	[html visitWithVisitor: [Visitor new]];
 }

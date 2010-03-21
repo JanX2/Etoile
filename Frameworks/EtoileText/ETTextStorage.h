@@ -7,6 +7,12 @@
  * system can play with.
  */
 @interface ETTextStorage : NSTextStorage
+/**
+ * The structured text presented by this object.
+ */
 @property (nonatomic, retain) id<ETText>text;
+/**
+ * The style builder used to map semantic attributes to presentation styles.
+ */
 @property (nonatomic, retain) ETStyleBuilder *style;
 @end
