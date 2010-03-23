@@ -5,10 +5,11 @@ FRAMEWORK_NAME = EtoileText
 TOOL_NAME = EtoileTextExample
 
 EtoileText_OBJC_FILES = \
-					   ETTextFragment.m\
 					   ETTextDocument.m\
-					   ETTextTree.m\
+					   ETTextFragment.m\
 					   ETTextStorage.m\
+					   ETTextStyles.m\
+					   ETTextTree.m\
 					   ETXMLTextParser.m
 
 EtoileText_HEADER_FILES = \

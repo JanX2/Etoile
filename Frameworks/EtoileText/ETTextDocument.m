@@ -6,21 +6,13 @@
 - (id)init
 {
 	SUPERINIT;
-	styleTransformers = [NSMutableDictionary new];
 	types = [NSMutableSet new];
 	return self;
 }
 - (void)dealloc
 {
 	[types release];
-	[styleTransformers release];
 	[super dealloc];
-}
-- (void)registerTransformer: (ETStyleTransformer*)aTransformer
-              forStyleNamed: (NSString*)styleName
-{
-	[styleTransformers setObject: aTransformer
-	                      forKey: styleName];
 }
 - (id)typeFromDictionary: (NSDictionary*)aDictionary
 {
