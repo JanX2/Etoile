@@ -26,7 +26,7 @@
 	         forKey: @"typeName"];
 	style = [document typeFromDictionary: dict];
 	value = [ETTextFragment new];
-	[value setType: style];
+	[(ETTextFragment*)value setType: style];
 	[dict release];
 	// TODO: Custom style by parsing CSS from style attribute - take code from
 	// ETXML
