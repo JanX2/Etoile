@@ -31,7 +31,7 @@
 /**
  * Returns the type of this object.  The type is used when constructing a style.
  */
-@property (nonatomic, retain) id type;
+@property (nonatomic, retain) id textType;
 /**
  * Sets custom attributes for a specified range.  When sent to a leaf node, the
  * range must cover the entire node.  When sent to any other node, it will

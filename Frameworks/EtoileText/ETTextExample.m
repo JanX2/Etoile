@@ -17,7 +17,7 @@
 }
 - (void)startTextNode: (id<ETText>)aNode
 {
-	NSString *typeName = [aNode.type valueForKey: @"typeName"];
+	NSString *typeName = [aNode.textType valueForKey: @"typeName"];
 	if (nil != typeName)
 	{
 		[tex appendFormat: @"\\%@{", typeName];
@@ -31,7 +31,7 @@
 - (void)endTextNode: (id<ETText>)aNode
 {
 	;
-	if (nil != [aNode.type valueForKey: @"typeName"])
+	if (nil != [aNode.textType valueForKey: @"typeName"])
 	{
 		[tex appendString: @"}"];
 	}
@@ -73,13 +73,13 @@ int main(void)
 {
 	[NSAutoreleasePool new];
 	ETTextFragment *text = [[ETTextFragment alloc] initWithString: @"This is a test"];
-	text.type = D(@"p", @"typeName");
+	text.textType = D(@"p", @"typeName");
 	NSLog(@"%@", text);
 	ETTextFragment *part1 = [text splitAtIndex: 5];
 	NSLog(@"%@", part1);
 	NSLog(@"%@", text);
 	ETTextTree *tree = [ETTextTree textTreeWithChildren: A(part1, text)];
-	tree.type = D(@"div", @"typeName");
+	tree.textType = D(@"div", @"typeName");
 	[tree visitWithVisitor: [Visitor new]];
 	NSLog(@"%@", tree);
 	id<ETText>tree1 = [tree splitAtIndex: 8];

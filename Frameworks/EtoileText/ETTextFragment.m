@@ -3,7 +3,7 @@
 #import "EtoileText.h"
 
 @implementation ETTextFragment
-@synthesize parent, type, customAttributes;
+@synthesize parent, textType, customAttributes;
 - (id)initWithString: (NSString*)string
 {
 	SUPERINIT;
@@ -16,7 +16,7 @@
 }
 - (NSString*)description
 {
-	NSString *typeName = [type objectForKey: @"typeName"];
+	NSString *typeName = [textType objectForKey: @"typeName"];
 	if (nil == typeName)
 	{
 		return text;
@@ -45,7 +45,7 @@
 - (NSUInteger)buildStyleFromIndex: (NSUInteger)anIndex
                  withStyleBuilder: (ETStyleBuilder*)aBuilder
 {
-	[aBuilder addAttributesForStyle: type];
+	[aBuilder addAttributesForStyle: textType];
 	if (nil != customAttributes)
 	{
 		[aBuilder addCustomAttributes: customAttributes];
@@ -65,7 +65,7 @@
 	NSString *str = [text substringToIndex: anIndex];
 	ETTextFragment *first = [[ETTextFragment alloc] initWithString: str];
 	first.customAttributes = customAttributes;
-	first.type = type;
+	first.textType = textType;
 	NSRange r = NSMakeRange(0, anIndex);
 	[text deleteCharactersInRange: r];
 	return [first autorelease];

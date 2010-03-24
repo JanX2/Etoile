@@ -26,7 +26,7 @@
 	         forKey: @"typeName"];
 	style = [document typeFromDictionary: dict];
 	value = [ETTextFragment new];
-	[(ETTextFragment*)value setType: style];
+	[value setTextType: style];
 	[dict release];
 	// TODO: Custom style by parsing CSS from style attribute - take code from
 	// ETXML
@@ -54,8 +54,8 @@
 		ETTextTree *tree = [ETTextTree textTreeWithChildren: A(value, aChild)];
 		tree.customAttributes = fragment.customAttributes;
 		fragment.customAttributes = nil;
-		tree.type = fragment.type;
-		fragment.type = nil;
+		tree.textType = fragment.textType;
+		fragment.textType = nil;
 		value = tree;
 	}
 	else

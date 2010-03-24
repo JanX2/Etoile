@@ -31,7 +31,7 @@ typedef struct
 } ETTextTreeChild;
 
 @implementation ETTextTree
-@synthesize length, parent, type, customAttributes;
+@synthesize length, parent, textType, customAttributes;
 - (id)initWithChildren: (NSArray*)anArray
 {
 	SUPERINIT;
@@ -53,7 +53,7 @@ typedef struct
 }
 - (NSString*)description
 {
-	NSString *typeName = [type objectForKey: @"typeName"];
+	NSString *typeName = [textType objectForKey: @"typeName"];
 	NSMutableString *desc = [NSMutableString stringWithFormat: @"<%@>", typeName];
 	for (id child in children)
 	{
@@ -220,7 +220,7 @@ typedef struct
 	NSArray *firstChildren = [children subarrayWithRange: firstRange];
 	ETTextTree *firstPart = [ETTextTree textTreeWithChildren: firstChildren];
 	firstPart.customAttributes = customAttributes;
-	firstPart.type = type;
+	firstPart.textType = textType;
 	// Remove the children that were added to the other node.
 	[children removeObjectsInRange: firstRange];
 	return firstPart;
