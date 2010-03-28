@@ -20,15 +20,13 @@
    59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include <Foundation/Foundation.h>
-
-#include <AppKit/NSApplication.h>
-#include <AppKit/NSImage.h>
-#include <AppKit/NSMenuView.h>
-#include <AppKit/NSWindow.h>
-
-#include "NSMenu+Hackery.h"
-
+#import <Foundation/Foundation.h>
+#import <AppKit/NSApplication.h>
+#import <AppKit/NSImage.h>
+#import <AppKit/NSMenuView.h>
+#import <AppKit/NSScreen.h>
+#import <AppKit/NSWindow.h>
+#import "NSMenu+Hackery.h"
 #import "MenuBarHeight.h"
 
 @interface NSMenu (EtoilePrivate)

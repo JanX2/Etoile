@@ -163,3 +163,12 @@ static float MenuTitleFillerWidth = 0;
 }
 
 @end
+
+@implementation GSTheme (GSTitleView)
+
+- (Class) titleViewClassForMenuView: (NSMenuView *)aMenuView
+{
+	return [EtoileMenuTitleView class];
+}
+
+@end

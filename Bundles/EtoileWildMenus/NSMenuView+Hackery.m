@@ -20,15 +20,16 @@
    59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "MHMenuItemCell.h"
-#include "NSMenuView+Hackery.h"
-
 #import <AppKit/NSApplication.h>
-#import <AppKit/PSOperators.h>
 #import <AppKit/NSEvent.h>
-
+#import <AppKit/NSGraphics.h>
+#import <AppKit/NSMenuItemCell.h>
+#import <AppKit/NSWindow.h>
+#import <AppKit/PSOperators.h>
+#import "NSMenuView+Hackery.h"
 #import "EtoileMenuTitleView.h"
 #import "MenuBarHeight.h"
+#import "MHMenuItemCell.h"
 
 enum {
   BottomBorderOffset = 1
