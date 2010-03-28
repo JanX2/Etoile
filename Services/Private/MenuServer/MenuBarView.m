@@ -21,20 +21,14 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#import "MenuBarView.h"
-
-#import <Foundation/NSBundle.h>
-#import <Foundation/NSDebug.h>
-#import <Foundation/NSEnumerator.h>
-#import <Foundation/NSSortDescriptor.h>
-
+#import <Foundation/Foundation.h>
 #import <AppKit/NSEvent.h>
 #import <AppKit/NSImage.h>
 #import <AppKit/NSMenu.h>
 #import <AppKit/NSMenuItem.h>
 #import <AppKit/NSScreen.h>
 #import <AppKit/NSWindow.h>
-
+#import "MenuBarView.h"
 #import "EtoileSystemBarEntry.h"
 #import "BundleExtensionLoader.h"
 
