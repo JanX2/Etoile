@@ -114,8 +114,18 @@ typedef struct
 - (void)replaceCharactersInRange: (NSRange)aRange
                       withString: (NSString*)aString
 {
+	// Special case for inserting into an empty tree
+	if (0 == length && aRange.location == 0)
+	{
+		ETTextFragment *child = 
+			[[ETTextFragment alloc] initWithString: aString];
+		[children addObject: child];
+		[child release];
+		return;
+	}
 	ETTextTreeChild startChild = 
 		[self childNodeForIndex: aRange.location];
+	NSLog(@"idx: %d, start %d", startChild.index, startChild.start);
 	id<ETText> child = [children objectAtIndex: startChild.index];
 	NSUInteger end = [child length];
 

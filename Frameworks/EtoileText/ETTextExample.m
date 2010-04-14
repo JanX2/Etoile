@@ -138,8 +138,13 @@ int main(void)
 
 	TeXScannerDelegate *d = [TeXScannerDelegate new];
 	ETTeXScanner *s = [ETTeXScanner new];
+	NSString * tex = [NSString stringWithContentsOfFile: @"/tmp/tex"];
 	s.delegate = d;
-	[s parseString: [NSString stringWithContentsOfFile: @"/tmp/tex"]];
-	[s release];
+	[s parseString: tex];
 	[d release];
+	ETTeXParser *d2 = [ETTeXParser new];
+	d2.scanner = s;
+	s.delegate = d2;
+	[s parseString: tex];
+	NSLog(@"Parsed TeX: %@", d2.text);
 }
