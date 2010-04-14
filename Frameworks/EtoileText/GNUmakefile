@@ -10,6 +10,7 @@ EtoileText_OBJC_FILES = \
 					   ETTextStorage.m\
 					   ETTextStyles.m\
 					   ETTextTree.m\
+					   ETTeXScanner.m\
 					   ETXMLTextParser.m
 
 EtoileText_HEADER_FILES = \

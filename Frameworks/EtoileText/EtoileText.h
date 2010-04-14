@@ -5,3 +5,4 @@
 #import "ETTextStorage.h"
 #import "ETTextTree.h"
 #import "ETXMLTextParser.h"
+#import "ETTeXScanner.h"

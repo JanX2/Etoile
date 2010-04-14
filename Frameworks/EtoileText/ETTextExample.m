@@ -69,6 +69,53 @@
 }
 @end
 
+@interface TeXScannerDelegate : NSObject <ETTeXScannerDelegate>
+{
+	@public
+	NSMutableSet *commands;
+}
+@end
+@implementation TeXScannerDelegate
+- (id)init
+{
+	SUPERINIT;
+	commands = [NSMutableSet new];
+	return self;
+}
+- (void)dealloc
+{
+	NSLog(@"Used commands: %@", commands);
+	[commands release];
+	[super dealloc];
+}
+- (void)beginCommand: (NSString*)aCommand
+{
+	[commands addObject: aCommand];
+	NSLog(@"Command: %@", aCommand);
+}
+- (void)beginOptArg
+{
+	NSLog(@"[");
+}
+- (void)endOptArg
+{
+	NSLog(@"]");
+}
+- (void)beginArgument
+{
+	NSLog(@"{");
+}
+- (void)endArgument
+{
+	NSLog(@"}");
+}
+- (void)handleText: (NSString*)aString
+{
+	NSLog(@"Text: %@", aString);
+}
+@end
+
+
 int main(void)
 {
 	[NSAutoreleasePool new];
@@ -88,4 +135,11 @@ int main(void)
 	id<ETText> html = [parser parseHTMLFromString: @"<p>This is a string containing <b>bold</b> text</p>"];
 	NSLog(@"%@", html);
 	[html visitWithVisitor: [Visitor new]];
+
+	TeXScannerDelegate *d = [TeXScannerDelegate new];
+	ETTeXScanner *s = [ETTeXScanner new];
+	s.delegate = d;
+	[s parseString: [NSString stringWithContentsOfFile: @"/tmp/tex"]];
+	[s release];
+	[d release];
 }
