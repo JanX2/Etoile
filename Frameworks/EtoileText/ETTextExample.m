@@ -146,5 +146,5 @@ int main(void)
 	d2.scanner = s;
 	s.delegate = d2;
 	[s parseString: tex];
-	NSLog(@"Parsed TeX: %@", d2.text);
+	NSLog(@"Parsed TeX: %@", d2.builder.textTree);
 }

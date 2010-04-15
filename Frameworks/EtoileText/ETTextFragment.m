@@ -42,6 +42,11 @@
 	                    withString: aString];
 	[parent childDidChange: self];
 }
+- (void)appendString: (NSString*)aString
+{
+	[text appendString: aString];
+	[parent childDidChange: self];
+}
 - (NSUInteger)buildStyleFromIndex: (NSUInteger)anIndex
                  withStyleBuilder: (ETStyleBuilder*)aBuilder
 {

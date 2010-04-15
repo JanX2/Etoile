@@ -53,6 +53,10 @@
 - (void)replaceCharactersInRange: (NSRange)aRange
                       withString: (NSString*)aString;
 /**
+ * Appends the string to the current text object.
+ */
+- (void)appendString: (NSString*)aString;
+/**
  * Splits the receiver at the specified index.  The returned value is a new
  * text tree containing all of the text before the index.  The receiver
  * contains only the elements after.
@@ -72,7 +76,7 @@
  * The ETTextGroup protocol is adopted by elements in an ETText tree that
  * contain children.
  */
-@protocol ETTextGroup
+@protocol ETTextGroup <ETText>
 /**
  * Notify the object that one of its children changed.  This may invalidate
  * caches in the parent, or cause them to be regenerated.

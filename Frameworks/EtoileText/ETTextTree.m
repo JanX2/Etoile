@@ -86,6 +86,7 @@ typedef struct
 	length += [aFragment length];
 	[children addObject: aFragment];
 	aFragment.parent = self;
+	[parent childDidChange: self];
 }
 - (unichar)characterAtIndex: (NSUInteger)anIndex
 {
@@ -159,6 +160,19 @@ typedef struct
 		[children removeObjectsInRange: deleteRange];
 		[self recalculateLength];
 	}
+}
+- (void)appendString: (NSString*)aString;
+{
+	// Special case for inserting into an empty tree
+	if (0 == length)
+	{
+		ETTextFragment *child = 
+			[[ETTextFragment alloc] initWithString: aString];
+		[children addObject: child];
+		[child release];
+		return;
+	}
+	[[children lastObject] appendString: aString];
 }
 - (void)setCustomAttributes: (NSDictionary*)attributes 
                       range: (NSRange)aRange

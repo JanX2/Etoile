@@ -107,18 +107,20 @@ static NSCharacterSet *CommandEndCharacterSet;
 @end
 
 @implementation ETTeXParser
-@synthesize parent, text, scanner;
+@synthesize parent, document, builder, scanner;
 - (id)init
 {
 	SUPERINIT;
 	commandHandlers = [NSMutableDictionary new];
-	text = [ETTextTree new];
+	builder = [ETTextTreeBuilder new];
+	document = [ETTextDocument new];
+	document.text = builder.textTree;
 	return self;
 }
 - (void)dealloc
 {
 	[commandHandlers release];
-	[text release];
+	[builder release];
 	[scanner release];
 	[super dealloc];
 }
@@ -136,7 +138,12 @@ static NSCharacterSet *CommandEndCharacterSet;
 		NSLog(@"No handler registered for: %@", aCommand);
 		return;
 	}
-	id d = [[handler new] autorelease];
+	id<ETTeXParsing> d = [[handler new] autorelease];
+	d.scanner = scanner;
+	// Note: Not self, so that children can call this
+	d.parent = (id<ETTeXParsing>)scanner.delegate;
+	d.builder = builder;
+	d.document = document;
 	scanner.delegate = d;
 	[d beginCommand: aCommand];
 }
@@ -146,7 +153,6 @@ static NSCharacterSet *CommandEndCharacterSet;
 - (void)endArgument {}
 - (void)handleText: (NSString*)aString
 {
-	[text replaceCharactersInRange: NSMakeRange([text length], 0)
-	                    withString: aString];
+	[builder appendString: aString];
 }
 @end
