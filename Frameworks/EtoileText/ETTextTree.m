@@ -53,7 +53,7 @@ typedef struct
 }
 - (NSString*)description
 {
-	NSString *typeName = [textType objectForKey: @"typeName"];
+	NSString *typeName = [textType objectForKey: kETTextStyleName];
 	NSMutableString *desc = [NSMutableString stringWithFormat: @"<%@>", typeName];
 	for (id child in children)
 	{

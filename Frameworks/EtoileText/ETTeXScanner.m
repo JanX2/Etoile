@@ -112,6 +112,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 {
 	SUPERINIT;
 	commandHandlers = [NSMutableDictionary new];
+	unknownTags = [NSMutableSet new];
 	builder = [ETTextTreeBuilder new];
 	document = [ETTextDocument new];
 	document.text = builder.textTree;
@@ -120,6 +121,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 - (void)dealloc
 {
 	[commandHandlers release];
+	[unknownTags release];
 	[builder release];
 	[scanner release];
 	[super dealloc];
@@ -135,7 +137,11 @@ static NSCharacterSet *CommandEndCharacterSet;
 	Class handler = [commandHandlers objectForKey: aCommand];
 	if (nil == handler)
 	{
-		NSLog(@"No handler registered for: %@", aCommand);
+		if (![unknownTags containsObject: aCommand])
+		{
+			[unknownTags addObject: aCommand];
+			NSLog(@"No handler registered for: %@", aCommand);
+		}
 		return;
 	}
 	id<ETTeXParsing> d = [[handler new] autorelease];
@@ -153,6 +159,14 @@ static NSCharacterSet *CommandEndCharacterSet;
 - (void)endArgument {}
 - (void)handleText: (NSString*)aString
 {
-	[builder appendString: aString];
+	NSArray *paragraphs = [aString componentsSeparatedByString: @"\n\n"];
+	for (NSString *p in paragraphs)
+	{
+		[builder endNode];
+		[self.builder startNodeWithStyle: 
+			[self.document typeFromDictionary: D(
+				ETTextParagraphType, kETTextStyleName)]];
+		[builder appendString: p];
+	}
 }
 @end

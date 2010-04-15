@@ -12,6 +12,8 @@
 @class ETTeXScanner;
 @class ETTextTreeBuilder;
 @class ETTextDocument;
+@class NSMutableSet;
+@class NSMutableDictionary;
 
 @protocol ETTeXParsing <ETTeXScannerDelegate, NSObject>
 @property (nonatomic, assign) id<ETTeXParsing> parent;
@@ -23,6 +25,7 @@
 @interface ETTeXParser : NSObject <ETTeXParsing>
 {
 	NSMutableDictionary *commandHandlers;
+	NSMutableSet *unknownTags;
 }
 - (void)registerDelegate: (Class)aClass forCommand: (NSString*)command;
 @end

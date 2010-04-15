@@ -16,7 +16,7 @@
 }
 - (NSString*)description
 {
-	NSString *typeName = [textType objectForKey: @"typeName"];
+	NSString *typeName = [textType objectForKey: kETTextStyleName];
 	if (nil == typeName)
 	{
 		return text;

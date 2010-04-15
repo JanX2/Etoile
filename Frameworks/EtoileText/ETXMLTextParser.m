@@ -23,7 +23,7 @@
 		dict = [NSMutableDictionary new];
 	}
 	[dict setObject: aName
-	         forKey: @"typeName"];
+	         forKey: kETTextStyleName];
 	style = [document typeFromDictionary: dict];
 	value = [ETTextFragment new];
 	[value setTextType: style];

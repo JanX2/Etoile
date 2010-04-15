@@ -9,9 +9,9 @@ EtoileText_OBJC_FILES = \
 					   ETTextDocument.m\
 					   ETTextFragment.m\
 					   ETTextStorage.m\
-					   ETTextStyles.m\
 					   ETTextTree.m\
 					   ETTextTreeBuilder.m\
+					   ETTextTypes.m\
 					   ETXMLTextParser.m
 
 EtoileText_HEADER_FILES = \

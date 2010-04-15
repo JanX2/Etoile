@@ -6,4 +6,5 @@
 #import "ETTextStorage.h"
 #import "ETTextTree.h"
 #import "ETTextTreeBuilder.h"
+#import "ETTextTypes.h"
 #import "ETXMLTextParser.h"
