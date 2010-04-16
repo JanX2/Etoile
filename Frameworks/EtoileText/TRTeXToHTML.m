@@ -5,7 +5,7 @@
 {
 	BOOL isStarted;
 }
-+ (void)setTextType: (NSString*) aType forTeXCommand: (NSString*) aCommand;
++ (void)setTextType: (NSString*)aType forTeXCommand: (NSString*)aCommand;
 @end
 @implementation ETTeXSimpleHandler
 static NSMutableDictionary *CommandTypes;
@@ -14,7 +14,7 @@ static NSMutableDictionary *CommandTypes;
 	if ([ETTeXSimpleHandler class] != self) { return; }
 	CommandTypes = [NSMutableDictionary new];
 }
-+ (void)setTextType: (NSString*) aType forTeXCommand: (NSString*) aCommand
++ (void)setTextType: (NSString*)aType forTeXCommand: (NSString*)aCommand
 {
 	[CommandTypes setObject: aCommand forKey: aType];
 }
@@ -287,12 +287,11 @@ static NSDictionary *HeadingTypes;
 @end
 
 @interface TRXHTMLWriter : NSObject <ETTextVisitor>
-{
-	ETXMLWriter *writer;
-}
 - (NSString*)endDocument;
+@property (nonatomic, retain) ETXMLWriter *writer;
 @end
 @implementation TRXHTMLWriter
+@synthesize writer;
 - (id)init
 {
 	SUPERINIT;
@@ -345,10 +344,17 @@ static NSDictionary *HeadingTypes;
 			attributes = D(@"keyword", @"class");
 			typeName = @"span";
 		}
+		else if ([ETTextLinkTargetType isEqualToString: typeName])
+		{
+			NSString *linkName = [aNode.textType valueForKey: kETTextLinkName];
+			typeName = @"a";
+			attributes = D([linkName stringValue], @"name");
+		}
 		else if ([ETTextForeignImportType isEqualToString: typeName])
 		{
 			// TODO: Differenc class for each snippet type
-			[writer startElement: @"pre"];
+			[writer startElement: @"pre"
+					  attributes: D([aNode.textType valueForKey: @"TRImportType"], @"class")];
 			// FIXME: don't hard-code path!  Very bad!
 			NSString *file = [NSString stringWithContentsOfFile: 
 					[NSString stringWithFormat: @"/tmp/startsnippets/%@", 
@@ -374,7 +380,8 @@ static NSDictionary *HeadingTypes;
 		}
 		else
 		{
-			//typeName = @"span";
+			attributes = D(typeName, @"class");
+			typeName = @"span";
 		}
 		[writer startElement: typeName
 				  attributes: attributes];
@@ -403,6 +410,182 @@ static NSDictionary *HeadingTypes;
 	return [writer endDocument];
 }
 @end
+@interface NSMutableDictionary (DictionaryOfLists)
+- (void)addObject: anObject forKey: aKey;
+@end
+@implementation NSMutableDictionary (DictionaryOfLists)
+- (void)addObject: anObject forKey: aKey
+{
+	id old = [self objectForKey: aKey];
+	if (nil == old)
+	{
+		[self setObject: anObject forKey: aKey];
+	}
+	else
+	{
+		if ([old isKindOfClass: [NSMutableArray class]])
+		{
+			[(NSMutableArray*)old addObject: anObject];
+		}
+		else
+		{
+			[self setObject: [NSMutableArray arrayWithObjects: old, anObject, nil]
+			         forKey: aKey];
+		}
+	}
+}
+@end
+@interface ETReferenceBuilder : NSObject <ETTextVisitor>
+{
+	/** Text nodes referring to other elements. */
+	NSMutableArray *referenceNodes;
+	/** Link targets. */
+	NSMutableDictionary *linkTargets;
+	NSMutableDictionary *linkNames;
+	/** Index entries. */
+	NSMutableDictionary *indexEntries;
+	int sectionCounter[10];
+	int sectionCounterDepth;
+}
+- (void)finishVisiting;
+@end
+@implementation ETReferenceBuilder
+- init
+{
+	SUPERINIT;
+	referenceNodes = [NSMutableArray new];
+	linkTargets = [NSMutableDictionary new];
+	linkNames = [NSMutableDictionary new];
+	indexEntries = [NSMutableDictionary new];
+	return self;
+}
+- (void)dealloc
+{
+	[referenceNodes release];
+	[linkTargets release];
+	[linkNames release];
+	[indexEntries release];
+	[super dealloc];
+}
+- (void)startTextNode: (id<ETText>)aNode 
+{
+	id type = aNode.textType;
+	if ([ETTextHeadingType isEqualToString: [type valueForKey: kETTextStyleName]])
+	{
+		int level = [[type valueForKey: kETTextHeadingLevel] intValue];
+		NSAssert(level < 10, @"Indexer can only handle 10 levels of headings.");
+		NSLog(@"Found heading %@ at depth %d", [aNode stringValue], level);
+		sectionCounter[level]++;
+		sectionCounterDepth = level;
+		// Don't renumber chapters when we start a new part
+		if (level == 0) { level = 1; }
+		// FIXME: This is completely wrong.
+		for (int i = level+1 ; i<10 ; i++)
+		{
+			sectionCounter[i] = 0;
+		}
+	}
+}
+- (void)visitTextNode: (id<ETText>)aNode
+{
+	id type = aNode.textType;
+	NSString *typeName = [typeName valueForKey: kETTextStyleName];
+	if ([ETTextLinkType isEqualToString: typeName])
+	{
+		[referenceNodes addObject: aNode];
+	}
+	else if ([ETTextLinkTargetType isEqualToString: typeName])
+	{
+		NSString *linkName = [type valueForKey: kETTextLinkName];
+		NSMutableString *sectionNumber = 
+			[NSMutableString stringWithFormat: @"%d", sectionCounter[1]];
+		for (int i=2 ; i<=sectionCounterDepth ; i++)
+		{
+			[sectionNumber appendFormat: @".%d", sectionCounter[i]];
+		}
+		[linkNames setObject: sectionNumber
+		              forKey: linkName];
+		[linkTargets setObject: aNode
+		                forKey: linkName];
+		NSString *indexName = [type valueForKey: kETTextLinkIndexText];
+		if (nil != indexName)
+		{
+			[indexEntries addObject: linkName
+			                 forKey: indexName];
+		}
+	}
+}
+- (void)endTextNode: (id<ETText>)aNode {}
+- (void)finishVisiting
+{
+	for (id<ETText> link in referenceNodes)
+	{
+		NSUInteger length = [link length];
+		NSString *target = 
+			[linkNames objectForKey: [link.textType valueForKey: kETTextLinkName]];
+		if (nil == target) { target = @"??"; }
+		[link replaceCharactersInRange: NSMakeRange(0, length)
+		                    withString: target];
+	}
+	NSLog(@"Index: %@", indexEntries);
+}
+// FIXME: This should be part of the XML writer, not part of the ref builder
+- (void)writeIndexWithXMLWriter: (ETXMLWriter*)writer
+{
+	[writer startAndEndElement: @"h1"
+	                     cdata: @"Index"];
+	[writer startElement: @"div"
+	          attributes: D(@"index", @"class")];
+	NSArray *entries = [[indexEntries allKeys] sortedArrayUsingSelector: @selector(compare:)];
+	unichar startChar = 0;
+	BOOL inIndexList = NO;
+	for (NSString *entry in entries)
+	{
+		if ([entry characterAtIndex: 0] != startChar)
+		{
+			startChar = [entry characterAtIndex: 0];
+			if (inIndexList)
+			{
+				[writer endElement];
+			}
+			[writer startAndEndElement: @"h2"
+			                attributes: D(@"index", @"class")
+			                     cdata: [NSString stringWithFormat: @"%c", toupper(startChar)]];
+			[writer startElement: @"p"];
+		}
+		id targets = [indexEntries objectForKey: entry];
+		if ([targets isKindOfClass: [NSArray class]])
+		{
+			NSLog(@"Multiple entries.");
+			[writer characters: entry];
+			[writer characters: @", "];
+			for (id t in targets)
+			{
+				NSString *ref = [NSString stringWithFormat: @"#%@", t];
+				NSString *section = [linkNames objectForKey: t];
+				[writer startAndEndElement: @"a"
+				                attributes: D(ref, @"href")
+				                     cdata: section];
+				[writer characters: @" "];
+			}
+		}
+		else
+		{
+			[writer startAndEndElement: @"a"
+			                attributes: D([NSString stringWithFormat: @"#%@", targets], @"href")
+			                     cdata: entry];
+		}
+		[writer startAndEndElement: @"br"];
+	}
+	if (inIndexList)
+	{
+		[writer endElement];
+	}
+	[writer endElement];
+	[writer endElement];
+}
+@end
+
 int main(void)
 {
 	[NSAutoreleasePool new];
@@ -445,9 +628,13 @@ int main(void)
 	d2.scanner = s;
 	s.delegate = d2;
 	[s parseString: tex];
+	//NSLog(@"Parsed TeX: \n%@", d2.document.text);
+	ETReferenceBuilder *r = [ETReferenceBuilder new];
+	[d2.document.text visitWithVisitor: r];
+	[r finishVisiting];
 	TRXHTMLWriter *w = [TRXHTMLWriter new];
-	NSLog(@"Parsed TeX: \n%@", d2.document.text);
 	[d2.document.text visitWithVisitor: w];
+	[r writeIndexWithXMLWriter: w.writer];
 	NSString *html = [w endDocument];
 	NSLog(@"Parsed TeX: \n%@", html);
 	[html writeToFile: @"tex.html" atomically: NO];
