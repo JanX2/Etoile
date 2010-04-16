@@ -264,5 +264,26 @@ typedef struct
 	str.text = self;
 	return [str autorelease];
 }
+- (void)replaceChild: oldChild withNode: aNode
+{
+	NSInteger idx = [children indexOfObjectIdenticalTo: oldChild];
+	if (NSNotFound != idx)
+	{
+		if (nil == aNode)
+		{
+			[children removeObjectAtIndex: idx];
+		}
+		else
+		{
+			[children replaceObjectAtIndex: idx
+			                    withObject: aNode];
+		}
+		[self recalculateLength];
+	}
+}
+- (void)replaceInParentWithTextNode: (id<ETText>)aNode
+{
+	[(ETTextTree*)parent replaceChild: self withNode: aNode];
+}
 @end
 

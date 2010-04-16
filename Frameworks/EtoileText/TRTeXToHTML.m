@@ -65,6 +65,7 @@ static NSMutableDictionary *CommandTypes;
 	{
 		NSAssert([@"begin" isEqualToString: aCommand],
 				@"Environment must stat with \\begin!");
+		[[self root] endParagraph];
 		return;
 	}
 	if ([@"end" isEqualToString: aCommand])
@@ -319,6 +320,7 @@ static NSDictionary *HeadingTypes;
 		if ([ETTextParagraphType isEqualToString: typeName])
 		{
 			typeName = @"p";
+			if ([aNode length] == 0) { return; }
 		}
 		else if ([ETTextHeadingType isEqualToString: typeName])
 		{
@@ -395,11 +397,21 @@ static NSDictionary *HeadingTypes;
 	{
 		[writer characters: str];
 	}
+	else if ([ETTextLinkTargetType isEqualToString: 
+				[aNode.textType valueForKey: kETTextStyleName]])
+	{
+		[writer characters: @" "];
+	}
 }
 - (void)endTextNode: (id<ETText>)aNode
 {
 	if (nil != [aNode.textType valueForKey: kETTextStyleName])
 	{
+		NSString *typeName = [aNode.textType valueForKey: kETTextStyleName];
+		if ([ETTextParagraphType isEqualToString: typeName])
+		{
+			if ([aNode length] == 0) { return; }
+		}
 		[writer endElement];
 	}
 }
@@ -435,6 +447,7 @@ static NSDictionary *HeadingTypes;
 	}
 }
 @end
+
 @interface ETReferenceBuilder : NSObject <ETTextVisitor>
 {
 	/** Text nodes referring to other elements. */
@@ -548,6 +561,7 @@ static NSDictionary *HeadingTypes;
 			{
 				[writer endElement];
 			}
+			inIndexList = YES;
 			[writer startAndEndElement: @"h2"
 			                attributes: D(@"index", @"class")
 			                     cdata: [NSString stringWithFormat: @"%c", toupper(startChar)]];
@@ -581,7 +595,6 @@ static NSDictionary *HeadingTypes;
 	{
 		[writer endElement];
 	}
-	[writer endElement];
 	[writer endElement];
 }
 @end

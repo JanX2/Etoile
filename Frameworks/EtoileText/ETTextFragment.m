@@ -2,6 +2,10 @@
 #import <CoreObject/CoreObject.h>
 #import "EtoileText.h"
 
+@interface ETTextTree (Private)
+- (void)replaceChild: oldChild withNode: aNode;
+@end
+
 @implementation ETTextFragment
 @synthesize parent, textType, customAttributes;
 - (id)initWithString: (NSString*)string
@@ -84,6 +88,10 @@
 - (NSString*)stringValue
 {
 	return text;
+}
+- (void)replaceInParentWithTextNode: (id<ETText>)aNode
+{
+	[(ETTextTree*)parent replaceChild: self withNode: aNode];
 }
 @end
 

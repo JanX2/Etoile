@@ -70,6 +70,10 @@
  * Returns a string representing the receiver.
  */
 - (NSString*)stringValue;
+/**
+ * Replace this text node in its parent with the one given as the argument.
+ */
+- (void)replaceInParentWithTextNode: (id<ETText>)aNode;
 @end
 
 /**
