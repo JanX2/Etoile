@@ -103,6 +103,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 			}
 		}
 	}
+	PASS_TEXT();
 }
 @end
 
@@ -116,6 +117,9 @@ static NSCharacterSet *CommandEndCharacterSet;
 	builder = [ETTextTreeBuilder new];
 	document = [ETTextDocument new];
 	document.text = builder.textTree;
+	paragraphType = 
+		[document typeFromDictionary: D(
+			ETTextParagraphType, kETTextStyleName)];
 	return self;
 }
 - (void)dealloc
@@ -160,13 +164,81 @@ static NSCharacterSet *CommandEndCharacterSet;
 - (void)handleText: (NSString*)aString
 {
 	NSArray *paragraphs = [aString componentsSeparatedByString: @"\n\n"];
-	for (NSString *p in paragraphs)
+
+	NSString *p0 = [paragraphs objectAtIndex: 0];
+
+	// If this segment starts with a blank line, end the existing paragraph and
+	// start a new one.
+	if ([@"" isEqualToString: p0])
+	{
+		[self beginParagraph];
+	}
+	else
+	{
+		[self addTextToParagraph: p0];
+	}
+	NSInteger c = [paragraphs count];
+	NSInteger i = 1;
+	while (i<c - 1)
+	{
+		NSString *p = [paragraphs objectAtIndex: i];
+		[self beginParagraph];
+		[self addTextToParagraph: p];
+		i++;
+	}
+	if (c-1 > 0)
+	{
+		p0 = [paragraphs objectAtIndex: c-1];
+		if ([@"" isEqualToString: p0])
+		{
+			[self beginParagraph];
+		}
+		else
+		{
+			[self beginParagraph];
+			[self addTextToParagraph: p0];
+		}
+	}
+
+}
+- (void)beginParagraph
+{
+	if (isInParagraph)
 	{
 		[builder endNode];
-		[self.builder startNodeWithStyle: 
-			[self.document typeFromDictionary: D(
-				ETTextParagraphType, kETTextStyleName)]];
-		[builder appendString: p];
 	}
+	[builder startNodeWithStyle: paragraphType];
+	isInParagraph = YES;
+}
+- (void)endParagraph
+{
+	if (isInParagraph)
+	{
+		[builder endNode];
+		isInParagraph = NO;
+	}
+}
+- (void)addTextToParagraph: (NSString*)aString
+{
+	if (!isInParagraph)
+	{
+		[self beginParagraph];
+	}
+	[builder appendString: aString];
+}
+- root
+{
+	if (nil == root)
+	{
+		// Commands inside the environment
+		root = self.parent;
+		id parentParent = [root parent];
+		while (nil != parentParent)
+		{
+			root = parentParent;
+			parentParent = [root parent];
+		}
+	}
+	return root;
 }
 @end

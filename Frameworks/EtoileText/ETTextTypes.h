@@ -35,6 +35,10 @@ EMIT_STRING(ETTextLinkType);
  */
 EMIT_STRING(ETTextLinkTargetType);
 /**
+ * Text to be associated with this link in the index.
+ */
+EMIT_STRING(kETTextLinkIndexText);
+/**
  * Key indicating the name of this link.  For link targets, this must be a
  * string or UUID.  For links, this may also be an NSURL indicating a foreign
  * resource.
@@ -58,3 +62,8 @@ EMIT_STRING(kETTextFirstLine);
  * The last line to use when importing text from an external source.
  */
 EMIT_STRING(kETTextLastLine);
+/**
+ * A footnote.  When typesetting, the text in this section should be replaced
+ * with a reference number and added to the end of the current page.
+ */
+EMIT_STRING(ETTextFootnoteType);

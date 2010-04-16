@@ -26,8 +26,15 @@
 {
 	NSMutableDictionary *commandHandlers;
 	NSMutableSet *unknownTags;
+	id paragraphType;
+	BOOL isInParagraph;
+	id root;
 }
 - (void)registerDelegate: (Class)aClass forCommand: (NSString*)command;
+- (void)beginParagraph;
+- (void)endParagraph;
+- (void)addTextToParagraph: (NSString*)aString;
+- root;
 @end
 
 @interface ETTeXScanner : NSObject
