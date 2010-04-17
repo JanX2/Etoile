@@ -7,9 +7,9 @@ static NSCharacterSet *CommandEndCharacterSet;
 	if (textRange.length > 0)\
 	{\
 		[delegate handleText: [aString substringWithRange: textRange]];\
-		textRange.location = idx+1;\
 		textRange.length = 0;\
-	}
+	}\
+	textRange.location = idx+1;
 
 @implementation ETTeXScanner
 @synthesize delegate;
@@ -17,7 +17,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 {
 	if ([ETTeXScanner class] != self) { return; }
 	CommandEndCharacterSet = 
-		[[NSCharacterSet characterSetWithCharactersInString: @"\n\t\\ {["] retain];
+		[[NSCharacterSet characterSetWithCharactersInString: @"\n\t\\ {[]}"] retain];
 }
 - (void)parseString: (NSString*)aString
 {
@@ -45,7 +45,6 @@ static NSCharacterSet *CommandEndCharacterSet;
 					PASS_TEXT();
 					[delegate beginArgument];
 					//NSLog(@"Text range: %@", NSStringFromRange(textRange));
-					textRange.location++;
 					break;
 				case '}':
 					PASS_TEXT();
@@ -62,39 +61,49 @@ static NSCharacterSet *CommandEndCharacterSet;
 				case '\\':
 					if (idx != end)
 					{
-						// Special case for escaped slash
-						if ([aString characterAtIndex: idx+1] == '\\')
+						// Special case for escaped control characters
+						switch ([aString characterAtIndex: idx+1])
 						{
-							//FIXME
-							textRange.length++;
-							PASS_TEXT();
+							case '\\':
+							case '_':
+							case '%':
+							{
+								PASS_TEXT();
+								// Skip the slash:
+								i++;
+								idx++;
+								// We've already parsed the next character, so
+								// add it to the text range.
+								textRange.length = 1;
+								break;
+							}
+							default:
+							{
+								PASS_TEXT();
+								NSUInteger start = idx + 1;
+								// Find the end of the command
+								NSRange r = 
+									[aString rangeOfCharacterFromSet: CommandEndCharacterSet
+															 options: 0
+															   range: NSMakeRange(start, end-start)];
+								// Command goes to the end of the input.
+								if (NSNotFound == r.location)
+								{
+									r.location = end - 1;
+								}
+								r.length = r.location - start;
+								r.location = start;
+								[delegate beginCommand: [aString substringWithRange: r]];
+								idx += r.length;
+								i += r.length;
+								textRange.location = idx + 1;
+								//NSLog(@"Continuing from %d (%d) %c %@", idx, i, [aString characterAtIndex: idx], NSStringFromRange(textRange));
+							}
 						}
-						else
+						if (i+1 > range.length)
 						{
-							PASS_TEXT();
-							NSUInteger start = idx + 1;
-							// Find the end of the command
-							NSRange r = 
-								[aString rangeOfCharacterFromSet: CommandEndCharacterSet
-								                         options: 0
-								                           range: NSMakeRange(start, end-start)];
-							// Command goes to the end of the input.
-							if (NSNotFound == r.location)
-							{
-								r.location = end - 1;
-							}
-							r.length = r.location - start;
-							r.location = start;
-							[delegate beginCommand: [aString substringWithRange: r]];
-							idx += r.length;
-							i += r.length;
-							if (i+1 > range.length)
-							{
-								//NSLog(@"Out of buffer");
-								range.location = idx + 1;
-							}
-							textRange.location = idx + 1;
-							//NSLog(@"Continuing from %d (%d) %c %@", idx, i, [aString characterAtIndex: idx], NSStringFromRange(textRange));
+							//NSLog(@"Out of buffer");
+							range.location = idx + 1;
 						}
 					}
 					break;
@@ -145,6 +154,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 		{
 			[unknownTags addObject: aCommand];
 			NSLog(@"No handler registered for: %@", aCommand);
+			NSLog(@"Currently using %@", scanner.delegate);
 		}
 		return;
 	}

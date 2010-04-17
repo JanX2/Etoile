@@ -16,7 +16,7 @@ static NSMutableDictionary *CommandTypes;
 }
 + (void)setTextType: (NSString*)aType forTeXCommand: (NSString*)aCommand
 {
-	[CommandTypes setObject: aCommand forKey: aType];
+	[CommandTypes setObject: aType forKey: aCommand];
 }
 - (void)beginCommand: (NSString*)aCommand
 {
@@ -27,16 +27,10 @@ static NSMutableDictionary *CommandTypes;
 		{
 			type = aCommand;
 		}
-		// TODO: Register mappings and use a dictionary.
 		[self.builder startNodeWithStyle: 
 			[self.document typeFromDictionary: D(
 				type, kETTextStyleName)]];
 		isStarted = YES;
-	}
-	else
-	{
-		// This is a command inside the main one.
-		[[self root] beginCommand: aCommand];
 	}
 }
 - (void)endArgument
@@ -47,6 +41,83 @@ static NSMutableDictionary *CommandTypes;
 - (void)handleText: (NSString*)aString
 {
 	[self.builder appendString: aString];
+}
+@end
+@interface ETTeXNonNestedHandler : ETTeXSimpleHandler
+{
+	int depth;
+}
+@end
+@implementation ETTeXNonNestedHandler
+- (void)beginCommand: (NSString*)aCommand
+{
+	if (!isStarted)
+	{
+		[super beginCommand: aCommand];
+	}
+	else
+	{
+		[self.builder appendString: @"\\"];
+		[self.builder appendString: aCommand];
+		//NSLog(@"Found interior command: %@", aCommand);
+	}
+}
+- (void)beginOptArg
+{
+	[self.builder appendString: @"["];
+}
+- (void)endOptArg
+{
+	[self.builder appendString: @"]"];
+}
+- (void)beginArgument
+{
+	if (depth > 0)
+	{
+		[self.builder appendString: @"{"];
+	}
+	depth++;
+}
+- (void)endArgument
+{
+	depth--;
+	if (depth > 0)
+	{
+		[self.builder appendString: @"}"];
+	}
+	else
+	{
+		[super endArgument];
+	}
+}
+- (void)handleText: (NSString*)aString
+{
+	[self.builder appendString: aString];
+}
+@end
+
+
+@interface ETTeXNestableHandler : ETTeXSimpleHandler @end
+@implementation ETTeXNestableHandler
+- (void)beginCommand: (NSString*)aCommand
+{
+	if (!isStarted)
+	{
+		[super beginCommand: aCommand];
+	}
+	else
+	{
+		[[self root] beginCommand: aCommand];
+	}
+}
+@end
+
+@interface ETTeXUnderscoreHandler : ETTeXParser @end
+@implementation ETTeXUnderscoreHandler
+- (void)beginCommand: (NSString*)aCommand
+{
+	[self.builder appendString: aCommand];
+	self.scanner.delegate = self.parent;
 }
 @end
 
@@ -64,7 +135,7 @@ static NSMutableDictionary *CommandTypes;
 	if (nil == environmentName)
 	{
 		NSAssert([@"begin" isEqualToString: aCommand],
-				@"Environment must stat with \\begin!");
+				@"Environment must start with \\begin!");
 		[[self root] endParagraph];
 		return;
 	}
@@ -135,11 +206,19 @@ static NSDictionary *HeadingTypes;
 }
 - (void)beginCommand: (NSString*)aCommand
 {
-	[[self root] endParagraph];
-	[self.builder startNodeWithStyle: 
-		[self.document typeFromDictionary: D(
-			ETTextHeadingType, kETTextStyleName,
-			[HeadingTypes objectForKey: aCommand], kETTextHeadingLevel)]];
+	NSNumber *depth = [HeadingTypes objectForKey: aCommand];
+	if (nil != depth)
+	{
+		[[self root] endParagraph];
+		[self.builder startNodeWithStyle: 
+			[self.document typeFromDictionary: D(
+				ETTextHeadingType, kETTextStyleName,
+				depth, kETTextHeadingLevel)]];
+	}
+	else
+	{
+		[[self root] beginCommand: aCommand];
+	}
 }
 - (void)endArgument
 {
@@ -177,7 +256,12 @@ static NSDictionary *HeadingTypes;
 }
 @end
 
-@interface ETTeXIndexHandler : ETTeXLinkHandler @end
+@interface ETTeXIndexHandler : ETTeXLinkHandler
+{
+	int depth;
+	NSMutableString *buffer;
+}
+@end
 @implementation ETTeXIndexHandler
 - (void)beginCommand: (NSString*)aCommand
 {
@@ -214,7 +298,7 @@ static NSDictionary *HeadingTypes;
 }
 @end
 
-@interface TRTeXImportedListing : ETTeXParser
+@interface TRTeXImportNumberedListing : ETTeXParser
 {
 	NSString *refType;
 	NSString *filename;
@@ -222,8 +306,18 @@ static NSDictionary *HeadingTypes;
 	NSNumber *lastLine;
 }
 @end
+@interface TRTeXSystemSnippet : TRTeXImportNumberedListing
+{
+	NSString *path;
+}
+@end
+@interface TRTeXImportedListing : ETTeXParser
+{
+	NSString *refType;
+}
+@end
 
-@implementation TRTeXImportedListing
+@implementation TRTeXImportNumberedListing
 - (void)beginCommand: (NSString*)aCommand
 {
 	ASSIGN(refType, aCommand);
@@ -262,24 +356,188 @@ static NSDictionary *HeadingTypes;
 	}
 }
 @end
+@implementation TRTeXSystemSnippet 
+- (void)dealloc
+{
+	[path release];
+	[super dealloc];
+}
+- (void)handleText: (NSString*)aString
+{
+	if (nil == path)
+	{
+		ASSIGN(path, aString);
+	}
+	else if (nil == filename)
+	{
+		ASSIGN(filename, aString);
+	}
+	else if (nil == firstLine)
+	{
+		ASSIGN(firstLine, [NSNumber numberWithInt: [aString intValue]]);
+	}
+	else if (nil == lastLine)
+	{
+		NSString *f = [path stringByAppendingPathComponent: filename];
+		ASSIGN(lastLine, [NSNumber numberWithInt: [aString intValue]]);
+		[[self root] endParagraph];
+		[self.builder startNodeWithStyle: 
+			[self.document typeFromDictionary: D(
+				ETTextForeignImportType, kETTextStyleName,
+				f, kETTextSourceLocation,
+				firstLine, kETTextFirstLine,
+				lastLine, kETTextLastLine,
+				refType, @"TRImportType")]];
+		[self.builder endNode];
+		self.scanner.delegate = self.parent;
+	}
+}
+@end
+@implementation TRTeXImportedListing
+- (void)beginCommand: (NSString*)aCommand
+{
+	ASSIGN(refType, aCommand);
+}
+- (void)dealloc
+{
+	[refType release];
+	[super dealloc];
+}
+- (void)handleText: (NSString*)aString
+{
+	[[self root] endParagraph];
+	[self.builder startNodeWithStyle: 
+		[self.document typeFromDictionary: D(
+			ETTextForeignImportType, kETTextStyleName,
+			aString, kETTextSourceLocation,
+			refType, @"TRImportType")]];
+	[self.builder endNode];
+	self.scanner.delegate = self.parent;
+}
+@end
+
+@interface TRTeXKeywordHandler : ETTeXParser
+{
+	NSString *indexText;
+	BOOL inOptArg;
+}
+@end
+@implementation TRTeXKeywordHandler
+- (void)beginCommand: (NSString*)aString {}
+- (void)beginOptArg
+{
+	inOptArg = YES;
+}
+- (void)endOptArg
+{
+	inOptArg = NO;
+}
+- (void)handleText: (NSString*)aString
+{
+	if (inOptArg)
+	{
+		ASSIGN(indexText, aString);
+		return;
+	}
+	NSString *idxText = indexText ? indexText : aString;
+	ETTextTreeBuilder *builder = self.builder;
+	[builder startNodeWithStyle: 
+		[self.document typeFromDictionary: D(
+			@"keyword", kETTextStyleName)]];
+	[builder startNodeWithStyle: 
+		[self.document typeFromDictionary: D(
+			ETTextLinkTargetType, kETTextStyleName,
+			idxText, kETTextLinkIndexText,
+			[ETUUID UUID], kETTextLinkName)]];
+	[builder appendString: aString];
+	[builder endNode];
+	[builder endNode];
+
+	[indexText release];
+}
+- (void)endArgument
+{
+	self.scanner.delegate = self.parent;
+}
+@end
+@interface TRTeXKeyabrvHandler : ETTeXParser 
+{
+	NSString *phrase;
+	NSString *abbreviation;
+}
+@end
+@implementation TRTeXKeyabrvHandler
+- (void)dealloc
+{
+	[phrase release];
+	[abbreviation release];
+	[super dealloc];
+}
+- (void)beginCommand: (NSString*)aString {}
+- (void)handleText: (NSString*)aString
+{
+	if (nil == phrase)
+	{
+		ASSIGN(phrase, aString);
+	}
+	else if (nil == abbreviation)
+	{
+		ASSIGN(abbreviation, aString);
+	}
+}
+- (void)endArgument
+{
+	if (nil == abbreviation) { return; }
+	ETTextTreeBuilder *builder = self.builder;
+	// Emit the keyword-style text
+	[builder startNodeWithStyle: 
+		[self.document typeFromDictionary: D(
+			@"keyword", kETTextStyleName)]];
+	[builder appendString: phrase];
+	[builder endNode];
+	// Emit the dictionary entry
+	NSString *indexEntry = 
+		[NSString stringWithFormat: @"%@|see{%@}", phrase, abbreviation];
+	[builder startNodeWithStyle: 
+		[self.document typeFromDictionary: D(
+			ETTextLinkTargetType, kETTextStyleName,
+			indexEntry, kETTextLinkIndexText,
+			[ETUUID UUID], kETTextLinkName)]];
+	[self.builder endNode];
+	self.scanner.delegate = self.parent;
+}
+@end
 
 @interface TRTeXClassHandler : ETTeXParser
 @end
 @implementation TRTeXClassHandler
+- (void)beginCommand: (NSString*)aString {}
 - (void)handleText: (NSString*)aString
 {
 	ETTextTreeBuilder *builder = self.builder;
 	[builder startNodeWithStyle: 
 		[self.document typeFromDictionary: D(
-			@"code", kETTextStyleName)]];
-	[builder appendString: aString];
-	[builder endNode];
-	[builder startNodeWithStyle: 
-		[self.document typeFromDictionary: D(
 			ETTextLinkTargetType, kETTextStyleName,
 			([NSString stringWithFormat: @"%@ class", aString]), kETTextLinkIndexText,
 			[ETUUID UUID], kETTextLinkName)]];
-	[self.builder endNode];
+	[builder endNode];
+	[builder startNodeWithStyle: 
+		[self.document typeFromDictionary: D(
+			@"code", kETTextStyleName)]];
+	[builder appendString: aString];
+	[builder endNode];
+}
+- (void)endArgument
+{
+	self.scanner.delegate = self.parent;
+}
+@end
+@interface TRTeXTildeHack : ETTeXParser
+@end
+@implementation TRTeXTildeHack
+- (void)beginCommand: (NSString*)aString 
+{
+	[self.builder appendString: @"~"];
 }
 - (void)endArgument
 {
@@ -290,9 +548,12 @@ static NSDictionary *HeadingTypes;
 @interface TRXHTMLWriter : NSObject <ETTextVisitor>
 - (NSString*)endDocument;
 @property (nonatomic, retain) ETXMLWriter *writer;
+@property (nonatomic, copy) NSString *rootPath;
+@property (nonatomic, copy) NSDictionary *includePaths;
+@property (nonatomic, copy) NSDictionary *captionFormats;
 @end
 @implementation TRXHTMLWriter
-@synthesize writer;
+@synthesize writer, rootPath, includePaths, captionFormats;
 - (id)init
 {
 	SUPERINIT;
@@ -336,6 +597,10 @@ static NSDictionary *HeadingTypes;
 			attributes = D(@"code", @"class");
 			typeName = @"span";
 		}
+		else if ([@"shortlisting" isEqualToString: typeName])
+		{
+			typeName = @"pre";
+		}
 		else if ([@"notebox" isEqualToString: typeName])
 		{
 			attributes = D(@"notebox", @"class");
@@ -354,30 +619,57 @@ static NSDictionary *HeadingTypes;
 		}
 		else if ([ETTextForeignImportType isEqualToString: typeName])
 		{
-			// TODO: Differenc class for each snippet type
-			[writer startElement: @"pre"
-					  attributes: D([aNode.textType valueForKey: @"TRImportType"], @"class")];
-			// FIXME: don't hard-code path!  Very bad!
-			NSString *file = [NSString stringWithContentsOfFile: 
-					[NSString stringWithFormat: @"/tmp/startsnippets/%@", 
-						[aNode.textType valueForKey: kETTextSourceLocation]]];
-			NSArray *lines = [file componentsSeparatedByString: @"\n"];
-			NSInteger start = [[aNode.textType valueForKey: kETTextFirstLine] integerValue];
-			NSInteger end = [[aNode.textType valueForKey: kETTextLastLine] integerValue];
-			// If start is specified, then make it to 0-indexed 
-			if (start > 0) { start -= 1; }
-			if (end == 0) { end = [lines count] - 1; }
-			for (NSInteger i=start ; i<end ; i++)
+			// Resolve the absolute path.
+			NSString *includeType = [aNode.textType valueForKey: @"TRImportType"];
+			NSString *directory = [includePaths objectForKey: includeType];
+			if (![directory isAbsolutePath])
 			{
-				NSString *line = [lines objectAtIndex: i];
-				[writer characters: line];
-				[writer characters: @"\n"];
+				directory = [rootPath stringByAppendingPathComponent: directory];
 			}
-			[writer endElement];
+			NSString *fileName = 
+				[directory stringByAppendingPathComponent: 
+					[aNode.textType valueForKey: kETTextSourceLocation]];
+			NSString *file = [NSString stringWithContentsOfFile: fileName];
+			if (nil == file)
+			{
+				NSString *err = [NSString stringWithFormat: 
+					@"Can't find refrenced file: %@ (%@)", 
+					fileName, includeType];
+				[writer startAndEndElement: @"p"
+				                     cdata: err];
+				NSLog(@"%@", err);
+			}
+			else
+			{
+				//Different class for each snippet type
+				NSDictionary *class =
+					D([@"include " stringByAppendingString: includeType], 
+						@"class");
+				[writer startElement: @"pre"
+				          attributes: class];
+				NSArray *lines = [file componentsSeparatedByString: @"\n"];
+				NSInteger start = 
+					[[aNode.textType valueForKey: kETTextFirstLine] integerValue];
+				NSInteger end = 
+					[[aNode.textType valueForKey: kETTextLastLine] integerValue];
+				// If start is specified, then make it to 0-indexed 
+				if (start > 0) { start -= 1; }
+				if (end == 0) { end = [lines count] - 1; }
+				for (NSInteger i=start ; i<end ; i++)
+				{
+					NSString *line = [lines objectAtIndex: i];
+					[writer characters: line];
+					[writer characters: @"\n"];
+				}
+				[writer endElement: @"pre"];
+			}
 			[writer startElement: @"p"
 					  attributes: D(@"caption", @"class")];
-			[writer characters: @"From: "];
-			[writer characters: [aNode.textType valueForKey: kETTextSourceLocation]];
+			NSString *caption = [captionFormats objectForKey: includeType];
+			caption = [NSString stringWithFormat: caption, 
+				[[aNode.textType valueForKey: kETTextSourceLocation] 
+					lastPathComponent]];
+			[writer characters: caption];
 			return;
 		}
 		else
@@ -487,7 +779,6 @@ static NSDictionary *HeadingTypes;
 	{
 		int level = [[type valueForKey: kETTextHeadingLevel] intValue];
 		NSAssert(level < 10, @"Indexer can only handle 10 levels of headings.");
-		NSLog(@"Found heading %@ at depth %d", [aNode stringValue], level);
 		sectionCounter[level]++;
 		sectionCounterDepth = level;
 		// Don't renumber chapters when we start a new part
@@ -540,7 +831,6 @@ static NSDictionary *HeadingTypes;
 		[link replaceCharactersInRange: NSMakeRange(0, length)
 		                    withString: target];
 	}
-	NSLog(@"Index: %@", indexEntries);
 }
 // FIXME: This should be part of the XML writer, not part of the ref builder
 - (void)writeIndexWithXMLWriter: (ETXMLWriter*)writer
@@ -570,7 +860,6 @@ static NSDictionary *HeadingTypes;
 		id targets = [indexEntries objectForKey: entry];
 		if ([targets isKindOfClass: [NSArray class]])
 		{
-			NSLog(@"Multiple entries.");
 			[writer characters: entry];
 			[writer characters: @", "];
 			for (id t in targets)
@@ -599,11 +888,10 @@ static NSDictionary *HeadingTypes;
 }
 @end
 
-int main(void)
+int main(int argc, char **argv)
 {
 	[NSAutoreleasePool new];
-	ETTeXScanner *s = [ETTeXScanner new];
-	NSString * tex = [NSString stringWithContentsOfFile: @"/tmp/tex"];
+	NSCAssert(argc > 1, @"Path must be specified as an argument");
 	ETTeXParser *d2 = [ETTeXParser new];
 	[d2 registerDelegate: [ETTeXSectionHandler class]
 			  forCommand: @"chapter"];
@@ -611,16 +899,28 @@ int main(void)
 			  forCommand: @"section"];
 	[d2 registerDelegate: [ETTeXSectionHandler class]
 			  forCommand: @"subsection"];
-	// FIXME: Should emit Index ref as well.
-	[d2 registerDelegate: [ETTeXSimpleHandler class]
+	[d2 registerDelegate: [TRTeXKeywordHandler class]
 			  forCommand: @"keyword"];
+	[d2 registerDelegate: [TRTeXKeyabrvHandler class]
+			  forCommand: @"keyabrv"];
 	[d2 registerDelegate: [TRTeXClassHandler class]
 			  forCommand: @"class"];
-	[d2 registerDelegate: [ETTeXSimpleHandler class]
+	[d2 registerDelegate: [ETTeXNestableHandler class]
+			  forCommand: @"ks"];
+	[d2 registerDelegate: [ETTeXNestableHandler class]
+			  forCommand: @"file"];
+	[d2 registerDelegate: [ETTeXNestableHandler class]
+			  forCommand: @"java"];
+	[d2 registerDelegate: [ETTeXNonNestedHandler class]
+			  forCommand: @"cxx"];
+	[d2 registerDelegate: [ETTeXNonNestedHandler class]
 			  forCommand: @"code"];
-	[d2 registerDelegate: [ETTeXSimpleHandler class]
+	[d2 registerDelegate: [ETTeXNestableHandler class]
+			  forCommand: @"note"];
+	[d2 registerDelegate: [ETTeXNestableHandler class]
 			  forCommand: @"textit"];
-	[d2 registerDelegate: [ETTeXSimpleHandler class]
+	// FIXME: Do something with the footnote!
+	[d2 registerDelegate: [ETTeXNestableHandler class]
 			  forCommand: @"footnote"];
 	[d2 registerDelegate: [ETTeXLabelHandler class]
 			  forCommand: @"label"];
@@ -632,23 +932,52 @@ int main(void)
 			  forCommand: @"begin"];
 	[d2 registerDelegate: [ETTeXIndexHandler class]
 			  forCommand: @"index"];
-	[d2 registerDelegate: [TRTeXImportedListing class]
+	[d2 registerDelegate: [TRTeXImportNumberedListing class]
 			  forCommand: @"function"];
+	[d2 registerDelegate: [TRTeXImportNumberedListing class]
+			  forCommand: @"snippet"];
 	[d2 registerDelegate: [TRTeXImportedListing class]
+			  forCommand: @"exampleoutput"];
+	[d2 registerDelegate: [TRTeXImportedListing class]
+			  forCommand: @"startcommands"];
+	[d2 registerDelegate: [TRTeXSystemSnippet class]
+			  forCommand: @"systemsnippet"];
+	[d2 registerDelegate: [TRTeXImportNumberedListing class]
 			  forCommand: @"startsnippet"];
-	[d2 registerDelegate: [TRTeXImportedListing class]
+	[d2 registerDelegate: [TRTeXImportNumberedListing class]
 			  forCommand: @"startsnippetindent"];
+	[d2 registerDelegate: [TRTeXTildeHack class]
+			  forCommand: @"~"];
+
+	[ETTeXSimpleHandler setTextType: @"keyword" forTeXCommand: @"ks"];
+	[ETTeXSimpleHandler setTextType: @"code" forTeXCommand: @"java"];
+	[ETTeXSimpleHandler setTextType: @"code" forTeXCommand: @"cxx"];
+	NSString *projectRoot = [NSString stringWithUTF8String: argv[1]];
+	NSString *projectDescription = [projectRoot stringByAppendingPathComponent: @"html.plist"];
+	NSDictionary *project = [NSDictionary dictionaryWithContentsOfFile: projectDescription];
+	// Uncomment to tidy up hand-edited plist
+	//[project writeToFile: projectDescription atomically: NO];
+	ETTeXScanner *s = [ETTeXScanner new];
 	d2.scanner = s;
 	s.delegate = d2;
-	[s parseString: tex];
+
+	for (NSString *path in [project objectForKey: @"chapters"])
+	{
+		NSString * tex = [projectRoot stringByAppendingPathComponent: path];
+		tex = [NSString stringWithContentsOfFile: tex];
+		[s parseString: tex];
+	}
 	//NSLog(@"Parsed TeX: \n%@", d2.document.text);
 	ETReferenceBuilder *r = [ETReferenceBuilder new];
 	[d2.document.text visitWithVisitor: r];
 	[r finishVisiting];
 	TRXHTMLWriter *w = [TRXHTMLWriter new];
+	w.rootPath = projectRoot;
+	w.includePaths = [project objectForKey: @"includeDirectories"];
+	w.captionFormats = [project objectForKey: @"captionFormats"];
 	[d2.document.text visitWithVisitor: w];
 	[r writeIndexWithXMLWriter: w.writer];
 	NSString *html = [w endDocument];
-	NSLog(@"Parsed TeX: \n%@", html);
+	//NSLog(@"Parsed TeX: \n%@", html);
 	[html writeToFile: @"tex.html" atomically: NO];
 }
