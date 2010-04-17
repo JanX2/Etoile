@@ -546,6 +546,11 @@ static NSDictionary *HeadingTypes;
 @end
 
 @interface TRXHTMLWriter : NSObject <ETTextVisitor>
+{
+	NSMutableArray *footnotes;
+	id skipToEndOfNode;
+	BOOL isWritingFootnotes;
+}
 - (NSString*)endDocument;
 @property (nonatomic, retain) ETXMLWriter *writer;
 @property (nonatomic, copy) NSString *rootPath;
@@ -558,6 +563,7 @@ static NSDictionary *HeadingTypes;
 {
 	SUPERINIT;
 	writer = [ETXMLWriter new];
+	footnotes = [NSMutableArray new];
 	//[writer setAutoindent: YES];
 	[writer startElement: @"html"]; 
 	[writer startElement: @"head"]; 
@@ -573,10 +579,14 @@ static NSDictionary *HeadingTypes;
 }
 - (void)startTextNode: (id<ETText>)aNode
 {
+	if (nil != skipToEndOfNode) { return; }
+
 	NSString *typeName = [aNode.textType valueForKey: kETTextStyleName];
 	if (nil != typeName)
 	{
 		//TODO: Handle standard attributes here, call a delegate for others.
+		// FIXME: This blob of nested if statements is horrible.  Split each
+		// body into a separate method.
 		NSDictionary *attributes = nil;
 		if ([ETTextParagraphType isEqualToString: typeName])
 		{
@@ -596,6 +606,22 @@ static NSDictionary *HeadingTypes;
 		{
 			attributes = D(@"code", @"class");
 			typeName = @"span";
+		}
+		else if (!isWritingFootnotes &&
+			[@"footnote" isEqualToString: typeName])
+		{
+			[footnotes addObject: aNode];
+			NSInteger footnoteNumber = [footnotes count];
+			NSString *linkText = 
+				[NSString stringWithFormat: @"%d", footnoteNumber];
+			NSString *footnoteLabel = 
+				[NSString stringWithFormat: @"#footnote%d", footnoteNumber];
+			skipToEndOfNode = aNode;
+			[writer startElement: @"sup"];
+			[writer startAndEndElement: @"a"
+			                attributes: D(footnoteLabel, @"href")
+			                     cdata: linkText];
+			[writer endElement];
 		}
 		else if ([@"shortlisting" isEqualToString: typeName])
 		{
@@ -683,6 +709,8 @@ static NSDictionary *HeadingTypes;
 }
 - (void)visitTextNode: (id<ETText>)aNode
 {
+	if (nil != skipToEndOfNode) { return; }
+
 	NSString *str = [[aNode stringValue] stringByTrimmingCharactersInSet:
 		[NSCharacterSet newlineCharacterSet]];
 	if ([str length] > 0)
@@ -697,6 +725,15 @@ static NSDictionary *HeadingTypes;
 }
 - (void)endTextNode: (id<ETText>)aNode
 {
+	if (nil != skipToEndOfNode) 
+	{ 
+		if (skipToEndOfNode == aNode)
+		{
+			skipToEndOfNode = nil;
+		}
+		return; 
+	}
+
 	if (nil != [aNode.textType valueForKey: kETTextStyleName])
 	{
 		NSString *typeName = [aNode.textType valueForKey: kETTextStyleName];
@@ -706,6 +743,31 @@ static NSDictionary *HeadingTypes;
 		}
 		[writer endElement];
 	}
+}
+- (void)writeCollectedFootnotes
+{
+	NSInteger footnoteNumber = 1;
+	isWritingFootnotes = YES;
+	for (id<ETText> footnote in footnotes)
+	{
+		NSString *linkText = 
+			[NSString stringWithFormat: @"%d", footnoteNumber];
+		NSString *footnoteLabel = 
+			[NSString stringWithFormat: @"footnote%d", footnoteNumber];
+		[writer startElement: @"p"
+		          attributes: D(@"footnote", @"class")];
+		[writer startElement: @"sup"];
+		[writer startAndEndElement: @"a"
+		                attributes: D(footnoteLabel, @"name")
+		                     cdata: @" "];
+		[writer characters: linkText];
+		[writer endElement];
+		[writer characters: @" "];
+		[footnote visitWithVisitor: self];
+		[writer endElement];
+		footnoteNumber++;
+	}
+	isWritingFootnotes = NO;
 }
 - (NSString*)endDocument
 {
@@ -893,6 +955,8 @@ int main(int argc, char **argv)
 	[NSAutoreleasePool new];
 	NSCAssert(argc > 1, @"Path must be specified as an argument");
 	ETTeXParser *d2 = [ETTeXParser new];
+	// FIXME: Get all of this stuff (except for some sane defaults) from the
+	// plist.
 	[d2 registerDelegate: [ETTeXSectionHandler class]
 			  forCommand: @"chapter"];
 	[d2 registerDelegate: [ETTeXSectionHandler class]
@@ -976,6 +1040,7 @@ int main(int argc, char **argv)
 	w.includePaths = [project objectForKey: @"includeDirectories"];
 	w.captionFormats = [project objectForKey: @"captionFormats"];
 	[d2.document.text visitWithVisitor: w];
+	[w writeCollectedFootnotes];
 	[r writeIndexWithXMLWriter: w.writer];
 	NSString *html = [w endDocument];
 	//NSLog(@"Parsed TeX: \n%@", html);
