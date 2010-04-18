@@ -20,6 +20,15 @@
 @property (nonatomic, retain) ETTextTreeBuilder *builder;
 @property (nonatomic, retain) ETTextDocument *document;
 @property (nonatomic, retain) ETTeXScanner *scanner;
+@property (nonatomic, assign) id root;
+@end
+
+@class ETTeXParser;
+
+@interface ETTeXHandler : NSObject <ETTeXParsing>
+{
+	ETTeXParser *root;
+}
 @end
 
 @interface ETTeXParser : NSObject <ETTeXParsing>
@@ -34,7 +43,6 @@
 - (void)beginParagraph;
 - (void)endParagraph;
 - (void)addTextToParagraph: (NSString*)aString;
-- root;
 @end
 
 @interface ETTeXScanner : NSObject

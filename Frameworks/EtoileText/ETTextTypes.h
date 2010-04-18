@@ -67,3 +67,27 @@ EMIT_STRING(kETTextLastLine);
  * with a reference number and added to the end of the current page.
  */
 EMIT_STRING(ETTextFootnoteType);
+/**
+ * A simple list.
+ */
+EMIT_STRING(ETTextListType);
+/**
+ * A numbered list.
+ */
+EMIT_STRING(ETTextNumberedListType);
+/**
+ * A list of description-word pairs.
+ */
+EMIT_STRING(ETTextDescriptionListType);
+/**
+ * The description title part of a description list item.
+ */
+EMIT_STRING(ETTextListDescriptionTitleType);
+/**
+ * The body of a description list item.
+ */
+EMIT_STRING(ETTextListDescriptionItemType);
+/**
+ * The body of a list item.
+ */
+EMIT_STRING(ETTextListItemType);

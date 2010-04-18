@@ -117,7 +117,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 @end
 
 @implementation ETTeXParser
-@synthesize parent, document, builder, scanner;
+@synthesize parent, document, builder, scanner, root;
 - (id)init
 {
 	SUPERINIT;
@@ -159,6 +159,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 		return;
 	}
 	id<ETTeXParsing> d = [[handler new] autorelease];
+	d.root = self;
 	d.scanner = scanner;
 	// Note: Not self, so that children can call this
 	d.parent = (id<ETTeXParsing>)scanner.delegate;
@@ -236,19 +237,21 @@ static NSCharacterSet *CommandEndCharacterSet;
 	}
 	[builder appendString: aString];
 }
-- root
+@end
+
+@implementation ETTeXHandler
+@synthesize parent, document, builder, scanner, root;
+- (void)beginCommand: (NSString*)aCommand
 {
-	if (nil == root)
-	{
-		// Commands inside the environment
-		root = self.parent;
-		id parentParent = [root parent];
-		while (nil != parentParent)
-		{
-			root = parentParent;
-			parentParent = [root parent];
-		}
-	}
-	return root;
+	[root beginCommand: aCommand];
+}
+- (void)beginOptArg {}
+- (void)endOptArg {}
+- (void)beginArgument {}
+- (void)endArgument {}
+- (void)handleText: (NSString*)aString
+{
+	[root handleText: aString];
 }
 @end
+

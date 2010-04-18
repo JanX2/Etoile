@@ -1,7 +1,7 @@
 #import "EtoileText.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@interface ETTeXSimpleHandler : ETTeXParser
+@interface ETTeXSimpleHandler : ETTeXHandler
 {
 	BOOL isStarted;
 }
@@ -23,10 +23,7 @@ static NSMutableDictionary *CommandTypes;
 	if (!isStarted)
 	{
 		NSString *type = [CommandTypes objectForKey: aCommand];
-		if (nil == type)
-		{
-			type = aCommand;
-		}
+		type = (type != nil) ? type : aCommand;
 		[self.builder startNodeWithStyle: 
 			[self.document typeFromDictionary: D(
 				type, kETTextStyleName)]];
@@ -107,12 +104,12 @@ static NSMutableDictionary *CommandTypes;
 	}
 	else
 	{
-		[[self root] beginCommand: aCommand];
+		[root beginCommand: aCommand];
 	}
 }
 @end
 
-@interface ETTeXUnderscoreHandler : ETTeXParser @end
+@interface ETTeXUnderscoreHandler : ETTeXHandler @end
 @implementation ETTeXUnderscoreHandler
 - (void)beginCommand: (NSString*)aCommand
 {
@@ -121,15 +118,26 @@ static NSMutableDictionary *CommandTypes;
 }
 @end
 
-@interface ETTeXEnvironmentHandler : ETTeXParser
+@interface ETTeXEnvironmentHandler : ETTeXHandler
 {
 	NSString *environmentName;
 	BOOL inBegin;
 	BOOL inEnd;
 }
++ (void)setTextType: (NSString*)aType forTeXEnvironment: (NSString*)aCommand;
 @end
 
 @implementation ETTeXEnvironmentHandler
+static NSMutableDictionary *EnvironmentTypes;
++ (void)initialize
+{
+	if ([ETTeXEnvironmentHandler class] != self) { return; }
+	EnvironmentTypes = [NSMutableDictionary new];
+}
++ (void)setTextType: (NSString*)aType forTeXEnvironment: (NSString*)aCommand
+{
+	[EnvironmentTypes setObject: aType forKey: aCommand];
+}
 - (void)beginCommand: (NSString*)aCommand
 {
 	if (nil == environmentName)
@@ -166,9 +174,13 @@ static NSMutableDictionary *CommandTypes;
 	if (inBegin)
 	{
 		ASSIGN(environmentName, aString);
+
+		NSString *type = [EnvironmentTypes objectForKey: aString];
+		type = (type != nil) ? type : aString;
+
 		[self.builder startNodeWithStyle: 
 			[self.document typeFromDictionary: D(
-				aString, kETTextStyleName)]];
+				type, kETTextStyleName)]];
 		inBegin = NO;
 		return;
 	}
@@ -185,7 +197,7 @@ static NSMutableDictionary *CommandTypes;
 /**
  * Parser for the subset of LaTeX that I use.
  */
-@interface ETTeXSectionHandler : ETTeXParser
+@interface ETTeXSectionHandler : ETTeXHandler
 @end
 @implementation ETTeXSectionHandler
 static NSDictionary *HeadingTypes;
@@ -231,7 +243,7 @@ static NSDictionary *HeadingTypes;
 }
 @end
 
-@interface ETTeXLinkHandler : ETTeXParser
+@interface ETTeXLinkHandler : ETTeXHandler
 {
 	NSMutableDictionary *attributes;
 }
@@ -298,7 +310,67 @@ static NSDictionary *HeadingTypes;
 }
 @end
 
-@interface TRTeXImportNumberedListing : ETTeXParser
+@interface ETTeXItemHandler : ETTeXHandler
+{
+	BOOL inOptArg;
+	BOOL hasOptArg;
+	BOOL startedBody;
+}
+@end
+@implementation ETTeXItemHandler
+- (void)beginCommand: (NSString*)aCommand
+{
+	if ([@"item" isEqualToString: aCommand])
+	{
+		if (startedBody)
+		{
+			[self.builder endNode];
+		}
+		startedBody = inOptArg = hasOptArg = NO;
+	}
+	else if ([@"end" isEqualToString: aCommand])
+	{
+		if (startedBody)
+		{
+			[self.builder endNode];
+		}
+		self.scanner.delegate = self.parent;
+		[self.parent beginCommand: aCommand];
+	}
+	else
+	{
+		[[self root] beginCommand: aCommand];
+	}
+}
+- (void)beginOptArg
+{
+	inOptArg = YES;
+	hasOptArg = YES;
+	[self.builder startNodeWithStyle: 
+		[self.document typeFromDictionary: D(
+			ETTextListDescriptionTitleType, kETTextStyleName)]];
+}
+- (void)endOptArg
+{
+	inOptArg = NO;
+	[self.builder endNode];
+}
+- (void)handleText: (NSString*)aString
+{
+	if (!startedBody && !inOptArg)
+	{
+		startedBody = YES;
+		NSString *type = hasOptArg ? ETTextListDescriptionItemType :
+			ETTextListItemType;
+		[self.builder startNodeWithStyle: 
+			[self.document typeFromDictionary: D(
+				type, kETTextStyleName)]];
+	}
+	[self.builder appendString: aString];
+}
+@end
+
+@interface TRTeXImportNumberedListing : ETTeXHandler
 {
 	NSString *refType;
 	NSString *filename;
@@ -311,7 +383,7 @@ static NSDictionary *HeadingTypes;
 	NSString *path;
 }
 @end
-@interface TRTeXImportedListing : ETTeXParser
+@interface TRTeXImportedListing : ETTeXHandler
 {
 	NSString *refType;
 }
@@ -416,7 +488,7 @@ static NSDictionary *HeadingTypes;
 }
 @end
 
-@interface TRTeXKeywordHandler : ETTeXParser
+@interface TRTeXKeywordHandler : ETTeXHandler
 {
 	NSString *indexText;
 	BOOL inOptArg;
@@ -460,7 +532,7 @@ static NSDictionary *HeadingTypes;
 	self.scanner.delegate = self.parent;
 }
 @end
-@interface TRTeXKeyabrvHandler : ETTeXParser 
+@interface TRTeXKeyabrvHandler : ETTeXHandler 
 {
 	NSString *phrase;
 	NSString *abbreviation;
@@ -508,7 +580,7 @@ static NSDictionary *HeadingTypes;
 }
 @end
 
-@interface TRTeXClassHandler : ETTeXParser
+@interface TRTeXClassHandler : ETTeXHandler
 @end
 @implementation TRTeXClassHandler
 - (void)beginCommand: (NSString*)aString {}
@@ -532,7 +604,7 @@ static NSDictionary *HeadingTypes;
 	self.scanner.delegate = self.parent;
 }
 @end
-@interface TRTeXTildeHack : ETTeXParser
+@interface TRTeXTildeHack : ETTeXHandler
 @end
 @implementation TRTeXTildeHack
 - (void)beginCommand: (NSString*)aString 
@@ -642,6 +714,30 @@ static NSDictionary *HeadingTypes;
 			NSString *linkName = [aNode.textType valueForKey: kETTextLinkName];
 			typeName = @"a";
 			attributes = D([linkName stringValue], @"name");
+		}
+		else if ([ETTextListType isEqualToString: typeName])
+		{
+			typeName = @"ul";
+		}
+		else if ([ETTextNumberedListType isEqualToString: typeName])
+		{
+			typeName = @"ol";
+		}
+		else if ([ETTextDescriptionListType isEqualToString: typeName])
+		{
+			typeName = @"dl";
+		}
+		else if ([ETTextListDescriptionTitleType isEqualToString: typeName])
+		{
+			typeName = @"dt";
+		}
+		else if ([ETTextListDescriptionItemType isEqualToString: typeName])
+		{
+			typeName = @"dd";
+		}
+		else if ([ETTextListItemType isEqualToString: typeName])
+		{
+			typeName = @"li";
 		}
 		else if ([ETTextForeignImportType isEqualToString: typeName])
 		{
@@ -845,11 +941,7 @@ static NSDictionary *HeadingTypes;
 		sectionCounterDepth = level;
 		// Don't renumber chapters when we start a new part
 		if (level == 0) { level = 1; }
-		// FIXME: This is completely wrong.
-		for (int i = level+1 ; i<10 ; i++)
-		{
-			sectionCounter[i] = 0;
-		}
+		sectionCounter[level+1] = 0;
 	}
 }
 - (void)visitTextNode: (id<ETText>)aNode
@@ -994,6 +1086,8 @@ int main(int argc, char **argv)
 			  forCommand: @"pageref"];
 	[d2 registerDelegate: [ETTeXEnvironmentHandler class]
 			  forCommand: @"begin"];
+	[d2 registerDelegate: [ETTeXItemHandler class]
+			  forCommand: @"item"];
 	[d2 registerDelegate: [ETTeXIndexHandler class]
 			  forCommand: @"index"];
 	[d2 registerDelegate: [TRTeXImportNumberedListing class]
@@ -1016,6 +1110,12 @@ int main(int argc, char **argv)
 	[ETTeXSimpleHandler setTextType: @"keyword" forTeXCommand: @"ks"];
 	[ETTeXSimpleHandler setTextType: @"code" forTeXCommand: @"java"];
 	[ETTeXSimpleHandler setTextType: @"code" forTeXCommand: @"cxx"];
+	[ETTeXEnvironmentHandler setTextType: ETTextListType
+	                   forTeXEnvironment: @"itemize"];
+	[ETTeXEnvironmentHandler setTextType: ETTextNumberedListType
+	                   forTeXEnvironment: @"enumerate"];
+	[ETTeXEnvironmentHandler setTextType: ETTextDescriptionListType
+	                   forTeXEnvironment: @"description"];
 	NSString *projectRoot = [NSString stringWithUTF8String: argv[1]];
 	NSString *projectDescription = [projectRoot stringByAppendingPathComponent: @"html.plist"];
 	NSDictionary *project = [NSDictionary dictionaryWithContentsOfFile: projectDescription];
