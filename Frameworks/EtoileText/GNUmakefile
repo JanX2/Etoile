@@ -5,6 +5,7 @@ FRAMEWORK_NAME = EtoileText
 TOOL_NAME = EtoileTextExample TeXtoHTML
 
 EtoileText_OBJC_FILES = \
+					   ETTeXHandlers.m\
 					   ETTeXScanner.m\
 					   ETTextDocument.m\
 					   ETTextFragment.m\

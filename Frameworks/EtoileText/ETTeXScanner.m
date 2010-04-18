@@ -118,10 +118,38 @@ static NSCharacterSet *CommandEndCharacterSet;
 
 @implementation ETTeXParser
 @synthesize parent, document, builder, scanner, root;
+static NSDictionary *DefaultCommandHandlers;
++ (void)initialize
+{
+	if ([ETTeXParser class] != self) { return; }
+
+	// Some standard command handlers.
+	DefaultCommandHandlers = [D(
+		[ETTeXSectionHandler class], @"part",
+		[ETTeXSectionHandler class], @"chapter",
+		[ETTeXSectionHandler class], @"section",
+		[ETTeXSectionHandler class], @"subsection",
+		[ETTeXSectionHandler class], @"subsubsection",
+		[ETTeXSectionHandler class], @"paragraph",
+		[ETTeXNestableHandler class], @"ks",
+		[ETTeXNestableHandler class], @"file",
+		[ETTeXNestableHandler class], @"java",
+		[ETTeXNonNestedHandler class], @"cxx",
+		[ETTeXNonNestedHandler class], @"code",
+		[ETTeXNestableHandler class], @"note",
+		[ETTeXNestableHandler class], @"textit",
+		[ETTeXNestableHandler class], @"footnote",
+		[ETTeXLabelHandler class], @"label",
+		[ETTeXRefHandler class], @"ref",
+		[ETTeXRefHandler class], @"pageref",
+		[ETTeXEnvironmentHandler class], @"begin",
+		[ETTeXItemHandler class], @"item",
+		[ETTeXIndexHandler class], @"index") retain];
+}
 - (id)init
 {
 	SUPERINIT;
-	commandHandlers = [NSMutableDictionary new];
+	commandHandlers = [DefaultCommandHandlers mutableCopy];
 	unknownTags = [NSMutableSet new];
 	builder = [ETTextTreeBuilder new];
 	document = [ETTextDocument new];

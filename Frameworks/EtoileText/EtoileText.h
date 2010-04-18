@@ -1,5 +1,6 @@
 #import "ETStyleBuilder.h"
 #import "ETTeXScanner.h"
+#import "ETTeXHandlers.h"
 #import "ETTextDocument.h"
 #import "ETTextFragment.h"
 #import "ETTextProtocols.h"
