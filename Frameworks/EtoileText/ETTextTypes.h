@@ -39,6 +39,10 @@ EMIT_STRING(ETTextLinkTargetType);
  */
 EMIT_STRING(kETTextLinkIndexText);
 /**
+ * A virtual index entry that should be cross-referenced to this one.
+ */
+EMIT_STRING(kETTextLinkIndexCrossReference);
+/**
  * Key indicating the name of this link.  For link targets, this must be a
  * string or UUID.  For links, this may also be an NSURL indicating a foreign
  * resource.

@@ -1,6 +1,11 @@
 #import "EtoileText.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "ETTeXHandlers.h"
+
+/**
+ * Handle listings of the form:
+ * \snippet{filename}{firstline}{lastline}
+ */
 @interface TRTeXImportNumberedListing : ETTeXHandler
 {
 	NSString *refType;
@@ -9,24 +14,42 @@
 	NSNumber *lastLine;
 }
 @end
+/**
+ * Handle listings of the form:
+ * \snippet{path}{filename}{firstline}{lastline}
+ */
 @interface TRTeXSystemSnippet : TRTeXImportNumberedListing
 {
 	NSString *path;
 }
 @end
+/**
+ * Handle listings of the form:
+ * \snippet{filename}
+ */
 @interface TRTeXImportedListing : ETTeXHandler
 {
 	NSString *refType;
 }
 @end
 
-
+/**
+ * Handle keywords.  These are written in keyword style and also added to the
+ * index.
+ */
 @interface TRTeXKeywordHandler : ETTeXHandler
 {
 	NSString *indexText;
 	BOOL inOptArg;
 }
 @end
+/**
+ * Handle keyword abbreviation definitions from this command:
+ * \keyabrv{keyword}{abbreviation}
+ * These are written in the form:
+ * keyword (abbreviation)
+ * They are also added to the index as a cross reference.
+ */
 @interface TRTeXKeyabrvHandler : ETTeXHandler 
 {
 	NSString *phrase;
@@ -34,7 +57,15 @@
 }
 @end
 
+/**
+ * Handle \class{classname}.  Writes classname in code style and adds it to the index.
+ */
 @interface TRTeXClassHandler : ETTeXHandler @end
+/**
+ * A quick hack to parse \~{} as ~.  Does not work for the general case of
+ * words requiring a tilde, but my TeX files are all UTF-8, so I don't need to
+ * use the horrible TeX mechanisms of generating non-ASCII characters.
+ */
 @interface TRTeXTildeHack : ETTeXHandler @end
 
 
@@ -159,12 +190,12 @@
 	ETTextTreeBuilder *builder = self.builder;
 	[builder startNodeWithStyle: 
 		[self.document typeFromDictionary: D(
-			@"keyword", kETTextStyleName)]];
-	[builder startNodeWithStyle: 
-		[self.document typeFromDictionary: D(
 			ETTextLinkTargetType, kETTextStyleName,
 			idxText, kETTextLinkIndexText,
 			[ETUUID UUID], kETTextLinkName)]];
+	[builder startNodeWithStyle: 
+		[self.document typeFromDictionary: D(
+			@"keyword", kETTextStyleName)]];
 	[builder appendString: aString];
 	[builder endNode];
 	[builder endNode];
@@ -176,6 +207,7 @@
 	self.scanner.delegate = self.parent;
 }
 @end
+
 @implementation TRTeXKeyabrvHandler
 - (void)dealloc
 {
@@ -206,12 +238,11 @@
 	[builder appendString: phrase];
 	[builder endNode];
 	// Emit the dictionary entry
-	NSString *indexEntry = 
-		[NSString stringWithFormat: @"%@|see{%@}", phrase, abbreviation];
 	[builder startNodeWithStyle: 
 		[self.document typeFromDictionary: D(
 			ETTextLinkTargetType, kETTextStyleName,
-			indexEntry, kETTextLinkIndexText,
+			abbreviation, kETTextLinkIndexCrossReference,
+			phrase, kETTextLinkIndexText,
 			[ETUUID UUID], kETTextLinkName)]];
 	[self.builder endNode];
 	self.scanner.delegate = self.parent;
@@ -266,9 +297,6 @@
 	BOOL isWritingFootnotes;
 }
 @property (nonatomic, retain) ETXMLWriter *writer;
-@property (nonatomic, copy) NSString *rootPath;
-@property (nonatomic, copy) NSDictionary *includePaths;
-@property (nonatomic, copy) NSDictionary *captionFormats;
 @property (nonatomic, assign) id skipToEndOfNode;
 - (void)setTagName: (NSString*)aString forTextType: (NSString*)aType;
 - (void)setAttributes: (NSDictionary*)attributes forTextType: (NSString*)aType;
@@ -317,6 +345,9 @@
 - (void)writer: (ETXHTMLWriter*)writer endTextNode: (id<ETText>)aNode {}
 - (void)writeCollectedFootnotesForXHTMLWriter: (ETXHTMLWriter*)aWriter
 {
+	// If the builder has the only reference to this object, we don't want it
+	// to be deleted while in use!
+	[self retain];
 	// Remove self as the handler for footnotes, so that they are passed
 	// through as-is
 	[aWriter setDelegate: nil forTextType: @"footnote"];
@@ -343,11 +374,86 @@
 	}
 	[footnotes removeAllObjects];
 	[aWriter setDelegate: self forTextType: @"footnote"];
+	[self release];
 }
 @end
 
+@interface TRXHTMLImportBuilder : NSObject <ETXHTMLWriterDelegate>
+@property (nonatomic, copy) NSString *rootPath;
+@property (nonatomic, copy) NSDictionary *includePaths;
+@property (nonatomic, copy) NSDictionary *captionFormats;
+@end
+@implementation TRXHTMLImportBuilder
+@synthesize rootPath, includePaths, captionFormats;
+- (void)dealloc
+{
+	[rootPath release];
+	[includePaths release];
+	[captionFormats release];
+	[super dealloc];
+}
+- (void)writer: (ETXHTMLWriter*)aWriter startTextNode: (id<ETText>)aNode;
+{
+	ETXMLWriter *writer = aWriter.writer;
+	// Resolve the absolute path.
+	NSString *includeType = [aNode.textType valueForKey: @"TRImportType"];
+	NSString *directory = [includePaths objectForKey: includeType];
+	if (![directory isAbsolutePath])
+	{
+		directory = [rootPath stringByAppendingPathComponent: directory];
+	}
+	NSString *fileName = 
+		[directory stringByAppendingPathComponent: 
+			[aNode.textType valueForKey: kETTextSourceLocation]];
+	NSString *file = [NSString stringWithContentsOfFile: fileName];
+	if (nil == file)
+	{
+		NSString *err = [NSString stringWithFormat: 
+			@"Can't find refrenced file: %@ (%@)", 
+			fileName, includeType];
+		[writer startAndEndElement: @"p"
+		                     cdata: err];
+		NSLog(@"%@", err);
+	}
+	else
+	{
+		//Different class for each snippet type
+		NSDictionary *class =
+			D([@"include " stringByAppendingString: includeType], 
+				@"class");
+		[writer startElement: @"pre"
+		          attributes: class];
+		NSArray *lines = [file componentsSeparatedByString: @"\n"];
+		NSInteger start = 
+			[[aNode.textType valueForKey: kETTextFirstLine] integerValue];
+		NSInteger end = 
+			[[aNode.textType valueForKey: kETTextLastLine] integerValue];
+		// If start is specified, then make it to 0-indexed 
+		if (start > 0) { start -= 1; }
+		if (end == 0) { end = [lines count] - 1; }
+		for (NSInteger i=start ; i<end ; i++)
+		{
+			NSString *line = [lines objectAtIndex: i];
+			[writer characters: line];
+			[writer characters: @"\n"];
+		}
+		[writer endElement: @"pre"];
+	}
+	[writer startElement: @"p"
+			  attributes: D(@"caption", @"class")];
+	NSString *caption = [captionFormats objectForKey: includeType];
+	caption = [NSString stringWithFormat: caption, 
+		[[aNode.textType valueForKey: kETTextSourceLocation] 
+			lastPathComponent]];
+	[writer characters: caption];
+}
+
+- (void)writer: (ETXHTMLWriter*)writer visitTextNode: (id<ETText>)aNode {}
+- (void)writer: (ETXHTMLWriter*)writer endTextNode: (id<ETText>)aNode {}
+@end
+
 @implementation ETXHTMLWriter
-@synthesize writer, rootPath, includePaths, captionFormats, skipToEndOfNode;
+@synthesize writer, skipToEndOfNode;
 - (id)init
 {
 	SUPERINIT;
@@ -379,9 +485,6 @@
 	[types release];
 	[customHandlers release];
 	[writer release];
-	[rootPath release];
-	[includePaths release];
-	[captionFormats release];
 	[super dealloc];
 }
 - (void)setTagName: (NSString*)aString forTextType: (NSString*)aType
@@ -409,9 +512,6 @@
 	}
 	if (nil != typeName)
 	{
-		//TODO: Handle standard attributes here, call a delegate for others.
-		// FIXME: This blob of nested if statements is horrible.  Split each
-		// body into a separate method.
 		NSDictionary *attributes = nil;
 		if ([ETTextParagraphType isEqualToString: typeName])
 		{
@@ -429,67 +529,12 @@
 			typeName = @"a";
 			attributes = D([linkName stringValue], @"name");
 		}
-		else if ([ETTextForeignImportType isEqualToString: typeName])
-		{
-			// Resolve the absolute path.
-			NSString *includeType = [aNode.textType valueForKey: @"TRImportType"];
-			NSString *directory = [includePaths objectForKey: includeType];
-			if (![directory isAbsolutePath])
-			{
-				directory = [rootPath stringByAppendingPathComponent: directory];
-			}
-			NSString *fileName = 
-				[directory stringByAppendingPathComponent: 
-					[aNode.textType valueForKey: kETTextSourceLocation]];
-			NSString *file = [NSString stringWithContentsOfFile: fileName];
-			if (nil == file)
-			{
-				NSString *err = [NSString stringWithFormat: 
-					@"Can't find refrenced file: %@ (%@)", 
-					fileName, includeType];
-				[writer startAndEndElement: @"p"
-				                     cdata: err];
-				NSLog(@"%@", err);
-			}
-			else
-			{
-				//Different class for each snippet type
-				NSDictionary *class =
-					D([@"include " stringByAppendingString: includeType], 
-						@"class");
-				[writer startElement: @"pre"
-				          attributes: class];
-				NSArray *lines = [file componentsSeparatedByString: @"\n"];
-				NSInteger start = 
-					[[aNode.textType valueForKey: kETTextFirstLine] integerValue];
-				NSInteger end = 
-					[[aNode.textType valueForKey: kETTextLastLine] integerValue];
-				// If start is specified, then make it to 0-indexed 
-				if (start > 0) { start -= 1; }
-				if (end == 0) { end = [lines count] - 1; }
-				for (NSInteger i=start ; i<end ; i++)
-				{
-					NSString *line = [lines objectAtIndex: i];
-					[writer characters: line];
-					[writer characters: @"\n"];
-				}
-				[writer endElement: @"pre"];
-			}
-			[writer startElement: @"p"
-					  attributes: D(@"caption", @"class")];
-			NSString *caption = [captionFormats objectForKey: includeType];
-			caption = [NSString stringWithFormat: caption, 
-				[[aNode.textType valueForKey: kETTextSourceLocation] 
-					lastPathComponent]];
-			[writer characters: caption];
-			return;
-		}
 		else
 		{
 			attributes = [defaultAttributes objectForKey: typeName];
 			attributes = attributes ? attributes : D(typeName, @"class");
 			NSString *defaultType = [types objectForKey: typeName];
-			typeName = defaultType ? typeName : @"span";
+			typeName = defaultType ? defaultType : @"span";
 		}
 		[writer startElement: typeName
 				  attributes: attributes];
@@ -513,10 +558,6 @@
 	if ([str length] > 0)
 	{
 		[writer characters: str];
-	}
-	else if ([ETTextLinkTargetType isEqualToString: typeName])
-	{
-		[writer characters: @" "];
 	}
 }
 - (void)endTextNode: (id<ETText>)aNode
@@ -588,6 +629,7 @@
 	/** Link targets. */
 	NSMutableDictionary *linkTargets;
 	NSMutableDictionary *linkNames;
+	NSMutableDictionary *crossReferences;
 	/** Index entries. */
 	NSMutableDictionary *indexEntries;
 	int sectionCounter[10];
@@ -597,15 +639,17 @@
 @property (readonly) NSArray *referenceNodes;
 @property (readonly) NSDictionary *linkTargets;
 @property (readonly) NSDictionary *linkNames;
+@property (readonly) NSDictionary *crossReferences;
 @end
 @implementation ETReferenceBuilder
-@synthesize referenceNodes, linkTargets, linkNames;
+@synthesize referenceNodes, linkTargets, linkNames, crossReferences;
 - init
 {
 	SUPERINIT;
 	referenceNodes = [NSMutableArray new];
 	linkTargets = [NSMutableDictionary new];
 	linkNames = [NSMutableDictionary new];
+	crossReferences = [NSMutableDictionary new];
 	indexEntries = [NSMutableDictionary new];
 	return self;
 }
@@ -615,6 +659,7 @@
 	[linkTargets release];
 	[linkNames release];
 	[indexEntries release];
+	[crossReferences release];
 	[super dealloc];
 }
 - (void)startTextNode: (id<ETText>)aNode 
@@ -657,6 +702,12 @@
 		{
 			[indexEntries addObject: linkName
 			                 forKey: indexName];
+			NSString *xref = [type valueForKey: kETTextLinkIndexCrossReference];
+			if (nil != xref)
+			{
+				[crossReferences addObject: indexName
+				                    forKey: xref];
+			}
 		}
 	}
 }
@@ -674,16 +725,21 @@
 	}
 }
 // FIXME: This should be part of the XML writer, not part of the ref builder
+// FIXME: Ideally, we'd construct the ETText tree for the index, and then emit
+// it using whatever generator we chose.
 - (void)writeIndexWithXMLWriter: (ETXMLWriter*)writer
 {
 	[writer startAndEndElement: @"h1"
 	                     cdata: @"Index"];
 	[writer startElement: @"div"
 	          attributes: D(@"index", @"class")];
-	NSArray *entries = [[indexEntries allKeys] 
-		sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+	NSArray *entries = 
+		[[[indexEntries allKeys] 
+			arrayByAddingObjectsFromArray: [crossReferences allKeys]]
+				sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
 	unichar startChar = 0;
 	BOOL inIndexList = NO;
+	NSString *lastEntry = nil;
 	for (NSString *entry in entries)
 	{
 		if (tolower([entry characterAtIndex: 0]) != startChar)
@@ -699,28 +755,57 @@
 			                     cdata: [NSString stringWithFormat: @"%c", toupper(startChar)]];
 			[writer startElement: @"p"];
 		}
-		id targets = [indexEntries objectForKey: entry];
-		if ([targets isKindOfClass: [NSArray class]])
+		NSArray *split = [entry componentsSeparatedByString: @"!"];
+		NSString *displayEntry = entry;
+		if ([split count] > 1)
 		{
-			[writer characters: entry];
-			[writer characters: @", "];
-			for (id t in targets)
+			NSString *parent = [split objectAtIndex: 0];
+			if (![parent isEqualToString: lastEntry])
 			{
-				NSString *ref = [NSString stringWithFormat: @"#%@", t];
-				NSString *section = [linkNames objectForKey: t];
+				[writer characters: parent];
+			}
+			displayEntry = [split objectAtIndex: 1];
+			[writer startElement: @"p"
+			          attributes: D(@"index subentry", @"class")];
+		}
+		else
+		{
+			lastEntry = entry;
+			[writer startElement: @"p"
+			          attributes: D(@"index", @"class")];
+		}
+		id targets = [indexEntries objectForKey: entry];
+		if (nil != targets)
+		{
+			if ([targets isKindOfClass: [NSArray class]])
+			{
+				[writer characters: displayEntry];
+				[writer characters: @", "];
+				for (id t in targets)
+				{
+					NSString *ref = [NSString stringWithFormat: @"#%@", t];
+					NSString *section = [linkNames objectForKey: t];
+					[writer startAndEndElement: @"a"
+					                attributes: D(ref, @"href")
+					                     cdata: section];
+					[writer characters: @" "];
+				}
+			}
+			else
+			{
 				[writer startAndEndElement: @"a"
-				                attributes: D(ref, @"href")
-				                     cdata: section];
-				[writer characters: @" "];
+				                attributes: D([NSString stringWithFormat: @"#%@", targets], @"href")
+				                     cdata: displayEntry];
 			}
 		}
 		else
 		{
-			[writer startAndEndElement: @"a"
-			                attributes: D([NSString stringWithFormat: @"#%@", targets], @"href")
-			                     cdata: entry];
+			NSString *xref = [crossReferences objectForKey: entry];
+			[writer characters: entry];
+			[writer characters: @", see "];
+			[writer characters: xref];
 		}
-		[writer startAndEndElement: @"br"];
+		[writer endElement];
 	}
 	if (inIndexList)
 	{
@@ -728,6 +813,11 @@
 	}
 	[writer endElement];
 }
+@end
+
+@interface ETXHTMLDocumentGenerator : NSObject
+@property (nonatomic, retain) id<ETText> text;
+
 @end
 
 int main(int argc, char **argv)
@@ -768,9 +858,15 @@ int main(int argc, char **argv)
 	[d2.document.text visitWithVisitor: r];
 	[r finishVisiting];
 	ETXHTMLWriter *w = [ETXHTMLWriter new];
-	w.rootPath = projectRoot;
 	ETXHTMLFootnoteBuilder *footnotes = [ETXHTMLFootnoteBuilder new];
 	[w setDelegate: footnotes forTextType: @"footnote"];
+	[footnotes release];
+	TRXHTMLImportBuilder *importer = [TRXHTMLImportBuilder new];
+	importer.rootPath = projectRoot;
+	importer.includePaths = [project objectForKey: @"includeDirectories"];
+	importer.captionFormats = [project objectForKey: @"captionFormats"];
+	[w setDelegate: importer forTextType: ETTextForeignImportType];
+	[importer release];
 
 	types = [project objectForKey: @"htmlTags"];
 	for (NSString *type in types)
@@ -784,8 +880,6 @@ int main(int argc, char **argv)
 		[w setAttributes: [types objectForKey: type]
 		     forTextType: type];
 	}
-	w.includePaths = [project objectForKey: @"includeDirectories"];
-	w.captionFormats = [project objectForKey: @"captionFormats"];
 	[d2.document.text visitWithVisitor: w];
 	[footnotes writeCollectedFootnotesForXHTMLWriter: w];
 	[r writeIndexWithXMLWriter: w.writer];

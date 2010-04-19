@@ -102,7 +102,10 @@ static NSMutableDictionary *EnvironmentTypes;
 + (void)initialize
 {
 	if ([ETTeXEnvironmentHandler class] != self) { return; }
-	EnvironmentTypes = [NSMutableDictionary new];
+	EnvironmentTypes = [D(
+	ETTextListType, @"itemize",
+	ETTextNumberedListType, @"enumerate",
+	ETTextDescriptionListType, @"description") mutableCopy];
 }
 + (void)setTextType: (NSString*)aType forTeXEnvironment: (NSString*)aCommand
 {
@@ -135,7 +138,6 @@ static NSMutableDictionary *EnvironmentTypes;
 {
 	if (inEnd)
 	{
-		[self.builder endNode];
 		self.scanner.delegate = self.parent;
 	}
 }
@@ -158,9 +160,11 @@ static NSMutableDictionary *EnvironmentTypes;
 	{
 		NSAssert([aString isEqualToString: environmentName],
 				@"\\end does not match \\begin!");
+		[root endParagraph];
+		[self.builder endNode];
 		return;
 	}
-	[[self root] handleText: aString];
+	[root handleText: aString];
 }
 @end
 
