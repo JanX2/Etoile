@@ -386,15 +386,15 @@
 }
 - (void)setTagName: (NSString*)aString forTextType: (NSString*)aType
 {
-	[types setObject: aString forKey: aType];
+	[types setValue: aString forKey: aType];
 }
 - (void)setAttributes: (NSDictionary*)attributes forTextType: (NSString*)aType
 {
-	[defaultAttributes setObject: attributes forKey: aType];
+	[defaultAttributes setValue: attributes forKey: aType];
 }
 - (void)setDelegate: (id<ETXHTMLWriterDelegate>)aDelegate forTextType: (NSString*)aType
 {
-	[customHandlers setObject: aDelegate forKey: aType];
+	[customHandlers setValue: aDelegate forKey: aType];
 }
 - (void)startTextNode: (id<ETText>)aNode
 {
@@ -422,10 +422,6 @@
 		{
 			typeName = [NSString stringWithFormat: @"h%@",
 					[aNode.textType valueForKey: kETTextHeadingLevel]];
-		}
-		else if (!isWritingFootnotes &&
-			[@"footnote" isEqualToString: typeName])
-		{
 		}
 		else if ([ETTextLinkTargetType isEqualToString: typeName])
 		{
@@ -772,6 +768,7 @@ int main(int argc, char **argv)
 	[d2.document.text visitWithVisitor: r];
 	[r finishVisiting];
 	ETXHTMLWriter *w = [ETXHTMLWriter new];
+	w.rootPath = projectRoot;
 	ETXHTMLFootnoteBuilder *footnotes = [ETXHTMLFootnoteBuilder new];
 	[w setDelegate: footnotes forTextType: @"footnote"];
 
@@ -787,7 +784,6 @@ int main(int argc, char **argv)
 		[w setAttributes: [types objectForKey: type]
 		     forTextType: type];
 	}
-	w.rootPath = projectRoot;
 	w.includePaths = [project objectForKey: @"includeDirectories"];
 	w.captionFormats = [project objectForKey: @"captionFormats"];
 	[d2.document.text visitWithVisitor: w];
