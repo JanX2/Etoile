@@ -5,7 +5,8 @@
     );
     GSThemeDomain = {
 	GSBackHandlesWindowDecorations = NO;
-	GSScrollerButtonsOffset = 0.0;
+	GSScrollerButtonsOffset = 0.0;	
+	GSScrollViewNoInnerBorder = YES;
     };
     GSThemeIcon = Thematic.png;
     GSThemeTiles = {
