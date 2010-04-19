@@ -335,9 +335,9 @@
 		[NSString stringWithFormat: @"#footnote%d", footnoteNumber];
 
 	ETXMLWriter *writer = aWriter.writer;
-	[writer startElement: @"sup"];
-	[writer startAndEndElement: @"a"
-	                attributes: D(footnoteLabel, @"href")
+	[writer startElement: @"a"
+	         attributes: D(footnoteLabel, @"href")];
+	[writer startAndEndElement: @"sup"
 	                     cdata: linkText];
 	[writer endElement];
 }

@@ -107,6 +107,36 @@ static NSCharacterSet *CommandEndCharacterSet;
 						}
 					}
 					break;
+				case '-':
+				{
+					if (idx + 1 < end)
+					{
+						if ([aString characterAtIndex: idx+1] == '-')
+						{
+							PASS_TEXT();
+							unichar dash = 8211; // en
+							int skip = 1;
+							if (idx + 2 < end)
+							{
+								if ([aString characterAtIndex: idx+1] == '-')
+								{
+									skip = 2;
+									dash = 8212; // em
+								}
+							}
+							NSString *dashString = [NSString stringWithCharacters: &dash length: 1];
+							[delegate handleText: dashString];
+							idx += skip;
+							i += skip;
+							if (i+1 > range.length)
+							{
+								range.location = idx + 1;
+							}
+							textRange.location = idx + 1;
+							break;
+						}
+					}
+				}
 				default:
 					textRange.length++;
 			}
