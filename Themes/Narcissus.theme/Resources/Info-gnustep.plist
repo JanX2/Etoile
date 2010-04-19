@@ -185,6 +185,10 @@
 	    FileName = Textbox.9.png;
 	    NinePatch = YES;
 	};
+	GSBrowserHeader = {
+	  FileName = BrowserHeader.9.png;
+	  NinePatch = YES;
+	};
     };
     GSThemeVersion = 0.1;
     NSPrincipalClass = GSTiledTheme;
