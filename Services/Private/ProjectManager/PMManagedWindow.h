@@ -24,12 +24,13 @@
  **/
 #import "XCBWindow.h"
 
-@interface PMDecoratedWindow : NSObject {
-	XCBWindow *window;
+@interface PMManagedWindow : NSObject {
+	XCBWindow *child;
 	XCBWindow *decorationWindow;
+	XCBPoint child_origin;
 	BOOL ignoreUnmap;
 }
-+ (PMDecoratedWindow*)windowDecoratingWindow: (XCBWindow*)win;
++ (PMManagedWindow*)windowDecoratingWindow: (XCBWindow*)win;
 - (XCBWindow*)decorationWindow;
 - (void)mapDecoratedWindow;
 @end

@@ -26,6 +26,7 @@
 #import "PMConnectionDelegate.h"
 #import "PMScreen.h"
 #import "PMCompositeWindow.h"
+#import "PMManagedWindow.h"
 #import "XCBConnection.h"
 #import "XCBDamage.h"
 #import "XCBRender.h"
@@ -48,9 +49,12 @@
 - (PMScreen*)findScreenWithRootWindow: (XCBWindow*)root;
 - (void)paintAllWithRegion: (XCBFixesRegion*)region onScreen: (PMScreen*)screen;
 - (PMCompositeWindow*)findCompositeWindow: (XCBWindow*)window;
+- (void)removeManagedWindow: (XCBWindow*)window;
 
 - (void)XCBConnection: (XCBConnection*)connection damageAdd: (xcb_damage_add_request_t*)event;
 - (void)handleQueryTree: (xcb_query_tree_reply_t*)query_tree_reply;
+- (void)handleNewCompositedWindow: (XCBWindow*)window;
+- (void)windowBecomeAvailable: (NSNotification*)notification;
 @end
 
 
@@ -60,6 +64,8 @@
 {
 	SUPERINIT;
 	compositeWindows = [NSMutableDictionary new];
+	managedWindows = [NSMutableDictionary new];
+	decorationWindows = [NSMutableSet new];
 	[[XCBConnection sharedConnection] setDelegate:self];
 	[XCBDamage initializeExtensionWithConnection: XCBConn];
 	[XCBComposite initializeExtensionWithConnection: XCBConn];
@@ -73,8 +79,16 @@
 	                      name: XCBWindowDidMapNotification
 	                    object: nil];
 	[defaultCenter addObserver: self
-	                  selector: @selector(windowDidCreate:)
+	                  selector: @selector(windowDidUnMap:)
+	                      name: XCBWindowDidUnMapNotification
+	                    object: nil];
+	[defaultCenter addObserver: self
+	                  selector: @selector(windowBecomeAvailable:)
 	                      name: XCBWindowDidCreateNotification
+	                    object: nil];
+	[defaultCenter addObserver: self
+	                  selector: @selector(windowDidReparent:)
+	                      name: XCBWindowParentDidChangeNotification
 	                    object: nil];
 
 	self->screens = [NSMutableDictionary new];
@@ -104,6 +118,7 @@
 		removeObserver: self];
 	[screens release];
 	[compositeWindows release];
+	[managedWindows release];
 	[super dealloc];
 }
 
@@ -138,16 +153,27 @@
 - (void)windowDidMap: (NSNotification*)notification 
 {
 }
-- (void)windowDidCreate: (NSNotification*)notification 
+
+- (void)windowDidUnMap: (NSNotification*)notification
 {
-	NSLog(@"-[XCBConnection windowDidCreate:]");
-	[self newWindow: [notification object]];	
 }
+
+- (void)compositeWindowDidDestroy: (NSNotification*)notification
+{
+	XCBWindow *window = [notification object];
+	if ([compositeWindows objectForKey: window])
+	{
+		NSLog(@"-[PMConnectionDelegate compositeWindowDidDestroy] %@", [notification object]);
+		XCBREM_OBSERVER(WindowDidDestroy, window);
+		[compositeWindows removeObjectForKey: window];
+	}
+}
+
 - (void)windowDidExpose: (NSNotification*)notification
 {
 	NSLog(@"-[XCBConnection windowDidExpose:]");
 	// FIXME: Apparently we can optimize by accumulating the
-  	// the rects according to the anEvent->count parameter (see XLib manual)
+	// the rects according to the anEvent->count parameter (see XLib manual)
 	XCBRect exposeRect;
 	xcb_rectangle_t exposeRectangle;
 	[[[notification userInfo] objectForKey: @"Rect"] 
@@ -160,11 +186,17 @@
 		               count: 1];
 	[screen appendDamage: exposeRegion];
 }
+- (void)windowDidReparent: (NSNotification*)notification
+{
+	XCBWindow *window = [notification object];
+	PMScreen * screen = [self findScreenWithRootWindow: [window parent]];
+	[screen childWindowRemoved: window];
+}
 - (void)XCBConnection: (XCBConnection*)connection damageNotify: (xcb_damage_notify_event_t*)event
 {
 	//NSLog(@"Damage notify {%d, %d, %d, %d}", 
 	//	event->area.x, event->area.y, event->area.width, event->area.height);
-	XCBWindow *damagedWindow = [XCBWindow findXCBWindow: event->drawable];
+	XCBWindow *damagedWindow = [XCBWindow windowWithXCBWindow: event->drawable];
 	PMCompositeWindow *compositeWindow = [self findCompositeWindow: damagedWindow];
 	if (compositeWindow != nil)
 	{
@@ -181,62 +213,77 @@
 		NSLog(@"-[PMConnectionDelegate damageNotify:] ERROR compositewindow for XCBWindow %@ not found.", damagedWindow);
 }
 
-- (void)newWindow: (XCBWindow*)window
+- (void)newWindow: (XCBWindow*)subject
 {
-	PMCompositeWindow *compositeWindow = [PMCompositeWindow windowWithXCBWindow: window];
-	[compositeWindows setObject: compositeWindow forKey: window];
-	PMScreen *screen = [self findScreenWithRootWindow: [window parent]];
+	PMScreen *screen = [self findScreenWithRootWindow: [subject parent]];
 	if (screen == nil)
 	{
 		// Can't be top-level. Ignore it.
 		NSLog(@"-[PMConnectionDelegate newWindow: ignoring non-top level window");
 		return;
 	}
-	[screen childWindowDiscovered: compositeWindow];
-	[[NSNotificationCenter defaultCenter]
-		addObserver: self
-		   selector: @selector(windowFrameDidChange:)
-		       name: XCBWindowFrameDidChangeNotification
-		     object: window];
-	[[NSNotificationCenter defaultCenter]
-		addObserver: self
-		   selector: @selector(windowFrameWillChange:)
-		       name: XCBWindowFrameWillChangeNotification
-		     object: window];
-	[[NSNotificationCenter defaultCenter]
-		addObserver: self
-		   selector: @selector(windowAttributesDidChange:)
-		       name: XCBWindowAttributesDidChangeNotification
-		     object: window];
 
+	if (![subject overrideRedirect] &&
+		[managedWindows objectForKey: subject] == nil)
+	{
+		NSLog(@"-[PMConnectionDelegate windowDidBecomeAvailable] managing %@", subject);
+		PMManagedWindow *managedWindow = [PMManagedWindow windowDecoratingWindow: subject];
+		[managedWindows setObject: managedWindow forKey: subject];
+		[decorationWindows addObject: [managedWindow decorationWindow]];
+		[[NSNotificationCenter defaultCenter]
+			addObserver: self
+			   selector: @selector(managedWindowDidDestroy:)
+			       name: XCBWindowDidDestroyNotification
+			     object: subject];
+		[screen childWindowDiscovered: subject
+		              compositeWindow: nil];
+		[self handleNewCompositedWindow: [managedWindow decorationWindow]];
+	} 
+	else if ([subject overrideRedirect] &&
+		[decorationWindows containsObject: subject] == NO &&
+		[compositeWindows objectForKey: subject] == nil)
+	{
+		[self handleNewCompositedWindow: subject];
+	}
+}
+
+- (void)windowBecomeAvailable: (NSNotification*)notification
+{
+	XCBWindow *subject = [notification object];
+
+	if ([subject parent] == nil)
+		return;
+	[self newWindow: subject];
+}
+
+- (void)handleNewCompositedWindow: (XCBWindow*)window
+{
+	PMCompositeWindow *compositeWindow = [PMCompositeWindow windowWithXCBWindow: window];
+	PMScreen *screen = [self findScreenWithRootWindow: [window parent]];
+	[compositeWindows setObject: compositeWindow forKey: window];
+	[screen childWindowDiscovered: window
+	              compositeWindow: compositeWindow];
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
-		   selector: @selector(windowDidDestroy:)
+		   selector: @selector(compositeWindowDidDestroy:)
 		       name: XCBWindowDidDestroyNotification
 		     object: window];
 }
 
-- (void)windowFrameWillChange: (NSNotification*)notification
+- (void)managedWindowDidDestroy: (NSNotification*)notification
 {
-}
-- (void)windowFrameDidChange: (NSNotification*)notification
-{
-}
-
-- (void)windowAttributesDidChange: (NSNotification*)notification
-{
+	if ([managedWindows objectForKey: [notification object]])
+		[self removeManagedWindow: [notification object]];
 }
 
-- (void)windowDidDestroy: (NSNotification*)notification
+- (void)removeManagedWindow: (XCBWindow*)window
 {
-	XCBWindow *window = [notification object];
-	[compositeWindows removeObjectForKey:window];
+	NSLog(@"-[PMConnectionDelegate removeManagedWindow:]: %@", window);
 	XCBREM_OBSERVER(WindowDidDestroy, window);
-	XCBREM_OBSERVER(WindowFrameWillChange, window);
-	XCBREM_OBSERVER(WindowFrameDidChange, window);
-	XCBREM_OBSERVER(WindowAttributesDidChange, window);
+	PMManagedWindow *managedWindow = [managedWindows objectForKey: window];
+	[decorationWindows removeObject: [managedWindow decorationWindow]];
+	[managedWindows removeObjectForKey: window];
 }
-
 
 - (void)finishedProcessingEvents: (XCBConnection*)connection
 {

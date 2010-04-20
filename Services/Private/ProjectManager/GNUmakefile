@@ -14,25 +14,26 @@ TOOL_NAME = ProjectManager
 $(TOOL_NAME)_LANGUAGES = English
 
 $(TOOL_NAME)_OBJC_FILES = \
-				 PMNotifications.m\
-				 PMConnectionDelegate.m \
-				 PMScreen.m \
-				 PMCompositeWindow.m \
-				 XCBAtomCache.m\
-				 XCBConnection.m\
-				 XCBNotifications.m\
-				 XCBWindow.m\
-				 XCBScreen.m\
-				 XCBDamage.m \
-				 XCBExtension.m \
-				 XCBComposite.m \
-				 XCBRender.m \
-				 XCBFixes.m \
-				 XCBPixmap.m \
-				 XCBVisual.m \
-				 main.m
+	 PMNotifications.m\
+	 PMConnectionDelegate.m \
+	 PMScreen.m \
+	 PMCompositeWindow.m \
+	 PMManagedWindow.m \
+	 XCBAtomCache.m\
+	 XCBConnection.m\
+	 XCBNotifications.m\
+	 XCBWindow.m\
+	 XCBScreen.m\
+	 XCBDamage.m \
+	 XCBExtension.m \
+	 XCBComposite.m \
+	 XCBRender.m \
+	 XCBFixes.m \
+	 XCBPixmap.m \
+	 XCBVisual.m \
+	 main.m
 
-ADDITIONAL_OBJCFLAGS = -std=c99 -g -Wno-unused  -Werror
+ADDITIONAL_OBJCFLAGS = -std=c99 -g -Wno-unused  -Werror -Wall
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lxcb -lxcb-composite -lxcb-damage -lxcb-render-util -lxcb-xfixes
 

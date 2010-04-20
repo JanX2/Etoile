@@ -38,6 +38,10 @@
 		retain];
 	return self;
 }
+- (NSString*)description
+{
+	return [NSString stringWithFormat: @"XCBScreen screen=%d rootWindow=%@", screen, root];
+}
 + (XCBScreen*) screenWithXCBScreen: (xcb_screen_t*)aScreen
 {
 	return [[[self alloc] initWithXCBScreen: aScreen] autorelease];

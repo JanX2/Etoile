@@ -1,4 +1,4 @@
-/**
+/*
  * Étoilé ProjectManager - XCBWindow.m
  *
  * Copyright (C) 2009 David Chisnall
@@ -27,20 +27,51 @@
 #import "XCBVisual.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
+#import <Foundation/NSNull.h>
+
+/**
+  * This enumeration is used to keep track
+  * of the values we have successfully cached
+  * so far. It is needed so that we know when
+  * we may transition into the XCBWindowAvailableState
+  * when there is multiple things that need to be 
+  * requested, like geometry and attributes.
+  */
+enum _XCBWindowLoadedValues
+{
+	XCBWindowLoadedNothing = 0,
+	XCBWindowLoadedAttributes = 1,
+	XCBWindowLoadedGeometry = 2,
+	XCBWindowLoadedEverything = XCBWindowLoadedAttributes | XCBWindowLoadedGeometry
+};
+
+@interface XCBWindow (Private)
+- (void) checkIfAvailable;
+- (XCBWindow*)initWithNewXCBWindow: (xcb_window_t)new_window_id;
+@end
+
 @implementation XCBWindow
+
 - (XCBWindow*)initWithXCBWindow: (xcb_window_t)aWindow 
                          parent: (xcb_window_t)parent_id
+                          above: (xcb_window_t)above_sibling
 {
 	SELFINIT;
 	window = aWindow;
+	window_load_state = XCBWindowExistsState;
+	_cache_load_values = XCBWindowLoadedNothing;
 	xcb_get_geometry_cookie_t cookie =
 		xcb_get_geometry([XCBConn connection], window);
 	[XCBConn setHandler: self
 			   forReply: cookie.sequence
 			   selector: @selector(setGeometry:)];
 	[XCBConn setNeedsFlush:YES];
-	parent = [[XCBConn windowForXCBId:parent_id] retain];
-	// Even though we know the parent, we need the window
+	parent = [[XCBWindow windowWithXCBWindow: parent_id] 
+		retain];
+	above = [[XCBWindow windowWithXCBWindow: above_sibling]
+		retain];
+
+	// Even if we might know the parent, we need the window
 	// attributes to do some other stuff like the window class
 	[self updateWindowAttributes];
 	[XCBConn registerWindow: self];
@@ -49,22 +80,31 @@
 - (void) dealloc
 {
 	[parent release];
+	[above release];
 	[super dealloc];
+}
++ (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow 
+{
+	return [self windowWithXCBWindow: aWindow parent: 0];
 }
 + (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow 
                            parent: (xcb_window_t)parent_id
 {
+	// If a 0 (None) window is specified, just return
+	// nothing.
+	if (aWindow == 0)
+		return nil;
 	// Don't create multiple objects for the same window.
 	id win = [XCBConn windowForXCBId: aWindow];
 	if (nil != win)
 	{
 		return win;
 	}
-	return [[[self alloc] initWithXCBWindow: aWindow parent:parent_id] autorelease];
+	return [[[self alloc] initWithXCBWindow: aWindow parent: parent_id above: 0] autorelease];
 }
-+ (XCBWindow*)findXCBWindow: (xcb_window_t)aWindow
+- (XCBWindowLoadState) windowLoadState
 {
-	return [XCBConn windowForXCBId:aWindow];
+	return window_load_state;
 }
 - (id)copyWithZone: (NSZone*)aZone
 {
@@ -86,9 +126,25 @@
 	[XCBConn setHandler: self
 		forReply:acookie.sequence
 		selector: @selector(setWindowAttributes:)];
-	[XCBConn setNeedsFlush:YES];
+	[XCBConn setNeedsFlush: YES];
 }
-
+- (void)changeWindowAttributes: (uint32_t)mask
+                        values: (const uint32_t*)values
+{
+	xcb_void_cookie_t c = xcb_change_window_attributes_checked(
+		[XCBConn connection],
+		window,
+		mask,
+		values);
+	[XCBConn setHandler: self
+	           forReply: c.sequence
+	          selector: @selector(changeWindowAttributesReply:)];
+	[XCBConn setNeedsFlush: YES];
+}
+- (void)changeWindowAttributesReply: (void*)c
+{
+	NSLog(@"XCBWindow: change window attributes succeeded.");
+}
 - (void)handleCirculateNotifyEvent: (xcb_circulate_notify_event_t*)anEvent
 {
 	if (anEvent == XCB_PLACE_ON_TOP)
@@ -116,47 +172,103 @@
 	XCBNOTIFY_U(WindowExpose, userInfo);
 }
 - (XCBWindow*)createChildInRect: (XCBRect)aRect
+                    borderWidth: (uint16_t)borderWidth
+{
+	return [self createChildInRect: aRect borderWidth: borderWidth valuesMask: 0 values: 0];
+}
+
+- (XCBWindow*)createChildInRect: (XCBRect)aRect
+                    borderWidth: (uint16_t)borderWidth
+                     valuesMask: (uint32_t)valuesMask
+                         values: (const uint32_t*)valuesList
+{
+	return [self 
+		createChildInRect: aRect
+		      borderWidth: borderWidth
+		       valuesMask: valuesMask
+		           values: valuesList
+		            depth: 0
+		            class: 0
+		           visual: 0];
+
+}
+
+- (XCBWindow*)createChildInRect: (XCBRect)aRect
+                    borderWidth: (uint16_t)borderWidth
+                     valuesMask: (uint32_t)valuesMask
+                         values: (const uint32_t*)valuesList
+                          depth: (uint8_t)depth
+                          class: (xcb_window_class_t)windowClass
+                         visual: (xcb_visualid_t)visual
 {
 	xcb_generic_error_t  *error;
 	xcb_connection_t *conn = [XCBConn connection];
 	xcb_window_t winid = xcb_generate_id(conn);
-	error = xcb_request_check(conn, 
-		xcb_create_window_checked(conn, 0, winid, window, aRect.origin.x,
-			aRect.origin.y, aRect.size.width, aRect.size.height, 0,
-			XCB_WINDOW_CLASS_INPUT_OUTPUT, 0,0,0));
-	if (error)
-	{
-		NSLog(@"Error %d creating window.", error->error_code); 
-		free(error);
-		return nil;
-	}
-
-	xcb_map_window(conn, winid);
-	xcb_flush(conn);
-	NSLog(@"Creating child window %x", winid);
-	return [isa windowWithXCBWindow: winid parent:self->window];
+	xcb_void_cookie_t cookie = xcb_create_window(
+		conn,
+		depth,
+		winid,
+		self->window,
+		aRect.origin.x,
+		aRect.origin.y,
+		aRect.size.width,
+		aRect.size.height,
+		borderWidth,
+		windowClass,
+		visual,
+		valuesMask,
+		valuesList);
+	XCBWindow *newWindow = [[[self class] alloc]
+		initWithNewXCBWindow: winid];
+	// All of these will be recached by the updateWindowAttributes
+	// and setGeometry callbacks called in the init method,
+	// but we may as well set them to the values that it was created
+	// with.
+	newWindow->parent = [self retain];
+	newWindow->frame = aRect;
+	newWindow->border_width = borderWidth;
+	newWindow->attributes._class = windowClass;
+	newWindow->attributes.visual = visual;
+	// FIXME: Copy the valuesMask/valuesList
+	NSLog(@"-[XCBWindow createChildInRect: ..] Creating child window %x", winid);
+	[XCBConn setNeedsFlush: YES];
+	return newWindow;
 }
 - (void)destroy
 {
 	xcb_destroy_window([XCBConn connection], window);
+	[XCBConn setNeedsFlush: YES];
 }
 - (void)map
 {
 	xcb_map_window([XCBConn connection], window);
+	[XCBConn setNeedsFlush: YES];
 }
 - (void)unmap
 {
 	xcb_map_window([XCBConn connection], window);
+	[XCBConn setNeedsFlush: YES];
+}
+- (void)reparentToWindow: (XCBWindow*)newParent
+                      dX: (uint16_t)dx
+                      dY: (uint16_t)dy
+{
+	xcb_reparent_window([XCBConn connection], window, [newParent xcbWindowId], dx, dy);
+	[XCBConn setNeedsFlush: YES];
 }
 - (void)handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent
 {
-	XCBWindow *aboveWindow = [XCBWindow findXCBWindow:anEvent->above_sibling];
+	id aboveWindow = anEvent->above_sibling == 0 ?
+		(id)[NSNull null] :
+		(id)[XCBWindow 
+			windowWithXCBWindow: anEvent->above_sibling
+			             parent: 0];
 	XCBRect frameRect = XCBMakeRect(anEvent->x, anEvent->y,
 		anEvent->width, anEvent->height);
 	NSValue *frameRectValue = [NSValue 
 		valueWithBytes:&frameRect
 		objCType:@encode(XCBRect)];
-	NSValue *borderWidth = [NSNumber numberWithInt:anEvent->border_width];	
+	NSValue *borderWidth = [NSNumber numberWithInt:anEvent->border_width];
 	NSDictionary *userInfo = 
 		[NSDictionary dictionaryWithObjectsAndKeys:
 		frameRectValue, @"Rect",
@@ -164,12 +276,17 @@
 		aboveWindow, @"Above", // Place last as aboveWindow == nil, which then cuts off the rest of the dictionary (and hence it is absent, indicating stacked at the bottom). maybe we should have the concept of a nil window or just [NSNull null]
 		nil];
 		
+	_cache_load_values |= XCBWindowLoadedGeometry;
 	XCBDELEGATE_U(WindowFrameWillChange, userInfo);
 	XCBNOTIFY_U(WindowFrameWillChange, userInfo);
 	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
 	border_width = anEvent->border_width;
+	attributes.override_redirect = anEvent->override_redirect;
+	ASSIGN(above, [XCBWindow windowWithXCBWindow: anEvent->above_sibling]);
 	XCBDELEGATE_U(WindowFrameDidChange, userInfo);
 	XCBNOTIFY_U(WindowFrameDidChange, userInfo);
+	
+	[self checkIfAvailable];
 }
 - (void)handleDestroyNotifyEvent: (xcb_destroy_notify_event_t*)anEvent
 {
@@ -183,13 +300,13 @@
 	XCBDELEGATE(WindowWillUnMap);
 	XCBNOTIFY(WindowWillUnMap);
 	NSLog(@"Umapping %@", self);
-	attributes.map_state =XCB_MAP_STATE_UNMAPPED;
+	attributes.map_state = XCB_MAP_STATE_UNMAPPED;
 	XCBDELEGATE(WindowDidUnMap);
 	XCBNOTIFY(WindowDidUnMap);
 }
 - (void)handleMapNotifyEvent: (xcb_map_notify_event_t*)anEvent
 {
-	attributes.map_state =XCB_MAP_STATE_VIEWABLE;
+	attributes.map_state = XCB_MAP_STATE_VIEWABLE;
 	XCBDELEGATE(WindowDidMap);
 	XCBNOTIFY(WindowDidMap);
 }
@@ -197,27 +314,90 @@
 {
 	frame = XCBMakeRect(reply->x, reply->y, reply->width, reply->height);
 	border_width = reply->border_width;
-	parent = [[XCBConn windowForXCBId: reply->root] retain];
+	_cache_load_values |= XCBWindowLoadedGeometry;
 	XCBDELEGATE(WindowFrameDidChange);
 	XCBNOTIFY(WindowFrameDidChange);
+	[self checkIfAvailable];
 }
 - (void)handleCreateEvent: (xcb_create_notify_event_t*)anEvent
 {
-	NSLog(@"Handling create event...");
+	NSLog(@"-[XCBWindow handleCreateEvent:]");
+	NSAssert(window_load_state != XCBWindowAvailableState, @"Expected window in the created or pending state.");
+	window_load_state = XCBWindowExistsState;
 	window = anEvent->window;
 	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
 	border_width = anEvent->border_width;
-	parent = [[XCBConn windowForXCBId: anEvent->parent] retain];
+	attributes.override_redirect = anEvent->override_redirect;
+	parent = [[XCBWindow windowWithXCBWindow: anEvent->parent] retain];
+	_cache_load_values |= XCBWindowLoadedGeometry;
 	[self updateWindowAttributes];
 	XCBDELEGATE(WindowDidCreate);
 	XCBNOTIFY(WindowDidCreate);
+	XCBDELEGATE(WindowDidCreate);
+	XCBNOTIFY(WindowDidCreate);
 }
+- (void)handleMapRequest: (xcb_map_request_event_t*)anEvent
+{
+	XCBWindow *parent_window = [XCBWindow windowWithXCBWindow: anEvent->parent];
+	NSDictionary *dictionary = 
+		[NSDictionary dictionaryWithObject: parent_window 
+		                            forKey: @"Parent"];
+	XCBDELEGATE_U(WindowMapRequest, dictionary);
+}
+- (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent
+{
+	NSValue *place = [NSNumber numberWithInteger: anEvent->place];
+	NSDictionary *dictionary = 
+		[NSDictionary dictionaryWithObject: place 
+		                            forKey: @"Place"];
+	XCBDELEGATE_U(WindowCirculateRequest, dictionary);
+}
+- (void)handleConfigureRequest: (xcb_configure_request_event_t*)anEvent
+{
+	XCBWindow *parent_window = [XCBWindow windowWithXCBWindow: anEvent->parent];
+	uint16_t vm = anEvent->value_mask;
+	XCBRect rframe = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
+	NSValue *rframeVal = [NSValue valueWithBytes: &rframe 
+	                                   objCType: @encode(XCBRect)];
+	NSValue *borderWidth = [NSNumber numberWithInteger: anEvent->border_width];
+	// If the XCB_CONFIG_WINDOW_SIBLING parameter is specified, we report
+	// the above window or NSNull if it is to be placed on top. We put in
+	// nil to specify that this value was absent.
+	id aboveWindow = vm & XCB_CONFIG_WINDOW_SIBLING ?
+		(anEvent->sibling != 0 ? (id)[XCBWindow windowWithXCBWindow: anEvent->sibling] : (id)[NSNull null]) :
+		nil
+		;
+	NSValue *stackMode = [NSNumber numberWithInteger: anEvent->stack_mode];
+	NSDictionary *dictionary = 
+		[NSDictionary dictionaryWithObjectsAndKeys: 
+			[NSNumber numberWithInteger: vm], @"ValueMask",
+			parent_window, @"Parent",
+			rframeVal, @"Frame",
+			borderWidth, @"BorderWidth",
+			stackMode, @"StackMode",
+			aboveWindow, @"Above", // Put last in case it is nil
+			nil
+			];
+	XCBDELEGATE_U(WindowConfigureRequest, dictionary);
+}
+- (void)handleReparentNotify: (xcb_reparent_notify_event_t*)anEvent
+{
+	ASSIGN(parent, [XCBWindow windowWithXCBWindow: anEvent->parent]);
+	XCBDELEGATE(WindowParentDidChange);
+	XCBNOTIFY(WindowParentDidChange);
+}
+
 - (XCBWindow*)initWithCreateEvent: (xcb_create_notify_event_t*)anEvent
 {
 	SELFINIT;
 	NSLog(@"Creating window with parent: %d", (int)anEvent->parent);
 	window = anEvent->window;
-	parent = [[XCBWindow findXCBWindow:anEvent->parent] retain];
+	// This will get updated again in handleCreateEvent, but
+	// just to get around the NSAssert() and because this
+	// window was obviously created through some external
+	// means (in our programme or from another X11 client).
+	window_load_state = XCBWindowCreatePendingState;
+	_cache_load_values = XCBWindowLoadedGeometry;
 	[XCBConn registerWindow: self];
 	[self handleCreateEvent: anEvent];
 	return self;
@@ -225,7 +405,7 @@
 + (XCBWindow*)windowWithCreateEvent: (xcb_create_notify_event_t*)anEvent
 {
 	// Don't create multiple objects for the same window.
-	id win = [XCBConn windowForXCBId: anEvent->window];
+	id win = [XCBWindow windowWithXCBWindow: anEvent->window];
 	if (nil != win)
 	{
 		[win handleCreateEvent: anEvent];
@@ -272,6 +452,16 @@
 	xcb_configure_window(conn, window, mask, values);
 	[XCBConn setNeedsFlush:YES];
 }
+- (void) configureWindow: (uint16_t)valueMask
+                  values: (const uint32_t*)values
+{
+	xcb_configure_window([XCBConn connection],
+		window,
+		valueMask,
+		values);
+	[XCBConn setNeedsFlush: YES];
+}
+
 - (xcb_window_t)xcbWindowId
 {
 	return window;
@@ -296,8 +486,11 @@
 - (void)setWindowAttributes:(xcb_get_window_attributes_reply_t*)reply
 {
 	attributes = *reply;
+	_cache_load_values |= XCBWindowLoadedAttributes;
 	XCBDELEGATE(WindowAttributesDidChange);
 	XCBNOTIFY(WindowAttributesDidChange);
+	
+	[self checkIfAvailable];
 }
 - (xcb_visualid_t)visual
 {
@@ -310,6 +503,14 @@
 - (xcb_map_state_t)mapState
 {
 	return attributes.map_state;
+}
+- (BOOL)overrideRedirect
+{
+	return attributes.override_redirect ? YES : NO;
+}
+- (XCBWindow*)aboveWindow
+{
+	return above;
 }
 - (NSUInteger)hash
 {
@@ -327,4 +528,36 @@
 		   XCBStringFromRect(frame)];
 }
 
+@end
+
+@implementation XCBWindow (Private)
+- (void) checkIfAvailable
+{
+	if (XCBWindowExistsState == window_load_state &&
+		XCBWindowLoadedEverything == _cache_load_values)
+	{
+		window_load_state = XCBWindowAvailableState;
+		XCBDELEGATE(WindowBecomeAvailable);
+		XCBNOTIFY(WindowBecomeAvailable);
+	}
+}
+/**
+  * Create a new XCBWindow object for a window that the 
+  * programme just created using xcb_create_window, but
+  * haven't received the notification for yet.
+  */
+- (XCBWindow*)initWithNewXCBWindow: (xcb_window_t)new_window_id
+{
+	SELFINIT;
+	window = new_window_id;
+	window_load_state = XCBWindowCreatePendingState;
+	_cache_load_values = XCBWindowLoadedNothing;
+	// The create act itself through to the set of events
+	// that happen after creation don't tell us where
+	// we are stacked in the window list. We just
+	// assume we are on the bottom
+	above = nil;
+	[XCBConn registerWindow: self];
+	return self;
+}
 @end

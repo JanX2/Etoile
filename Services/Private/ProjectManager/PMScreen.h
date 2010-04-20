@@ -36,6 +36,7 @@
 	XCBRenderPicture *rootTile;
 	XCBFixesRegion *allDamage;
 	NSMutableArray *childWindows;
+	NSMutableDictionary *compositeMap;
 	
 	BOOL clipChanged;
 }
@@ -51,7 +52,9 @@
 - (void)appendDamage: (XCBFixesRegion*)damage;
 
 // Event handlers
-- (void)childWindowDiscovered: (PMCompositeWindow*)child;
+- (void)childWindowDiscovered: (XCBWindow*)child
+              compositeWindow: (PMCompositeWindow*)compositeWindow;
+- (void)childWindowRemoved: (XCBWindow*)child;
 
 // Paint the damaged areas and remove accumulated damage
 - (void)paintAllDamaged;

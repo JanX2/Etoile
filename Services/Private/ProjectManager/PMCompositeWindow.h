@@ -47,7 +47,7 @@ enum PMCompositeWindowMode
 	XCBWindow *window;
 	BOOL damaged;
 	XCBDamage *damage;
-	XCBRenderPicture *picture;
+	XCBRenderPicture *picture, *alphaPicture;
 	XCBPixmap *pixmap;
 	XCBFixesRegion *clipRegion, *borderSize, *extents, *borderClip;
 	enum PMCompositeWindowMode mode;

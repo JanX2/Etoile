@@ -38,8 +38,15 @@ DEFINE_NOTIFICATION(WindowFrameDidChange);
 DEFINE_NOTIFICATION(WindowPlacedOnTop);
 DEFINE_NOTIFICATION(WindowPlacedOnBottom);
 DEFINE_NOTIFICATION(WindowDidCreate);
+DEFINE_NOTIFICATION(WindowBecomeAvailable);
+DEFINE_NOTIFICATION(WindowCreateFailed);
 DEFINE_NOTIFICATION(WindowAttributesDidChange);
 DEFINE_NOTIFICATION(WindowExpose);
+DEFINE_NOTIFICATION(WindowMapRequest);
+DEFINE_NOTIFICATION(WindowUnMapRequest);
+DEFINE_NOTIFICATION(WindowConfigureRequest);
+DEFINE_NOTIFICATION(WindowCirculateRequest);
+DEFINE_NOTIFICATION(WindowParentDidChange);
 
 #define XCBNOTIFY_U(x, ui) \
 {\

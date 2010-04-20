@@ -29,14 +29,72 @@
 
 // FIXME: Change frame/setFrame: to avoid type conflict with NSWindow
 
+enum _XCBWindowLoadState
+{
+	/**
+	  * A Create Window request has been issued for
+	  * this window, but it has not been confirmed if it
+	  * has been successfully created yet.
+	  */
+	XCBWindowCreatePendingState,
+	/**
+	  * Indicates a window that is known to exist in
+	  * the server, but the locally cached window attributes
+	  * are being requested and not valid yet.
+	  *
+	  * Any attempts to retrieve window attribute values
+	  * (including the parent) may return invalid results.
+	  * Only operate on window in this state if you
+	  * do not care about its attribute values (e.g. to
+	  * request property values be cached).
+	  */
+	XCBWindowExistsState,
+	/**
+	  * A window that the attributes have been successfully
+	  * cached. The window attribute methods should return
+	  * valid cached values.
+	  * 
+	  * Call -updateAttributes to request an updated copy
+	  * of the window attributes.
+	  */
+	XCBWindowAvailableState,
+
+	/**
+	  * The Create Window request failed, and/or this object
+	  * references an invalid window identifier.
+	  */
+	XCBWindowInvalidState
+};
+typedef enum _XCBWindowLoadState XCBWindowLoadState;
+
 @interface XCBWindow : NSObject <XCBDrawable> {
 	xcb_window_t window;
 	XCBRect frame;
 	int16_t border_width;
-	XCBWindow *parent;
+	XCBWindow *parent, *above;
 	xcb_get_window_attributes_reply_t attributes;
+
 	id delegate;
+	
+	XCBWindowLoadState window_load_state;
+	uint32_t _cache_load_values;
 }
+
+/**
+  * Get the window with the specified ID, or
+  * create a new one if it doesn't exist. 
+  * 
+  * Use this window when you know of a window
+  * that already exists and you just want to
+  * reference it. If it doesn't exist, it will
+  * be created.
+  *
+  * Remember that windows that are not in the
+  * XCBWindowAvailableState can have invalid
+  * values for all the attributes, the parent
+  * object and the geometry values.
+  */
++ (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow;
 /**
   * Get the window with the specified ID, or
   * create a new one if it doesn't exist. The
@@ -59,16 +117,23 @@
   */ 
 + (XCBWindow*)windowWithCreateEvent: (xcb_create_notify_event_t*)anEvent;
 
-/**
-  * Find an XCBWindow with the specified ID.
-  * Returns nil if the window has not been
-  * created yet. Use this method when you can
-  * be sure a window has been created already.
-  */
-+ (XCBWindow*)findXCBWindow:(xcb_window_t)aWindow;
+- (XCBWindowLoadState) windowLoadState;
+
 - (void)setDelegate:(id)delegate;
 - (id)delegate;
-- (XCBWindow*)createChildInRect: (XCBRect)aRect;
+- (XCBWindow*)createChildInRect: (XCBRect)aRect
+                    borderWidth: (uint16_t)borderWidth;
+- (XCBWindow*)createChildInRect: (XCBRect)aRect
+                    borderWidth: (uint16_t)borderWidth
+                     valuesMask: (uint32_t)valuesMask
+                         values: (const uint32_t*)valuesList;
+- (XCBWindow*)createChildInRect: (XCBRect)aRect
+                    borderWidth: (uint16_t)borderWidth
+                     valuesMask: (uint32_t)valuesMask
+                         values: (const uint32_t*)valuesList
+                          depth: (uint8_t)depth
+                          class: (xcb_window_class_t)windowClass
+                         visual: (xcb_visualid_t)visual;
 - (XCBRect)frame;
 - (void)setFrame: (XCBRect)aRect;
 - (int16_t)borderWidth;
@@ -80,11 +145,18 @@
 - (void)handleCirculateNotifyEvent: (xcb_circulate_notify_event_t*)anEvent;
 - (void)handleMapNotifyEvent: (xcb_map_notify_event_t*)anEvent;
 - (void)handleExpose: (xcb_expose_event_t*)anEvent;
+- (void)handleMapRequest: (xcb_map_request_event_t*)anEvent;
+- (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent;
+- (void)handleConfigureRequest: (xcb_configure_request_event_t*)anEvent;
+- (void)handleReparentNotify: (xcb_reparent_notify_event_t*)anEvent;
 - (void)addToSaveSet;
 - (void)removeFromSaveSet;
 - (void)destroy;
 - (void)map;
 - (void)unmap;
+- (void)reparentToWindow: (XCBWindow*)newParent
+                      dX: (uint16_t)dx
+                      dY: (uint16_t)dy;
 /**
   * Request an update of the window attributes. Once
   * the reply has been received, a XCBWindowFrame(Will/Did)ChangeNotification
@@ -92,16 +164,32 @@
   */
 - (void)updateWindowAttributes;
 
+/**
+  * Change the window attributes
+  */
+- (void)changeWindowAttributes: (uint32_t)mask
+                        values: (const uint32_t*)values;
 /** Window attributes */
 - (xcb_visualid_t)visual;
 - (xcb_window_class_t)windowClass;
 - (xcb_map_state_t)mapState;
+- (BOOL) overrideRedirect;
+- (XCBWindow*)aboveWindow;
+
+/**
+  * Reconfigure the window according to values
+  * listed in xcb_config_window_t
+  */
+- (void) configureWindow: (uint16_t)valueMask
+                  values: (const uint32_t*)values;
 
 /** XCBDrawable **/
 - (xcb_drawable_t)xcbDrawableId;
 @end
 
 @interface NSObject (XCBWindowDelegate)
+- (void)xcbWindowBecomeAvailable: (NSNotification*)notification;
+- (void)xcbWindowCreateFailed: (NSNotification*)notification;
 - (void)xcbWindowFrameWillChange: (NSNotification*)notification;
 - (void)xcbWindowFrameDidChange: (NSNotification*)notification;
 - (void)xcbWindowDidCreate: (NSNotification*)notification;
@@ -113,4 +201,8 @@
 - (void)xcbWindowPlacedOnBottom: (NSNotification*)notification;
 - (void)xcbWindowAttributesDidChange: (NSNotification*)notification;
 - (void)xcbWindowExpose: (NSNotification*)notification;
+- (void)xcbWindowMapRequest: (NSNotification*)notification;
+- (void)xcbWindowCirculateRequest: (NSNotification*)notification;
+- (void)xcbWindowConfigureRequest: (NSNotification*)notification;
+- (void)xcbWindowParentDidChange: (NSNotification*)notification;
 @end

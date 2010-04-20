@@ -25,9 +25,12 @@
 #import <Foundation/Foundation.h>
 #import <xcb/xcb.h>
 
+
 @interface XCBAtomCache : NSObject {
+	NSMutableSet *inRequestAtoms;
 	NSMutableDictionary *requestedAtoms;
 	NSMutableDictionary *fetchedAtoms;
+	NSMutableDictionary *requestObservers;
 }
 + (XCBAtomCache*)sharedInstance;
 - (void)cacheAtom: (NSString*)aString;

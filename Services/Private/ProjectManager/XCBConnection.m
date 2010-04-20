@@ -37,6 +37,10 @@
 - (void)handleCreateNotify: (xcb_create_notify_event_t*)anEvent;
 - (void)handleButtonPress: (xcb_map_notify_event_t*)anEvent;
 - (void)handleExpose: (xcb_expose_event_t*)anEvent;
+- (void)handleMapRequest: (xcb_map_request_event_t*)anEvent;
+- (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent;
+- (void)handleConfigureRequest: (xcb_configure_request_event_t*)anEvent;
+- (void)handleReparentNotify: (xcb_reparent_notify_event_t*)anEvent;
 @end
 
 @interface XCBConnection (Private)
@@ -52,9 +56,23 @@
 {
 	NSLog(@"Focus out");
 }
-- (void) handleMapRequest: (xcb_map_notify_event_t*)anEvent
+- (void) handleMapRequest: (xcb_map_request_event_t*)anEvent
 {
-	NSLog(@"Mapping requested");
+	NSLog(@"XCBConnection: Mapping requested for window: %x", anEvent->window);
+	XCBWindow *win = [self windowForXCBId: anEvent->window];
+	NSAssert(win, @"Map request without window.");
+	[win handleMapRequest: anEvent];
+}
+- (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent
+{
+	XCBWindow *win = [self windowForXCBId: anEvent->window];
+	[win handleCirculateRequest: anEvent];
+}
+- (void)handleConfigureRequest: (xcb_configure_request_event_t*)anEvent
+{
+	NSLog(@"XCBConnection: Configure requested for window: %x", anEvent->window);
+	XCBWindow *win = [self windowForXCBId: anEvent->window];
+	[win handleConfigureRequest: anEvent];
 }
 - (void) handleButtonPress: (xcb_map_notify_event_t*)anEvent
 {
@@ -63,7 +81,7 @@
 }
 - (void) handleConfigureNotify: (xcb_configure_notify_event_t*)anEvent
 {
-	NSLog(@"Configuring window");
+	NSLog(@"Configuring window: %d", anEvent->window);
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	[win handleConfigureNotifyEvent: anEvent];
 }
@@ -80,12 +98,6 @@
 }
 - (void) handleMapNotify: (xcb_map_notify_event_t*)anEvent
 {
-	uint32_t events = XCB_EVENT_MASK_FOCUS_CHANGE;
-
-	xcb_change_window_attributes(connection, anEvent->window,
-			XCB_CW_EVENT_MASK, &events);
-	NSLog(@"Mapping window %x", anEvent->window);
-	NSLog(@"Redirect? %d", anEvent->override_redirect);
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
 	[win handleMapNotifyEvent: anEvent];
 }
@@ -99,17 +111,16 @@
 	NSLog(@"Created window %x", anEvent->window);
 	XCBWindow *win  = [XCBWindow windowWithCreateEvent: anEvent];
 	// No need to post notification, as this is handled by XCBWindow itself.
-
-	//FIXME: Inefficient; track damaged regions in the client.
-	//xcb_damage_damage_t damageid = xcb_generate_id(connection);
-	//xcb_damage_create(connection, damageid, anEvent->window, XCB_DAMAGE_REPORT_LEVEL_RAW_RECTANGLES);
-	//xcb_flush(connection);
-	//NSLog(@"Registering for damage...");
 }
 - (void) handleExpose: (xcb_expose_event_t*)anEvent
 {
 	XCBWindow *win = [self windowForXCBId:anEvent->window];
 	[win handleExpose:anEvent];
+}
+- (void)handleReparentNotify: (xcb_reparent_notify_event_t*)anEvent
+{
+	XCBWindow *win = [self windowForXCBId: anEvent->window];
+	[win handleReparentNotify: anEvent];
 }
 @end
 
@@ -187,8 +198,9 @@ XCBConnection *XCBConn;
 		uint32_t events = 
 			XCB_EVENT_MASK_FOCUS_CHANGE |
 			XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_BUTTON_PRESS |
-		   	XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
-			XCB_EVENT_MASK_STRUCTURE_NOTIFY;
+			XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
+			XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+			XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT;
 
 		xcb_change_window_attributes(connection, screen->root,
 			XCB_CW_EVENT_MASK, &events);
@@ -230,12 +242,15 @@ XCBConnection *XCBConn;
 			HANDLE(FOCUS_IN, FocusIn)
 			HANDLE(BUTTON_PRESS, ButtonPress)
 			HANDLE(MAP_REQUEST, MapRequest)
+			HANDLE(CIRCULATE_REQUEST, CirculateRequest)
+			HANDLE(CONFIGURE_REQUEST, ConfigureRequest)
 			HANDLE(UNMAP_NOTIFY, UnMapNotify)
 			HANDLE(MAP_NOTIFY, MapNotify)
 			HANDLE(DESTROY_NOTIFY, DestroyNotify)
 			HANDLE(CREATE_NOTIFY, CreateNotify)
 			HANDLE(CONFIGURE_NOTIFY, ConfigureNotify)
 			HANDLE(CIRCULATE_NOTIFY, CirculateNotify)
+			HANDLE(REPARENT_NOTIFY, ReparentNotify)
 
 			HANDLE(EXPOSE, Expose)
 			default:
@@ -289,6 +304,15 @@ XCBConnection *XCBConn;
 				error->sequence,
 				error->error_code,
 				error->response_type);
+				if ([handler count] == 4)
+				{
+					id obj = [handler objectAtIndex: 1];
+					SEL errorSelector;
+					[[handler objectAtIndex: 3] 
+						getValue: &errorSelector];
+					[obj performSelector: errorSelector
+					          withObject: (id)error];
+				}
 				free(error);
 				continue;
 			}
@@ -329,6 +353,21 @@ XCBConnection *XCBConn;
 		nil];
 	[replyHandlers addObject: value];
 }
+- (void)setHandler: (id)anObject
+          forReply: (unsigned int)sequence
+          selector: (SEL)aSelector
+     errorSelector: (SEL)errorSelector
+{
+	NSNumber *key = [NSNumber numberWithUnsignedInt: sequence];
+	NSDictionary *value = [NSArray arrayWithObjects:
+		key,
+		anObject,
+		[NSValue valueWithBytes: &aSelector objCType: @encode(SEL)],
+		[NSValue valueWithBytes: &errorSelector objCType: @encode(SEL)],
+		nil];
+	[replyHandlers addObject: value];
+}
+
 - (void)cancelHandlersForObject: (id)anObject
 {
 	// FIXME: This would be slow

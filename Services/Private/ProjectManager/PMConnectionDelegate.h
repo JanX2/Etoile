@@ -31,6 +31,8 @@
 {
 	NSMutableDictionary *screens;
 	NSMutableDictionary *compositeWindows;
+	NSMutableDictionary* managedWindows;
+	NSMutableSet *decorationWindows;
 	BOOL clipChanged;
 }
 - (id)init;

@@ -36,6 +36,11 @@
 - (XCBRenderPicture*)generateRootTile;
 - (void)paintAllWithRegion: (XCBFixesRegion*)fixRegion;
 - (PMCompositeWindow*)findCompositeWindow: (XCBWindow*)window;
+- (void)restackWindow: (XCBWindow*)xcbWindow
+          aboveWindow: (id)xcbAboveWindow;
+- (void)childWindowBecomeAvailable: (NSNotification*)notification;
+- (void)childWindowWillUnMap: (NSNotification*)notification;
+- (void)childWindowDidUnMap: (NSNotification*)notification;
 @end
 
 @implementation PMScreen
@@ -44,6 +49,7 @@
 	SELFINIT;
 	screen = [scr retain];
 	childWindows = [NSMutableArray new];
+	compositeMap = [NSMutableDictionary new];
 	clipChanged = YES;
 	rootTile = [[self generateRootTile] retain];
 
@@ -87,67 +93,114 @@
 	// a delegate, and it is the PMCompositeWindow. Don't
 	// want to think about semantic problems now, this works
 	// Until I switch over to a dictionary
-	FOREACH(childWindows, compositeWindow, PMCompositeWindow*)
-	{
-		if ([[compositeWindow window] isEqual:window])
-			return compositeWindow;
-	}
-	return nil;
+	return [compositeMap objectForKey: window];
 }
-- (void)childWindowDiscovered:(PMCompositeWindow*)child
+
+- (void)childWindowDiscovered: (XCBWindow*)child
+              compositeWindow: (PMCompositeWindow*)compositeWindow
 {
 	[childWindows addObject:child];
-	XCBWindow *window = [child window];
+	if (compositeWindow != nil)
+		[compositeMap setObject: compositeWindow forKey: child];
+	if ([child windowLoadState] == XCBWindowAvailableState)
+	{
+		NSNotification *fakeNotification = 
+			[NSNotification notificationWithName: XCBWindowBecomeAvailableNotification
+			                              object: child];
+		[self childWindowBecomeAvailable: fakeNotification];
+	}
+	else
+	{
+		[[NSNotificationCenter defaultCenter]
+			addObserver: self
+			   selector: @selector(childWindowBecomeAvailable:)
+			       name: XCBWindowBecomeAvailableNotification
+			     object: child];
+	}
+}
+- (void)childWindowRemoved: (XCBWindow*)xcbWindow
+{
+	PMCompositeWindow *window = [self findCompositeWindow: xcbWindow];
+	NSNotification *notification = [NSNotification
+		notificationWithName: XCBWindowWillUnMapNotification
+		              object: xcbWindow];
+	
+	[self childWindowWillUnMap: notification];
+	[self childWindowDidUnMap: notification];
+
+	XCBREM_OBSERVER(WindowDidDestroy, xcbWindow);
+	XCBREM_OBSERVER(WindowFrameWillChange, xcbWindow);
+	XCBREM_OBSERVER(WindowFrameDidChange, xcbWindow);
+	XCBREM_OBSERVER(WindowDidUnMap, xcbWindow);
+	[childWindows removeObject: xcbWindow];
+	if (window)
+		[compositeMap removeObjectForKey: window];
+}
+
+- (void)childWindowBecomeAvailable: (NSNotification*)notification
+{
+	XCBWindow *child = [notification object];
+	PMCompositeWindow *compositeWindow = 
+		[self findCompositeWindow: child];
+	if ([child aboveWindow])
+	{
+		[self restackWindow: child
+			aboveWindow: [child aboveWindow]];
+	}
+	else
+		[self restackWindow: child
+		        aboveWindow: [NSNull null]];
+
+	if ([compositeWindow extents] != nil)
+		[self appendDamage: [compositeWindow extents]];
+	clipChanged = YES;
+
+	[[NSNotificationCenter defaultCenter]
+		removeObserver: self
+		          name: XCBWindowBecomeAvailableNotification
+		        object: child];
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
 		   selector: @selector(childWindowDidDestroy:)
 		       name: XCBWindowDidDestroyNotification
-		     object: [child window]];
+		     object: child];
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
 		   selector: @selector(childWindowFrameWillChange:)
 		       name: XCBWindowFrameWillChangeNotification
-		     object: [child window]];
+		     object: child ];
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
 		   selector: @selector(childWindowFrameDidChange:)
 		       name: XCBWindowFrameDidChangeNotification
-		     object: [child window]];
+		     object: child];
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
 		   selector: @selector(childWindowWillUnMap:)
 		       name: XCBWindowWillUnMapNotification
-		     object:[child window]];
+		     object: child];
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
 		   selector: @selector(childWindowDidUnMap:)
 		       name: XCBWindowDidUnMapNotification
-		     object: [child window]];
+		     object: child];
 }
-
 - (void)childWindowWillUnMap: (NSNotification*)notification
 {
-	PMCompositeWindow *window = [self findCompositeWindow:[notification object]];
+	PMCompositeWindow *window = [self findCompositeWindow: [notification object]];
 	XCBFixesRegion *region = [window extents];
 	if (region)
 		[self appendDamage: region];
 }
 - (void)childWindowDidUnMap: (NSNotification*)notification
 {
-	// FIXME: Really should have a WillUnMap event that grabs the extents
-	// before the child window destroys it, but this'll do
 	clipChanged = YES;
 }
 
 - (void)childWindowDidDestroy: (NSNotification*)notification
 {
 	XCBWindow *xcbWindow = [notification object];
-	PMCompositeWindow *window = [self findCompositeWindow: xcbWindow];
-	XCBREM_OBSERVER(WindowDidDestroy, xcbWindow);
-	XCBREM_OBSERVER(WindowFrameWillChange, xcbWindow);
-	XCBREM_OBSERVER(WindowFrameDidChange, xcbWindow);
-	XCBREM_OBSERVER(WindowDidUnMap, xcbWindow);
-	[childWindows removeObject: window];
+	[self childWindowRemoved: xcbWindow];
 }
 
 - (void)setRootBuffer: (XCBRenderPicture*)picture 
@@ -163,7 +216,7 @@
 - (void)childWindowFrameWillChange: (NSNotification*)notification
 {
 	XCBWindow *xcbWindow = [notification object];
-	PMCompositeWindow *window = [self findCompositeWindow:xcbWindow];
+	PMCompositeWindow *window = [self findCompositeWindow: xcbWindow];
 	XCBFixesRegion *extents = [window extents];
 	if (extents)
 	{
@@ -173,31 +226,17 @@
 - (void)childWindowFrameDidChange: (NSNotification*)notification
 {
 	XCBWindow *xcbWindow = [notification object];
-	PMCompositeWindow *window = [self findCompositeWindow:xcbWindow];
-	XCBFixesRegion *extents = [window extents];
+	PMCompositeWindow *compositeWindow = [self findCompositeWindow: xcbWindow];
+	XCBFixesRegion *extents = [compositeWindow extents];
 
-	// Restack window?
+	// Restack window only if xcbAboveWindow is set
+	// in the notification
 	XCBWindow *xcbAboveWindow = [[notification userInfo] 
 		objectForKey: @"Above"];
-	if (xcbAboveWindow) {
-		// Insert after the above window
-		NSUInteger aboveIndex;
-		PMCompositeWindow *aboveWindow = [self findCompositeWindow: xcbAboveWindow];
-		[window retain];
-		[childWindows removeObject: window];
-		aboveIndex  = [childWindows indexOfObject: aboveWindow];
-		[childWindows insertObject: window 
-		                   atIndex: aboveIndex + 1];
-		[window release];
-	}
-	else
+	if (xcbAboveWindow != nil)
 	{
-		// Insert at the bottom of the list
-		[window retain];
-		[childWindows removeObject: window];
-		[childWindows insertObject: window 
-		                   atIndex: 0];
-		[window release];
+		[self restackWindow: xcbWindow
+		        aboveWindow: xcbAboveWindow];
 	}
 
 	// Union the damage with the accumulated damage
@@ -205,15 +244,39 @@
 		[self appendDamage: extents];
 	clipChanged = YES;
 }
+- (void) restackWindow: (XCBWindow*)xcbWindow
+           aboveWindow: (id)xcbAboveWindow
+{
+	if (![xcbAboveWindow isEqual: [NSNull null]]) 
+	{
+		// Insert after the above window
+		NSUInteger aboveIndex;
+		[xcbWindow retain];
+		[childWindows removeObject: xcbWindow];
+		aboveIndex  = [childWindows indexOfObject: xcbAboveWindow];
+		[childWindows insertObject: xcbWindow 
+				   atIndex: aboveIndex + 1];
+		[xcbWindow release];
+	}
+	else
+	{
+		// Insert at the bottom of the list
+		[xcbWindow retain];
+		[childWindows removeObject: xcbWindow];
+		[childWindows insertObject: xcbWindow 
+				   atIndex: 0];
+		[xcbWindow release];
+	}
+}
 - (void)appendDamage: (XCBFixesRegion*)damage
 {
 	if (nil == allDamage)
 	{
-		allDamage = [[XCBFixesRegion regionWithRectangles:0 count:0] retain];
+		allDamage = [[XCBFixesRegion regionWithRectangles: 0 count: 0] retain];
 	}
 	[allDamage unionWithRegion: damage 
 	           intoDestination: allDamage];
-	[XCBConn setNeedsFlush:YES];
+	[XCBConn setNeedsFlush: YES];
 }
 
 - (void)rootWindowFrameChanged: (NSNotification*)notification
@@ -226,7 +289,9 @@
 		rootBuffer = nil;
 	}
 	xcb_rectangle_t damage = XCBRectangleFromRect([rootWindow frame]);
-	[self appendDamage:[XCBFixesRegion regionWithRectangles:&damage count:1]];
+	[self appendDamage: [XCBFixesRegion 
+		regionWithRectangles: &damage 
+		               count: 1]];
 }
 - (void)paintAll
 {
@@ -285,13 +350,15 @@
 	// I didn't realise the algorithm it was using was top to bottom,
 	// when we store our child windows in bottom to top order.
 	NSEnumerator *window_enum = [childWindows reverseObjectEnumerator];
-	for (PMCompositeWindow *window = [window_enum nextObject];
-		window;
+	for (XCBWindow *window = [window_enum nextObject];
+		window != nil;
 		window = [window_enum nextObject])
 	{
-		[window paintIntoBuffer:rootBuffer 
-			withRegion:region
-			clipChanged:clipChanged];
+		PMCompositeWindow *compositeWindow = [self findCompositeWindow: window];
+		[compositeWindow 
+			paintIntoBuffer: rootBuffer 
+			     withRegion: region
+			    clipChanged: clipChanged];
 	}
 	[region clipPicture: rootBuffer 
 	            atPoint: XCBMakePoint(0, 0)];
@@ -316,7 +383,7 @@
 {
 	// FIXME: This method should use the backgroup pixmap atom
 	// set as per EWMH conventions, and updated when the atom
-	// is updated
+	// is updated. At the moment its just purple.
 	XCBRenderPicture *picture;
 	XCBPixmap *pixmap;
 	uint32_t repeat = 1; // Repeat the tile
@@ -340,5 +407,9 @@
 
 	[pixmap release];
 	return picture;
+}
+- (NSString*)description
+{
+	return [NSString stringWithFormat:@"PMScreen (childWindows=%@)", childWindows];
 }
 @end

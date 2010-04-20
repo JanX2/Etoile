@@ -27,18 +27,61 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 
 static XCBAtomCache *sharedInstance;
+
+@interface XCBAtomRequestObserver : NSObject
+{
+	id notifyObject;
+	SEL selector;
+}
++ (XCBAtomRequestObserver*) requestObserverWithObject: (id)object
+                                             selector: (SEL)selector;
+- (id) notifyObject;
+- (SEL) notifySelector;
+@end
+
+@implementation XCBAtomRequestObserver
+- (id) initWithObject: (id)object selector: (SEL)sel
+{
+	SUPERINIT;
+	notifyObject = object;
+	selector = sel;
+	return self;
+}
++ (XCBAtomRequestObserver*) requestObserverWithObject: (id)object
+                                             selector: (SEL)selector
+{
+	return [[[self alloc]
+		initWithObject:object selector:selector]
+		autorelease];
+}
+
+- (id) notifyObject
+{
+	return notifyObject;
+}
+
+- (SEL) notifySelector
+{
+	return selector;
+}
+@end
+
 @implementation XCBAtomCache
 - (id)init
 {
 	SUPERINIT;
 	requestedAtoms = [NSMutableDictionary new];
 	fetchedAtoms = [NSMutableDictionary new];
+	inRequestAtoms = [NSMutableSet new];
+	requestObservers = [NSMutableDictionary new];
 	return self;
 }
 - (void)dealloc
 {
+	[inRequestAtoms release];
 	[requestedAtoms release];
 	[fetchedAtoms release];
+	[requestObservers release];
 	[super dealloc];
 }
 + (XCBAtomCache*)sharedInstance
@@ -52,6 +95,8 @@ static XCBAtomCache *sharedInstance;
 
 - (void)cacheAtom: (NSString*)aString
 {
+	if ([inRequestAtoms containsObject:aString])
+		return;
 	const char *str = [aString UTF8String];
 	// Request the cookie
 	xcb_intern_atom_cookie_t cookie = 
@@ -60,6 +105,7 @@ static XCBAtomCache *sharedInstance;
 	NSNumber * key = [NSNumber numberWithUnsignedInt: cookie.sequence];
 	[requestedAtoms setObject: aString
 	                   forKey: key];
+	[inRequestAtoms addObject: aString];
 	// Register the call-back for the cookie
 	[XCBConn setHandler: self 
 	           forReply: cookie.sequence 
@@ -92,8 +138,21 @@ static XCBAtomCache *sharedInstance;
 	NSLog(@"Atom %d for %@", reply->atom, [requestedAtoms objectForKey: key]);
 	NSNumber * atom = [NSNumber numberWithUnsignedInt: reply->atom];
 	[fetchedAtoms setObject: atom
-					 forKey: [requestedAtoms objectForKey: key]];
+	                 forKey: [requestedAtoms objectForKey: key]];
+	NSMutableArray *observers = [requestObservers objectForKey: key];
+	if (nil != observers)
+	{
+		FOREACH(observers, observer, XCBAtomRequestObserver*)
+		{
+			[[observer notifyObject]
+				performSelector: [observer notifySelector]
+				     withObject: key
+				     withObject: atom];
+		}
+		[requestObservers removeObjectForKey: key];
+	}
 	[requestedAtoms removeObjectForKey: key];
+	[inRequestAtoms removeObject: key];
 }
 - (xcb_atom_t)atomNamed: (NSString*)aString
 {
@@ -113,4 +172,30 @@ static XCBAtomCache *sharedInstance;
 	}
 	return [atom unsignedIntValue];
 }
+
+- (void)atomNamed: (NSString*)name 
+     notifyObject: (id)delegate
+     withSelector: (SEL)selector
+{
+	NSNumber *fetchedAtom = [fetchedAtoms objectForKey: name];
+	if (nil == fetchedAtom)
+	{
+		[self cacheAtom: name];
+		NSMutableArray *observers = [requestObservers objectForKey: name];
+		if (observers == nil)
+		{
+			observers = [NSMutableArray array];
+			[requestObservers setObject: observers forKey: name];
+		}
+		[observers addObject: 
+			[XCBAtomRequestObserver requestObserverWithObject: delegate
+			                                     selector: selector]
+			];
+	}
+	else
+	{
+		[delegate performSelector: selector withObject: name withObject: fetchedAtom];
+	}
+}
+
 @end

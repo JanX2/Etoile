@@ -49,6 +49,11 @@
 	SELFINIT;
 	self->window = [win retain];
 	[window setDelegate:self];
+	if ([window windowLoadState] == XCBWindowAvailableState)
+	{
+		[self xcbWindowFrameDidChange: nil];
+		[self xcbWindowBecomeAvailable: nil];
+	}
 	return self;
 }
 - (void)dealloc
@@ -77,15 +82,18 @@
 
 - (void) determineMode
 {
+	if (alphaPicture)
+		DESTROY(alphaPicture);
+	
 	XCBRenderPictureFormat *format;
 	if ([window windowClass] == XCB_WINDOW_CLASS_INPUT_ONLY)
 		format = nil;
 	else
 		format = [XCBRender findVisualFormat: [window visual]];
-	if (format && [format type] == XCB_RENDER_PICT_TYPE_DIRECT &&
-			[format direct].alpha_mask != 0)
+	if ((format && [format type] == XCB_RENDER_PICT_TYPE_DIRECT &&
+			[format direct].alpha_mask != 0) ||
+		1/* opacity != OPAQUE */)
 		mode = PMCompositeWindowARGB;
-	/* else if window->opacity != OPAQUE */
 	else
 		mode = PMCompositeWindowSolid;
 }
@@ -93,7 +101,6 @@
 - (void)xcbWindowDidMap: (NSNotification*)notification
 {
 	damaged = NO;
-	[self determineMode];
 }
 
 - (void)xcbWindowDidUnMap: (NSNotification*)notification
@@ -134,7 +141,7 @@
 	extents = [[self calculateExtents] retain];
 }
 
-- (void)xcbWindowAttributesDidChange: (NSNotification*)notification
+- (void)xcbWindowBecomeAvailable: (NSNotification*)notification
 {
 	if ([window windowClass] != XCB_WINDOW_CLASS_INPUT_ONLY)
 	{
@@ -142,6 +149,14 @@
 			damageWithDrawable: window 
 			       reportLevel: XCB_DAMAGE_REPORT_LEVEL_NON_EMPTY]);
 	}
+	
+	// We need to simulate this notification because
+	// we may not get a ConfigureNotify event before the
+	// window attributes becomes available (generally
+	// because of newly created windows with a CreateNotify
+	// event that notifies the frame values but does
+	// not post a WindowFrameDidChange notification).
+	[self xcbWindowFrameDidChange: nil];
 }
 - (void)paintIntoBuffer: (XCBRenderPicture*)buffer 
              withRegion: (XCBFixesRegion*)region
