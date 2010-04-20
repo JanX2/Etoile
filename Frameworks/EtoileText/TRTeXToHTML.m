@@ -390,11 +390,38 @@
 }
 - (void)writer: (ETXHTMLWriter*)aWriter startTextNode: (id<ETText>)aNode;
 {
-	[NSString stringWithFormat: @"h%@",
-			[aNode.textType valueForKey: kETTextHeadingLevel]];
+	[aWriter.writer startElement: [NSString stringWithFormat: @"h%@",
+			[aNode.textType valueForKey: kETTextHeadingLevel]]];
 }
-- (void)writer: (ETXHTMLWriter*)writer visitTextNode: (id<ETText>)aNode {}
-- (void)writer: (ETXHTMLWriter*)writer endTextNode: (id<ETText>)aNode {}
+- (void)writer: (ETXHTMLWriter*)aWriter visitTextNode: (id<ETText>)aNode
+{
+	NSString *str = [[aNode stringValue] stringByTrimmingCharactersInSet:
+		[NSCharacterSet newlineCharacterSet]];
+	[aWriter.writer characters: str];
+}
+- (void)writer: (ETXHTMLWriter*)aWriter endTextNode: (id<ETText>)aNode
+{
+	[aWriter.writer endElement];
+}
+@end
+@interface ETXHTMLAutolinkingHeadingBuilder : ETXHTMLHeadingBuilder
+{
+	int headingNumber;
+}
+@end
+@implementation ETXHTMLAutolinkingHeadingBuilder
+- (void)writer: (ETXHTMLWriter*)aWriter startTextNode: (id<ETText>)aNode;
+{
+	[aWriter.writer startElement: @"a"
+					  attributes: D(
+	  [NSString stringWithFormat: @"heading_%d", headingNumber++], @"name")];
+	[super writer: aWriter startTextNode: aNode];
+}
+- (void)writer: (ETXHTMLWriter*)aWriter endTextNode: (id<ETText>)aNode
+{
+	[super writer: aWriter endTextNode: aNode];
+	[aWriter.writer endElement];
+}
 @end
 @interface TRXHTMLImportBuilder : NSObject <ETXHTMLWriterDelegate>
 @property (nonatomic, copy) NSString *rootPath;
@@ -536,11 +563,6 @@
 		{
 			typeName = @"p";
 			if ([aNode length] == 0) { return; }
-		}
-		else if ([ETTextHeadingType isEqualToString: typeName])
-		{
-			typeName = [NSString stringWithFormat: @"h%@",
-					[aNode.textType valueForKey: kETTextHeadingLevel]];
 		}
 		else if ([ETTextLinkTargetType isEqualToString: typeName])
 		{
@@ -749,6 +771,40 @@
 		                    withString: target];
 	}
 }
+// FIXME: This is quite ugly.  It would probably be cleaner to make headings
+// into links automatically in the text tree.
+- (void)writeTableOfContentsWithXMLWriter: (ETXMLWriter*)writer
+{
+	int headingNumber = 0;
+	int headingDepth = 0;
+	[writer startAndEndElement: @"h1"
+	                     cdata: @"Table of Contents"];
+	for (id<ETText> heading in headings)
+	{
+		int headingLevel = [[heading.textType valueForKey: kETTextHeadingLevel] intValue];
+		while (headingLevel > headingDepth)
+		{
+			[writer startElement: @"ol"
+					  attributes: D([NSString stringWithFormat: @"toc%d", headingDepth], @"class")];
+			headingDepth++;
+		}
+		while (headingLevel < headingDepth)
+		{
+			[writer endElement];
+			headingDepth--;
+		}
+		[writer startElement: @"li"];
+		[writer startAndEndElement: @"a"
+		                attributes: D([NSString stringWithFormat: @"#heading_%d", headingNumber++], @"href")
+		                     cdata: [heading stringValue]];
+		[writer endElement];
+	}
+	while (0 < headingDepth)
+	{
+		[writer endElement];
+		headingDepth--;
+	}
+}
 // FIXME: This should be part of the XML writer, not part of the ref builder
 // FIXME: Ideally, we'd construct the ETText tree for the index, and then emit
 // it using whatever generator we chose.
@@ -892,6 +948,7 @@ int main(int argc, char **argv)
 	importer.includePaths = [project objectForKey: @"includeDirectories"];
 	importer.captionFormats = [project objectForKey: @"captionFormats"];
 	[w setDelegate: importer forTextType: ETTextForeignImportType];
+	[w setDelegate: [ETXHTMLAutolinkingHeadingBuilder new] forTextType: ETTextHeadingType];
 	[importer release];
 
 	types = [project objectForKey: @"htmlTags"];
@@ -906,6 +963,7 @@ int main(int argc, char **argv)
 		[w setAttributes: [types objectForKey: type]
 		     forTextType: type];
 	}
+	[r writeTableOfContentsWithXMLWriter: w.writer];
 	[d2.document.text visitWithVisitor: w];
 	[footnotes writeCollectedFootnotesForXHTMLWriter: w];
 	[r writeIndexWithXMLWriter: w.writer];
