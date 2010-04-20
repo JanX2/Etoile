@@ -136,6 +136,52 @@ static NSCharacterSet *CommandEndCharacterSet;
 							break;
 						}
 					}
+					textRange.length++;
+					break;
+				}
+				case '\'':
+				{
+					PASS_TEXT();
+					unichar quote = 8217; // '
+					if (idx + 1 < end)
+					{
+						if ([aString characterAtIndex: idx+1] == '\'')
+						{
+							quote = 8221; // ''
+							idx += 1;
+							i += 1;
+							if (i+1 > range.length)
+							{
+								range.location = idx + 1;
+							}
+						}
+					}
+					NSString *quoteString = [NSString stringWithCharacters: &quote length: 1];
+					[delegate handleText: quoteString];
+					textRange.location = idx + 1;
+					break;
+				}
+				case '`':
+				{
+					PASS_TEXT();
+					unichar quote = 8216; // `
+					if (idx + 1 < end)
+					{
+						if ([aString characterAtIndex: idx+1] == '`')
+						{
+							quote = 8220; // `
+							idx += 1;
+							i += 1;
+							if (i+1 > range.length)
+							{
+								range.location = idx + 1;
+							}
+						}
+					}
+					NSString *quoteString = [NSString stringWithCharacters: &quote length: 1];
+					[delegate handleText: quoteString];
+					textRange.location = idx + 1;
+					break;
 				}
 				default:
 					textRange.length++;
