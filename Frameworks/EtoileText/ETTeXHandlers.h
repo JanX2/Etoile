@@ -17,12 +17,13 @@
 @interface ETTeXEnvironmentHandler : ETTeXHandler
 {
 	NSString *environmentName;
+	BOOL isVerbatim;
 	BOOL inBegin;
 	BOOL inEnd;
 }
 + (void)setTextType: (NSString*)aType forTeXEnvironment: (NSString*)aCommand;
++ (void)addVerbatimEnvironment: (NSString*)anEnvironment;
 @end
-
 
 /**
  * Parser for the subset of LaTeX that I use.

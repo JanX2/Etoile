@@ -378,6 +378,24 @@
 }
 @end
 
+@interface ETXHTMLHeadingBuilder : NSObject <ETXHTMLWriterDelegate>
+@property (nonatomic, copy) NSDictionary *headingLabels;
+@end
+@implementation ETXHTMLHeadingBuilder
+@synthesize headingLabels;
+- (void)dealloc
+{
+	[headingLabels release];
+	[super dealloc];
+}
+- (void)writer: (ETXHTMLWriter*)aWriter startTextNode: (id<ETText>)aNode;
+{
+	[NSString stringWithFormat: @"h%@",
+			[aNode.textType valueForKey: kETTextHeadingLevel]];
+}
+- (void)writer: (ETXHTMLWriter*)writer visitTextNode: (id<ETText>)aNode {}
+- (void)writer: (ETXHTMLWriter*)writer endTextNode: (id<ETText>)aNode {}
+@end
 @interface TRXHTMLImportBuilder : NSObject <ETXHTMLWriterDelegate>
 @property (nonatomic, copy) NSString *rootPath;
 @property (nonatomic, copy) NSDictionary *includePaths;
@@ -458,6 +476,7 @@
 {
 	SUPERINIT;
 	writer = [ETXMLWriter new];
+	[writer writeXMLHeader];
 	//[writer setAutoindent: YES];
 	[writer startElement: @"html"]; 
 	[writer startElement: @"head"]; 
@@ -555,10 +574,7 @@
 
 	NSString *str = [[aNode stringValue] stringByTrimmingCharactersInSet:
 		[NSCharacterSet newlineCharacterSet]];
-	if ([str length] > 0)
-	{
-		[writer characters: str];
-	}
+	[writer characters: str];
 }
 - (void)endTextNode: (id<ETText>)aNode
 {
@@ -630,6 +646,7 @@
 	NSMutableDictionary *linkTargets;
 	NSMutableDictionary *linkNames;
 	NSMutableDictionary *crossReferences;
+	NSMutableArray *headings;
 	/** Index entries. */
 	NSMutableDictionary *indexEntries;
 	int sectionCounter[10];
@@ -637,16 +654,18 @@
 }
 - (void)finishVisiting;
 @property (readonly) NSArray *referenceNodes;
+@property (readonly) NSArray *headings;
 @property (readonly) NSDictionary *linkTargets;
 @property (readonly) NSDictionary *linkNames;
 @property (readonly) NSDictionary *crossReferences;
 @end
 @implementation ETReferenceBuilder
-@synthesize referenceNodes, linkTargets, linkNames, crossReferences;
+@synthesize referenceNodes, linkTargets, linkNames, crossReferences, headings;
 - init
 {
 	SUPERINIT;
 	referenceNodes = [NSMutableArray new];
+	headings = [NSMutableArray new];
 	linkTargets = [NSMutableDictionary new];
 	linkNames = [NSMutableDictionary new];
 	crossReferences = [NSMutableDictionary new];
@@ -657,6 +676,7 @@
 {
 	[referenceNodes release];
 	[linkTargets release];
+	[headings release];
 	[linkNames release];
 	[indexEntries release];
 	[crossReferences release];
@@ -667,6 +687,11 @@
 	id type = aNode.textType;
 	if ([ETTextHeadingType isEqualToString: [type valueForKey: kETTextStyleName]])
 	{
+		[headings addObject: aNode];
+		if (![type valueForKey: kETTextLinkName])
+		{
+		
+		}
 		int level = [[type valueForKey: kETTextHeadingLevel] intValue];
 		NSAssert(level < 10, @"Indexer can only handle 10 levels of headings.");
 		sectionCounter[level]++;
@@ -846,6 +871,7 @@ int main(int argc, char **argv)
 	ETTeXScanner *s = [ETTeXScanner new];
 	d2.scanner = s;
 	s.delegate = d2;
+	[ETTeXEnvironmentHandler addVerbatimEnvironment: @"shortlisting"];
 
 	for (NSString *path in [project objectForKey: @"chapters"])
 	{

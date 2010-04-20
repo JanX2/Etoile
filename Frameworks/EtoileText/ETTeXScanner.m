@@ -349,8 +349,14 @@ static NSDictionary *DefaultCommandHandlers;
 {
 	[root beginCommand: aCommand];
 }
-- (void)beginOptArg {}
-- (void)endOptArg {}
+- (void)beginOptArg
+{
+	[self.builder appendString: @"["];
+}
+- (void)endOptArg
+{
+	[self.builder appendString: @"]"];
+}
 - (void)beginArgument {}
 - (void)endArgument {}
 - (void)handleText: (NSString*)aString

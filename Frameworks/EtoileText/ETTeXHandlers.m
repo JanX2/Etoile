@@ -99,17 +99,23 @@ static NSMutableDictionary *CommandTypes;
 
 @implementation ETTeXEnvironmentHandler
 static NSMutableDictionary *EnvironmentTypes;
+static NSMutableSet *VerbatimEnvironments;
 + (void)initialize
 {
 	if ([ETTeXEnvironmentHandler class] != self) { return; }
 	EnvironmentTypes = [D(
-	ETTextListType, @"itemize",
-	ETTextNumberedListType, @"enumerate",
-	ETTextDescriptionListType, @"description") mutableCopy];
+		ETTextListType, @"itemize",
+		ETTextNumberedListType, @"enumerate",
+		ETTextDescriptionListType, @"description") mutableCopy];
+	VerbatimEnvironments = [NSMutableSet new];
 }
 + (void)setTextType: (NSString*)aType forTeXEnvironment: (NSString*)aCommand
 {
 	[EnvironmentTypes setObject: aType forKey: aCommand];
+}
++ (void)addVerbatimEnvironment: (NSString*)anEnvironment
+{
+	[VerbatimEnvironments addObject: anEnvironment];
 }
 - (void)beginCommand: (NSString*)aCommand
 {
@@ -117,7 +123,7 @@ static NSMutableDictionary *EnvironmentTypes;
 	{
 		NSAssert([@"begin" isEqualToString: aCommand],
 				@"Environment must start with \\begin!");
-		[[self root] endParagraph];
+		[root endParagraph];
 		return;
 	}
 	if ([@"end" isEqualToString: aCommand])
@@ -125,7 +131,15 @@ static NSMutableDictionary *EnvironmentTypes;
 		inEnd = YES;
 		return;
 	}
-	[[self root] beginCommand: aCommand];
+	if (isVerbatim)
+	{
+		[self.builder appendString: @"\\"];
+		[self.builder appendString: aCommand];
+	}
+	else
+	{
+		[root beginCommand: aCommand];
+	}
 }
 - (void)beginArgument
 {
@@ -133,12 +147,24 @@ static NSMutableDictionary *EnvironmentTypes;
 	{
 		inBegin = YES;
 	}
+	else if (!inEnd && isVerbatim)
+	{
+		[self.builder appendString: @"{"];
+	}
 }
 - (void)endArgument
 {
 	if (inEnd)
 	{
 		self.scanner.delegate = self.parent;
+	}
+	else if (inBegin)
+	{
+		inBegin = NO;
+	}
+	else if (!inBegin && isVerbatim)
+	{
+		[self.builder appendString: @"}"];
 	}
 }
 - (void)handleText: (NSString*)aString
@@ -153,7 +179,7 @@ static NSMutableDictionary *EnvironmentTypes;
 		[self.builder startNodeWithStyle: 
 			[self.document typeFromDictionary: D(
 				type, kETTextStyleName)]];
-		inBegin = NO;
+		isVerbatim = [VerbatimEnvironments containsObject: type];
 		return;
 	}
 	if (inEnd)
@@ -193,7 +219,7 @@ static NSDictionary *HeadingTypes;
 	NSNumber *depth = [HeadingTypes objectForKey: aCommand];
 	if (nil != depth)
 	{
-		[[self root] endParagraph];
+		[root endParagraph];
 		[self.builder startNodeWithStyle: 
 			[self.document typeFromDictionary: D(
 				ETTextHeadingType, kETTextStyleName,
@@ -201,7 +227,7 @@ static NSDictionary *HeadingTypes;
 	}
 	else
 	{
-		[[self root] beginCommand: aCommand];
+		[root beginCommand: aCommand];
 	}
 }
 - (void)endArgument
@@ -291,7 +317,7 @@ static NSDictionary *HeadingTypes;
 	}
 	else
 	{
-		[[self root] beginCommand: aCommand];
+		[root beginCommand: aCommand];
 	}
 }
 - (void)beginOptArg
