@@ -49,9 +49,9 @@
 					dirtyRect: dirtyRect];
 	
 	if ([item isSelected])
-		[self drawSelectionIndicatorInRect: [item drawingFrame]];
-	
-	//[super render: inputValues layoutItem: item dirtyRect: dirtyRect];
+	{
+		[self drawSelectionIndicatorInRect: [item drawingBoundsForStyle: self]];
+	}
 }
 
 - (ETStyle *) brushStyle

@@ -30,12 +30,7 @@
      layoutItem: (ETLayoutItem *)item 
 	  dirtyRect: (NSRect)dirtyRect;
 {
-	// FIXME: May be we should better support dirtyRect. The next drawing 
-	// methods don't take in account it and simply redraw all their content.
-
-	[self drawPath: [inputValues valueForKey: @"path"] inRect: [item drawingFrame]];
-
-	//[super render: inputValues layoutItem: item dirtyRect: dirtyRect];
+	[self drawPath: [inputValues valueForKey: @"path"] inRect: [item drawingBoundsForStyle: self]];
 }
 
 - (void) drawPath: (NSBezierPath *)path inRect: (NSRect)rect
