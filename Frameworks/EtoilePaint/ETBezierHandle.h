@@ -19,7 +19,7 @@
 
 #import "NSBezierPath+Editing.h"
 
-@class ETInstrument; 
+@class ETTool; 
 
 @interface ETBezierHandle : ETHandle
 {

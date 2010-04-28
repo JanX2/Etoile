@@ -52,9 +52,7 @@
 		6697AB49104768F100456911 /* NSBezierPath+Text.h in Headers */ = {isa = PBXBuildFile; fileRef = 6697AB34104768F100456911 /* NSBezierPath+Text.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6697AB5D10476AE100456911 /* EtoilePaint.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* EtoilePaint.framework */; };
 		6697ABC610476EC900456911 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB6210476B2700456911 /* main.m */; };
-		6697ABC710476EC900456911 /* SketchController.h in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB6310476B2700456911 /* SketchController.h */; };
 		6697ABC810476EC900456911 /* SketchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AB6410476B2700456911 /* SketchController.m */; };
-		6697ABCB10476F0100456911 /* SketchInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6697ABCA10476F0100456911 /* SketchInfo.plist */; };
 		6697AC99104771CB00456911 /* testbrush.png in Resources */ = {isa = PBXBuildFile; fileRef = 6697AC98104771CB00456911 /* testbrush.png */; };
 		6697AC9A104771D800456911 /* testbrush.png in Resources */ = {isa = PBXBuildFile; fileRef = 6697AC98104771CB00456911 /* testbrush.png */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
@@ -66,112 +64,112 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60EF8E9D0C5E4D0600C97C41 /* EtoileUI.framework */;
+			remoteGlobalIDString = 60EF8E9D0C5E4D0600C97C41;
 			remoteInfo = EtoileUI;
 		};
 		662C411D10B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 600243B90CD133420023182D /* TestEtoileUI.bundle */;
+			remoteGlobalIDString = 600243B90CD133420023182D;
 			remoteInfo = TestEtoileUI;
 		};
 		662C411F10B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60073C2910074B39007272E6 /* EtoileWeb.framework */;
+			remoteGlobalIDString = 60073C2910074B39007272E6;
 			remoteInfo = EtoileWeb;
 		};
 		662C412110B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60EEB9020F09457C00EBB632 /* Collage.app */;
+			remoteGlobalIDString = 60EEB9020F09457C00EBB632;
 			remoteInfo = Collage;
 		};
 		662C412310B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60CF742A0D449A8A00B4CA3D /* MarkupEditor.app */;
+			remoteGlobalIDString = 60CF742A0D449A8A00B4CA3D;
 			remoteInfo = MarkupEditor;
 		};
 		662C412510B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 605F0CCA0C0F400D003AE3E6 /* ObjectManagerExample.app */;
+			remoteGlobalIDString = 605F0CCA0C0F400D003AE3E6;
 			remoteInfo = ObjectManagerExample;
 		};
 		662C412710B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60539D940C240A7B006C57EC /* PaneContainerExample.app */;
+			remoteGlobalIDString = 60539D940C240A7B006C57EC;
 			remoteInfo = PaneContainerExample;
 		};
 		662C412910B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 606B98C90C0AF831000AAA85 /* PhotoViewExample.app */;
+			remoteGlobalIDString = 606B98C90C0AF831000AAA85;
 			remoteInfo = PhotoViewExample;
 		};
 		662C412B10B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60909CC90CB2DA42009CAD27 /* TableViewExample.app */;
+			remoteGlobalIDString = 60909CC90CB2DA42009CAD27;
 			remoteInfo = TableViewExample;
 		};
 		662C412D10B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60FC2925105C112D008D2EFF /* FormExample.app */;
+			remoteGlobalIDString = 60FC2925105C112D008D2EFF;
 			remoteInfo = FormExample;
 		};
 		662C413910B0D00600F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60073EAD10074D26007272E6 /* EtoileXML.framework */;
+			remoteGlobalIDString = 60073EAD10074D26007272E6;
 			remoteInfo = EtoileXML;
 		};
 		662C413B10B0D00600F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 603647AC0E409244003377E0 /* EtoileFoundation.framework */;
+			remoteGlobalIDString = 603647AC0E409244003377E0;
 			remoteInfo = EtoileFoundation;
 		};
 		662C413D10B0D00600F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 609B66D70FEE80CE0007F842 /* TestEtoileFoundation.bundle */;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
 			remoteInfo = TestEtoileFoundation;
 		};
 		662C41BC10B0D02800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 603647AB0E409244003377E0 /* EtoileFoundation */;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
 			remoteInfo = EtoileFoundation;
 		};
 		662C41BE10B0D02B00F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41 /* EtoileUI */;
+			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41;
 			remoteInfo = EtoileUI;
 		};
 		662C41C910B0D09300F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 60073EAC10074D26007272E6 /* EtoileXML */;
+			remoteGlobalIDString = 60073EAC10074D26007272E6;
 			remoteInfo = EtoileXML;
 		};
 		6697AB5B10476AD900456911 /* PBXContainerItemProxy */ = {
@@ -620,7 +618,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6697ABCB10476F0100456911 /* SketchInfo.plist in Resources */,
 				6697AC99104771CB00456911 /* testbrush.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -642,7 +639,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6697ABC610476EC900456911 /* main.m in Sources */,
-				6697ABC710476EC900456911 /* SketchController.h in Sources */,
 				6697ABC810476EC900456911 /* SketchController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

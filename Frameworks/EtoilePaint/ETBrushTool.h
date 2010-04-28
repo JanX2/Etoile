@@ -1,6 +1,6 @@
 /** <title>ETBrushTool</title>
  
- <abstract>An instrument class which implements the paintbrush tool 
+ <abstract>An tool class which implements the paintbrush tool 
  tool present in many graphics-oriented applications.</abstract>
  
  Copyright (C) 2009 Eric Wasylishen
@@ -15,7 +15,7 @@
 #import <EtoileUI/EtoileUI.h>
 #import "ETDrawingStrokeShape.h"
 
-@interface ETBrushTool : ETInstrument
+@interface ETBrushTool : ETTool
 {
 	ETLayoutItem *_brushStroke;
 	ETDrawingStrokeShape *_drawingStrokeShape;
