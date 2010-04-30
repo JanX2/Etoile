@@ -31,6 +31,7 @@ $(TOOL_NAME)_OBJC_FILES = \
 	 XCBFixes.m \
 	 XCBPixmap.m \
 	 XCBVisual.m \
+	 XCBCachedProperty.m \
 	 main.m
 
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Wno-unused  -Werror -Wall

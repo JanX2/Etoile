@@ -36,8 +36,6 @@
 - (XCBRenderPicture*)generateRootTile;
 - (void)paintAllWithRegion: (XCBFixesRegion*)fixRegion;
 - (PMCompositeWindow*)findCompositeWindow: (XCBWindow*)window;
-- (void)restackWindow: (XCBWindow*)xcbWindow
-          aboveWindow: (id)xcbAboveWindow;
 - (void)childWindowBecomeAvailable: (NSNotification*)notification;
 - (void)childWindowWillUnMap: (NSNotification*)notification;
 - (void)childWindowDidUnMap: (NSNotification*)notification;
@@ -48,7 +46,6 @@
 {
 	SELFINIT;
 	screen = [scr retain];
-	childWindows = [NSMutableArray new];
 	compositeMap = [NSMutableDictionary new];
 	clipChanged = YES;
 	rootTile = [[self generateRootTile] retain];
@@ -77,7 +74,6 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[rootBuffer release];
 	[rootPicture release];
-	[childWindows release];
 	[allDamage release];
 	[rootTile release];
 	[super dealloc];
@@ -86,7 +82,6 @@
 - (XCBRenderPicture*)rootBuffer { return rootBuffer; }
 - (XCBRenderPicture*)rootPicture { return rootPicture; }
 - (XCBWindow*)rootWindow { return [screen rootWindow]; }
-- (NSArray*)childWindows { return childWindows; }
 - (PMCompositeWindow*)findCompositeWindow: (XCBWindow*)window
 {
 	// FIXME: I can optimise this as each XCBWindow has
@@ -99,7 +94,6 @@
 - (void)childWindowDiscovered: (XCBWindow*)child
               compositeWindow: (PMCompositeWindow*)compositeWindow
 {
-	[childWindows addObject:child];
 	if (compositeWindow != nil)
 		[compositeMap setObject: compositeWindow forKey: child];
 	if ([child windowLoadState] == XCBWindowAvailableState)
@@ -132,7 +126,6 @@
 	XCBREM_OBSERVER(WindowFrameWillChange, xcbWindow);
 	XCBREM_OBSERVER(WindowFrameDidChange, xcbWindow);
 	XCBREM_OBSERVER(WindowDidUnMap, xcbWindow);
-	[childWindows removeObject: xcbWindow];
 	if (window)
 		[compositeMap removeObjectForKey: window];
 }
@@ -142,14 +135,6 @@
 	XCBWindow *child = [notification object];
 	PMCompositeWindow *compositeWindow = 
 		[self findCompositeWindow: child];
-	if ([child aboveWindow])
-	{
-		[self restackWindow: child
-			aboveWindow: [child aboveWindow]];
-	}
-	else
-		[self restackWindow: child
-		        aboveWindow: [NSNull null]];
 
 	if ([compositeWindow extents] != nil)
 		[self appendDamage: [compositeWindow extents]];
@@ -229,44 +214,11 @@
 	PMCompositeWindow *compositeWindow = [self findCompositeWindow: xcbWindow];
 	XCBFixesRegion *extents = [compositeWindow extents];
 
-	// Restack window only if xcbAboveWindow is set
-	// in the notification
-	XCBWindow *xcbAboveWindow = [[notification userInfo] 
-		objectForKey: @"Above"];
-	if (xcbAboveWindow != nil)
-	{
-		[self restackWindow: xcbWindow
-		        aboveWindow: xcbAboveWindow];
-	}
 
 	// Union the damage with the accumulated damage
 	if (extents)
 		[self appendDamage: extents];
 	clipChanged = YES;
-}
-- (void) restackWindow: (XCBWindow*)xcbWindow
-           aboveWindow: (id)xcbAboveWindow
-{
-	if (![xcbAboveWindow isEqual: [NSNull null]]) 
-	{
-		// Insert after the above window
-		NSUInteger aboveIndex;
-		[xcbWindow retain];
-		[childWindows removeObject: xcbWindow];
-		aboveIndex  = [childWindows indexOfObject: xcbAboveWindow];
-		[childWindows insertObject: xcbWindow 
-				   atIndex: aboveIndex + 1];
-		[xcbWindow release];
-	}
-	else
-	{
-		// Insert at the bottom of the list
-		[xcbWindow retain];
-		[childWindows removeObject: xcbWindow];
-		[childWindows insertObject: xcbWindow 
-				   atIndex: 0];
-		[xcbWindow release];
-	}
 }
 - (void)appendDamage: (XCBFixesRegion*)damage
 {
@@ -349,7 +301,7 @@
 	// Because when I was porting the code over from xcompmgr,
 	// I didn't realise the algorithm it was using was top to bottom,
 	// when we store our child windows in bottom to top order.
-	NSEnumerator *window_enum = [childWindows reverseObjectEnumerator];
+	NSEnumerator *window_enum = [[screen childWindows] reverseObjectEnumerator];
 	for (XCBWindow *window = [window_enum nextObject];
 		window != nil;
 		window = [window_enum nextObject])
@@ -410,6 +362,6 @@
 }
 - (NSString*)description
 {
-	return [NSString stringWithFormat:@"PMScreen (childWindows=%@)", childWindows];
+	return [NSString stringWithFormat:@"PMScreen (screen=%@)", screen];
 }
 @end

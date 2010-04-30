@@ -84,7 +84,7 @@
 	                    object: nil];
 	[defaultCenter addObserver: self
 	                  selector: @selector(windowBecomeAvailable:)
-	                      name: XCBWindowDidCreateNotification
+	                      name: XCBWindowBecomeAvailableNotification
 	                    object: nil];
 	[defaultCenter addObserver: self
 	                  selector: @selector(windowDidReparent:)
@@ -93,8 +93,24 @@
 
 	self->screens = [NSMutableDictionary new];
 
+	[XCBConn grab];
 	FOREACH([XCBConn screens], screen, XCBScreen*)
 	{
+		[screen setTrackingChildren: YES];
+		XCBWindow *rootWindow = [screen rootWindow];
+		uint32_t events[2];
+		// Must be in this order because of the order of the
+		// XCB_CW_* flags
+		events[0] = 1;
+		events[1] = 
+			XCB_EVENT_MASK_FOCUS_CHANGE |
+			XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_BUTTON_PRESS |
+			XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
+			XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+			XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT;
+		[rootWindow changeWindowAttributes: XCB_CW_EVENT_MASK | XCB_CW_OVERRIDE_REDIRECT
+		                            values: events];
+
 		XCBRenderPicture *rootPicture;
 		PMScreen *pm_screen = [[PMScreen alloc] initWithScreen:screen];
 		[screens setObject:pm_screen forKey:screen];
@@ -107,6 +123,7 @@
 
 		[self redirectRootsForWindow: [screen rootWindow]];
 	}
+	[XCBConn ungrab];
 	xcb_flush([XCBConn connection]);
 	
 	return self;
@@ -127,31 +144,15 @@
 {
 	[XCBComposite redirectSubwindows: rootWindow 
 	                          method: XCB_COMPOSITE_REDIRECT_MANUAL];
-	xcb_query_tree_cookie_t query_tree_cookie = 
-	xcb_query_tree_unchecked([XCBConn connection], [rootWindow xcbWindowId]);
-	[XCBConn 
-		setHandler: self
-		  forReply: query_tree_cookie.sequence
-		  selector: @selector(handleQueryTree:)];
-}
-- (void)handleQueryTree: (xcb_query_tree_reply_t*)query_tree_reply
-{
-	int c_length = xcb_query_tree_children_length(query_tree_reply);
-	xcb_window_t *windows = xcb_query_tree_children(query_tree_reply);
-	for (int i = 0; i < c_length; i++)
-	{
-		[self newWindow:
-			[XCBWindow windowWithXCBWindow: windows[i]
-			                       // We really shouldn't use root,
-			                       // but we know its valid as we only
-			                       // send xcb_query_tree() to root windows
-			                        parent: query_tree_reply->root]];
-	}
-	[XCBConn setNeedsFlush:YES];
 }
 
 - (void)windowDidMap: (NSNotification*)notification 
 {
+	XCBWindow *window = [notification object];
+	PMScreen *screen = [self findScreenWithRootWindow: [window parent]];
+	if (screen == nil)
+		return;
+	[self handleNewCompositedWindow: window];
 }
 
 - (void)windowDidUnMap: (NSNotification*)notification
@@ -190,7 +191,19 @@
 {
 	XCBWindow *window = [notification object];
 	PMScreen * screen = [self findScreenWithRootWindow: [window parent]];
-	[screen childWindowRemoved: window];
+	if (screen)
+		[screen childWindowDiscovered: window
+		              compositeWindow: nil];
+	else
+	{
+		screen = [self 
+			findScreenWithRootWindow: [[notification userInfo] objectForKey: @"OldParent"]];
+		// There is the slight chance we received a reparent notify
+		// for a child window of something we're not managing
+		if (!screen)
+			return;
+		[screen childWindowRemoved: window];
+	}
 }
 - (void)XCBConnection: (XCBConnection*)connection damageNotify: (xcb_damage_notify_event_t*)event
 {
@@ -229,7 +242,6 @@
 		NSLog(@"-[PMConnectionDelegate windowDidBecomeAvailable] managing %@", subject);
 		PMManagedWindow *managedWindow = [PMManagedWindow windowDecoratingWindow: subject];
 		[managedWindows setObject: managedWindow forKey: subject];
-		[decorationWindows addObject: [managedWindow decorationWindow]];
 		[[NSNotificationCenter defaultCenter]
 			addObserver: self
 			   selector: @selector(managedWindowDidDestroy:)
@@ -237,7 +249,6 @@
 			     object: subject];
 		[screen childWindowDiscovered: subject
 		              compositeWindow: nil];
-		[self handleNewCompositedWindow: [managedWindow decorationWindow]];
 	} 
 	else if ([subject overrideRedirect] &&
 		[decorationWindows containsObject: subject] == NO &&
@@ -258,8 +269,13 @@
 
 - (void)handleNewCompositedWindow: (XCBWindow*)window
 {
-	PMCompositeWindow *compositeWindow = [PMCompositeWindow windowWithXCBWindow: window];
+	// Don't create a new composited window if one already exists
+	if ([compositeWindows objectForKey: window])
+		return;
 	PMScreen *screen = [self findScreenWithRootWindow: [window parent]];
+	if (screen == nil)
+		return;
+	PMCompositeWindow *compositeWindow = [PMCompositeWindow windowWithXCBWindow: window];
 	[compositeWindows setObject: compositeWindow forKey: window];
 	[screen childWindowDiscovered: window
 	              compositeWindow: compositeWindow];

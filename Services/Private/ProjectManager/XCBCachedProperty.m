@@ -1,5 +1,5 @@
-/**
- * Étoilé ProjectManager - PMScreen.h
+/*
+ * Étoilé ProjectManager - XCBProperty.m
  *
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
@@ -22,40 +22,67 @@
  * THE SOFTWARE.
  *
  **/
-#import "PMCompositeWindow.h"
+#import "XCBCachedProperty.h"
 
-@class XCBScreen;
-@class XCBRenderPicture;
-@class XCBFixesRegion;
-@class NSMutableArray;
+@implementation XCBCachedProperty
 
-@interface PMScreen : NSObject
+- (id)initWithGetPropertyReply: (xcb_get_property_reply_t*)reply
+                  propertyName: (NSString*)name
 {
-	XCBScreen *screen;
-	XCBRenderPicture *rootBuffer, *rootPicture;
-	XCBRenderPicture *rootTile;
-	XCBFixesRegion *allDamage;
-	NSMutableDictionary *compositeMap;
-	
-	BOOL clipChanged;
+	SELFINIT;
+	propertyName = [name retain];
+	type = reply->type;
+	format = reply->format;
+	format_length = reply->value_len;
+	bytes_after = reply->bytes_after;
+
+	void *value = xcb_get_property_value(reply);
+	int length = xcb_get_property_value_length(reply);
+	if (length > 0 && value != NULL)
+	{
+		propertyData = [[NSData alloc]
+			initWithBytes: value
+			       length: length];
+	}
+	return self;
 }
 
-- (id)initWithScreen: (XCBScreen*)screen;
-- (XCBScreen*)screen;
-- (XCBWindow*)rootWindow;
-- (XCBRenderPicture*)rootBuffer;
-- (void)setRootBuffer: (XCBRenderPicture*)rb;
-- (XCBRenderPicture*)rootPicture;
-- (void)setRootPicture: (XCBRenderPicture*)rp;
-- (void)appendDamage: (XCBFixesRegion*)damage;
-
-// Event handlers
-- (void)childWindowDiscovered: (XCBWindow*)child
-              compositeWindow: (PMCompositeWindow*)compositeWindow;
-- (void)childWindowRemoved: (XCBWindow*)child;
-
-// Paint the damaged areas and remove accumulated damage
-- (void)paintAllDamaged;
-// Paint everything regardless of accumulated damage
-- (void)paintAll;
+- (void)dealloc
+{
+	[propertyName release];
+	[propertyData release];
+	[super dealloc];
+}
+- (NSString*)propertyName
+{
+	return propertyName;
+}
+- (xcb_atom_t)type
+{
+	return type;
+}
+- (uint8_t)format
+{
+	return format;
+}
+- (uint32_t)lengthInFormatUnits
+{
+	return format_length;
+}
+- (NSData*)data
+{
+	return propertyData;
+}
+- (uint8_t*)asBytes
+{
+	return (uint8_t*)[propertyData bytes];
+}
+- (uint16_t*)asShorts
+{
+	return (uint16_t*)[propertyData bytes];
+}
+- (uint32_t*)asLongs
+{
+	return (uint32_t*)[propertyData bytes];
+}
 @end

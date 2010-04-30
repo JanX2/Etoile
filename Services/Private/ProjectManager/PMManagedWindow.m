@@ -24,6 +24,7 @@
  **/
 #import "PMManagedWindow.h"
 #import "XCBWindow.h"
+#import "XCBCachedProperty.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
 static const int DecorationWindowBorderSize = 4;
@@ -31,7 +32,34 @@ static const int DecorationWindowBorderSize = 4;
 @interface PMManagedWindow (Private)
 - (XCBRect)idealDecorationWindowFrame;
 - (id)initWithChildWindow: (XCBWindow*)win;
-- (void)unmapDecorationWindow;
+/**
+  * Reparent the child window into the decoration window
+  * and then map the decoration window.
+  *
+  * Still requires that the child window be mapped using
+  * -mapChildWindow
+  */
+- (void)mapDecorationWindow;
+/**
+  * Clean up after the child window was unmapped, including
+  * reparenting the child back to the root window and 
+  * unmmaping the decoration window.
+  */
+- (void)handleUnMap;
+/**
+  * Lazily create the decoration window
+  */
+- (void)createDecorationWindow;
+/**
+  * Map the child window and add it to the save set.
+  */
+- (void)mapChildWindow;
+/**
+  * Handle a child window that has just requested mapping
+  * or was discovered in the map state.
+  */
+- (void)handleMapRequest;
+- (void)xcbWindowBecomeAvailable: (NSNotification*)notification;
 @end
 
 @implementation PMManagedWindow
@@ -40,16 +68,31 @@ static const int DecorationWindowBorderSize = 4;
 	SELFINIT;
 	child = [win retain];
 	[child setDelegate: self];
-	NSNotificationCenter *center =
-		[NSNotificationCenter defaultCenter];
 
+	if ([child windowLoadState] == XCBWindowAvailableState)
+		[self xcbWindowBecomeAvailable: nil];
+	return self;
+}
+- (void)xcbWindowBecomeAvailable: (NSNotification*)notification
+{
+	if ([child mapState] == XCB_MAP_STATE_VIEWABLE)
+		[self handleMapRequest];
+}
+- (XCBWindow*)childWindow
+{
+	return child;
+}
+- (void)createDecorationWindow
+{
 	XCBWindow *root = [child parent];
 	NSLog(@"-[PMMangedWindow initWithChildWindow:] Root: %@", root);
+	NSNotificationCenter *center =
+		[NSNotificationCenter defaultCenter];
 
 	uint32_t values[3];
 	// FIXME: Do these have to be in the same order as the
 	// mask declarations?
-	values[0] = 0x80FFFF10;
+	values[0] = 0x80FFFFA0;
 	values[1] = 1;
 	values[2] = XCB_EVENT_MASK_EXPOSURE |
 		XCB_EVENT_MASK_BUTTON_PRESS | 
@@ -70,19 +113,10 @@ static const int DecorationWindowBorderSize = 4;
 	           selector: @selector(decorationWindowDidMap:)
 	               name: XCBWindowDidMapNotification
 	             object: decorationWindow];
-
-	[XCBConn setNeedsFlush: YES];
-	return self;
-}
-- (void) decorationWindowCreated: (NSNotification*)notification 
-{
-	NSLog(@"PMManagedWindow: decoration window become available.");
-	if ([child mapState] == XCB_MAP_STATE_VIEWABLE)
-		[self mapDecoratedWindow];
 }
 - (void)dealloc
 {
-	NSLog(@"-[PMManagedWindow dealloc]");
+	NSLog(@"%@: -[PMManagedWindow dealloc]", self);
 	NSNotificationCenter *center =
 		[NSNotificationCenter defaultCenter];
 	[center removeObserver: self];
@@ -124,12 +158,12 @@ static const int DecorationWindowBorderSize = 4;
 }
 - (void)xcbWindowMapRequest: (NSNotification*)aNotification
 {
-	NSLog(@"-[PMManagedWindow xcbWindowDidMap:]");
-	[self mapDecoratedWindow];
+	NSLog(@"%@: -[PMManagedWindow xcbWindowDidMap:]", self);
+	[self handleMapRequest];
 }
 - (void)xcbWindowDidMap: (NSNotification*)notification
 {
-	NSLog(@"-[PMManagedWindow xcbWindowDidMap:] child window mapped.");
+	NSLog(@"%@: -[PMManagedWindow xcbWindowDidMap:] child window mapped.", self);
 }
 - (void)xcbWindowConfigureRequest: (NSNotification*)aNotification
 {
@@ -143,7 +177,7 @@ static const int DecorationWindowBorderSize = 4;
 	NSInteger valueMask;
 
 	valueMask = [[values objectForKey: @"ValueMask"] integerValue];
-	NSLog(@"-[PMManagedWindow xcbWindowConfigureRequest:] valueMask=%d", valueMask);
+	NSLog(@"%@, -[PMManagedWindow xcbWindowConfigureRequest:] valueMask=%d", self,  valueMask);
 	[[values objectForKey: @"Frame"] getValue: &frame];
 	borderWidth = [[values objectForKey: @"BorderWidth"] integerValue];
 	stackMode = [[values objectForKey: @"StackMode"] integerValue];
@@ -179,21 +213,21 @@ static const int DecorationWindowBorderSize = 4;
 {
 	if (!ignoreUnmap)
 	{
-		NSLog(@"Decorated window unmapped, removing decoration");
-		[self unmapDecorationWindow];
+		NSLog(@"%@: Decorated window unmapped, removing decoration", self);
+		[self handleUnMap];
 	}
 	ignoreUnmap = NO;
 }
 - (void)xcbWindowDidDestroy: (NSNotification*)aNotification
 {
-	NSLog(@"-[PMMangedWindow xcbWindowDidDestroy:] Child window destroyed.");
+	NSLog(@"%@: -[PMMangedWindow xcbWindowDidDestroy:] Child window destroyed.", self);
 	// Destroy the decoration window but don't
 	// release it yet
 	[decorationWindow destroy];
 }
 - (void)xcbWindowFrameDidChange: (NSNotification*)aNotification
 {
-	NSLog(@"-[PMManagedWindow xcbWindowFrameDidChange]");
+	NSLog(@"%@: -[PMManagedWindow xcbWindowFrameDidChange]", self);
 	XCBRect frame = [self idealDecorationWindowFrame];
 	[[self decorationWindow] setFrame: frame];
 }
@@ -201,13 +235,20 @@ static const int DecorationWindowBorderSize = 4;
 {
 	return decorationWindow;
 }
-- (void)mapDecoratedWindow
+- (void)handleMapRequest
 {
-	NSLog(@"PMManagedWindow: mapping the decoration window and then reparenting the child.");
+	NSLog(@"%@: mapping the decoration window and then reparenting the child.", self);
 	xcb_connection_t *conn = [[XCBConnection sharedConnection] connection];
 	ignoreUnmap = YES;
-	[child map];
-	[child addToSaveSet];
+	[child refreshCachedProperty: @"_NET_WM_WINDOW_TYPE"];
+}
+- (void)mapDecorationWindow
+{
+	reparented = YES;
+	// Reposition the decoration window just above the original
+	// window before reparenting so it comes out in the same
+	// position
+	[[self decorationWindow] restackAboveWindow: child];
 	[[self decorationWindow] map];
 	child_origin = [child frame].origin;
 	[child reparentToWindow: decorationWindow
@@ -220,18 +261,63 @@ static const int DecorationWindowBorderSize = 4;
 	
 	[XCBConn setNeedsFlush: YES];
 }
-- (void)unmapDecorationWindow
+- (void)xcbWindowPropertyDidRefresh: (NSNotification*)notification
 {
-	NSLog(@"PMManagedWindow: unmapping the decoration window and then unparenting the child.");
-	[decorationWindow unmap];
-	// FIXME: Should we calculate where it was before?
-	[child reparentToWindow: [decorationWindow parent]
-	                     dX: child_origin.x
-	                     dY: child_origin.y];
+	XCBCachedProperty *property = [[notification userInfo] objectForKey: @"PropertyValue"];
+	xcb_atom_t *types = (xcb_atom_t*)[property asLongs];
+
+	// Determine if we need to decorate the window
+	// 1. NEEDS DECORATION
+	// 1a) If decoration window doesn't exist, create it
+	// 1b) Reparent the child window into the decoration window and map the decoration window
+	// 1c) Map the child window
+	// 2. DOESN'T NEED DECORATION
+	// 2a) Map the child window
+
+	// FIXME: Assuming reparenting needed
+	if (decorationWindow == nil)
+		[self createDecorationWindow];
+	else
+	{
+		[self mapDecorationWindow];
+		[self mapChildWindow];
+	}
+}
+
+- (void)mapChildWindow
+{
+	[child map];
+	[child addToSaveSet];
+}
+- (void)decorationWindowCreated: (NSNotification*)notification 
+{
+	NSLog(@"%@: decoration window become available.", self);
+	[self mapDecorationWindow];
+	[self mapChildWindow];
+}
+
+- (void)handleUnMap
+{
+	NSLog(@"%@: unmapping the decoration window and then unparenting the child.",self);
+	if (reparented)
+	{
+		[decorationWindow unmap];
+		// FIXME: Should we calculate where it was before?
+		[child reparentToWindow: [decorationWindow parent]
+				     dX: child_origin.x
+				     dY: child_origin.y];
+	}
+	reparented = NO;
 }
 
 - (void)decorationWindowDidMap: (NSNotification*)notification
 {
 	//ignoreUnmap = NO;
+}
+- (NSString*)description
+{
+	return [NSString stringWithFormat: @"PMManagedWindow (child=%x,decorationWindow=%x)",
+		[child xcbWindowId],
+		[decorationWindow xcbWindowId]];
 }
 @end

@@ -58,6 +58,11 @@ extern NSString* XCBConnectionEstablishmentException;
 - (void)setHandler: (id)anObject
           forReply: (unsigned int)sequence
           selector: (SEL)aSelector
+            object: (id)context;
+- (void)setHandler: (id)anObject
+          forReply: (unsigned int)sequence
+          selector: (SEL)aSelector
+            object: (id)context
      errorSelector: (SEL)errorSelector;
 - (void)cancelHandlersForObject: (id)anObject;
 - (void)grab;

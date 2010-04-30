@@ -29,6 +29,13 @@
 
 #import <EtoileFoundation/EtoileFoundation.h>
 
+@interface XCBScreen (Private)
+- (void)restackWindow: (XCBWindow*)xcbWindow
+          aboveWindow: (id)xcbAboveWindow;
+
+- (void)discoverChildWindows;
+@end
+
 @implementation XCBScreen 
 - (id) initWithXCBScreen: (xcb_screen_t*)aScreen
 {
@@ -52,6 +59,7 @@
 }
 - (void) dealloc
 {
+	[childWindows release];
 	[root release];
 	[super dealloc];
 }
@@ -71,5 +79,181 @@
 - (uint8_t)defaultDepth
 {
 	return screen.root_depth;
+}
+- (NSArray*)childWindows
+{
+	return childWindows;
+}
+- (void)setTrackingChildren: (BOOL)trackingChildren
+{
+	if (trackingChildren)
+	{
+		if (childWindows)
+			return;
+		childWindows = [NSMutableArray new];
+		[self discoverChildWindows];
+		[[NSNotificationCenter defaultCenter]
+			addObserver: self
+			   selector: @selector(childWindowFrameDidChange:)
+			       name: XCBWindowFrameDidChangeNotification
+			     object: nil];
+		[[NSNotificationCenter defaultCenter]
+			addObserver: self
+			   selector: @selector(childWindowDidCreate:)
+			       name: XCBWindowDidCreateNotification
+			     object: nil];
+		[[NSNotificationCenter defaultCenter]
+			addObserver: self
+			   selector: @selector(childWindowDidDestroy:)
+			       name: XCBWindowDidDestroyNotification
+			     object: nil];
+		[[NSNotificationCenter defaultCenter]
+			addObserver: self
+			   selector: @selector(childWindowDidReparent:)
+			       name: XCBWindowParentDidChangeNotification
+			     object: nil];
+	}
+	else
+	{
+		if (!childWindows)
+			return;
+		[[NSNotificationCenter defaultCenter]
+			removeObserver: self];
+		[childWindows release];
+		childWindows = nil;
+	}
+}
+@end
+
+@implementation XCBScreen (Private)
+- (void)childWindowFrameDidChange: (NSNotification*)notification
+{
+	if (nil != childWindows)
+	{
+		XCBWindow *xcbWindow = [notification object];
+		if ([[xcbWindow parent] isEqual: root])
+		{
+			// Restack window only if xcbAboveWindow is set
+			// in the notification
+			XCBWindow *xcbAboveWindow = [[notification userInfo] 
+				objectForKey: @"Above"];
+			if (xcbAboveWindow != nil)
+			{
+				[self restackWindow: xcbWindow
+					aboveWindow: xcbAboveWindow];
+			}
+		}
+	}
+}
+- (void)childWindowDidDestroy: (NSNotification*)notification
+{
+	if (nil == childWindows)
+		return;
+	XCBWindow *xcbWindow = [notification object];
+	if ([[xcbWindow parent] isEqual: root])
+		[childWindows removeObject: xcbWindow];
+}
+- (void)childWindowDidReparent: (NSNotification*)notification
+{
+	if (nil == childWindows)
+		return;
+	XCBWindow *xcbWindow = [notification object];
+	if ([[xcbWindow parent] isEqual: root])
+		[childWindows addObject: xcbWindow];
+	else if ([childWindows containsObject: xcbWindow])
+		[childWindows removeObject: xcbWindow];
+}
+- (void)childWindowDidCreate: (NSNotification*)notification
+{
+	if (nil == childWindows)
+		return;
+	// We need to handle this notification to discover
+	// new windows in case ConfigureNotify is never called.
+	// The original windows are found through the query tree
+	// process.
+	//
+	// We cannot use the WindowBecomeAvailable notification
+	// because it will show up all the windows that were
+	// discovered in the query tree process, and it doesn't
+	// tell us if windows were created or discovered.
+
+	// Newly created windows are placed at the top of
+	// the stacking order, and windows that have received
+	// a CreateNotify event know who their parent window
+	// is.
+	XCBWindow *window = [notification object];
+	if ([[window parent] isEqual: root])
+	{
+		// Add window at the top
+		[window setAboveWindow: [childWindows lastObject]];
+		[childWindows addObject: window];
+	}
+}
+- (void)handleQueryTree: (xcb_query_tree_reply_t*)query_tree_reply
+{
+	int c_length = xcb_query_tree_children_length(query_tree_reply);
+	xcb_window_t *windows = xcb_query_tree_children(query_tree_reply);
+	XCBWindow* previous = nil;
+	for (int i = 0; i < c_length; i++)
+	{
+		// Below, we infer two things from the nature of
+		// xcb_query_tree requests:
+		// 1. The root window is the root window specified
+		//    in the reply (because this class only sends
+		//    xcb_query_tree() on root windows)
+		// 2. The window below us is the previous window
+		//    we handled in the list, because xcb_query_tree()
+		//    returns windows in bottom to top stacking order.
+		XCBWindow *newWindow = 
+			[XCBWindow 
+				windowWithXCBWindow: windows[i]
+			                     parent: query_tree_reply->root
+			                      above: [previous xcbWindowId]];
+		// We are assuming childWindows contains no
+		// existing windows for this screen, so we can
+		// just add them in bottom->top stacking order, which is the
+		// order returned by xcb_query_tree()
+		[newWindow setAboveWindow: previous];
+		[childWindows addObject: newWindow];
+		previous = newWindow;
+	}
+	[XCBConn setNeedsFlush: YES];
+}
+- (void)restackWindow: (XCBWindow*)xcbWindow
+          aboveWindow: (id)xcbAboveWindow
+{
+	if (![xcbAboveWindow isEqual: [NSNull null]]) 
+	{
+		// Insert after the above window
+		NSUInteger aboveIndex;
+		[xcbWindow retain];
+		[childWindows removeObject: xcbWindow];
+		aboveIndex  = [childWindows indexOfObject: xcbAboveWindow];
+		[childWindows insertObject: xcbWindow 
+				   atIndex: aboveIndex + 1];
+		[xcbWindow release];
+		[xcbWindow setAboveWindow: xcbAboveWindow];
+	}
+	else
+	{
+		// Insert at the bottom of the list
+		[xcbWindow retain];
+		[childWindows removeObject: xcbWindow];
+		[childWindows insertObject: xcbWindow 
+				   atIndex: 0];
+		[xcbWindow release];
+		[xcbWindow setAboveWindow: nil];
+	}
+}
+- (void)discoverChildWindows
+{
+	// xcb_query_tree() for child windows and 
+	// wait for callbacks
+	xcb_query_tree_cookie_t query_tree_cookie = 
+	xcb_query_tree_unchecked([XCBConn connection], [root xcbWindowId]);
+	[XCBConn 
+		setHandler: self
+		  forReply: query_tree_cookie.sequence
+		  selector: @selector(handleQueryTree:)];
 }
 @end

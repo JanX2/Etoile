@@ -47,6 +47,8 @@ DEFINE_NOTIFICATION(WindowUnMapRequest);
 DEFINE_NOTIFICATION(WindowConfigureRequest);
 DEFINE_NOTIFICATION(WindowCirculateRequest);
 DEFINE_NOTIFICATION(WindowParentDidChange);
+DEFINE_NOTIFICATION(WindowPropertyDidRefresh);
+DEFINE_NOTIFICATION(WindowPropertyDidChange);
 
 #define XCBNOTIFY_U(x, ui) \
 {\

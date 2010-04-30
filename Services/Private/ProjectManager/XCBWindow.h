@@ -27,6 +27,8 @@
 #import "XCBGeometry.h"
 #import "XCBDrawable.h"
 
+@class XCBCachedProperty;
+
 // FIXME: Change frame/setFrame: to avoid type conflict with NSWindow
 
 enum _XCBWindowLoadState
@@ -78,6 +80,8 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
 	
 	XCBWindowLoadState window_load_state;
 	uint32_t _cache_load_values;
+
+	NSMutableDictionary *cached_property_values;
 }
 
 /**
@@ -104,11 +108,30 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
   * You should only use this method when you are
   * not sure if the window already exists, and you
   * have a way of knowing who its parent is (usually
-  * through window tree traversal).
+  * through window tree traversal). If the window
+  * already exists, the parent attribute is ignored.
+  *
+  * If the window needs to be created, it will be
+  * assumed it is at the bottom of the stacking order.
+  * If this is not what you want, you should get the
+  * correct stacking order and call +windowWithXCBWindow:parent:above:
   */
 + (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow 
                            parent: (xcb_window_t)parent;
 
+/**
+  * Get the window with the specified ID, or
+  * create a new one if it doesn't exist.
+  *
+  * You must only use this method if you know
+  * the window doesn't exist and you know the
+  * parent and above windows. If the window has
+  * already been created in the system, the parent
+  * and above parameters are ignored.
+  */
++ (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow 
+                           parent: (xcb_window_t)parent
+                            above: (xcb_window_t)above;
 /**
   * Get a window from a create event. The
   * window ID and parent information contained
@@ -117,7 +140,14 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
   */ 
 + (XCBWindow*)windowWithCreateEvent: (xcb_create_notify_event_t*)anEvent;
 
-- (XCBWindowLoadState) windowLoadState;
+/**
+  * A global object that represents an "unknown" window
+  * This is used when an XCBWindow needs to be returned, but
+  * the value is unknown.
+  */
++ (XCBWindow*)unknownWindow;
+
+- (XCBWindowLoadState)windowLoadState;
 
 - (void)setDelegate:(id)delegate;
 - (id)delegate;
@@ -134,8 +164,20 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
                           depth: (uint8_t)depth
                           class: (xcb_window_class_t)windowClass
                          visual: (xcb_visualid_t)visual;
+
 - (XCBRect)frame;
 - (void)setFrame: (XCBRect)aRect;
+- (void)restackAboveWindow: (XCBWindow*)aboveWindow;
+- (void)restackBelowWindow: (XCBWindow*)belowWindow;
+- (void)restackRelativeTo: (XCBWindow*)otherWindow
+                stackMode: (xcb_stack_mode_t)stackMode;
+/**
+  * Reconfigure the window according to values
+  * listed in xcb_config_window_t
+  */
+- (void)configureWindow: (uint16_t)valueMask
+                 values: (const uint32_t*)values;
+
 - (int16_t)borderWidth;
 - (XCBWindow*)parent;
 - (xcb_window_t)xcbWindowId;
@@ -173,18 +215,56 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
 - (xcb_visualid_t)visual;
 - (xcb_window_class_t)windowClass;
 - (xcb_map_state_t)mapState;
-- (BOOL) overrideRedirect;
+- (BOOL)overrideRedirect;
+/**
+  * The window that this one is positioned above.
+  * Returns the [XCBWindow] instance of the window
+  * this is positioned above, nil if it is at the
+  * bottom of the stacking order, or 
+  * +[XCBWindow unknownWindow] if the window below
+  * this one is unknown.
+  */
 - (XCBWindow*)aboveWindow;
 
 /**
   * Reconfigure the window according to values
   * listed in xcb_config_window_t
   */
-- (void) configureWindow: (uint16_t)valueMask
-                  values: (const uint32_t*)values;
+- (void)configureWindow: (uint16_t)valueMask
+                 values: (const uint32_t*)values;
+
+/**
+  * Refresh the cached value of a property, or cache it
+  * if it has not already been loaded. This method will
+  * intern the corresponding atom if necessary.
+  *
+  * When the property has been re-cached, a XCBWindowPropertyDidRefreshNotification
+  * shall be posted.
+  */
+- (void)refreshCachedProperty: (NSString*)propertyName;
+- (void)refreshCachedProperties: (NSArray*)properties;
+/**
+  * Retreive the cached value of a property. This method
+  * returns nil if the property has not been cached.
+  */
+- (XCBCachedProperty*)cachedPropertyValue: (NSString*)propertyName;
 
 /** XCBDrawable **/
 - (xcb_drawable_t)xcbDrawableId;
+
+@end
+
+@interface XCBWindow (Package)
+/**
+  * Set the window that this window is positioned above.
+  * This method must not be used as a public API. It is
+  * currently used internally by XCBScreen to set the above
+  * window when window tracking is on.
+  *
+  * You could use this to store the above window when
+  * you have some means of tracking it correctly.
+  */
+- (void)setAboveWindow: (XCBWindow*)above;
 @end
 
 @interface NSObject (XCBWindowDelegate)
@@ -205,4 +285,6 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
 - (void)xcbWindowCirculateRequest: (NSNotification*)notification;
 - (void)xcbWindowConfigureRequest: (NSNotification*)notification;
 - (void)xcbWindowParentDidChange: (NSNotification*)notification;
+- (void)xcbWindowPropertyDidRefresh: (NSNotification*)notification;
+- (void)xcbWindowPropertyDidChange: (NSNotification*)notification;
 @end

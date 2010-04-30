@@ -48,11 +48,11 @@
 @end
 
 @implementation XCBConnection (EventHandlers)
-- (void) handleFocusIn: (xcb_map_notify_event_t*)anEvent
+- (void) handleFocusIn: (xcb_focus_in_event_t*)anEvent
 {
 	NSLog(@"Focus in");
 }
-- (void) handleFocusOut: (xcb_map_notify_event_t*)anEvent
+- (void) handleFocusOut: (xcb_focus_out_event_t*)anEvent
 {
 	NSLog(@"Focus out");
 }
@@ -183,7 +183,6 @@ XCBConnection *XCBConn;
            	     object: handle];
 	[handle waitForDataInBackgroundAndNotify];
 
-
 	// Create XCBWindows for all of the root windows.
 	xcb_screen_iterator_t iter = 
 		xcb_setup_roots_iterator(xcb_get_setup(connection));
@@ -195,20 +194,6 @@ XCBConnection *XCBConn;
 				screen->height_in_pixels);
 		[self registerWindow: [XCBWindow windowWithXCBWindow: screen->root parent:XCB_NONE]];
 
-		uint32_t events = 
-			XCB_EVENT_MASK_FOCUS_CHANGE |
-			XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_BUTTON_PRESS |
-			XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
-			XCB_EVENT_MASK_STRUCTURE_NOTIFY |
-			XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT;
-
-		xcb_change_window_attributes(connection, screen->root,
-			XCB_CW_EVENT_MASK, &events);
-		events = 1;
-		xcb_configure_window(connection, screen->root, 
-			XCB_CW_OVERRIDE_REDIRECT, &events);
-		xcb_change_window_attributes(connection, screen->root, 
-			XCB_CW_OVERRIDE_REDIRECT, &events);
 		xcb_screen_next(&iter);
 	}
 	xcb_flush(connection);
@@ -304,14 +289,18 @@ XCBConnection *XCBConn;
 				error->sequence,
 				error->error_code,
 				error->response_type);
-				if ([handler count] == 4)
+				if ([handler count] == 5)
 				{
 					id obj = [handler objectAtIndex: 1];
+					id context = [handler objectAtIndex: 3];
+					if ([context isEqual: [NSNull null]])
+						context = nil;
 					SEL errorSelector;
-					[[handler objectAtIndex: 3] 
+					[[handler objectAtIndex: 4] 
 						getValue: &errorSelector];
 					[obj performSelector: errorSelector
-					          withObject: (id)error];
+					          withObject: (id)error
+					          withObject: (id)context];
 				}
 				free(error);
 				continue;
@@ -319,7 +308,17 @@ XCBConnection *XCBConn;
 			id obj = [handler objectAtIndex: 1];
 			SEL selector;
 			[[handler objectAtIndex: 2] getValue: &selector];
-			[obj performSelector: selector withObject: (id)reply];
+			if ([handler count] == 3) 
+			{
+				[obj performSelector: selector withObject: (id)reply];
+			}
+			else
+			{
+				id context = [handler objectAtIndex: 3];
+				[obj performSelector: selector
+				          withObject: (id)reply
+				          withObject: context];
+			}
 			free(reply);
 			// Don't remove the handler just yet
 			repliesHandled = YES;
@@ -356,6 +355,21 @@ XCBConnection *XCBConn;
 - (void)setHandler: (id)anObject
           forReply: (unsigned int)sequence
           selector: (SEL)aSelector
+            object: (id)context
+{
+	NSNumber *key = [NSNumber numberWithUnsignedInt: sequence];
+	NSDictionary *value = [NSArray arrayWithObjects:
+		key,
+		anObject,
+		[NSValue valueWithBytes: &aSelector objCType: @encode(SEL)],
+		context != nil ? context : (id)[NSNull null],
+		nil];
+	[replyHandlers addObject: value];
+}
+- (void)setHandler: (id)anObject
+          forReply: (unsigned int)sequence
+          selector: (SEL)aSelector
+            object: (id)context
      errorSelector: (SEL)errorSelector
 {
 	NSNumber *key = [NSNumber numberWithUnsignedInt: sequence];
@@ -363,6 +377,7 @@ XCBConnection *XCBConn;
 		key,
 		anObject,
 		[NSValue valueWithBytes: &aSelector objCType: @encode(SEL)],
+		context != nil ? context : (id)[NSNull null],
 		[NSValue valueWithBytes: &errorSelector objCType: @encode(SEL)],
 		nil];
 	[replyHandlers addObject: value];

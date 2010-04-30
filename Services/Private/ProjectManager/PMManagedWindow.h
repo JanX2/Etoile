@@ -29,8 +29,17 @@
 	XCBWindow *decorationWindow;
 	XCBPoint child_origin;
 	BOOL ignoreUnmap;
+
+	// Fields used during map and unmap transitions
+	NSMutableSet *pendingWindowProperties;
+	BOOL reparented;
 }
 + (PMManagedWindow*)windowDecoratingWindow: (XCBWindow*)win;
+- (XCBWindow*)childWindow;
 - (XCBWindow*)decorationWindow;
-- (void)mapDecoratedWindow;
+@end
+
+@interface NSObject (PMManagedWindowDelegate)
+- (void)managedWindow: (PMManagedWindow*)managedWindow
+         mappedWindow: (XCBWindow*)mappedWindow;
 @end

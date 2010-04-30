@@ -1,7 +1,7 @@
-/**
- * Étoilé ProjectManager - XCBAtomCache.h
+/*
+ * Étoilé ProjectManager - XCBProperty.h
  *
- * Copyright (C) 2009 David Chisnall
+ * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,28 @@
  * THE SOFTWARE.
  *
  **/
-#import <Foundation/Foundation.h>
-#import <xcb/xcb.h>
+#import <EtoileFoundation/EtoileFoundation.h>
+#import "XCBConnection.h"
 
-
-@interface XCBAtomCache : NSObject {
-@protected
-	// atom name (atoms with pending requests) 
-	NSMutableSet *inRequestAtoms;
-	// Cookie => atom name (cookies of pending atom requests)
-	NSMutableDictionary *requestedAtoms;
-	// atom name => xcb_atom_t (fetched atoms map)
-	NSMutableDictionary *fetchedAtoms;
+@interface XCBCachedProperty : NSObject
+{
+	NSString *propertyName;
+	NSData *propertyData;
+	xcb_atom_t type;
+	uint8_t format;
+	uint32_t format_length;
+	uint32_t bytes_after;
 }
-+ (XCBAtomCache*)sharedInstance;
 
-/**
-  * Returns the atom with the specified name. 
-  * If the atom has not been cached, it will
-  * synchronously interned and cached before
-  * returning from this method. 
-  */
-- (xcb_atom_t)atomNamed: (NSString*)aString;
-
-/**
-  * Asynchronously cache a number of atoms.
-  * Call -waitOnPendingAtomRequests to 
-  * synchronously cache all pending atom
-  * requests.
-  */
-- (void)cacheAtoms: (NSArray*)atoms;
-- (void)waitOnPendingAtomRequests;
+- (id)initWithGetPropertyReply: (xcb_get_property_reply_t*)reply
+                  propertyName: (NSString*)name;
+- (void)dealloc;
+- (NSString*)propertyName;
+- (xcb_atom_t)type;
+- (uint8_t)format;
+- (uint32_t)lengthInFormatUnits;
+- (NSData*)data;
+- (uint8_t*)asBytes;
+- (uint16_t*)asShorts;
+- (uint32_t*)asLongs;
 @end
