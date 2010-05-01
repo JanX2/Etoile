@@ -1,16 +1,13 @@
-
-#import "EtoileMenuTitleView.h"
-
+#import <Foundation/Foundation.h>
 #import <AppKit/NSFont.h>
 #import <AppKit/NSImage.h>
 #import <AppKit/NSAttributedString.h>
 #import <AppKit/NSColor.h>
 #import <AppKit/NSGraphics.h>
 #import <AppKit/NSButton.h>
+#import <AppKit/NSStringDrawing.h>
 #import <AppKit/NSWindow.h>
-
-#import <Foundation/NSBundle.h>
-
+#import "EtoileMenuTitleView.h"
 #import "EtoileMenuUtilities.h"
 
 @implementation EtoileMenuTitleView
