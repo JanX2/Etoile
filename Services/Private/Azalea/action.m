@@ -39,11 +39,11 @@
 #import "AZStartupHandler.h"
 #import <AppKit/AppKit.h>
 
-inline void client_action_start(union ActionData *data)
+static void client_action_start(union ActionData *data)
 {
 }
 
-inline void client_action_end(union ActionData *data)
+static void client_action_end(union ActionData *data)
 {
 }
 
