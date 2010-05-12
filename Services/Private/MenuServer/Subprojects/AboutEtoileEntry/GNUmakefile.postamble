@@ -1,1 +1,4 @@
 # Postamble Definitions
+
+# Allows the linker to find libSystemConfig.so in the Build directory
+include ../../../../../etoile.make
