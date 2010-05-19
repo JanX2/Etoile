@@ -35,6 +35,8 @@
 
 #import <XWindowServerKit/XScreen.h>
 
+#include <assert.h>
+
 /*! The event mask to grab on the root window */
 #define ROOT_EVENTMASK (StructureNotifyMask | PropertyChangeMask | \
                         EnterWindowMask | LeaveWindowMask | \
