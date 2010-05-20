@@ -32,17 +32,16 @@
 #import <X11/Xatom.h>
 
 @implementation XWindow
+
 - (id) initWithContentRect: (NSRect)contentRect
                  styleMask: (unsigned int)aStyle
                    backing: (NSBackingStoreType)bufferingType
                      defer: (BOOL)flag
-                    screen: (NSScreen*)aScreen
 {
   self = [super initWithContentRect: contentRect
                  styleMask: aStyle
                    backing: bufferingType
-                     defer: flag
-                    screen: aScreen];
+                     defer: flag];
 
   server = GSCurrentServer();
   dpy = (Display*)[GSCurrentServer() serverDevice];
