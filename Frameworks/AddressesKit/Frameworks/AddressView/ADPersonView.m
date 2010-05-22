@@ -573,7 +573,7 @@ static NSString *__defaultCountryCode = nil;
 
   if([[panel filenames] count] != 1)
     {
-      NSLog(@"Argh! %d filenames; 1 expected\n", [[panel filenames] count]);
+      NSLog(@"Argh! %lu filenames; 1 expected\n", (unsigned long)[[panel filenames] count]);
       return;
     }
   if(![_person setImageDataWithFile: [[panel filenames] objectAtIndex: 0]])
