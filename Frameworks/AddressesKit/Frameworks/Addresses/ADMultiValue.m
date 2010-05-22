@@ -71,7 +71,7 @@ static ADPropertyType _propTypeFromDict(NSDictionary *dict)
   return _arr;
 }
 
-- (unsigned int) count
+- (NSUInteger) count
 {
   return [_arr count];
 }

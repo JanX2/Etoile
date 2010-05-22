@@ -25,7 +25,7 @@
   NSMutableArray *_arr;
 }
 
-- (unsigned int) count;
+- (NSUInteger) count;
 
 - (id) valueAtIndex: (int) index;
 - (NSString*) labelAtIndex: (int) index;

@@ -34,7 +34,7 @@
 - (id) initWithType: (CKPropertyType) type contentArray: (NSArray *) array;
 - (NSArray*) contentArray;
 
-- (unsigned int) count;
+- (NSUInteger) count;
 
 - (id) valueAtIndex: (int) index;
 - (NSString*) labelAtIndex: (int) index;

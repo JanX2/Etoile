@@ -52,7 +52,7 @@
 				  query: (LCQuery *) q
 				 filter: (LCFilter *) f
 				   sort: (LCSort *) o;
-- (unsigned int) count; /* LuceneKit: length() in lucene */
+- (NSUInteger) count; /* LuceneKit: length() in lucene */
 - (LCDocument *) document: (int) n;
 - (float) score: (int) n;
 - (int) identifier: (int) n;

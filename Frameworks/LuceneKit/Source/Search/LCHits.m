@@ -116,7 +116,7 @@
 	DESTROY(pool);
 }
 
-- (unsigned int) count 
+- (NSUInteger) count 
 {
 	return length;
 }
