@@ -170,7 +170,7 @@
 //
 //
 //
-- (unsigned int) count
+- (NSUInteger) count
 {
   if (child)
     {

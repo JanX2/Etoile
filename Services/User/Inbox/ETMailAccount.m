@@ -211,7 +211,7 @@ DEALLOC(DESTROY(_properties);DESTROY(_folders);)
 {
 	return [[self content] objectEnumerator];
 }
-- (unsigned int) count
+- (NSUInteger) count
 {
 	return [_folders count];
 }

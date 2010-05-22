@@ -74,7 +74,7 @@
 //
 //
 //
-- (unsigned int) count
+- (NSUInteger) count
 {
   return [_parts count];
 }

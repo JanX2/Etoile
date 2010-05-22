@@ -121,7 +121,7 @@ DEALLOC(DESTROY(_properties);)
 {
 	return [_articles objectEnumerator];
 }
-- (unsigned int) count
+- (NSUInteger) count
 {
 	return [_articles count];
 }

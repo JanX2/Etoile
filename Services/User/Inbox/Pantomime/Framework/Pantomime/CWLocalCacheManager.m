@@ -409,7 +409,7 @@ static unsigned short version = 1;
 //
 //
 //
-- (unsigned int) count
+- (NSUInteger) count
 {
   return _count;
 }

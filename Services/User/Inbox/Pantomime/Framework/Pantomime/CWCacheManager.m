@@ -82,7 +82,7 @@
 //
 //
 //
-- (unsigned int) count
+- (NSUInteger) count
 {
   return _count;
 }
