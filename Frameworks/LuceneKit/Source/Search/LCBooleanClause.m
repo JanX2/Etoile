@@ -69,7 +69,7 @@
 		return NO;
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
 	return [query hash] ^ ((LCOccur_MUST == occur)? 1 : 0) ^ ((LCOccur_MUST_NOT == occur)? 2 : 0);
 }

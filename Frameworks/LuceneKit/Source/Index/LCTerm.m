@@ -64,7 +64,7 @@ field and text. */
 }
 
 /** Combines the hashCode() of the field and the text. */
-- (unsigned) hash
+- (NSUInteger) hash
 {
 	return [field hash] + [text hash];
 }

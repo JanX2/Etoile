@@ -175,7 +175,7 @@ static NSString * avatarCachePath = nil;
 }
 
 //Hash value is computed when the object is created, and so will remain constant throughout the lifespan of the object.
-- (unsigned int) hash
+- (NSUInteger) hash
 {
 	return hash;
 }

@@ -169,7 +169,7 @@ const unsigned long kDefaultCacheSize = 10485760;
                                        scale: aScale] autorelease];
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
    unsigned result = 23; // SEED
    result = FIRST_TERM(result) + pageNum;

@@ -84,7 +84,7 @@
 	return YES;
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
 	return [term hash] + FloatToIntBits([self boost]);
 }

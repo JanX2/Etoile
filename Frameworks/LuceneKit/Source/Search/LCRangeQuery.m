@@ -161,7 +161,7 @@
   return YES;
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
   int h = FloatToIntBits([self boost]);
   h ^= (lowerTerm ? [lowerTerm hash] : 0);

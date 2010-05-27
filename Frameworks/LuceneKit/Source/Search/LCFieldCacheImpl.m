@@ -77,7 +77,7 @@
 	return NO;
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
 	return [field hash] ^ type ^ ((custom == nil) ? 0 : [custom hash]) ^ ((locale == nil) ? 0 : [locale hash]);
 }

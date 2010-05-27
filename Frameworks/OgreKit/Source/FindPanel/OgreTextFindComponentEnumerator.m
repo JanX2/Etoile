@@ -28,7 +28,7 @@
         _terminalIndex = _count - 1;
         
         if (inSelection) {
-            _indexes = (unsigned*)NSZoneMalloc([self zone], sizeof(unsigned) * _count);
+            _indexes = (NSUInteger*)NSZoneMalloc([self zone], sizeof(NSUInteger) * _count);
             if (_indexes == NULL) {
                 // Error
                 [self release];

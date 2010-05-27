@@ -113,7 +113,7 @@
 /* Accessor methods */
 - (void)beginEditing { /* do nothing */ }
 - (void)endEditing { /* do nothing */ }
-- (void)beginRegisteringUndoWithCapacity:(unsigned)aCapacity { /* do nothing */ }
+- (void)beginRegisteringUndoWithCapacity:(NSUInteger)aCapacity { /* do nothing */ }
 - (void)endRegisteringUndo { /* do nothing */ }
 
 - (BOOL)isSelected

@@ -164,7 +164,7 @@
 	return YES;
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
 	int result = [super hash];
 	//		result = 29 * result + minimumSimilarity != +0.0f ? Float.floatToIntBits(minimumSimilarity) : 0;

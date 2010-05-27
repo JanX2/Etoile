@@ -10,10 +10,10 @@
 - (NSArray *) componentsSeparatedByNewline
 {
 	NSMutableArray *array = [NSMutableArray array];
-	unsigned int length = [self length];
-	unsigned int lineStart = 0;
-	unsigned int lineEnd = 0;
-	unsigned int stringEnd = 0;
+	NSUInteger length = [self length];
+	NSUInteger lineStart = 0;
+	NSUInteger lineEnd = 0;
+	NSUInteger stringEnd = 0;
 	while (lineEnd < length)
 	{
 		[self getLineStart: &lineStart

@@ -162,7 +162,7 @@ static OnigCaptureTreeNode *Ogre_onigCaptureTreeNodeWithArray(NSArray *captureAr
 }
 
 // •”•ª•¶š—ñ‚Ì” + 1
-- (unsigned)count
+- (NSUInteger)count
 {
 	return _region->num_regs;
 }

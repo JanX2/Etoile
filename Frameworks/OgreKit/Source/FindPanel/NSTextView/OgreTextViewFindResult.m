@@ -222,7 +222,7 @@ static const unsigned   OgreTextViewFindResultInitialCapacity = 30;
 	return YES;
 }
 
-- (unsigned)count
+- (NSUInteger)count
 {
 	return _count;
 }

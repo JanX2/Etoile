@@ -15,7 +15,7 @@
 
 
 @implementation OgreTextViewUndoer
-- (id)initWithCapacity:(unsigned)aCapacity
+- (id)initWithCapacity:(NSUInteger)aCapacity
 {
     self = [super init];
     if (self != nil) {

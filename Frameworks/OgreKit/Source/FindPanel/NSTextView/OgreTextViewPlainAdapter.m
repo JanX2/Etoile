@@ -140,7 +140,7 @@
     }
 }
 
-- (void)beginRegisteringUndoWithCapacity:(unsigned)aCapacity
+- (void)beginRegisteringUndoWithCapacity:(NSUInteger)aCapacity
 {
     // Undo操作の登録開始
     _allowsUndo = [_textView allowsUndo];

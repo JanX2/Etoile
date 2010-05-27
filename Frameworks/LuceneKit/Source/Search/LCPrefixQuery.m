@@ -74,7 +74,7 @@
 	return (([self boost] == [other boost]) && ([[self prefix] isEqual: [other prefix]]));
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
 	return FloatToIntBits([self boost]) ^ [prefix hash] ^ 0x6634D93C;
 }

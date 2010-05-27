@@ -78,7 +78,7 @@
 	return [NSString stringWithFormat: @"LCQueryFilter(%@)", query];
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
   return [query hash]^0x923F64B9;
 }

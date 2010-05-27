@@ -222,7 +222,7 @@ static int maxClauseCount = 1024;
 		return NO;
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
 	return (unsigned)((FloatToIntBits([self boost]) ^ [clauses hash]) + [self minimumNumberShouldMatch]);
 }

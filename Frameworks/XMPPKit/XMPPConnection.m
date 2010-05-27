@@ -467,7 +467,7 @@ static NSDictionary * STANZA_KEYS;
 }
 - (void) addstreamFeatures:(NSDictionary*) aFeatureSet
 {
-	NSLog(@"Stream features has retain count %d", [streamFeatures retainCount]);
+	NSLog(@"Stream features has retain count %lu", (unsigned long)[streamFeatures retainCount]);
 	[streamFeatures release];
 	streamFeatures = [aFeatureSet retain];
 	//If we are connected, try logging in

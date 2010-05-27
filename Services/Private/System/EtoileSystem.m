@@ -291,7 +291,7 @@ BOOL SCHardwareSuspend();
 
 	NSDebugLLog(@"SCSystem", @"Remove %@ in launch queue", launchedProcess);
 	[_launchGroup removeObject: launchedProcess];
-	NSDebugLLog(@"SCSystem", @"Process group count is now %d", [_launchGroup count]);
+	NSDebugLLog(@"SCSystem", @"Process group count is now %lu", (unsigned long)[_launchGroup count]);
 
 	BOOL processGroupLaunchFinished = [_launchGroup count] == 0;
 	if (processGroupLaunchFinished)
@@ -395,8 +395,8 @@ BOOL SCHardwareSuspend();
 		NSArray *processGroup = RETAIN([_launchQueue objectAtIndex: 0]);
 		[_launchQueue removeObject: processGroup];
 
-		NSDebugLLog(@"SCSystem", @"Process group count is %d, process launch \
-            queue count is %d", [processGroup count], [_launchQueue count]);
+		NSDebugLLog(@"SCSystem", @"Process group count is %lu, process launch \
+            queue count is %lu", (unsigned long)[processGroup count], [_launchQueue count]);
 
 		[self startProcessesParallely: processGroup];
 		RELEASE(processGroup);

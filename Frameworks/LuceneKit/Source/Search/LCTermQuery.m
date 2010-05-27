@@ -72,7 +72,7 @@
 		return NO;
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
 	// LuceneKit: should work. Otherwise, look LCSimilarity for implmentation of floatToIntbits()
 	//return (int)[self boost] ^ [term hash];

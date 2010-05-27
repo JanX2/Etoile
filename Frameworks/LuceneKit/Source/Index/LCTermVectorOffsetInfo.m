@@ -43,7 +43,7 @@
 	return YES;
 }
 
-- (unsigned) hash
+- (NSUInteger) hash
 {
 	unsigned result;
 	result = startOffset;

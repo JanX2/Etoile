@@ -29,7 +29,7 @@
 
 - (void)beginEditing;       // begin editing
 - (void)endEditing;         // end editing
-- (void)beginRegisteringUndoWithCapacity:(unsigned)aCapacity;  // begin resistering undo oprations
+- (void)beginRegisteringUndoWithCapacity:(NSUInteger)aCapacity;  // begin resistering undo oprations
 - (void)endRegisteringUndo;  // end resistering undo oprations
 
 - (BOOL)isSelected;

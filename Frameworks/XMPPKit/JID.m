@@ -144,7 +144,7 @@
 	
 	return NO;
 }
-- (unsigned) hash
+- (NSUInteger) hash
 {
 	return [stringRepresentation hash];
 }

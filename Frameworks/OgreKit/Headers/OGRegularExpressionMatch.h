@@ -46,7 +46,7 @@ extern NSString	* const OgreMatchException;
 - (unsigned)index;
 
 // 部分文字列の数 + 1
-- (unsigned)count;
+- (NSUInteger)count;
 
 // description
 - (NSString*)description;

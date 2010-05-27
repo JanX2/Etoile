@@ -18,7 +18,7 @@
 @interface OgreTextFindComponentEnumerator : NSEnumerator
 {
     OgreTextFindBranch	*_branch;
-    unsigned			*_indexes, _count;
+    NSUInteger			*_indexes, _count;
 	int					_nextIndex;
     int					_terminalIndex;
     BOOL				_inSelection;
