@@ -9,7 +9,7 @@
 	{
 		return nil;
 	}
-	[_path moveToPoint: NSZeroPoint];
+	[[self path] moveToPoint: NSZeroPoint];
 	_pressures = [[NSMutableArray alloc] initWithCapacity:1000];
 	
 	// Change this to ETPenStyle to get a vector pen tool instead..
@@ -27,7 +27,7 @@
 
 - (void) addPoint: (NSPoint)point withPressure: (float)pressure
 {
-	[_path lineToPoint: point];
+	[[self path] lineToPoint: point];
 	[_pressures addObject: [NSNumber numberWithFloat:pressure]];
 	[self didChangeItemBounds: [[self path] bounds]];
 }
