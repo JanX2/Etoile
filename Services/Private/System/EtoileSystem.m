@@ -396,7 +396,7 @@ BOOL SCHardwareSuspend();
 		[_launchQueue removeObject: processGroup];
 
 		NSDebugLLog(@"SCSystem", @"Process group count is %lu, process launch \
-            queue count is %lu", (unsigned long)[processGroup count], [_launchQueue count]);
+            queue count is %lu", (unsigned long)[processGroup count], (unsigned long)[_launchQueue count]);
 
 		[self startProcessesParallely: processGroup];
 		RELEASE(processGroup);
