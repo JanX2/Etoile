@@ -339,7 +339,8 @@ int main(int argc, char **argv)
         if (restart_path != nil) {
 #if 1
 	    // This is a simplied version
-	    int error = execlp([restart_path cString], NULL, NULL);
+	    int error = 
+			execlp([restart_path cString], [restart_path cString], NULL);
 	    if (error == -1)
 	      NSLog(@"Failed to execute '%@'", restart);
 #else
