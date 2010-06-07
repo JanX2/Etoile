@@ -1,7 +1,25 @@
-#import "GSPrivate.h"
 #import "ETSerializer.h"
 #import "ETSerializerBackend.h"
 #import "ETDeserializer.h"
+
+// From GNUstep:
+@interface GSArray : NSArray
+{
+@public
+	id       *_contents_array;
+	unsigned  _count;
+}
+@end
+
+@interface GSMutableArray : NSMutableArray
+{
+@public
+	id       *_contents_array;
+	unsigned  _count;
+	unsigned  _capacity;
+	int       _grow_factor;
+}
+@end
 
 #define CASE(x) if(strcmp(aVariable, #x) == 0)
 #define serializeUsing()\

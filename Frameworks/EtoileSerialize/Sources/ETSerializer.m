@@ -257,7 +257,7 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 	switch(type)
 	{
 		case '#':
-			[backend storeClass:(Class)address withName:name];
+			[backend storeClass: *(Class*)address withName:name];
 			return sizeof(id);
 		case 'c':
 			[backend storeChar:*(char*)address withName:name];

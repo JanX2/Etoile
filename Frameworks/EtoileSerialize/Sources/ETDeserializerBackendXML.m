@@ -29,7 +29,7 @@
 
 - (id) init
 {
-	self = [super initWithXMLParser: [[[ETXMLParser alloc] initWithContentHandler: nil] autorelease]
+	self = [super initWithXMLParser: [[ETXMLParser alloc] initWithContentHandler: nil]
 	                         parent: nil
 	                            key: @"ETDeserializerBackendXML"];
 	if (nil == self)
@@ -83,7 +83,6 @@
 	NSString *rawXML = [[[NSString alloc] initWithBytes: [someData bytes]
 	                                             length: [someData length]
 	                                           encoding: NSUTF8StringEncoding] autorelease];
-		
 	return [parser parseFromSource: rawXML];
 }
 
@@ -221,9 +220,9 @@
 	if ([name isEqual: @"objects"])
 	{
 		ETXMLDeserializationHandler *handler =
-		[[[ETXMLobjectsDeserializationHandler alloc] initWithXMLParser: parser
-		                                                        parent: self
-		                                                           key: name] autorelease];
+		[[ETXMLobjectsDeserializationHandler alloc] initWithXMLParser: parser
+		                                                       parent: self
+		                                                          key: name];
 		[handler setDeserializer: deserializer];
 		[handler startElement: name attributes: attributes];
 	}
@@ -238,9 +237,6 @@
 	[super endElement: anElement];
 	if (0 == depth)
 	{
-		// We get rid of the parser because we either created it ourselves or
-		// received it via DO. In both cases we needed to retain it.
-		[parser release];
 		parser = nil;
 	}
 }

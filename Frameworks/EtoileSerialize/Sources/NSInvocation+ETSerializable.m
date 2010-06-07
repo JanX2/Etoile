@@ -118,6 +118,11 @@ void deserializeArgumentInfo(NSArgumentInfo * sig, char * name, void * aBlob)
 		//Save the arguments later
 		return YES;
 	}
+	// Ignore pointer added for future expansion.
+	CASE(_unused)
+	{
+		return YES;
+	}
 	return [super serialize:aVariable using:aSerializer];
 }
 /**

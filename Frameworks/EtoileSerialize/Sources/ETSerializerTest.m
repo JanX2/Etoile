@@ -128,8 +128,7 @@ void * TestStructDeserializer(char* varName,
 	aStruct.thisWontWork[0].foo = 23;
 	aStruct.thisWontWork[1].foo = 24;
 	aStruct.thisWontWork[2].foo = 25;
-	//Check we don't break on non-OpenStep objects.
-	anObject = [Object new];
+	anObject = [NSObject new];
 	aString = [NSMutableString stringWithString:@"Some text"];
 	anotherReferenceToTheSameString = aString;
 	anArray[0] = 0;

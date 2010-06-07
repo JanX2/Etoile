@@ -203,7 +203,7 @@ typedef union {
  * Typedef for access to internals of concrete string objects.
  */
 typedef struct {
-  @defs(GSMutableString)
+  //@defs(GSMutableString)
 } GSStr_t;
 typedef	GSStr_t	*GSStr;
 

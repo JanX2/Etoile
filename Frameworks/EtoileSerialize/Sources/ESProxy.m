@@ -117,14 +117,26 @@ static id logBackend;
  */
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
-	version = [serializer newVersion];
-	[anInvocation setTarget:nil];
-	[serializer serializeObject:anInvocation withName:@"Delta"];
+	BOOL record = NO;
+	[anInvocation setTarget: nil];
+	// Quick hack: Don't record any messages that NSObject responds to.
+	// NSObject has no state, so none of these messages ought to modify the
+	// object's state.  In future, we should provide a mechanism for
+	// registering either mutation or non-mutation protocols.
+	if (!class_respondsToSelector([NSObject class], [anInvocation selector]))
+	{
+		version = [serializer newVersion];
+		record = YES;
+		[serializer serializeObject:anInvocation withName:@"Delta"];
+	}
 	//[logBackend serializeObject:anInvocation withName:@"Delta"];
-	[anInvocation setTarget:object];
-	[anInvocation invoke];
+	[anInvocation invokeWithTarget: object];
+	NSLog(@"inv: %@ (%@)", anInvocation, object);
+	void * buffer = 0;
+	[anInvocation getReturnValue: &buffer];
+	NSLog(@"Returned %p", buffer);
 	/* Periodically save a full copy */
-	if(version % FULL_SAVE_INTERVAL == 0)
+	if(record && (version % FULL_SAVE_INTERVAL == 0))
 	{
 		[fullSave setVersion:version];
 		[fullSave serializeObject:object withName:@"FullSave"];

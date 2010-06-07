@@ -5,6 +5,8 @@
 #import "ETSerializer.h"
 #import "StringMap.h"
 
+#import <EtoileFoundation/runtime.h>
+
 /**
  * Find the address of an named instance variable for an object.  This searches
  * through the list of instance variables in the class structure's ivars field.
@@ -526,7 +528,7 @@ LOAD_METHOD(Selector, SEL)
  */
 - (void) endObject 
 {
-	if(class_get_instance_method(object->class_pointer, @selector(finishedDeserializing)))
+	if(class_getInstanceMethod(object->class_pointer, @selector(finishedDeserializing)))
 	{
 		[loadedObjectList addObject:object];
 	}
