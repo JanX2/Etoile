@@ -131,10 +131,6 @@ static id logBackend;
 	}
 	//[logBackend serializeObject:anInvocation withName:@"Delta"];
 	[anInvocation invokeWithTarget: object];
-	NSLog(@"inv: %@ (%@)", anInvocation, object);
-	void * buffer = 0;
-	[anInvocation getReturnValue: &buffer];
-	NSLog(@"Returned %p", buffer);
 	/* Periodically save a full copy */
 	if(record && (version % FULL_SAVE_INTERVAL == 0))
 	{
