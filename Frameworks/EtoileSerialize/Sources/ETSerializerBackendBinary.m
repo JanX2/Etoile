@@ -43,18 +43,21 @@ static inline char * safe_strcat(const char* str1, const char* str2)
  * would need to be changed for streams that don't support seeking.
  */
 @implementation ETSerializerBackendBinary
-+ (id) serializerBackendWithStore:(id<ETSerialObjectStore>)aStore
+
++ (id) serializerBackendWithStore: (id<ETSerialObjectStore>)aStore
 {
 	return [[[ETSerializerBackendBinary alloc] initWithStore:aStore] autorelease];
 }
+
 + (Class) deserializerBackendClass
 {
 	return NSClassFromString(@"ETDeserializerBackendBinary");
 }
+
 - (id) deserializerBackend
 {
 	id deserializer = [[[[self class] deserializerBackendClass] alloc] init];
-	if([deserializer deserializeFromStore:store])
+	if ([deserializer deserializeFromStore: store])
 	{
 		return [deserializer autorelease];
 	}
@@ -65,13 +68,14 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 	}
 	return nil;
 }
-- (void) startVersion:(int)aVersion
+
+- (void) startVersion: (int)aVersion
 {
 	//Space for the header.
 	WRITE("\0\0\0\0", sizeof(int));
 }
 
-- (id) initWithStore:(id<ETSerialObjectStore>)aStore
+- (id) initWithStore: (id<ETSerialObjectStore>)aStore
 {
 	if (![aStore conformsToProtocol:@protocol(ETSeekableObjectStore)])
 	{
@@ -122,28 +126,33 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 		WRITE(&refCount, sizeof(refCount));
 	}
 	NSEndMapTableEnumeration(&enumerator);
-	[(id<ETSeekableObjectStore>)store replaceRange:NSMakeRange(0,4) withBytes:(unsigned char*)&indexOffset];
+	[(id<ETSeekableObjectStore>)store replaceRange: NSMakeRange(0,4) withBytes: (unsigned char *)&indexOffset];
 	[store commit];
 }
-- (void) beginStruct:(char*)aStructName withName:(char*)aName
+
+- (void) beginStruct: (char *)aStructName withName: (char *)aName
 {
 	FORMAT("{%s%c%s%c",aStructName, 0, aName,0);
 }
+
 - (void) endStruct
 {
 	WRITE("}",1);
 }
-- (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
+
+- (void) beginObjectWithID: (CORef)aReference withName: (char *)aName withClass: (Class)aClass
 {
 	uint32_t offset = OFFSET;
 	NSIntMapInsert(offsets, aReference, offset);
 	FORMAT("<%s%c",aClass->name,0);
 }
-- (void) storeObjectReference:(CORef)aReference withName:(char*)aName
+
+- (void) storeObjectReference: (CORef)aReference withName: (char *)aName
 {
 	STORE("@", aReference, CORef);
 }
-- (void) incrementReferenceCountForObject:(CORef)anObjectID
+
+- (void) incrementReferenceCountForObject: (CORef)anObjectID
 {
 	int refCount = (int)NSIntMapGet(refCounts, anObjectID);
 	NSIntMapInsert(refCounts, anObjectID,  (++refCount));
@@ -153,32 +162,38 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 {
 	WRITE(">", 1);
 }
-- (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength;
+
+- (void) beginArrayNamed: (char *)aName withLength: (unsigned int)aLength;
 {
 	FORMAT("[%s%c",aName,0);
 	WRITE(&aLength, sizeof(unsigned int));
 }
+
 - (void) endArray
 {
 	WRITE("]", 1);
 }
-- (void) setClassVersion:(int)aVersion
+
+- (void) setClassVersion: (int)aVersion
 {
 	WRITE("V", 1);
 	WRITE(&aVersion, sizeof(int));
 }
+
 #define NSSwapHostCharToBig(x) x
 #define NSSwapHostUnsignedCharToBig(x) x
 #define NSSwapHostUnsignedShortToBig(x) NSSwapHostShortToBig(x)
 #define NSSwapHostUnsignedIntToBig(x) NSSwapHostIntToBig(x)
 #define NSSwapHostUnsignedLongToBig(x) NSSwapHostLongToBig(x)
 #define NSSwapHostUnsignedLongLongToBig(x) NSSwapHostLongLongToBig(x)
+
 #define STORE_METHOD(typeName, type,typeChar)\
-- (void) store##typeName:(type)a##typeName withName:(char*)aName\
+- (void) store##typeName: (type)a##typeName withName: (char *)aName\
 {\
 	type tmp = NSSwapHost##typeName##ToBig(a##typeName);\
 	STORE(typeChar, tmp, type);\
 }
+
 STORE_METHOD(Char, char, "c")
 STORE_METHOD(UnsignedChar, unsigned char, "C")
 STORE_METHOD(Short, short, "s")
@@ -189,29 +204,35 @@ STORE_METHOD(Long, long, "l")
 STORE_METHOD(UnsignedLong, unsigned long, "L")
 STORE_METHOD(LongLong, long long, "q")
 STORE_METHOD(UnsignedLongLong, unsigned long long, "Q")
-- (void) storeFloat:(float)aFloat withName:(char*)aName
+
+- (void) storeFloat: (float)aFloat withName: (char *)aName
 {
 	NSSwappedFloat tmp = NSSwapHostFloatToBig(aFloat);
 	STORE("f", tmp, NSSwappedFloat);
 }
-- (void) storeDouble:(double)aDouble withName:(char*)aName
+
+- (void) storeDouble: (double)aDouble withName: (char *)aName
 {
 	NSSwappedDouble tmp = NSSwapHostDoubleToBig(aDouble);
 	STORE("d", tmp, NSSwappedDouble);
 }
-- (void) storeClass:(Class)aClass withName:(char*)aName
+
+- (void) storeClass: (Class)aClass withName: (char *)aName
 {
 	FORMAT("#%s%c%s%c", aName, 0,aClass->name,0);
 }
-- (void) storeSelector:(SEL)aSelector withName:(char*)aName
+
+- (void) storeSelector: (SEL)aSelector withName: (char *)aName
 {
 	FORMAT(":%s%c%s%c", aName, 0, [NSStringFromSelector(aSelector) UTF8String], 0);
 }
-- (void) storeCString:(const char*)aCString withName:(char*)aName
+
+- (void) storeCString: (const char *)aCString withName: (char *)aName
 {
 	FORMAT("*%s%c%s%c", aName, 0, aCString, 0);
 }
-- (void) storeData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName
+
+- (void) storeData: (void *)aBlob ofSize:(size_t)aSize withName: (char *)aName
 {
 	FORMAT("^%s%c", aName, 0);
 	WRITE(&aSize, sizeof(int));

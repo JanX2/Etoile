@@ -24,6 +24,7 @@
 @end
 
 @implementation ETSerialObjectSocket (ETSerialObjectXMLWriting)
+
 - (ETXMLWriter *) xmlWriter
 {
 	ETXMLSocketWriter *aWriter = [[[ETXMLSocketWriter alloc] init] autorelease];
@@ -35,6 +36,7 @@
 {
 	return YES;
 }
+
 @end
 
 /**
@@ -44,7 +46,8 @@
  * writer and written to the store when -flush is called.
  */
 @implementation ETSerializerBackendXML
-+ (id) serializerBackendWithStore:(id<ETSerialObjectStore>)aStore
+
++ (id) serializerBackendWithStore: (id<ETSerialObjectStore>)aStore
 {
 	return [[[ETSerializerBackendXML alloc] initWithStore:aStore] autorelease];
 }
@@ -57,7 +60,7 @@
 - (id) deserializerBackend
 {
 	id deserializer = [[[[self class] deserializerBackendClass] alloc] init];
-	if([deserializer deserializeFromStore:store])
+	if ([deserializer deserializeFromStore: store])
 	{
 		return [deserializer autorelease];
 	}
@@ -74,16 +77,16 @@
 	[writer setAutoindent: aFlag];
 }
 
-- (void) startVersion:(int)aVersion
+- (void) startVersion: (int)aVersion
 {
 	[writer startElement: @"objects"
 	          attributes: D(@"http://etoile-project.org/EtoileSerialize", @"xmlns",
-			                @"1", @"version")];
+			        @"1", @"version")];
 }
 
-- (id) initWithStore:(id<ETSerialObjectStore>)aStore
+- (id) initWithStore: (id<ETSerialObjectStore>)aStore
 {
-	if(nil == (self = [super init]))
+	if (nil == (self = [super init]))
 	{
 		return nil;
 	}
@@ -96,9 +99,9 @@
 	refCounts = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 
 	//If the store has it's own XML writer, we will reuse it.
-	if ([store respondsToSelector:@selector(xmlWriter)])
+	if ([store respondsToSelector: @selector(xmlWriter)])
 	{
-		ASSIGN(writer,[(ETSerialObjectSocket*)store xmlWriter]);
+		ASSIGN(writer, [(ETSerialObjectSocket*)store xmlWriter]);
 		xmlWriterWillStore = [(ETSerialObjectSocket*)store xmlWriterWillStore];
 	}
 	else
@@ -121,13 +124,14 @@
 	NSMapEnumerator enumerator = NSEnumerateMapTable(refCounts);
 	uintptr_t ref;
 	uintptr_t refCount;
-	while(NSNextMapEnumeratorPair(&enumerator, (void*)&ref, (void*)&refCount))
+	while (NSNextMapEnumeratorPair(&enumerator, (void*)&ref, (void*)&refCount))
 	{
 		[writer startAndEndElement: @"refcount"
-		        attributes: D([NSString stringWithFormat: @"%u", (CORef)ref], @"object")
-		             cdata: [NSString stringWithFormat: @"%u", (unsigned int)refCount]];
+		                attributes: D([NSString stringWithFormat: @"%u", (CORef)ref], @"object")
+		                     cdata: [NSString stringWithFormat: @"%u", (unsigned int)refCount]];
 	}
 	NSEndMapTableEnumeration(&enumerator);
+
 	[writer endElement: @"objects"];
 	if (!xmlWriterWillStore)
 	{
@@ -135,17 +139,18 @@
 		[store writeBytes: (unsigned char*)[graph UTF8String] count: [graph length]];
 		[writer reset];
 	}
+
 	[store commit];
 }
 
-- (void) beginStruct:(char*)aStructName withName:(char*)aName
+- (void) beginStruct: (char *)aStructName withName: (char *)aName
 {
 	[writer startElement: @"struct"
 	          attributes: D([NSString stringWithCString: aStructName
 	                                           encoding: NSASCIIStringEncoding],
 	                        @"type",
-                             [NSString stringWithCString: aName
-	                                            encoding: NSASCIIStringEncoding],
+                                [NSString stringWithCString: aName
+	                                           encoding: NSASCIIStringEncoding],
 	                        @"name")];
 }
 
@@ -154,7 +159,7 @@
 	[writer endElement: @"struct"];
 }
 
-- (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
+- (void) beginObjectWithID: (CORef)aReference withName: (char *)aName withClass: (Class)aClass
 {
 	[writer startElement: @"object"
 	          attributes: D([NSString stringWithCString: aClass->name
@@ -167,7 +172,7 @@
 	                        @"ref")];
 }
 
-- (void) storeObjectReference:(CORef)aReference withName:(char*)aName
+- (void) storeObjectReference: (CORef)aReference withName: (char *)aName
 {
 	[writer startAndEndElement: @"objref"
 	                attributes: D([NSString stringWithCString: aName
@@ -176,7 +181,7 @@
 	                     cdata: [NSString stringWithFormat: @"%u", aReference]];
 }
 
-- (void) incrementReferenceCountForObject:(CORef)anObjectID
+- (void) incrementReferenceCountForObject: (CORef)anObjectID
 {
 	int refCount = (int)NSIntMapGet(refCounts, anObjectID);
 	NSIntMapInsert(refCounts, anObjectID,  (++refCount));
@@ -186,7 +191,8 @@
 {
 	[writer endElement: @"object"];
 }
-- (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength;
+
+- (void) beginArrayNamed: (char *)aName withLength: (unsigned int)aLength;
 {
 	[writer startElement: @"array"
 	          attributes: D([NSString stringWithCString: aName
@@ -201,14 +207,14 @@
 	[writer endElement: @"array"];
 }
 
-- (void) setClassVersion:(int)aVersion
+- (void) setClassVersion: (int)aVersion
 {
 	[writer startAndEndElement: @"classVersion"
 	                     cdata: [NSString stringWithFormat: @"%d", aVersion]];
 }
 
 #define STORE_METHOD(typeName, type, typeChar, printfType)\
-- (void) store##typeName:(type)a##typeName withName:(char*)aName\
+- (void) store##typeName: (type)a##typeName withName: (char *)aName\
 {\
 	[writer startAndEndElement: @"" typeChar ""\
 	                attributes: D([NSString stringWithCString: aName\
@@ -230,51 +236,56 @@ STORE_METHOD(UnsignedLongLong, unsigned long long, "Q","llu")
 STORE_METHOD(Double, double, "d", "f")
 STORE_METHOD(Float, float, "f", "f")
 
-- (void) storeClass:(Class)aClass withName:(char*)aName
+- (void) storeClass: (Class)aClass withName: (char *)aName
 {
 	[writer startAndEndElement: @"class"
 	                attributes: D([NSString stringWithCString: aName
 	                                                 encoding: NSASCIIStringEncoding],
-	                               @"name")
+	                              @"name")
 	                    cdata: NSStringFromClass(aClass)];
 }
-- (void) storeSelector:(SEL)aSelector withName:(char*)aName
+
+- (void) storeSelector: (SEL)aSelector withName: (char *)aName
 {
 	[writer startAndEndElement: @"sel"
 	                attributes: D([NSString stringWithCString: aName
 	                                                 encoding: NSASCIIStringEncoding],
-	                               @"name")
+	                              @"name")
 	                     cdata: NSStringFromSelector(aSelector)];
 }
-- (void) storeCString:(const char*)aCString withName:(char*)aName
+
+- (void) storeCString: (const char *)aCString withName: (char *)aName
 {
 	[writer startAndEndElement: @"str"
 	                attributes: D([NSString stringWithCString: aName
 	                                                 encoding: NSASCIIStringEncoding],
-	                               @"name")
+	                              @"name")
 	                     cdata: [NSString stringWithCString: aCString
-                                                   encoding: NSASCIIStringEncoding]];
+	                                               encoding: NSASCIIStringEncoding]];
 }
-- (void) storeData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName
+
+- (void) storeData: (void*)aBlob ofSize: (size_t)aSize withName: (char *)aName
 {
 	NSString *b64  = [[NSData dataWithBytes: aBlob length: aSize] base64String];
 	[writer startAndEndElement: @"data"
 	                attributes: D([NSString stringWithCString: aName
 	                                                 encoding: NSASCIIStringEncoding],
-	                               @"name",
-	                               [NSString stringWithFormat: @"%u", (unsigned)aSize],
-	                               @"size")
-	                    cdata: b64];
+	                              @"name",
+	                              [NSString stringWithFormat: @"%u", (unsigned)aSize],
+	                              @"size")
+	                     cdata: b64];
 }
-- (void) storeUUID:(unsigned char *)aUUID withName:(char *)aName
+
+- (void) storeUUID: (unsigned char *)aUUID withName: (char *)aName
 {
 	//FORMAT("<uuid name='%s'>
-	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID:aUUID];
+	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID: aUUID];
 	[writer startAndEndElement: @"uuid"
 	                attributes: D([NSString stringWithCString: aName
 	                                                 encoding: NSASCIIStringEncoding],
-	                               @"name")
+	                              @"name")
 	                     cdata: [uuidObj stringValue]];
 	[uuidObj release];
 }
+
 @end

@@ -6,10 +6,11 @@
 
 @protocol ETSerialObjectStore;
 @class ETXMLWriter;
+
 /**
  * Simple serializer which stores data in an XML format.
  */
-@interface ETSerializerBackendXML : NSObject<ETSerializerBackend> {
+@interface ETSerializerBackendXML : NSObject <ETSerializerBackend> {
 	/** The store to which the xml data is written. */
 	id<ETSerialObjectStore> store;
 	/** A mapping from objects to their reference count. */
