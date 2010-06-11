@@ -18,12 +18,14 @@
 @protocol ETSerializerBackend <NSObject>
 //Setup
 /**
- * Create a new instance of the backend writing to the specified store.
+ * Create a new instance of the back end writing to the specified store.
  */
 + (id) serializerBackendWithStore:(id<ETSerialObjectStore>)aStore;
 /**
  * <init /> 
  * Initialise a new instance with the specified store.
+ *
+ * Raises an NSInvalidArgumentException if the store is not valid e.g. nil.
  */
 - (id) initWithStore:(id<ETSerialObjectStore>)aStore;
 /**

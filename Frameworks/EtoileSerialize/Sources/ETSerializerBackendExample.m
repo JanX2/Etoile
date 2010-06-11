@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <objc/objc-api.h>
+#import <EtoileFoundation/Macros.h>
+#import <EtoileFoundation/ETUUID.h>
 #import "ETSerializerBackendExample.h"
 #import "ETObjectStore.h"
-#import <EtoileFoundation/ETUUID.h>
-@class ETUUID;
 
 #define FORMAT(format,...) do {\
 	char * buffer;\
@@ -37,19 +37,32 @@
 }
 - (id) initWithStore:(id<ETSerialObjectStore>)aStore
 {
+	SUPERINIT;
 	ASSIGN(store, aStore);
-	return [self init];
-}
-- (id) init
-{
-	self = [super init];
-	if(self == nil)
-	{
-		return nil;
-	}
 	referenceCounts = [[NSMutableDictionary alloc] init];
 	return self;
 }
+
+- (id) init
+{
+	return [self initWithStore: nil];
+}
+
+- (void) dealloc
+{
+	NSEnumerator * keys = [referenceCounts keyEnumerator];
+	NSNumber *key;
+	while ((key = [keys nextObject]) != nil)
+	{
+		FORMAT("Object %d has reference count %d\n",
+				[key unsignedIntValue],
+				[[referenceCounts objectForKey:key] unsignedIntValue]);
+	}
+	[store release];
+	[referenceCounts release];
+	[super dealloc];
+}
+
 - (void) indent
 {
 	for(unsigned int i=0 ; i<indent ; i++)
@@ -207,18 +220,4 @@
 	[uuidObj release];
 }
 
-- (void) dealloc
-{
-	NSEnumerator * keys = [referenceCounts keyEnumerator];
-	NSNumber * key;
-	while((key = [keys nextObject]) != nil)
-	{
-		FORMAT("Object %d has reference count %d\n",
-				[key unsignedIntValue],
-				[[referenceCounts objectForKey:key] unsignedIntValue]);
-	}
-	[store release];
-	[referenceCounts release];
-	[super dealloc];
-}
 @end

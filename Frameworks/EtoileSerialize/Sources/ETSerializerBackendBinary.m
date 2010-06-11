@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <objc/objc-api.h>
+#import <EtoileFoundation/Macros.h>
 #import <EtoileFoundation/ETUUID.h>
 #import "ETSerializerBackendBinary.h"
 #import "ETDeserializerBackend.h"
@@ -14,8 +15,8 @@
 	WRITE(buffer, length);\
 	free(buffer);\
 	} while(0)
-#define WRITE(x,b) [store writeBytes:(unsigned char*)x count:b]
-#define STORECOMPLEX(type, value, size) WRITE(type,1);FORMAT("%s%c",aName, '\0');WRITE(value, size)
+#define WRITE(x,b) [store writeBytes: (unsigned char *)x count: b]
+#define STORECOMPLEX(type, value, size) WRITE(type, 1); FORMAT("%s%c", aName, '\0'); WRITE(value, size)
 #define STORE(type, value, c_type) STORECOMPLEX(type, &value, sizeof(c_type))
 #define OFFSET ([store size])
 
@@ -77,15 +78,14 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 
 - (id) initWithStore: (id<ETSerialObjectStore>)aStore
 {
-	if (![aStore conformsToProtocol:@protocol(ETSeekableObjectStore)])
+	NILARG_EXCEPTION_TEST(aStore);
+	if (![aStore conformsToProtocol: @protocol(ETSeekableObjectStore)])
 	{
-		[NSException raise:@"InvalidStore"
-					format:@"Binary backend requires a seekable store"];
+		[NSException raise: NSInvalidArgumentException
+		            format: @"Binary backend requires a seekable store"];
 	}
-	if(nil == (self = [super init]))
-	{
-		return nil;
-	}
+	SUPERINIT;
+
 	ASSIGN(store, aStore);
 
 	const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
@@ -107,6 +107,7 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 	[self closeFile];
 	NSFreeMapTable(offsets);
 	NSFreeMapTable(refCounts);
+	[store release];
 	[super dealloc];
 }
 
@@ -126,7 +127,7 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 		WRITE(&refCount, sizeof(refCount));
 	}
 	NSEndMapTableEnumeration(&enumerator);
-	[(id<ETSeekableObjectStore>)store replaceRange: NSMakeRange(0,4) withBytes: (unsigned char *)&indexOffset];
+	[store replaceRange: NSMakeRange(0,4) withBytes: (unsigned char *)&indexOffset];
 	[store commit];
 }
 

@@ -49,7 +49,7 @@
 
 + (id) serializerBackendWithStore: (id<ETSerialObjectStore>)aStore
 {
-	return [[[ETSerializerBackendXML alloc] initWithStore:aStore] autorelease];
+	return [[[ETSerializerBackendXML alloc] initWithStore: aStore] autorelease];
 }
 
 + (Class) deserializerBackendClass
@@ -86,10 +86,8 @@
 
 - (id) initWithStore: (id<ETSerialObjectStore>)aStore
 {
-	if (nil == (self = [super init]))
-	{
-		return nil;
-	}
+	NILARG_EXCEPTION_TEST(aStore);
+	SUPERINIT;
 	ASSIGN(store, aStore);
 
 	const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
@@ -116,6 +114,7 @@
 {
 	NSFreeMapTable(refCounts);
 	[writer release];
+	[store release];
 	[super dealloc];
 }
 

@@ -4,7 +4,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileSerialize/ETSerializerBackend.h>
 
-@protocol ETSerialObjectStore;
+@protocol ETSeekableObjectStore;
 
 /**
  * Simple serializer which stores data in a binary file using a type encoding
@@ -12,10 +12,8 @@
  * currently only supports writing to file URLs.
  */
 @interface ETSerializerBackendBinary : NSObject<ETSerializerBackend> {
-	/** The URL to which the binary data is written */
-	NSURL * url;
 	/** The store to which the binary data is written. */
-	id<ETSerialObjectStore> store; 
+	id<ETSeekableObjectStore> store; 
 	/** A mapping from object references to offsets within the serialized file
 	 */
 	NSMapTable * offsets;
