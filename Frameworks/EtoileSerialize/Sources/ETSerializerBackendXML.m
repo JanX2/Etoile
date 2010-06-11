@@ -49,14 +49,14 @@
 	return [[[ETSerializerBackendXML alloc] initWithStore:aStore] autorelease];
 }
 
-+ (Class) deserializer
++ (Class) deserializerBackendClass
 {
 	return [ETDeserializerBackendXML class];
 }
 
-- (id) deserializer
+- (id) deserializerBackend
 {
-	id deserializer = [[[[self class] deserializer] alloc] init];
+	id deserializer = [[[[self class] deserializerBackendClass] alloc] init];
 	if([deserializer deserializeFromStore:store])
 	{
 		return [deserializer autorelease];

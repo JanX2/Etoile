@@ -9,14 +9,14 @@
 {
 	return [[[ETSerializerNullBackend alloc] init] autorelease];
 }
-+ (Class) deserializer
++ (Class) deserializerBackendClass
 {
 	//No corresponding deserializer
 	return Nil;
 }
 - (void) startVersion:(int)aVersion {}
 - (void) flush {}
-- (id) deserializer
+- (id) deserializerBackend
 {
 	//No corresponding deserializer
 	return nil;

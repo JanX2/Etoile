@@ -11,11 +11,14 @@
  * for serializer backends.  The backend is responsible for storing the data
  * passed to it representing instance variables of objects in a way that can be
  * read by a corresponding deserializer backend.
+ *
+ * For each serializer backend class, a mirror class that implements 
+ * ETDeserializerBackend protocol has to be implemented.
  */
 @protocol ETSerializerBackend <NSObject>
 //Setup
 /**
- * Create a new instance of the back end writing to the specified store
+ * Create a new instance of the backend writing to the specified store.
  */
 + (id) serializerBackendWithStore:(id<ETSerialObjectStore>)aStore;
 /**
@@ -25,14 +28,14 @@
 - (id) initWithStore:(id<ETSerialObjectStore>)aStore;
 /**
  * Returns the deserializer backend class which is the mirror of this
- * serializer.
+ * serializer backend.
  */
-+ (Class) deserializer;
++ (Class) deserializerBackendClass;
 /**
  * Returns a deserializer backend instance initialised with the same data
- * source (URL or data) as this serializer.
+ * source (URL or data) as this serializer backend.
  */
-- (id) deserializer;
+- (id) deserializerBackend;
 /**
  * Perform any initialisation required on the new version.
  */

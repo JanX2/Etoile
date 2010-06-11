@@ -20,7 +20,7 @@
 {
 	return [[[ETSerializerBackendExample alloc] initWithStore:aStore] autorelease];
 }
-+ (Class) deserializer
++ (Class) deserializerBackendClass
 {
 	//No corresponding deserializer
 	return Nil;
@@ -30,7 +30,7 @@
 {
 	[store commit];
 }
-- (id) deserializer
+- (id) deserializerBackend
 {
 	//No corresponding deserializer
 	return nil;

@@ -47,13 +47,13 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 {
 	return [[[ETSerializerBackendBinary alloc] initWithStore:aStore] autorelease];
 }
-+ (Class) deserializer
++ (Class) deserializerBackendClass
 {
 	return NSClassFromString(@"ETDeserializerBackendBinary");
 }
-- (id) deserializer
+- (id) deserializerBackend
 {
-	id deserializer = [[[[self class] deserializer] alloc] init];
+	id deserializer = [[[[self class] deserializerBackendClass] alloc] init];
 	if([deserializer deserializeFromStore:store])
 	{
 		return [deserializer autorelease];
