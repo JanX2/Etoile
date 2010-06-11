@@ -1,8 +1,5 @@
 #import "ETSerializerNullBackend.h"
 
-/**
- * Null backend.  Ignores all serialize messages.
- */
 @implementation ETSerializerNullBackend
 //Setup
 + (id) serializerBackendWithStore:(id<ETSerialObjectStore>)aStore
@@ -23,7 +20,7 @@
 }
 - (id) initWithStore:(id<ETSerialObjectStore>)aStore
 {
-	return [self init];
+	return [super init];
 }
 //Objects
 - (void) setClassVersion:(int)aVersion {}
