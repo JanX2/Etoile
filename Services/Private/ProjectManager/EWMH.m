@@ -1,5 +1,5 @@
 /*
- * Étoilé ProjectManager - EWMH.h
+ * Étoilé ProjectManager - EWMH.m
  *
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
