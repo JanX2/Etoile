@@ -1,5 +1,5 @@
-/*
- * Étoilé ProjectManager - XCBProperty.h
+/**
+ * Étoilé ProjectManager - XCBSelection.m
  *
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
@@ -22,48 +22,33 @@
  * THE SOFTWARE.
  *
  **/
-#import <EtoileFoundation/EtoileFoundation.h>
-#import "XCBConnection.h"
+#import "XCBSelection.h"
 
-/**
-  * This exception is thrown when a type conversion method
-  * on [XCBCachedProperty] (such as -[XCBCachedProperty asText])
-  * is called, but the cached data is not of that type.
-  */
-extern const NSString* XCBInvalidTypeException;
-
-@interface XCBCachedProperty : NSObject
+BOOL XCBAcquireManagerSelection(XCBScreen *screen, XCBWindow* managerWindow, xcb_atom_t atom)
 {
-	NSString *propertyName;
-	NSData *propertyData;
-	xcb_atom_t type;
-	uint8_t format;
-	uint32_t format_length;
-	uint32_t bytes_after;
+	xcb_get_selection_owner_cookie_t req  = 
+		xcb_get_selection_owner([XCBConn connection], atom);
+	xcb_get_selection_owner_reply_t *resp = 
+		xcb_get_selection_owner_reply([XCBConn connection],
+			req,
+			NULL);
+	xcb_window_t current_owner = resp->owner;
+	free(resp);
+	if (current_owner)
+		return NO;
+
+	xcb_timestamp_t server_time = [XCBConn currentTime];
+
+	xcb_void_cookie_t cookie = xcb_set_selection_owner_checked(
+		[XCBConn connection],
+		[managerWindow xcbWindowId],
+		atom,
+		server_time);
+	xcb_generic_error_t *error = xcb_request_check([XCBConn connection], cookie);
+	if (error) 
+	{
+		NSDebugLLog(@"XCBSelection", @"XCBAcquireManagerSelection: SetSelectionOwner failed.");
+		return NO;
+	}
+	return YES;
 }
-
-- (id)initWithGetPropertyReply: (xcb_get_property_reply_t*)reply
-                  propertyName: (NSString*)name;
-- (void)dealloc;
-- (NSString*)propertyName;
-- (xcb_atom_t)type;
-- (uint8_t)format;
-- (uint32_t)lengthInFormatUnits;
-- (NSData*)data;
-- (uint8_t*)asBytes;
-- (uint16_t*)asShorts;
-- (uint32_t*)asLongs;
-
-/**
-  * Check if the atom is of the specified
-  * expectedType, and throws an XCBInvalidTypeException
-  * if it is not.
-  */
-- (void)checkAtomType: (NSString*)expectedType;
-
-/**
-  * Return the cached property as
-  * a STRING type
-  */
-- (NSString*)asString;
-@end

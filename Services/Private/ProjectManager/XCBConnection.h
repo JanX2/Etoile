@@ -42,6 +42,7 @@ extern NSString* XCBConnectionEstablishmentException;
 	id delegate;
 	BOOL needsFlush;
 	SEL extensionSelectors[256];
+	xcb_timestamp_t currentTime;
 }
 + (XCBConnection*)sharedConnection;
 - (xcb_connection_t*)connection;
@@ -69,6 +70,8 @@ extern NSString* XCBConnectionEstablishmentException;
 - (void)ungrab;
 - (void)setNeedsFlush: (BOOL)shouldFlush;
 - (BOOL)needsFlush;
+- (void)startMessageLoop;
+- (xcb_timestamp_t)currentTime;
 @end
 
 @interface NSObject (XCBConnectionDelegate)

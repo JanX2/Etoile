@@ -29,49 +29,13 @@
 
 static XCBAtomCache *sharedInstance;
 
-@interface XCBAtomRequestObserver : NSObject
-{
-	id notifyObject;
-	SEL selector;
-}
-+ (XCBAtomRequestObserver*)requestObserverWithObject: (id)object
-                                            selector: (SEL)selector;
-- (id)notifyObject;
-- (SEL)notifySelector;
-@end
-
-@implementation XCBAtomRequestObserver
-- (id)initWithObject: (id)object selector: (SEL)sel
-{
-	SELFINIT;
-	notifyObject = object;
-	selector = sel;
-	return self;
-}
-+ (XCBAtomRequestObserver*)requestObserverWithObject: (id)object
-                                            selector: (SEL)selector
-{
-	return [[[self alloc] initWithObject: object selector: selector]
-		autorelease];
-}
-
-- (id)notifyObject
-{
-	return notifyObject;
-}
-
-- (SEL)notifySelector
-{
-	return selector;
-}
-@end
-
 @implementation XCBAtomCache
 - (id)init
 {
 	SUPERINIT;
 	requestedAtoms = [NSMutableDictionary new];
 	fetchedAtoms = [NSMutableDictionary new];
+	fetchedAtomNames = [NSMutableDictionary new];
 	inRequestAtoms = [NSMutableSet new];
 	return self;
 }
@@ -80,6 +44,7 @@ static XCBAtomCache *sharedInstance;
 	[inRequestAtoms release];
 	[requestedAtoms release];
 	[fetchedAtoms release];
+	[fetchedAtomNames release];
 	[super dealloc];
 }
 + (XCBAtomCache*)sharedInstance
@@ -159,10 +124,35 @@ static XCBAtomCache *sharedInstance;
 		atom = [NSNumber numberWithUnsignedInt: reply->atom];
 		[fetchedAtoms setObject: atom
 		                 forKey: aString];
+		[fetchedAtomNames setObject: aString
+		                     forKey: atom];
 
 		free(reply);
 	}
 	return [atom unsignedIntValue];
+}
+- (NSString*)nameForAtom: (xcb_atom_t)atom
+{
+	NSValue *atomValue = [NSNumber numberWithUnsignedInt: atom];
+	NSString *atomName = [fetchedAtomNames objectForKey: atomValue];
+	if (nil == atomName)
+	{
+		xcb_get_atom_name_cookie_t cookie =
+			xcb_get_atom_name([XCBConn connection], atom);
+		xcb_get_atom_name_reply_t *reply =
+			xcb_get_atom_name_reply([XCBConn connection], cookie, NULL);
+		atomName = [[[NSString alloc]
+			initWithBytes: xcb_get_atom_name_name(reply)
+			       length: xcb_get_atom_name_name_length(reply)
+			     encoding: NSASCIIStringEncoding] autorelease];
+		[fetchedAtoms setObject: atomValue
+		                 forKey: atomName];
+		[fetchedAtomNames setObject: atomName
+		                     forKey: atomValue];
+		xcb_get_atom_name_name_end(reply);
+		free(reply);
+	}
+	return atomName;
 }
 - (void)waitOnPendingAtomRequests
 {
@@ -179,6 +169,8 @@ static XCBAtomCache *sharedInstance;
 		atom = [NSNumber numberWithUnsignedInt: reply->atom];
 		[fetchedAtoms setObject: atom
 		                 forKey: atomName];
+		[fetchedAtomNames setObject: atomName
+		                     forKey: atom];
 	}
 	[inRequestAtoms removeAllObjects];
 	[requestedAtoms removeAllObjects];

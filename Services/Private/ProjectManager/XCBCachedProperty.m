@@ -23,6 +23,9 @@
  *
  **/
 #import "XCBCachedProperty.h"
+#import "XCBAtomCache.h"
+
+const NSString *XCBInvalidTypeException = @"XCBInvalidTypeException";
 
 @implementation XCBCachedProperty
 
@@ -84,5 +87,28 @@
 - (uint32_t*)asLongs
 {
 	return (uint32_t*)[propertyData bytes];
+}
+
+- (void)checkAtomType: (NSString*)expectedType
+{
+	if (type != [[XCBAtomCache sharedInstance] atomNamed: expectedType])
+	{
+		[NSException raise: (NSString*)XCBInvalidTypeException
+		            format: @"Expected cached data for property %@ in the %@ type (stored as %@)",
+		        propertyName,
+		        expectedType,
+		        [[XCBAtomCache sharedInstance] nameForAtom: type]]
+		        ;
+	}
+}
+
+- (NSString*)asString
+{
+	[self checkAtomType: @"STRING"];
+	return [[[NSString alloc]
+		initWithBytes: [[self data] bytes]
+		       length: [[self data] length]
+		     encoding: NSISOLatin1StringEncoding]
+		     autorelease];
 }
 @end

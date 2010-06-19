@@ -36,7 +36,10 @@ int main(const int argc, const char* argv[])
 	@try
 	{
 		connectionDelegate = [PMConnectionDelegate new];
-		[[NSRunLoop currentRunLoop] run];
+		if (connectionDelegate == nil)
+			return 1;
+		[XCBConn startMessageLoop];
+		//[[NSRunLoop currentRunLoop] run];
 	}
 	@catch (NSException* e)
 	{

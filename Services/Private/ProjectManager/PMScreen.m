@@ -29,6 +29,8 @@
 #import "XCBFixes.h"
 #import "XCBWindow.h"
 #import "XCBPixmap.h"
+#import "XCBAtomCache.h"
+#import "XCBSelection.h"
 
 #import <EtoileFoundation/EtoileFoundation.h>
 
@@ -43,9 +45,11 @@
 
 @implementation PMScreen
 - (id)initWithScreen: (XCBScreen*)scr
+                  id: (uint32_t)aId
 {
 	SELFINIT;
 	screen = [scr retain];
+	screen_id = aId;
 	compositeMap = [NSMutableDictionary new];
 	clipChanged = YES;
 	rootTile = [[self generateRootTile] retain];
@@ -72,6 +76,8 @@
 - (void) dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[manager_window destroy];
+	[manager_window release];
 	[rootBuffer release];
 	[rootPicture release];
 	[allDamage release];
@@ -79,15 +85,50 @@
 	[super dealloc];
 }
 - (XCBScreen*)screen { return screen; }
+- (uint32_t)screenId { return screen_id; }
 - (XCBRenderPicture*)rootBuffer { return rootBuffer; }
 - (XCBRenderPicture*)rootPicture { return rootPicture; }
 - (XCBWindow*)rootWindow { return [screen rootWindow]; }
+/**
+  * Setup the screen for compositing window management
+  */
+- (BOOL)manageScreen
+{
+	XCBWindow *rootWindow = [screen rootWindow];
+	xcb_atom_t screen_atom = [[XCBAtomCache sharedInstance]
+		atomNamed: [NSString stringWithFormat: @"WM_S%d", screen_id]];
+	XCBWindow *window = [rootWindow createChildInRect: XCBMakeRect(0, 0, 1, 1) borderWidth: 0];
+	if (!XCBAcquireManagerSelection([self screen], manager_window, screen_atom))
+	{
+		NSLog(@"There is a window manager already running on screen #%d", screen_id);
+		[window destroy];
+		return NO;
+	}
+	ASSIGN(self->manager_window, window);
+
+	[screen setTrackingChildren: YES];
+	uint32_t events[2];
+	// Must be in this order because of the order of the
+	// XCB_CW_* flags
+	events[0] = 1;
+	events[1] = 
+		XCB_EVENT_MASK_FOCUS_CHANGE |
+		XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_BUTTON_PRESS |
+		XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
+		XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+		XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT;
+	[rootWindow changeWindowAttributes: XCB_CW_EVENT_MASK | XCB_CW_OVERRIDE_REDIRECT
+				    values: events];
+
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+		   selector: @selector(windowDidExpose:)
+		       name: XCBWindowExposeNotification
+		     object: [screen rootWindow]];
+	return YES;
+}
 - (PMCompositeWindow*)findCompositeWindow: (XCBWindow*)window
 {
-	// FIXME: I can optimise this as each XCBWindow has
-	// a delegate, and it is the PMCompositeWindow. Don't
-	// want to think about semantic problems now, this works
-	// Until I switch over to a dictionary
 	return [compositeMap objectForKey: window];
 }
 
@@ -220,6 +261,22 @@
 		[self appendDamage: extents];
 	clipChanged = YES;
 }
+- (void)windowDidExpose: (NSNotification*)notification
+{
+	NSLog(@"-[XCBScreen windowDidExpose:]");
+	// FIXME: Apparently we can optimize by accumulating the
+	// the rects according to the anEvent->count parameter (see XLib manual)
+	XCBRect exposeRect;
+	xcb_rectangle_t exposeRectangle;
+	[[[notification userInfo] objectForKey: @"Rect"] 
+		getValue: &exposeRect];
+	exposeRectangle = XCBRectangleFromRect(exposeRect);
+
+	XCBFixesRegion *exposeRegion = [XCBFixesRegion 
+		regionWithRectangles: &exposeRectangle 
+		               count: 1];
+	[self appendDamage: exposeRegion];
+}
 - (void)appendDamage: (XCBFixesRegion*)damage
 {
 	if (nil == allDamage)
@@ -278,7 +335,7 @@
 	else
 	{
 		region = [XCBFixesRegion regionWithRectangles: 0 count: 0];
-		[fixRegion copyIntoRegion :region];
+		[fixRegion copyIntoRegion: region];
 	}
 	if (nil == rootBuffer)
 	{

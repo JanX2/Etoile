@@ -35,7 +35,13 @@
 @interface XCBConnection (EventHandlers)
 - (void)handleMapNotify: (xcb_map_notify_event_t*)anEvent;
 - (void)handleCreateNotify: (xcb_create_notify_event_t*)anEvent;
-- (void)handleButtonPress: (xcb_map_notify_event_t*)anEvent;
+- (void)handleButtonPress: (xcb_button_press_event_t*)anEvent;
+- (void)handleButtonRelease: (xcb_button_release_event_t*)anEvent;
+- (void)handleKeyPress: (xcb_key_press_event_t*)anEvent;
+- (void)handleKeyRelease: (xcb_key_release_event_t*)anEvent;
+- (void)handleMotionNotify: (xcb_motion_notify_event_t*)anEvent;
+- (void)handleEnterNotify: (xcb_enter_notify_event_t*)anEvent;
+- (void)handleLeaveNotify: (xcb_leave_notify_event_t*)anEvent;
 - (void)handleExpose: (xcb_expose_event_t*)anEvent;
 - (void)handleMapRequest: (xcb_map_request_event_t*)anEvent;
 - (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent;
@@ -45,6 +51,7 @@
 
 @interface XCBConnection (Private)
 - (void)flush;
+- (void)eventsReady: (NSNotification*)notification;
 @end
 
 @implementation XCBConnection (EventHandlers)
@@ -74,14 +81,44 @@
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	[win handleConfigureRequest: anEvent];
 }
-- (void) handleButtonPress: (xcb_map_notify_event_t*)anEvent
+- (void) handleButtonPress: (xcb_button_press_event_t*)anEvent
 {
 	NSLog(@"Button pressed");
+	currentTime = anEvent->time;
 	//[[[screens objectAtIndex: 0 ] rootWindow] createChildInRect: XCBMakeRect(0,0,640,480)];
+}
+- (void) handleButtonRelease: (xcb_button_release_event_t*)anEvent
+{
+	NSLog(@"Button released");
+	currentTime = anEvent->time;
+}
+- (void) handleKeyPress: (xcb_key_press_event_t*)anEvent
+{
+	NSLog(@"Key pressed");
+	currentTime = anEvent->time;
+}
+- (void) handleKeyRelease: (xcb_key_release_event_t*)anEvent
+{
+	NSLog(@"Key released");
+	currentTime = anEvent->time;
+}
+- (void) handleMotionNotify: (xcb_motion_notify_event_t*)anEvent
+{
+	NSLog(@"Motion notify");
+	currentTime = anEvent->time;
+}
+- (void) handleEnterNotify: (xcb_enter_notify_event_t*)anEvent
+{
+	NSLog(@"Enter notify");
+	currentTime = anEvent->time;
+}
+- (void) handleLeaveNotify: (xcb_leave_notify_event_t*)anEvent
+{
+	NSLog(@"Leave notify");
+	currentTime = anEvent->time;
 }
 - (void) handleConfigureNotify: (xcb_configure_notify_event_t*)anEvent
 {
-	NSLog(@"Configuring window: %d", anEvent->window);
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	[win handleConfigureNotifyEvent: anEvent];
 }
@@ -128,11 +165,15 @@ XCBConnection *XCBConn;
 
 
 @implementation XCBConnection
+- (void)startMessageLoop
+{
+	[[NSRunLoop currentRunLoop] run];
+}
 + (XCBConnection*)sharedConnection
 {
 	if (nil == XCBConn)
 	{
-	NSLog(@"Creating shared connection...");
+		NSLog(@"Creating shared connection...");
 		[[self alloc] init];
 	}
 	return XCBConn;
@@ -142,6 +183,7 @@ XCBConnection *XCBConn;
 	SUPERINIT;
 	NSLog(@"Creating connection...");
 	NSLog(@"Self: %x", self);
+	[NSRunLoop currentRunLoop];
 	connection = xcb_connect(NULL, NULL);
 	if (NULL == connection)
 	{
@@ -155,6 +197,8 @@ XCBConnection *XCBConn;
 		[self release];
 		return nil;
 	}
+
+	currentTime = XCB_CURRENT_TIME;
 
 	replyHandlers = [NSMutableArray new];
 	windows = NSCreateMapTable(NSIntMapKeyCallBacks,
@@ -220,9 +264,12 @@ XCBConnection *XCBConn;
 	{
 		switch (event->response_type & ~0x80)
 		{
-			//HANDLE(KEY_PRESS, KeyPress)
-			//HANDLE(KEY_RELEASE, KeyRelease)
-			//HANDLE(BUTTON_RELEASE, ButtonRelease)
+			HANDLE(KEY_PRESS, KeyPress)
+			HANDLE(KEY_RELEASE, KeyRelease)
+			HANDLE(BUTTON_RELEASE, ButtonRelease)
+			HANDLE(MOTION_NOTIFY, MotionNotify)
+			HANDLE(ENTER_NOTIFY, EnterNotify)
+			HANDLE(LEAVE_NOTIFY, LeaveNotify)
 			HANDLE(FOCUS_OUT, FocusOut)
 			HANDLE(FOCUS_IN, FocusIn)
 			HANDLE(BUTTON_PRESS, ButtonPress)
@@ -325,20 +372,6 @@ XCBConnection *XCBConn;
 		}
 	}
 	return repliesHandled;
-}
-- (void)eventsReady: (NSNotification*)notification
-{
-	// Poll while there is data left in the buffer
-	while ([self handleEvents] || [self handleReplies]) {}
-	// NSLog(@"Finished handling events");
-	if ([delegate respondsToSelector:@selector(finishedProcessingEvents:)])
-		[delegate finishedProcessingEvents:self];
-	if (needsFlush)
-	{
-		[self flush];
-		needsFlush = NO;
-	}
-	[handle waitForDataInBackgroundAndNotify];
 }
 - (void)setHandler: (id)anObject 
           forReply: (unsigned int)sequence
@@ -457,6 +490,10 @@ XCBConnection *XCBConn;
 {
 	return needsFlush;
 }
+- (xcb_timestamp_t)currentTime
+{
+	return currentTime;
+}
 
 @end
 
@@ -464,5 +501,19 @@ XCBConnection *XCBConn;
 - (void)flush
 {
 	xcb_flush(connection);
+}
+- (void)eventsReady: (NSNotification*)notification
+{
+	// Poll while there is data left in the buffer
+	while ([self handleEvents] || [self handleReplies]) {}
+	// NSLog(@"Finished handling events");
+	if ([delegate respondsToSelector:@selector(finishedProcessingEvents:)])
+		[delegate finishedProcessingEvents:self];
+	if (needsFlush)
+	{
+		[self flush];
+		needsFlush = NO;
+	}
+	[handle waitForDataInBackgroundAndNotify];
 }
 @end

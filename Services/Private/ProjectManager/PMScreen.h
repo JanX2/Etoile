@@ -32,6 +32,8 @@
 @interface PMScreen : NSObject
 {
 	XCBScreen *screen;
+	uint32_t screen_id;
+	XCBWindow *manager_window;
 	XCBRenderPicture *rootBuffer, *rootPicture;
 	XCBRenderPicture *rootTile;
 	XCBFixesRegion *allDamage;
@@ -40,8 +42,11 @@
 	BOOL clipChanged;
 }
 
-- (id)initWithScreen: (XCBScreen*)screen;
+- (id)initWithScreen: (XCBScreen*)screen id: (uint32_t)id;
 - (XCBScreen*)screen;
+- (uint32_t)screenId;
+- (BOOL)manageScreen;
+
 - (XCBWindow*)rootWindow;
 - (XCBRenderPicture*)rootBuffer;
 - (void)setRootBuffer: (XCBRenderPicture*)rb;

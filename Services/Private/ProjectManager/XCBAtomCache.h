@@ -34,6 +34,9 @@
 	NSMutableDictionary *requestedAtoms;
 	// atom name => xcb_atom_t (fetched atoms map)
 	NSMutableDictionary *fetchedAtoms;
+
+	// xcb_atom_t => atom_name (reverse fetched atoms map)
+	NSMutableDictionary *fetchedAtomNames;
 }
 + (XCBAtomCache*)sharedInstance;
 
@@ -44,6 +47,13 @@
   * returning from this method. 
   */
 - (xcb_atom_t)atomNamed: (NSString*)aString;
+
+/**
+  * Get the name of the specified atom. If
+  * the name is not in the cache, it will be
+  * synchronously fetched.
+  */
+- (NSString*)nameForAtom: (xcb_atom_t)atom;
 
 /**
   * Asynchronously cache a number of atoms.

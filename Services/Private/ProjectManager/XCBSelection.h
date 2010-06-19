@@ -1,5 +1,5 @@
-/*
- * Étoilé ProjectManager - XCBProperty.h
+/**
+ * Étoilé ProjectManager - XCBSelection.h
  *
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
@@ -22,48 +22,6 @@
  * THE SOFTWARE.
  *
  **/
-#import <EtoileFoundation/EtoileFoundation.h>
-#import "XCBConnection.h"
+#import "XCBWindow.h"
 
-/**
-  * This exception is thrown when a type conversion method
-  * on [XCBCachedProperty] (such as -[XCBCachedProperty asText])
-  * is called, but the cached data is not of that type.
-  */
-extern const NSString* XCBInvalidTypeException;
-
-@interface XCBCachedProperty : NSObject
-{
-	NSString *propertyName;
-	NSData *propertyData;
-	xcb_atom_t type;
-	uint8_t format;
-	uint32_t format_length;
-	uint32_t bytes_after;
-}
-
-- (id)initWithGetPropertyReply: (xcb_get_property_reply_t*)reply
-                  propertyName: (NSString*)name;
-- (void)dealloc;
-- (NSString*)propertyName;
-- (xcb_atom_t)type;
-- (uint8_t)format;
-- (uint32_t)lengthInFormatUnits;
-- (NSData*)data;
-- (uint8_t*)asBytes;
-- (uint16_t*)asShorts;
-- (uint32_t*)asLongs;
-
-/**
-  * Check if the atom is of the specified
-  * expectedType, and throws an XCBInvalidTypeException
-  * if it is not.
-  */
-- (void)checkAtomType: (NSString*)expectedType;
-
-/**
-  * Return the cached property as
-  * a STRING type
-  */
-- (NSString*)asString;
-@end
+BOOL XCBAcquireManagerSelection(XCBScreen *screen, XCBWindow* manager_window, xcb_atom_t atom);

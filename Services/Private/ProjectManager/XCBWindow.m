@@ -272,6 +272,12 @@ static XCBWindow* UnknownWindow;
 	xcb_reparent_window([XCBConn connection], window, [newParent xcbWindowId], dx, dy);
 	[XCBConn setNeedsFlush: YES];
 }
+- (void)setInputFocus: (uint8_t)revert_to
+                 time: (xcb_timestamp_t)time
+{
+	xcb_set_input_focus([XCBConn connection], revert_to, window, time);
+	[XCBConn setNeedsFlush: YES];
+}
 - (void)handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent
 {
 	id aboveWindow = anEvent->above_sibling == 0 ?

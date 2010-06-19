@@ -199,6 +199,8 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
 - (void)reparentToWindow: (XCBWindow*)newParent
                       dX: (uint16_t)dx
                       dY: (uint16_t)dy;
+- (void)setInputFocus: (uint8_t)revert_to
+                 time: (xcb_timestamp_t)time;
 /**
   * Request an update of the window attributes. Once
   * the reply has been received, a XCBWindowFrame(Will/Did)ChangeNotification

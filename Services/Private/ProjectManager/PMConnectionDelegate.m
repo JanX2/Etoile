@@ -35,6 +35,9 @@
 #import "XCBPixmap.h"
 #import "XCBGeometry.h"
 #import "XCBWindow.h"
+#import "ICCCM.h"
+#import "EWMH.h"
+#import "XCBAtomCache.h"
 
 #import <Foundation/NSArray.h>
 #import <Foundation/NSDictionary.h>
@@ -72,6 +75,11 @@
 	[XCBRender initializeExtensionWithConnection: XCBConn];
 	[XCBFixes initializeExtensionWithConnection: XCBConn];
 
+	[[XCBAtomCache sharedInstance]
+		cacheAtoms: ICCCMAtomsList()];
+	[[XCBAtomCache sharedInstance]
+		cacheAtoms: EWMHAtomsList()];
+
 	NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
 
 	[defaultCenter addObserver: self
@@ -94,38 +102,36 @@
 	self->screens = [NSMutableDictionary new];
 
 	[XCBConn grab];
+	uint32_t screen_id = 0;
 	FOREACH([XCBConn screens], screen, XCBScreen*)
 	{
-		[screen setTrackingChildren: YES];
-		XCBWindow *rootWindow = [screen rootWindow];
-		uint32_t events[2];
-		// Must be in this order because of the order of the
-		// XCB_CW_* flags
-		events[0] = 1;
-		events[1] = 
-			XCB_EVENT_MASK_FOCUS_CHANGE |
-			XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_BUTTON_PRESS |
-			XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
-			XCB_EVENT_MASK_STRUCTURE_NOTIFY |
-			XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT;
-		[rootWindow changeWindowAttributes: XCB_CW_EVENT_MASK | XCB_CW_OVERRIDE_REDIRECT
-		                            values: events];
+		PMScreen *pm_screen = [[PMScreen alloc] 
+			initWithScreen: screen 
+			            id: screen_id++];
+		if (![pm_screen manageScreen])
+		{
+			[pm_screen release];
+			continue;
+		}
 
-		XCBRenderPicture *rootPicture;
-		PMScreen *pm_screen = [[PMScreen alloc] initWithScreen:screen];
-		[screens setObject:pm_screen forKey:screen];
+
+		[screens setObject: pm_screen 
+		            forKey: screen];
 		[pm_screen release];
 
-		[defaultCenter addObserver: self
-		                  selector: @selector(windowDidExpose:)
-		                      name: XCBWindowExposeNotification
-		                    object: [screen rootWindow]];
 
 		[self redirectRootsForWindow: [screen rootWindow]];
 	}
 	[XCBConn ungrab];
 	xcb_flush([XCBConn connection]);
+	if ([screens count] == 0)
+	{
+		NSLog(@"No screens to manage!");
+		[self release];
+		return nil;
+	}
 	
+	[[XCBAtomCache sharedInstance] waitOnPendingAtomRequests];
 	return self;
 }
 
@@ -170,32 +176,19 @@
 	}
 }
 
-- (void)windowDidExpose: (NSNotification*)notification
-{
-	NSLog(@"-[XCBConnection windowDidExpose:]");
-	// FIXME: Apparently we can optimize by accumulating the
-	// the rects according to the anEvent->count parameter (see XLib manual)
-	XCBRect exposeRect;
-	xcb_rectangle_t exposeRectangle;
-	[[[notification userInfo] objectForKey: @"Rect"] 
-		getValue: &exposeRect];
-	exposeRectangle = XCBRectangleFromRect(exposeRect);
-
-	PMScreen *screen = [self findScreenWithRootWindow: [notification object]];
-	XCBFixesRegion *exposeRegion = [XCBFixesRegion 
-		regionWithRectangles: &exposeRectangle 
-		               count: 1];
-	[screen appendDamage: exposeRegion];
-}
 - (void)windowDidReparent: (NSNotification*)notification
 {
 	XCBWindow *window = [notification object];
 	PMScreen * screen = [self findScreenWithRootWindow: [window parent]];
+	
 	if (screen)
+		// Window reparented to root window
 		[screen childWindowDiscovered: window
 		              compositeWindow: nil];
 	else
 	{
+		// Window reparented to a child window (we're looking for the case
+		// we reparented something to a decoration window)
 		screen = [self 
 			findScreenWithRootWindow: [[notification userInfo] objectForKey: @"OldParent"]];
 		// There is the slight chance we received a reparent notify
@@ -232,7 +225,7 @@
 	if (screen == nil)
 	{
 		// Can't be top-level. Ignore it.
-		NSLog(@"-[PMConnectionDelegate newWindow: ignoring non-top level window");
+		NSLog(@"-[PMConnectionDelegate newWindow: ignoring non-top level window %@", subject);
 		return;
 	}
 
