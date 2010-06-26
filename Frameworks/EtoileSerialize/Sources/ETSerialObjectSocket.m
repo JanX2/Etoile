@@ -13,7 +13,7 @@
 	} 
 	ETSocket *theSocket = [ETSocket socketConnectedToRemoteHost: aHost
 	                                                 forService: aService];
-	ASSIGN(socket,theSocket);
+	ASSIGN(socket, theSocket);
 	return self;
 }
 

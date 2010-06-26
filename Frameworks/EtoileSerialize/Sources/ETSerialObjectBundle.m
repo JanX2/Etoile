@@ -1,4 +1,5 @@
 #include <unistd.h>
+#import <EtoileFoundation/Macros.h>
 #import "ETObjectStore.h"
 
 static NSFileManager * filemanager;
@@ -12,19 +13,22 @@ static NSFileManager * filemanager;
 
 - (id) initWithPath: (NSString *)aPath
 {
-	self = [super init];
-
-	if (self != nil)
-	{
-		[self setPath: aPath];
-	}
-
+	SUPERINIT;
+	[self setPath: aPath];
 	return self;
 }
 
 - (id) init
 {
 	return [self initWithPath: nil];
+}
+
+- (void) dealloc
+{
+	[branch release];
+	[bundlePath release];
+	[self commit];
+	[super dealloc];
 }
 
 - (void) setPath: (NSString *)aPath
@@ -40,7 +44,7 @@ static NSFileManager * filemanager;
 
 - (void) startVersion: (unsigned int)aVersion inBranch: (NSString *)aBranch
 {
-	NSString * filename = [bundlePath stringByAppendingPathComponent: aBranch];
+	NSString *filename = [bundlePath stringByAppendingPathComponent: aBranch];
 
 	// Create a directory for the branch, if there isn't one already
 	if (![filemanager fileExistsAtPath: filename])
@@ -52,9 +56,7 @@ static NSFileManager * filemanager;
 	file = fopen([filename UTF8String], "w");
 
 	version = aVersion;
-	[aBranch retain];
-	[branch release];
-	branch = aBranch;
+	ASSIGN(branch, aBranch);
 }
 
 - (NSString*) parentOfBranch: (NSString *)aBranch
@@ -105,7 +107,7 @@ static NSFileManager * filemanager;
 	// Create a directory for the branch, if there isn't one already
 	if (![filemanager fileExistsAtPath: newPath])
 	{
-		[filemanager createDirectoryAtPath: newPath attributes:nil];
+		[filemanager createDirectoryAtPath: newPath attributes: nil];
 	}
 	NSString *oldPath = [bundlePath stringByAppendingPathComponent: oldBranch];
 	NSString *link = [bundlePath stringByAppendingPathComponent: @"previous"];
@@ -137,13 +139,6 @@ static NSFileManager * filemanager;
 - (NSString *) branch
 {
 	return branch;
-}
-
-- (void) dealloc
-{
-	[branch release];
-	[self commit];
-	[super dealloc];
 }
 
 @end

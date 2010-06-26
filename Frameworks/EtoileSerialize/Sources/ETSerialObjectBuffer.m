@@ -1,15 +1,20 @@
+#import <EtoileFoundation/Macros.h>
 #import "ETObjectStore.h"
 
 @implementation ETSerialObjectBuffer
 
 - (id) init 
 {
-	if (nil == (self = [super init]))
-	{
-		return nil;
-	}
+	SUPERINIT;
 	buffer = [[NSMutableData alloc] initWithCapacity: 1024];
 	return self;
+}
+
+- (void) dealloc
+{
+	[buffer release];
+	[branch release];
+	[super dealloc];
 }
 
 - (void) startVersion: (unsigned int)aVersion inBranch: (NSString *)aBranch
@@ -36,7 +41,7 @@
 
 - (void) replaceRange: (NSRange)aRange withBytes: (unsigned char *)bytes
 {
-	[buffer replaceBytesInRange: aRange withBytes :bytes length: aRange.length];
+	[buffer replaceBytesInRange: aRange withBytes: bytes length: aRange.length];
 }
 
 - (BOOL) isValidBranch: (NSString *)aBranch
@@ -62,13 +67,6 @@
 - (unsigned int) size
 {
 	return [buffer length];
-}
-
-- (void) dealloc
-{
-	[buffer release];
-	[branch release];
-	[super dealloc];
 }
 
 // Methods that don't apply to buffers

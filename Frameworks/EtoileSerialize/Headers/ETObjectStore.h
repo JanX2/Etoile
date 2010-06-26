@@ -44,6 +44,8 @@
 - (NSString *) branch;
 /**
  * Creates a new branch from the specified parent branch.
+ *
+ * Doesn't change the current branch.
  */
 - (void) createBranch: (NSString *)newBranch from: (NSString *)oldBranch;
 @end
@@ -57,6 +59,11 @@
 @end
 
 
+/** 
+ * Object 'store' which keeps the data written to it in memory.
+ * 
+ * Doesn't support commit and branching operations.
+ */
 @interface ETSerialObjectBuffer : NSObject <ETSeekableObjectStore> {
 	NSMutableData *buffer;
 	unsigned version;
@@ -70,23 +77,28 @@
 
 /**
  * Object 'store' which simply logs the serialiser output to stdout.
- * Useful for debugging.
+ *
+ * Useful for debugging.<br />
+ * Supports commit but not branching operations.
  */
 @interface ETSerialObjectStdout : ETSerialObjectBuffer {}
 @end
 
 /**
  * Object 'store' which sends data over the network to the specified host.
+ *
+ * Supports commit but not branching operations.
  */
 @interface ETSerialObjectSocket : ETSerialObjectBuffer {
 	/** The socket */
 	ETSocket *socket;
 }
 /**
+ * <init />
  * Initializes the store pointing to the specified host and network service.
  * Defaults to using the CoreObject service (which must exist in
  * /etc/services in order to work).
- * */
+ */
 - (id) initWithRemoteHost: (NSString *)aHost forService: (NSString *)aService;
 @end
 
@@ -96,6 +108,7 @@
 	unsigned version;
 	NSString *branch;
 }
+/** <init /> */
 - (id) initWithPath: (NSString *)aPath;
 - (void) setPath: (NSString *)aPath;
 @end
