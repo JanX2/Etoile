@@ -3,7 +3,8 @@
 #import <EtoileFoundation/Macros.h>
 
 @implementation ETSerialObjectSocket
-- (id) initWithRemoteHost:(NSString*)aHost forService:(NSString*)aService
+
+- (id) initWithRemoteHost: (NSString *)aHost forService: (NSString *)aService
 {
 	SUPERINIT
 	if (aService == nil)                                                                   
@@ -22,4 +23,5 @@
 }
 
 DEALLOC([socket release];)
+
 @end

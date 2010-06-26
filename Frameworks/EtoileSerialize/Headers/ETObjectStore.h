@@ -6,28 +6,28 @@
 /**
  * Returns the branch that is the parent of the specified branch.
  */
-- (NSString*) parentOfBranch:(NSString*)aBranch;
+- (NSString *) parentOfBranch: (NSString *)aBranch;
 /**
  * Returns true if the specified branch exists.
  */
-- (BOOL) isValidBranch:(NSString*)aBranch;
+- (BOOL) isValidBranch:(NSString *)aBranch;
 /**
  * Start a new version in the specified branch.  Subsequent data will be
  * written to this branch.
  */
-- (void) startVersion:(unsigned)aVersion inBranch:(NSString*)aBranch;
+- (void) startVersion: (unsigned int)aVersion inBranch: (NSString *)aBranch;
 /**
  * Writes the specified data to the store.
  */
-- (void) writeBytes:(unsigned char*)bytes count:(unsigned)count;
+- (void) writeBytes: (unsigned char *)bytes count: (unsigned int)count;
 /**
  * Interface for an object store that allows serial data to be written to it.
  */
-- (NSData*) dataForVersion:(unsigned)aVersion inBranch:(NSString*)aBranch;
+- (NSData *) dataForVersion: (unsigned int)aVersion inBranch: (NSString *)aBranch;
 /**
  * Returns the amount of data written so far in this version.
  */
-- (unsigned) size;
+- (unsigned int) size;
 /**
  * Guarantees that the data is committed to the backing store.
  */
@@ -36,16 +36,16 @@
  * Returns the version currently being written, or the last version to be
  * written if the version is finalised.
  */
-- (unsigned) version;
+- (unsigned int) version;
 /**
  * Returns the branch currently being written, or the last branch to be
  * written if the version is finalised.
  */
-- (NSString*) branch;
+- (NSString *) branch;
 /**
- * Create a new branch from the specified parent branch.
+ * Creates a new branch from the specified parent branch.
  */
-- (void) createBranch:(NSString*)newBranch from:(NSString*)oldBranch;
+- (void) createBranch: (NSString *)newBranch from: (NSString *)oldBranch;
 @end
 
 @protocol ETSeekableObjectStore <ETSerialObjectStore>
@@ -53,7 +53,7 @@
  * Replaces the bytes in the specified range with (the same number of) new
  * bytes.
  */
-- (void) replaceRange:(NSRange)aRange withBytes:(unsigned char*)bytes;
+- (void) replaceRange: (NSRange)aRange withBytes: (unsigned char *)bytes;
 @end
 
 
@@ -65,14 +65,16 @@
 /**
  * Returns the buffer for the current version.
  */
-- (NSData*) buffer;
+- (NSData *) buffer;
 @end
+
 /**
  * Object 'store' which simply logs the serialiser output to stdout.
  * Useful for debugging.
  */
 @interface ETSerialObjectStdout : ETSerialObjectBuffer {}
 @end
+
 /**
  * Object 'store' which sends data over the network to the specified host.
  */
@@ -81,11 +83,11 @@
 	ETSocket *socket;
 }
 /**
- * Initialize the store pointing to the specified host and network service.
+ * Initializes the store pointing to the specified host and network service.
  * Defaults to using the CoreObject service (which must exist in
  * /etc/services in order to work).
  * */
-- (id) initWithRemoteHost:(NSString*)aHost forService:(NSString*)aService;
+- (id) initWithRemoteHost: (NSString *)aHost forService: (NSString *)aService;
 @end
 
 @interface  ETSerialObjectBundle : NSObject <ETSeekableObjectStore> {
@@ -95,5 +97,5 @@
 	NSString *branch;
 }
 - (id) initWithPath: (NSString *)aPath;
-- (void) setPath:(NSString*)aPath;
+- (void) setPath: (NSString *)aPath;
 @end
