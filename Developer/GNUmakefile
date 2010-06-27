@@ -14,7 +14,7 @@ export developer-base ?= yes
 #
 
 ifeq ($(developer-base), yes)
-	SUBPROJECTS = Examples Services
+	SUBPROJECTS = Examples Services Documentation
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
