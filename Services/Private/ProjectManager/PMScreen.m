@@ -23,6 +23,7 @@
  *
  **/
 #import "PMScreen.h"
+#import "EWMH.h"
 #import "XCBScreen.h"
 #import "XCBConnection.h"
 #import "XCBRender.h"
@@ -125,6 +126,19 @@
 		   selector: @selector(windowDidExpose:)
 		       name: XCBWindowExposeNotification
 		     object: [screen rootWindow]];
+	
+	EWMHSetSupported([screen rootWindow], manager_window,
+		[NSArray arrayWithObjects: EWMH_WMWindowType,
+			EWMH_WMWindowTypeDock,
+			EWMH_WMWindowTypeDesktop,
+			EWMH_WMWindowTypeMenu,
+			EWMH_WMWindowTypeToolbar,
+			EWMH_WMWindowTypeNormal,
+			EWMH_WMWindowTypeUtility,
+			EWMH_WMWindowTypeDialog,
+			EWMH_WMWindowTypeDropdownMenu,
+			EWMH_WMWindowTypePopupMenu,
+			nil]);
 	return YES;
 }
 - (PMCompositeWindow*)findCompositeWindow: (XCBWindow*)window

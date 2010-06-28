@@ -24,22 +24,48 @@
  **/
 #import "XCBWindow.h"
 
+typedef enum _PMManagedWindowState
+{
+	/**
+	  * The managed window is waiting on the child to move
+	  * to the available state so that it can figure out
+	  * mapping behaviour.
+	  */
+	PMManagedWindowPendingState,
+	/**
+	  * An "unknown" state, where the managed window is
+	  * waiting for all the child properties to be cached
+	  * before transitioning into the withdrawn/iconic/normal
+	  * states
+	  */
+	PMManagedWindowWaitingOnPropertiesState,
+	PMManagedWindowWithdrawnState,
+	PMManagedWindowIconicState,
+	PMManagedWindowNormalState
+} PMManagedWindowState;
+
 @interface PMManagedWindow : NSObject {
+	id delegate;
 	XCBWindow *child;
 	XCBWindow *decorationWindow;
+	PMManagedWindowState state;
+
 	XCBPoint child_origin;
-	BOOL ignoreUnmap;
+
+	// Fields containing pending events
+	NSArray* pendingEvents;
 
 	// Fields used during map and unmap transitions
 	NSMutableSet *pendingWindowProperties;
+	BOOL ignoreUnmap;
 	BOOL reparented;
 }
-+ (PMManagedWindow*)windowDecoratingWindow: (XCBWindow*)win;
+- (id)initWithChildWindow: (XCBWindow*)win pendingEvents: (NSArray*)pending;
 - (XCBWindow*)childWindow;
 - (XCBWindow*)decorationWindow;
+- (void)setDelegate: (id)delegate;
 @end
 
 @interface NSObject (PMManagedWindowDelegate)
-- (void)managedWindow: (PMManagedWindow*)managedWindow
-         mappedWindow: (XCBWindow*)mappedWindow;
+- (void)managedWindowWithdrawn: (PMManagedWindow*)managedWindow;
 @end

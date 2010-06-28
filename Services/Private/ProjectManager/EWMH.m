@@ -23,6 +23,7 @@
  *
  **/
 #import "EWMH.h"
+#import "XCBAtomCache.h"
 
 // Root window properties (some are also messages too)
 NSString* EWMH_Supported = @"_NET_SUPPORTED";
@@ -206,4 +207,35 @@ NSArray* EWMHAtomsList()
 	};
 	return [NSArray arrayWithObjects: atoms
 	                           count: sizeof(atoms) / sizeof(NSString*)];
+}
+
+void EWMHSetSupported(XCBWindow *rootWindow, XCBWindow* checkWindow, NSArray* supportedAtoms)
+{
+	xcb_window_t checkWindowId = [checkWindow xcbWindowId];
+	[checkWindow changeProperty: EWMH_SupportingWMCheck
+	                       type: @"WINDOW"
+	                     format: 32
+	                       mode: XCB_PROP_MODE_REPLACE
+	                       data: &checkWindowId
+	                      count: 1];
+	[rootWindow changeProperty: EWMH_SupportingWMCheck
+	                      type: @"WINDOW"
+	                    format: 32
+	                      mode: XCB_PROP_MODE_REPLACE
+	                      data: &checkWindowId
+	                     count: 1];
+
+	xcb_atom_t *atomList = calloc([supportedAtoms count], sizeof(xcb_atom_t));
+	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
+	for (int i = 0; i < [supportedAtoms count]; i++)
+	{
+		atomList[i] = [atomCache atomNamed: [supportedAtoms objectAtIndex: i]];
+	}
+	[rootWindow changeProperty: EWMH_Supported
+	                      type: @"ATOM"
+	                    format: 32
+	                      mode: XCB_PROP_MODE_REPLACE
+	                      data: atomList
+	                     count: [supportedAtoms count]];
+	free(atomList);
 }

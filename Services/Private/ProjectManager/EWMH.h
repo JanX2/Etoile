@@ -158,3 +158,8 @@ extern NSString* EWMH_WMFullPlacement;
 
 // Functions
 NSArray* EWMHAtomsList();
+
+/**
+  * Setup EWMH_SupportingWMCheck and EWMH_Supported for a root window.
+  */
+void EWMHSetSupported(XCBWindow *rootWindow, XCBWindow* checkWindow, NSArray* supportedAtoms);

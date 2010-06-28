@@ -1,7 +1,6 @@
 /**
- * Étoilé ProjectManager - PMConnectionDelegate.h
+ * Étoilé ProjectManager - XCBGeometry.m
  *
- * Copyright (C) 2009 David Chisnall
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,24 +22,37 @@
  * THE SOFTWARE.
  *
  **/
-#import <Foundation/NSObject.h>
-#include "XCBRender.h"
-#include "XCBWindow.h"
+#import "XCBGeometry.h"
 
-typedef enum _PMConnectionDelegateState
+@implementation NSValue (XCBGeometry)
+- (XCBPoint)xcbPointValue
 {
-	PMConnectionDelegateUnitialised = 0,
-	PMConnectionDelegateInitialisingState,
-	PMConnectionDelegateRunningState
-} PMConnectionDelegateState;
-@interface PMConnectionDelegate : NSObject
-{
-	NSMutableDictionary *screens;
-	NSMutableDictionary *compositeWindows;
-	NSMutableDictionary* managedWindows;
-	NSMutableSet *decorationWindows;
-	PMConnectionDelegateState state;
-	BOOL clipChanged;
+	XCBPoint v;
+	[self getValue: &v];
+	return v;
 }
-- (id)init;
++ (NSValue*)valueWithXCBPoint: (XCBPoint)pointValue
+{
+	return [self valueWithBytes: &pointValue objCType: @encode(XCBPoint)];
+}
+- (XCBSize)xcbSizeValue
+{
+	XCBSize v;
+	[self getValue: &v];
+	return v;
+}
++ (NSValue*)valueWithXCBSize: (XCBSize)sizeValue
+{
+	return [self valueWithBytes: &sizeValue objCType: @encode(XCBSize)];
+}
+- (XCBRect)xcbRectValue
+{
+	XCBRect v;
+	[self getValue: &v];
+	return v;
+}
++ (NSValue*)valueWithXCBRect: (XCBRect)rectValue
+{
+	return [self valueWithBytes: &rectValue objCType: @encode(XCBRect)];
+}
 @end

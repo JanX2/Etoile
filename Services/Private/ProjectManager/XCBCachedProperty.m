@@ -40,7 +40,7 @@ const NSString *XCBInvalidTypeException = @"XCBInvalidTypeException";
 	bytes_after = reply->bytes_after;
 
 	void *value = xcb_get_property_value(reply);
-	int length = xcb_get_property_value_length(reply);
+	int length = xcb_get_property_value_length(reply) * format / 8;
 	if (length > 0 && value != NULL)
 	{
 		propertyData = [[NSData alloc]
@@ -55,6 +55,10 @@ const NSString *XCBInvalidTypeException = @"XCBInvalidTypeException";
 	[propertyName release];
 	[propertyData release];
 	[super dealloc];
+}
+- (BOOL)isEmpty
+{
+	return propertyData == nil;
 }
 - (NSString*)propertyName
 {
@@ -87,6 +91,22 @@ const NSString *XCBInvalidTypeException = @"XCBInvalidTypeException";
 - (uint32_t*)asLongs
 {
 	return (uint32_t*)[propertyData bytes];
+}
+- (xcb_atom_t)asAtom
+{
+	[self checkAtomType: @"ATOM"];
+	return (xcb_atom_t)([self asLongs][0]);
+}
+- (NSArray*)asAtomArray
+{
+	[self checkAtomType: @"ATOM"];
+	uint32_t *longs = [self asLongs];
+	NSMutableArray *atomArray = [NSMutableArray arrayWithCapacity: format_length];
+	for (uint32_t i = 0; i < format_length; i++)
+	{
+		[atomArray addObject: [NSValue valueWithXCBAtom: (xcb_atom_t)longs[i]]];
+	}
+	return atomArray;
 }
 
 - (void)checkAtomType: (NSString*)expectedType

@@ -64,3 +64,12 @@
 - (void)cacheAtoms: (NSArray*)atoms;
 - (void)waitOnPendingAtomRequests;
 @end
+
+/**
+  * XCBAtom is a helper class to assist with storing
+  * atoms in arrays and other GNUstep data structures
+  */
+@interface NSValue (XCBAtom)
++ (NSValue*)valueWithXCBAtom: (xcb_atom_t)atom;
+- (xcb_atom_t)xcbAtomValue;
+@end

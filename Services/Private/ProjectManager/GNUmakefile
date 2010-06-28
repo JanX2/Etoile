@@ -27,6 +27,7 @@ $(TOOL_NAME)_OBJC_FILES = \
 	 XCBDamage.m \
 	 XCBExtension.m \
 	 XCBComposite.m \
+	 XCBGeometry.m \
 	 XCBRender.m \
 	 XCBFixes.m \
 	 XCBPixmap.m \

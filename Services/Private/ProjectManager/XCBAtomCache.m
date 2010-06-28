@@ -177,3 +177,20 @@ static XCBAtomCache *sharedInstance;
 }
 
 @end
+
+@implementation NSValue (XCBAtom)
++ (NSValue*)valueWithXCBAtom: (xcb_atom_t)atomValue
+{
+	NSValue* atom = [[self alloc] 
+		initWithBytes: &atomValue
+		     objCType: @encode(xcb_atom_t)];
+	return [atom autorelease];
+}
+
+- (xcb_atom_t)xcbAtomValue
+{
+	xcb_atom_t val;
+	[self getValue: &val];
+	return val;
+}
+@end

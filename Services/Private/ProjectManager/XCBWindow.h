@@ -181,16 +181,6 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
 - (int16_t)borderWidth;
 - (XCBWindow*)parent;
 - (xcb_window_t)xcbWindowId;
-- (void)handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent;
-- (void)handleUnMapNotifyEvent: (xcb_unmap_notify_event_t*)anEvent;
-- (void)handleDestroyNotifyEvent: (xcb_destroy_notify_event_t*)anEvent;
-- (void)handleCirculateNotifyEvent: (xcb_circulate_notify_event_t*)anEvent;
-- (void)handleMapNotifyEvent: (xcb_map_notify_event_t*)anEvent;
-- (void)handleExpose: (xcb_expose_event_t*)anEvent;
-- (void)handleMapRequest: (xcb_map_request_event_t*)anEvent;
-- (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent;
-- (void)handleConfigureRequest: (xcb_configure_request_event_t*)anEvent;
-- (void)handleReparentNotify: (xcb_reparent_notify_event_t*)anEvent;
 - (void)addToSaveSet;
 - (void)removeFromSaveSet;
 - (void)destroy;
@@ -201,6 +191,16 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
                       dY: (uint16_t)dy;
 - (void)setInputFocus: (uint8_t)revert_to
                  time: (xcb_timestamp_t)time;
+- (void)grabButton: (uint8_t)button
+         modifiers: (uint16_t)modifiers
+       ownerEvents: (uint8_t)ownerEvents
+         eventMask: (uint16_t)eventMask
+       pointerMode: (uint8_t)pointerMode
+      keyboardMode: (uint8_t)keyboardMode
+         confineTo: (XCBWindow*)confineWindow
+            cursor: (xcb_cursor_t)cursor;
+- (void)ungrabButton: (uint8_t)button
+           modifiers: (uint8_t)modifiers;
 /**
   * Request an update of the window attributes. Once
   * the reply has been received, a XCBWindowFrame(Will/Did)ChangeNotification
@@ -251,22 +251,16 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
   */
 - (XCBCachedProperty*)cachedPropertyValue: (NSString*)propertyName;
 
+- (void)changeProperty: (NSString*)propertyName
+                  type: (NSString*)type
+                format: (uint8_t)format
+                  mode: (xcb_prop_mode_t)mode
+                  data: (const void*)data
+                 count: (uint32_t)elementCount;
+
 /** XCBDrawable **/
 - (xcb_drawable_t)xcbDrawableId;
 
-@end
-
-@interface XCBWindow (Package)
-/**
-  * Set the window that this window is positioned above.
-  * This method must not be used as a public API. It is
-  * currently used internally by XCBScreen to set the above
-  * window when window tracking is on.
-  *
-  * You could use this to store the above window when
-  * you have some means of tracking it correctly.
-  */
-- (void)setAboveWindow: (XCBWindow*)above;
 @end
 
 @interface NSObject (XCBWindowDelegate)
@@ -289,4 +283,10 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
 - (void)xcbWindowParentDidChange: (NSNotification*)notification;
 - (void)xcbWindowPropertyDidRefresh: (NSNotification*)notification;
 - (void)xcbWindowPropertyDidChange: (NSNotification*)notification;
+- (void)xcbWindowButtonPress: (NSNotification*)notification;
+- (void)xcbWindowButtonRelease: (NSNotification*)notification;
+- (void)xcbWindowFocusIn: (NSNotification*)notification;
+- (void)xcbWindowFocusOut: (NSNotification*)notification;
 @end
+
+void XCBWindowForwardConfigureRequest(NSNotification* notification);

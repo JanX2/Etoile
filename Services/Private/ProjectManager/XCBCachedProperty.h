@@ -50,9 +50,13 @@ extern const NSString* XCBInvalidTypeException;
 - (uint8_t)format;
 - (uint32_t)lengthInFormatUnits;
 - (NSData*)data;
+- (BOOL)isEmpty;
+
 - (uint8_t*)asBytes;
 - (uint16_t*)asShorts;
 - (uint32_t*)asLongs;
+- (xcb_atom_t)asAtom;
+- (NSArray*)asAtomArray;
 
 /**
   * Check if the atom is of the specified

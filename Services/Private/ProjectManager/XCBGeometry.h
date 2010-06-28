@@ -24,7 +24,9 @@
  *
  **/
 #include <stdint.h>
-#include <xcb/xproto.h>
+#include <xcb/xcb.h>
+#import <Foundation/NSString.h>
+#import <Foundation/NSValue.h>
 
 typedef struct _XCBPoint
 {
@@ -78,3 +80,13 @@ static inline XCBRect XCBRectFromRectangle(xcb_rectangle_t rect)
 	XCBRect r = {{rect.x, rect.y}, {rect.width, rect.height}};
 	return r;
 }
+
+@interface NSValue (XCBGeometry)
+- (XCBPoint)xcbPointValue;
++ (NSValue*)valueWithXCBPoint: (XCBPoint)pointValue;
+- (XCBSize)xcbSizeValue;
++ (NSValue*)valueWithXCBSize: (XCBSize)sizeValue;
+- (XCBRect)xcbRectValue;
++ (NSValue*)valueWithXCBRect: (XCBRect)rectValue;
+@end
+

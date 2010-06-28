@@ -24,7 +24,7 @@
  *
  **/
 #import "XCBScreen.h"
-#import "XCBWindow.h"
+#import "XCBWindow+Package.h"
 #import "XCBVisual.h"
 
 #import <EtoileFoundation/EtoileFoundation.h>

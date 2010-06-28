@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  *
  **/
-#import "XCBWindow.h"
+#import "XCBWindow+Package.h"
 #import "XCBVisual.h"
 #import "XCBAtomCache.h"
 #import "XCBCachedProperty.h"
@@ -59,6 +59,7 @@ static XCBWindow* UnknownWindow;
 - (void) checkIfAvailable;
 - (XCBWindow*)initWithNewXCBWindow: (xcb_window_t)new_window_id;
 - (void)requestProperty: (NSString*)property atomValue: (NSNumber*)atom;
+- (void)handleCreateEvent: (xcb_create_notify_event_t*)anEvent;
 @end
 
 @implementation XCBWindow
@@ -77,6 +78,7 @@ static XCBWindow* UnknownWindow;
 {
 	[parent release];
 	[above release];
+	[cached_property_values release];
 	[super dealloc];
 }
 + (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow 
@@ -159,33 +161,7 @@ static XCBWindow* UnknownWindow;
 }
 - (void)changeWindowAttributesReply: (void*)c
 {
-	NSLog(@"XCBWindow: change window attributes succeeded.");
-}
-- (void)handleCirculateNotifyEvent: (xcb_circulate_notify_event_t*)anEvent
-{
-	if (anEvent == XCB_PLACE_ON_TOP)
-	{
-		XCBDELEGATE(WindowPlacedOnTop);
-		XCBNOTIFY(WindowPlacedOnTop);
-	}
-	else
-	{
-		XCBDELEGATE(WindowPlacedOnBottom);
-		XCBNOTIFY(WindowPlacedOnBottom);
-	}
-}
-- (void)handleExpose: (xcb_expose_event_t*)anEvent
-{
-	XCBRect exposeRect = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
-	NSDictionary *userInfo = [NSDictionary 
-		dictionaryWithObjectsAndKeys:
-			[NSValue valueWithBytes:&exposeRect objCType:@encode(XCBRect)],
-			@"Rect",
-			[NSNumber numberWithInt:anEvent->count],
-			@"Count",
-			nil];
-	XCBDELEGATE_U(WindowExpose, userInfo);
-	XCBNOTIFY_U(WindowExpose, userInfo);
+	NSDebugLLog(@"XCBWindow", @"XCBWindow: change window attributes succeeded.");
 }
 - (XCBWindow*)createChildInRect: (XCBRect)aRect
                     borderWidth: (uint16_t)borderWidth
@@ -246,7 +222,7 @@ static XCBWindow* UnknownWindow;
 	newWindow->attributes._class = windowClass;
 	newWindow->attributes.visual = visual;
 	// FIXME: Copy the valuesMask/valuesList
-	NSLog(@"-[XCBWindow createChildInRect: ..] Creating child window %x", winid);
+	NSDebugLLog(@"XCBWindow", @"-[XCBWindow createChildInRect: ..] Creating child window %x", winid);
 	[XCBConn setNeedsFlush: YES];
 	return newWindow;
 }
@@ -278,59 +254,33 @@ static XCBWindow* UnknownWindow;
 	xcb_set_input_focus([XCBConn connection], revert_to, window, time);
 	[XCBConn setNeedsFlush: YES];
 }
-- (void)handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent
+- (void)grabButton: (uint8_t)button
+         modifiers: (uint16_t)modifiers
+       ownerEvents: (uint8_t)ownerEvents
+         eventMask: (uint16_t)eventMask
+       pointerMode: (uint8_t)pointerMode
+      keyboardMode: (uint8_t)keyboardMode
+         confineTo: (XCBWindow*)confineWindow
+            cursor: (xcb_cursor_t)cursor
 {
-	id aboveWindow = anEvent->above_sibling == 0 ?
-		(id)[NSNull null] :
-		(id)[XCBWindow 
-			windowWithXCBWindow: anEvent->above_sibling
-			             parent: 0];
-	XCBRect frameRect = XCBMakeRect(anEvent->x, anEvent->y,
-		anEvent->width, anEvent->height);
-	NSValue *frameRectValue = [NSValue 
-		valueWithBytes:&frameRect
-		objCType:@encode(XCBRect)];
-	NSValue *borderWidth = [NSNumber numberWithInt:anEvent->border_width];
-	NSDictionary *userInfo = 
-		[NSDictionary dictionaryWithObjectsAndKeys:
-		frameRectValue, @"Rect",
-		borderWidth, @"BorderWidth",
-		aboveWindow, @"Above", // Place last as aboveWindow == nil, which then cuts off the rest of the dictionary (and hence it is absent, indicating stacked at the bottom). maybe we should have the concept of a nil window or just [NSNull null]
-		nil];
-		
-	_cache_load_values |= XCBWindowLoadedGeometry;
-	XCBDELEGATE_U(WindowFrameWillChange, userInfo);
-	XCBNOTIFY_U(WindowFrameWillChange, userInfo);
-	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
-	border_width = anEvent->border_width;
-	attributes.override_redirect = anEvent->override_redirect;
-	ASSIGN(above, [XCBWindow windowWithXCBWindow: anEvent->above_sibling]);
-	XCBDELEGATE_U(WindowFrameDidChange, userInfo);
-	XCBNOTIFY_U(WindowFrameDidChange, userInfo);
-	
-	[self checkIfAvailable];
+	xcb_grab_button([XCBConn connection],
+		ownerEvents,
+		[self xcbWindowId],
+		eventMask,
+		pointerMode,
+		keyboardMode,
+		confineWindow != nil ? [confineWindow xcbWindowId] : XCB_NONE,
+		cursor,
+		button,
+		modifiers);
 }
-- (void)handleDestroyNotifyEvent: (xcb_destroy_notify_event_t*)anEvent
+- (void)ungrabButton: (uint8_t)button
+           modifiers: (uint8_t)modifiers
 {
-	XCBDELEGATE(WindowDidDestroy);
-	XCBNOTIFY(WindowDidDestroy);
-	[XCBConn cancelHandlersForObject: self];
-	[XCBConn unregisterWindow: self];
-}
-- (void)handleUnMapNotifyEvent: (xcb_unmap_notify_event_t*)anEvent
-{
-	XCBDELEGATE(WindowWillUnMap);
-	XCBNOTIFY(WindowWillUnMap);
-	NSLog(@"Umapping %@", self);
-	attributes.map_state = XCB_MAP_STATE_UNMAPPED;
-	XCBDELEGATE(WindowDidUnMap);
-	XCBNOTIFY(WindowDidUnMap);
-}
-- (void)handleMapNotifyEvent: (xcb_map_notify_event_t*)anEvent
-{
-	attributes.map_state = XCB_MAP_STATE_VIEWABLE;
-	XCBDELEGATE(WindowDidMap);
-	XCBNOTIFY(WindowDidMap);
+	xcb_ungrab_button([XCBConn connection],
+		button,
+		[self xcbWindowId],
+		modifiers);
 }
 - (void)setGeometry: (xcb_get_geometry_reply_t*)reply
 {
@@ -341,83 +291,10 @@ static XCBWindow* UnknownWindow;
 	XCBNOTIFY(WindowFrameDidChange);
 	[self checkIfAvailable];
 }
-- (void)handleCreateEvent: (xcb_create_notify_event_t*)anEvent
-{
-	NSLog(@"-[XCBWindow handleCreateEvent:]");
-	NSAssert(window_load_state != XCBWindowAvailableState, @"Expected window in the created or pending state.");
-	window_load_state = XCBWindowExistsState;
-	window = anEvent->window;
-	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
-	border_width = anEvent->border_width;
-	attributes.override_redirect = anEvent->override_redirect;
-	ASSIGN(parent, [XCBWindow windowWithXCBWindow: anEvent->parent]);
-	_cache_load_values |= XCBWindowLoadedGeometry;
-	[self updateWindowAttributes];
-	XCBDELEGATE(WindowDidCreate);
-	XCBNOTIFY(WindowDidCreate);
-	XCBDELEGATE(WindowDidCreate);
-	XCBNOTIFY(WindowDidCreate);
-}
-- (void)handleMapRequest: (xcb_map_request_event_t*)anEvent
-{
-	XCBWindow *parent_window = [XCBWindow windowWithXCBWindow: anEvent->parent];
-	NSDictionary *dictionary = 
-		[NSDictionary dictionaryWithObject: parent_window 
-		                            forKey: @"Parent"];
-	XCBDELEGATE_U(WindowMapRequest, dictionary);
-}
-- (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent
-{
-	NSValue *place = [NSNumber numberWithInteger: anEvent->place];
-	NSDictionary *dictionary = 
-		[NSDictionary dictionaryWithObject: place 
-		                            forKey: @"Place"];
-	XCBDELEGATE_U(WindowCirculateRequest, dictionary);
-}
-- (void)handleConfigureRequest: (xcb_configure_request_event_t*)anEvent
-{
-	XCBWindow *parent_window = [XCBWindow windowWithXCBWindow: anEvent->parent];
-	uint16_t vm = anEvent->value_mask;
-	XCBRect rframe = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
-	NSValue *rframeVal = [NSValue valueWithBytes: &rframe 
-	                                   objCType: @encode(XCBRect)];
-	NSValue *borderWidth = [NSNumber numberWithInteger: anEvent->border_width];
-	// If the XCB_CONFIG_WINDOW_SIBLING parameter is specified, we report
-	// the above window or NSNull if it is to be placed on top. We put in
-	// nil to specify that this value was absent.
-	id aboveWindow = vm & XCB_CONFIG_WINDOW_SIBLING ?
-		(anEvent->sibling != 0 ? (id)[XCBWindow windowWithXCBWindow: anEvent->sibling] : (id)[NSNull null]) :
-		nil
-		;
-	NSValue *stackMode = [NSNumber numberWithInteger: anEvent->stack_mode];
-	NSDictionary *dictionary = 
-		[NSDictionary dictionaryWithObjectsAndKeys: 
-			[NSNumber numberWithInteger: vm], @"ValueMask",
-			parent_window, @"Parent",
-			rframeVal, @"Frame",
-			borderWidth, @"BorderWidth",
-			stackMode, @"StackMode",
-			aboveWindow, @"Above", // Put last in case it is nil
-			nil
-			];
-	XCBDELEGATE_U(WindowConfigureRequest, dictionary);
-}
-- (void)handleReparentNotify: (xcb_reparent_notify_event_t*)anEvent
-{
-	XCBWindow* oldParent = [parent retain];
-	ASSIGN(parent, [XCBWindow windowWithXCBWindow: anEvent->parent]);
-	NSDictionary *dictionary = [NSDictionary 
-		dictionaryWithObject: oldParent
-		              forKey: @"OldParent"];
-	XCBDELEGATE_U(WindowParentDidChange, dictionary);
-	XCBNOTIFY_U(WindowParentDidChange, dictionary);
-	[oldParent release];
-}
-
 - (XCBWindow*)initWithCreateEvent: (xcb_create_notify_event_t*)anEvent
 {
 	SELFINIT;
-	NSLog(@"Creating window with parent: %d", (int)anEvent->parent);
+	NSDebugLLog(@"XCBWindow", @"Creating window with parent: %d", (int)anEvent->parent);
 	window = anEvent->window;
 	// This will get updated again in handleCreateEvent, but
 	// just to get around the NSAssert() and because this
@@ -598,6 +475,24 @@ static XCBWindow* UnknownWindow;
 	return [cached_property_values objectForKey: cachedPropertyName];
 }
 
+- (void)changeProperty: (NSString*)propertyName
+                  type: (NSString*)type
+                format: (uint8_t)format
+                  mode: (xcb_prop_mode_t)mode
+                  data: (const void*)data
+                 count: (uint32_t)elementCount
+{
+	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
+	xcb_change_property([XCBConn connection],
+		mode,
+		[self xcbWindowId],
+		[atomCache atomNamed: propertyName],
+		[atomCache atomNamed: type],
+		format,
+		elementCount,
+		data);
+}
+
 @end
 
 @implementation XCBWindow (Private)
@@ -630,6 +525,8 @@ static XCBWindow* UnknownWindow;
 	XCBCachedProperty *property = [[XCBCachedProperty alloc]
 		initWithGetPropertyReply: reply
 		            propertyName: propertyName];
+	if (nil == cached_property_values)
+		cached_property_values = [NSMutableDictionary new];
 	[cached_property_values setObject: property
 	                           forKey: propertyName];
 	NSDictionary *userInfo = [NSDictionary
@@ -712,6 +609,23 @@ static XCBWindow* UnknownWindow;
 	[XCBConn registerWindow: self];
 	return self;
 }
+- (void)handleCreateEvent: (xcb_create_notify_event_t*)anEvent
+{
+	NSDebugLLog(@"XCBWindow", @"-[XCBWindow handleCreateEvent:]");
+	NSAssert(window_load_state != XCBWindowAvailableState, @"Expected window in the created or pending state.");
+	window_load_state = XCBWindowExistsState;
+	window = anEvent->window;
+	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
+	border_width = anEvent->border_width;
+	attributes.override_redirect = anEvent->override_redirect;
+	ASSIGN(parent, [XCBWindow windowWithXCBWindow: anEvent->parent]);
+	_cache_load_values |= XCBWindowLoadedGeometry;
+	[self updateWindowAttributes];
+	XCBDELEGATE(WindowDidCreate);
+	XCBNOTIFY(WindowDidCreate);
+	XCBDELEGATE(WindowDidCreate);
+	XCBNOTIFY(WindowDidCreate);
+}
 @end
 
 @implementation XCBWindow (Package)
@@ -724,4 +638,248 @@ static XCBWindow* UnknownWindow;
 		[NSException raise: NSInvalidArgumentException
 		            format: @"The specified above window (%@) is not a sibling of this window (%@).", newAbove, self];
 }
+- (void)handleCirculateNotifyEvent: (xcb_circulate_notify_event_t*)anEvent
+{
+	if (anEvent == XCB_PLACE_ON_TOP)
+	{
+		XCBDELEGATE(WindowPlacedOnTop);
+		XCBNOTIFY(WindowPlacedOnTop);
+	}
+	else
+	{
+		XCBDELEGATE(WindowPlacedOnBottom);
+		XCBNOTIFY(WindowPlacedOnBottom);
+	}
+}
+- (void)handleExpose: (xcb_expose_event_t*)anEvent
+{
+	XCBRect exposeRect = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
+	NSDictionary *userInfo = [NSDictionary 
+		dictionaryWithObjectsAndKeys:
+			[NSValue valueWithBytes:&exposeRect objCType:@encode(XCBRect)],
+			@"Rect",
+			[NSNumber numberWithInt:anEvent->count],
+			@"Count",
+			nil];
+	XCBDELEGATE_U(WindowExpose, userInfo);
+	XCBNOTIFY_U(WindowExpose, userInfo);
+}
+- (void)handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent
+{
+	id aboveWindow = anEvent->above_sibling == 0 ?
+		(id)[NSNull null] :
+		(id)[XCBWindow 
+			windowWithXCBWindow: anEvent->above_sibling
+			             parent: 0];
+	XCBRect frameRect = XCBMakeRect(anEvent->x, anEvent->y,
+		anEvent->width, anEvent->height);
+	NSValue *frameRectValue = [NSValue 
+		valueWithBytes:&frameRect
+		objCType:@encode(XCBRect)];
+	NSValue *borderWidth = [NSNumber numberWithInt:anEvent->border_width];
+	NSDictionary *userInfo = 
+		[NSDictionary dictionaryWithObjectsAndKeys:
+		frameRectValue, @"Rect",
+		borderWidth, @"BorderWidth",
+		aboveWindow, @"Above", // Place last as aboveWindow == nil, which then cuts off the rest of the dictionary (and hence it is absent, indicating stacked at the bottom). maybe we should have the concept of a nil window or just [NSNull null]
+		nil];
+		
+	_cache_load_values |= XCBWindowLoadedGeometry;
+	XCBDELEGATE_U(WindowFrameWillChange, userInfo);
+	XCBNOTIFY_U(WindowFrameWillChange, userInfo);
+	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
+	border_width = anEvent->border_width;
+	attributes.override_redirect = anEvent->override_redirect;
+	ASSIGN(above, [XCBWindow windowWithXCBWindow: anEvent->above_sibling]);
+	XCBDELEGATE_U(WindowFrameDidChange, userInfo);
+	XCBNOTIFY_U(WindowFrameDidChange, userInfo);
+	
+	[self checkIfAvailable];
+}
+- (void)handleDestroyNotifyEvent: (xcb_destroy_notify_event_t*)anEvent
+{
+	XCBDELEGATE(WindowDidDestroy);
+	XCBNOTIFY(WindowDidDestroy);
+	[XCBConn cancelHandlersForObject: self];
+	[XCBConn unregisterWindow: self];
+}
+- (void)handleUnMapNotifyEvent: (xcb_unmap_notify_event_t*)anEvent
+{
+	XCBDELEGATE(WindowWillUnMap);
+	XCBNOTIFY(WindowWillUnMap);
+	NSDebugLLog(@"XCBWindow", @"Umapping %@", self);
+	attributes.map_state = XCB_MAP_STATE_UNMAPPED;
+	XCBDELEGATE(WindowDidUnMap);
+	XCBNOTIFY(WindowDidUnMap);
+}
+- (void)handleMapNotifyEvent: (xcb_map_notify_event_t*)anEvent
+{
+	attributes.map_state = XCB_MAP_STATE_VIEWABLE;
+	XCBDELEGATE(WindowDidMap);
+	XCBNOTIFY(WindowDidMap);
+}
+- (void)handleMapRequest: (xcb_map_request_event_t*)anEvent
+{
+	XCBWindow *parent_window = [XCBWindow windowWithXCBWindow: anEvent->parent];
+	NSDictionary *dictionary = 
+		[NSDictionary dictionaryWithObject: parent_window 
+		                            forKey: @"Parent"];
+	XCBDELEGATE_U(WindowMapRequest, dictionary);
+}
+- (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent
+{
+	NSValue *place = [NSNumber numberWithInteger: anEvent->place];
+	NSDictionary *dictionary = 
+		[NSDictionary 
+			dictionaryWithObjectsAndKeys: place, 
+			                              @"Place",
+			                              nil];
+	XCBDELEGATE_U(WindowCirculateRequest, dictionary);
+}
+- (void)handleConfigureRequest: (xcb_configure_request_event_t*)anEvent
+{
+	XCBWindow *parent_window = [XCBWindow windowWithXCBWindow: anEvent->parent];
+	uint16_t vm = anEvent->value_mask;
+	XCBRect rframe = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
+	NSValue *rframeVal = [NSValue valueWithBytes: &rframe 
+	                                   objCType: @encode(XCBRect)];
+	NSValue *borderWidth = [NSNumber numberWithInteger: anEvent->border_width];
+	// If the XCB_CONFIG_WINDOW_SIBLING parameter is specified, we report
+	// the above window or NSNull if it is to be placed on top. We put in
+	// nil to specify that this value was absent.
+	id aboveWindow = vm & XCB_CONFIG_WINDOW_SIBLING ?
+		(anEvent->sibling != 0 ? (id)[XCBWindow windowWithXCBWindow: anEvent->sibling] : (id)[NSNull null]) :
+		nil
+		;
+	NSValue *stackMode = [NSNumber numberWithInteger: anEvent->stack_mode];
+	NSDictionary *dictionary = 
+		[NSDictionary dictionaryWithObjectsAndKeys: 
+			[NSNumber numberWithInteger: vm], @"ValueMask",
+			parent_window, @"Parent",
+			rframeVal, @"Frame",
+			borderWidth, @"BorderWidth",
+			stackMode, @"StackMode",
+			aboveWindow, @"Above", // Put last in case it is nil
+			nil
+			];
+	XCBDELEGATE_U(WindowConfigureRequest, dictionary);
+}
+- (void)handleReparentNotify: (xcb_reparent_notify_event_t*)anEvent
+{
+	XCBWindow* oldParent = [parent retain];
+	ASSIGN(parent, [XCBWindow windowWithXCBWindow: anEvent->parent]);
+	NSDictionary *dictionary = [NSDictionary 
+		dictionaryWithObject: oldParent
+		              forKey: @"OldParent"];
+	XCBDELEGATE_U(WindowParentDidChange, dictionary);
+	XCBNOTIFY_U(WindowParentDidChange, dictionary);
+	[oldParent release];
+}
+- (void)handleButtonPress: (xcb_button_press_event_t*)anEvent
+{
+	XCBWindow *rootWindow = [XCBWindow windowWithXCBWindow: anEvent->root],
+		  *childWindow = [XCBWindow windowWithXCBWindow: anEvent->child];
+	XCBPoint rootPoint = XCBMakePoint(anEvent->root_x, anEvent->root_y),
+		 eventPoint = XCBMakePoint(anEvent->event_x, anEvent->event_y);
+	NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithUnsignedChar: anEvent->detail], @"Detail",
+		[NSNumber numberWithUnsignedLong: anEvent->time], @"Time",
+		[NSValue valueWithXCBPoint: rootPoint], @"RootPoint",
+		[NSValue valueWithXCBPoint: eventPoint], @"EventPoint",
+		[NSNumber numberWithUnsignedInteger: anEvent->state], @"State",
+		[NSNumber numberWithBool: anEvent->same_screen ? YES : NO], @"SameScreen",
+		rootWindow, @"Root",
+		childWindow, @"Child",
+		nil];
+	XCBDELEGATE_U(WindowButtonPress, dictionary);
+	XCBNOTIFY_U(WindowButtonPress, dictionary);
+}
+- (void)handleButtonRelease: (xcb_button_release_event_t*)anEvent
+{
+	XCBWindow *rootWindow = [XCBWindow windowWithXCBWindow: anEvent->root],
+		  *childWindow = [XCBWindow windowWithXCBWindow: anEvent->child];
+	XCBPoint rootPoint = XCBMakePoint(anEvent->root_x, anEvent->root_y),
+		 eventPoint = XCBMakePoint(anEvent->event_x, anEvent->event_y);
+	NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithUnsignedChar: anEvent->detail], @"Detail",
+		[NSNumber numberWithUnsignedLong: anEvent->time], @"Time",
+		[NSValue valueWithXCBPoint: rootPoint], @"RootPoint",
+		[NSValue valueWithXCBPoint: eventPoint], @"EventPoint",
+		[NSNumber numberWithUnsignedInteger: anEvent->state], @"State",
+		[NSNumber numberWithBool: anEvent->same_screen ? YES : NO], @"SameScreen",
+		rootWindow, @"Root",
+		childWindow, @"Child",
+		nil];
+	XCBDELEGATE_U(WindowButtonRelease, dictionary);
+	XCBNOTIFY_U(WindowButtonRelease, dictionary);
+}
+- (void)handleFocusIn: (xcb_focus_in_event_t*)anEvent
+{
+	NSDictionary *dictionary = [NSDictionary
+		dictionaryWithObjectsAndKeys: 
+			[NSNumber numberWithInteger: anEvent->mode],
+			@"Mode",
+			[NSNumber numberWithInteger: anEvent->detail],
+			@"Detail",
+			nil];
+	XCBDELEGATE_U(WindowFocusIn, dictionary);
+	XCBNOTIFY_U(WindowFocusIn, dictionary);
+}
+- (void)handleFocusOut: (xcb_focus_out_event_t*)anEvent
+{
+	NSDictionary *dictionary = [NSDictionary
+		dictionaryWithObjectsAndKeys: 
+			[NSNumber numberWithInteger: anEvent->mode],
+			@"Mode",
+			[NSNumber numberWithInteger: anEvent->detail],
+			@"Detail",
+			nil];
+	XCBDELEGATE_U(WindowFocusOut, dictionary);
+	XCBNOTIFY_U(WindowFocusOut, dictionary);
+}
 @end
+
+void XCBWindowForwardConfigureRequest(NSNotification* aNotification)
+{
+	XCBWindow *window = [aNotification object];
+	NSDictionary *values = [aNotification userInfo];
+	uint32_t vl[7];
+	int i = 0;
+	
+	XCBRect frame;
+	NSInteger borderWidth, stackMode;
+	id aboveWindow;
+	NSInteger valueMask;
+
+	valueMask = [[values objectForKey: @"ValueMask"] integerValue];
+	[[values objectForKey: @"Frame"] getValue: &frame];
+	borderWidth = [[values objectForKey: @"BorderWidth"] integerValue];
+	stackMode = [[values objectForKey: @"StackMode"] integerValue];
+	aboveWindow = [values objectForKey: @"Above"];
+	if ([aboveWindow isEqual: [NSNull null]])
+		aboveWindow = nil;
+
+	if (valueMask & XCB_CONFIG_WINDOW_X)
+		vl[i++] = frame.origin.x;
+	if (valueMask & XCB_CONFIG_WINDOW_Y)
+		vl[i++] = frame.origin.y;
+	if (valueMask & XCB_CONFIG_WINDOW_WIDTH)
+		vl[i++] = frame.size.width;
+	if (valueMask & XCB_CONFIG_WINDOW_HEIGHT)
+		vl[i++] = frame.size.height;
+	if (valueMask & XCB_CONFIG_WINDOW_BORDER_WIDTH)
+		vl[i++] = borderWidth;
+	if (valueMask & XCB_CONFIG_WINDOW_SIBLING)
+		vl[i++] = [aboveWindow xcbWindowId];
+	if (valueMask & XCB_CONFIG_WINDOW_STACK_MODE)
+		vl[i++] = stackMode;
+	
+	// Just in case it contains other bit junk
+	valueMask &= XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y |
+		XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT |
+		XCB_CONFIG_WINDOW_BORDER_WIDTH |
+		XCB_CONFIG_WINDOW_SIBLING |
+		XCB_CONFIG_WINDOW_STACK_MODE;
+	[window configureWindow: valueMask
+	                 values: vl];
+}

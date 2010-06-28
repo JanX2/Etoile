@@ -25,7 +25,7 @@
  **/
 #import "XCBConnection.h"
 #import "XCBScreen.h"
-#import "XCBWindow.h"
+#import "XCBWindow+Package.h"
 #import "XCBAtomCache.h"
 #import "PMConnectionDelegate.h"
 #import <EtoileFoundation/EtoileFoundation.h>
@@ -57,15 +57,19 @@
 @implementation XCBConnection (EventHandlers)
 - (void) handleFocusIn: (xcb_focus_in_event_t*)anEvent
 {
-	NSLog(@"Focus in");
+	NSDebugLLog(@"XCBConnection", @"Focus in");
+	XCBWindow *win = [self windowForXCBId: anEvent->event];
+	[win handleFocusIn: anEvent];
 }
 - (void) handleFocusOut: (xcb_focus_out_event_t*)anEvent
 {
-	NSLog(@"Focus out");
+	NSDebugLLog(@"XCBConnection", @"Focus out");
+	XCBWindow *win = [self windowForXCBId: anEvent->event];
+	[win handleFocusOut: anEvent];
 }
 - (void) handleMapRequest: (xcb_map_request_event_t*)anEvent
 {
-	NSLog(@"XCBConnection: Mapping requested for window: %x", anEvent->window);
+	NSDebugLLog(@"XCBConnection", @"Mapping requested for window: %x", anEvent->window);
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	NSAssert(win, @"Map request without window.");
 	[win handleMapRequest: anEvent];
@@ -77,44 +81,47 @@
 }
 - (void)handleConfigureRequest: (xcb_configure_request_event_t*)anEvent
 {
-	NSLog(@"XCBConnection: Configure requested for window: %x", anEvent->window);
+	NSDebugLLog(@"XCBConnection",@"XCBConnection: Configure requested for window: %x", anEvent->window);
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	[win handleConfigureRequest: anEvent];
 }
 - (void) handleButtonPress: (xcb_button_press_event_t*)anEvent
 {
-	NSLog(@"Button pressed");
+	NSDebugLLog(@"XCBConnection",@"Button pressed");
+	XCBWindow *win = [self windowForXCBId: anEvent->event];
 	currentTime = anEvent->time;
-	//[[[screens objectAtIndex: 0 ] rootWindow] createChildInRect: XCBMakeRect(0,0,640,480)];
+	[win handleButtonPress: anEvent];
 }
 - (void) handleButtonRelease: (xcb_button_release_event_t*)anEvent
 {
-	NSLog(@"Button released");
+	NSDebugLLog(@"XCBConnection",@"Button released");
+	XCBWindow *win = [self windowForXCBId: anEvent->event];
 	currentTime = anEvent->time;
+	[win handleButtonRelease: anEvent];
 }
 - (void) handleKeyPress: (xcb_key_press_event_t*)anEvent
 {
-	NSLog(@"Key pressed");
+	NSDebugLLog(@"XCBConnection",@"Key pressed");
 	currentTime = anEvent->time;
 }
 - (void) handleKeyRelease: (xcb_key_release_event_t*)anEvent
 {
-	NSLog(@"Key released");
+	NSDebugLLog(@"XCBConnection",@"Key released");
 	currentTime = anEvent->time;
 }
 - (void) handleMotionNotify: (xcb_motion_notify_event_t*)anEvent
 {
-	NSLog(@"Motion notify");
+	NSDebugLLog(@"XCBConnection",@"Motion notify");
 	currentTime = anEvent->time;
 }
 - (void) handleEnterNotify: (xcb_enter_notify_event_t*)anEvent
 {
-	NSLog(@"Enter notify");
+	NSDebugLLog(@"XCBConnection",@"Enter notify");
 	currentTime = anEvent->time;
 }
 - (void) handleLeaveNotify: (xcb_leave_notify_event_t*)anEvent
 {
-	NSLog(@"Leave notify");
+	NSDebugLLog(@"XCBConnection",@"Leave notify");
 	currentTime = anEvent->time;
 }
 - (void) handleConfigureNotify: (xcb_configure_notify_event_t*)anEvent
@@ -130,7 +137,7 @@
 - (void) handleUnMapNotify: (xcb_unmap_notify_event_t*)anEvent
 {
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
-	NSLog(@"UnMapping window %@ (%x)", win, anEvent->window);
+	NSDebugLLog(@"XCBConnection",@"UnMapping window %@ (%x)", win, anEvent->window);
 	[win handleUnMapNotifyEvent: anEvent];
 }
 - (void) handleMapNotify: (xcb_map_notify_event_t*)anEvent
@@ -145,7 +152,7 @@
 }
 - (void) handleCreateNotify: (xcb_create_notify_event_t*)anEvent
 {
-	NSLog(@"Created window %x", anEvent->window);
+	NSDebugLLog(@"XCBConnection",@"Created window %x", anEvent->window);
 	XCBWindow *win  = [XCBWindow windowWithCreateEvent: anEvent];
 	// No need to post notification, as this is handled by XCBWindow itself.
 }
@@ -173,7 +180,7 @@ XCBConnection *XCBConn;
 {
 	if (nil == XCBConn)
 	{
-		NSLog(@"Creating shared connection...");
+		NSDebugLLog(@"XCBConnection",@"Creating shared connection...");
 		[[self alloc] init];
 	}
 	return XCBConn;
@@ -181,8 +188,8 @@ XCBConnection *XCBConn;
 - (id) init
 {
 	SUPERINIT;
-	NSLog(@"Creating connection...");
-	NSLog(@"Self: %x", self);
+	NSDebugLLog(@"XCBConnection",@"Creating connection...");
+	NSDebugLLog(@"XCBConnection",@"Self: %x", self);
 	[NSRunLoop currentRunLoop];
 	connection = xcb_connect(NULL, NULL);
 	if (NULL == connection)
@@ -193,7 +200,7 @@ XCBConnection *XCBConn;
 
 	if (xcb_connection_has_error(connection)) 
 	{
-		NSLog(@"Unknown error creating connection.");
+		NSDebugLLog(@"XCBConnection",@"Unknown error creating connection.");
 		[self release];
 		return nil;
 	}
@@ -213,7 +220,7 @@ XCBConnection *XCBConn;
 	int fd = xcb_get_file_descriptor(connection);
 	if (-1 == fd)
 	{
-		NSLog(@"Received invalid file descriptor for XCBConnection");
+		NSDebugLLog(@"XCBConnection",@"Received invalid file descriptor for XCBConnection");
 		[self release];
 		return nil;
 	}
@@ -234,21 +241,21 @@ XCBConnection *XCBConn;
 	{
 		xcb_screen_t *screen = iter.data;
 		[screens addObject: [XCBScreen screenWithXCBScreen: screen]];
-		NSLog(@"Root %x (%dx%d)", screen->root, screen->width_in_pixels, 
+		NSDebugLLog(@"XCBConnection",@"Root %x (%dx%d)", screen->root, screen->width_in_pixels, 
 				screen->height_in_pixels);
 		[self registerWindow: [XCBWindow windowWithXCBWindow: screen->root parent:XCB_NONE]];
 
 		xcb_screen_next(&iter);
 	}
 	xcb_flush(connection);
-	NSLog(@"Connection created");
+	NSDebugLLog(@"XCBConnection",@"Connection created");
 	//[[XCBAtomCache sharedInstance] cacheAtom: @"_NET_ACTIVE_WINDOW"];
 	return self;
 }
 
 #define HANDLE(constant, sel) \
 	case XCB_ ## constant:\
-		NSLog(@"Handling %s", #constant);\
+		NSDebugLLog(@"XCBConnection",@"Handling %s", #constant);\
 		if ([self respondsToSelector:@selector(handle ## sel:)])\
 		{\
 			[self handle ## sel: (void*)event];\
@@ -258,7 +265,7 @@ XCBConnection *XCBConn;
 - (BOOL)handleEvents
 {
 	BOOL eventsHandled = NO;
-	//NSLog(@"Handling events");
+	//NSDebugLLog(@"XCBConnection",@"Handling events");
 	xcb_generic_event_t *event;
 	while (NULL != (event = xcb_poll_for_event(connection)))
 	{
@@ -298,7 +305,7 @@ XCBConnection *XCBConn;
 					}
 					else
 					{
-						NSLog(@"Don't yet know how to handle events of type %d (%hd)",
+						NSDebugLLog(@"XCBConnection",@"Don't yet know how to handle events of type %d (%hd)",
 							event->response_type, event->sequence);
 					}
 				}
@@ -311,7 +318,7 @@ XCBConnection *XCBConn;
 - (BOOL)handleReplies
 {
 	BOOL repliesHandled = NO;
-	//NSLog(@"Handling replies");
+	//NSDebugLLog(@"XCBConnection",@"Handling replies");
 	for(NSUInteger i=0 ; i<[replyHandlers count] ; i++)
 	{
 		NSArray *handler = [replyHandlers objectAtIndex: i];
@@ -329,10 +336,10 @@ XCBConnection *XCBConn;
 				i--;
 				continue;
 			}
-			NSLog(@"Got reply for %d", sequenceNumber);
+			NSDebugLLog(@"XCBConnection",@"Got reply for %d", sequenceNumber);
 			if (error) 
 			{
-				NSLog(@"ERROR for request seq %d: %d (response type %d)",
+				NSDebugLLog(@"XCBConnection",@"ERROR for request seq %d: %d (response type %d)",
 				error->sequence,
 				error->error_code,
 				error->response_type);
@@ -434,12 +441,12 @@ XCBConnection *XCBConn;
 }
 - (void)unregisterWindow: (XCBWindow*)aWindow
 {
-	NSLog(@"Unregistering window: %@", aWindow);
+	NSDebugLLog(@"XCBConnection",@"Unregistering window: %@", aWindow);
 	NSMapRemove(windows, (void*)(intptr_t)[aWindow xcbWindowId]);
 }
 - (void)registerWindow: (XCBWindow*)aWindow
 {
-	NSLog(@"Registered window: %@", aWindow);
+	NSDebugLLog(@"XCBConnection",@"Registered window: %@", aWindow);
 	NSMapInsert(windows, (void*)(intptr_t)[aWindow xcbWindowId], aWindow);
 }
 - (XCBWindow*)windowForXCBId: (xcb_window_t)anId;
@@ -506,7 +513,7 @@ XCBConnection *XCBConn;
 {
 	// Poll while there is data left in the buffer
 	while ([self handleEvents] || [self handleReplies]) {}
-	// NSLog(@"Finished handling events");
+	// NSDebugLLog(@"XCBConnection",@"Finished handling events");
 	if ([delegate respondsToSelector:@selector(finishedProcessingEvents:)])
 		[delegate finishedProcessingEvents:self];
 	if (needsFlush)

@@ -49,11 +49,15 @@ DEFINE_NOTIFICATION(WindowCirculateRequest);
 DEFINE_NOTIFICATION(WindowParentDidChange);
 DEFINE_NOTIFICATION(WindowPropertyDidRefresh);
 DEFINE_NOTIFICATION(WindowPropertyDidChange);
+DEFINE_NOTIFICATION(WindowFocusIn);
+DEFINE_NOTIFICATION(WindowFocusOut);
+DEFINE_NOTIFICATION(WindowButtonPress);
+DEFINE_NOTIFICATION(WindowButtonRelease);
 
 #define XCBNOTIFY_U(x, ui) \
 {\
 	NSNotificationCenter *_center = [NSNotificationCenter defaultCenter];\
-	NSLog(@"%@ posting XCB" # x "Notification", self);\
+	NSDebugLLog([self className], @"%@ posting XCB" # x "Notification", self);\
 	[_center postNotificationName: XCB ## x ## Notification\
 	                      object: self\
 			    userInfo: ui];\
@@ -61,7 +65,7 @@ DEFINE_NOTIFICATION(WindowPropertyDidChange);
 #define XCBNOTIFY(x) XCBNOTIFY_U(x, nil)
 #define XCBDELEGATE_U(x, ui) \
 	if ([delegate respondsToSelector:@selector(xcb##x :)]) {\
-		NSLog(@"%@ delegate " # x, self); \
+		NSDebugLLog([self className], @"%@ delegate " # x, self); \
 		[delegate xcb##x :\
 			[NSNotification\
 			notificationWithName:\
