@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ETGetOptionsDictionary.h"
-#import "DocumentWeaver.h"
+#import "WeavedDocPage.h"
 
 /**
  * Author: Nicolas Roard
@@ -133,63 +132,34 @@ void printError()
  * @param argv array of char* with the arguments
  * @task Main
  */
-void weaveDocument(int argc, const char* argv[])
+int main (int argc, const char * argv[]) 
 {
-  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-  NSDictionary* options = ETGetOptionsDictionary("i:o:t:m:hc:p:", argc, argv);
-  NSString* inputFile = [options objectForKey: @"i"];
-  NSString* outputFile = [options objectForKey: @"o"];
-  NSString* templateFile = [options objectForKey: @"t"];
-  NSString* menuFile = [options objectForKey: @"m"];
-  NSString* classFile = [options objectForKey: @"c"];
-  NSString* projectClassFile = [options objectForKey: @"p"];
-  NSNumber* help = [options objectForKey: @"h"];
-  
-  //NS_DURING
-  if (VALID(inputFile) && VALID(outputFile) && VALID(templateFile))
-  {
-    DocumentWeaver* document = [DocumentWeaver new];
-    [document loadTemplate: templateFile];
-    if ([document createDocumentUsingFile: inputFile])
-    {
-      if (VALID(menuFile))
-      {
-        [document setMenuWith: menuFile];
-      }
-      if (VALID(classFile))
-      {
-        NSMutableDictionary* classMapping = [NSMutableDictionary dictionaryWithContentsOfFile: classFile];
-        [document setClassMapping: classMapping];
-      }
-      if (VALID(projectClassFile))
-      {
-        NSDictionary* projectClassMapping = [NSDictionary dictionaryWithContentsOfFile: projectClassFile];
-        [document setProjectClassMapping: projectClassMapping];
-      }
-      [document writeDocument: outputFile];
-      [document release];      
-      return 0;
-    }
-    else
-    {
-      NSLog(@"Problem: Input file neither HTML or GSDOC");
-    }
-    [document release];      
-  }  
-  else if (VALID(help))
-  {
-    printHelp();
-  }
-  /*NS_HANDLER
-    NSLog(@"Exception: %@", localException);
-  NS_ENDHANDLER*/
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	NSDictionary* options = ETGetOptionsDictionary("i:o:t:m:hc:p:", argc, argv);
+	NSString* inputFile = [options objectForKey: @"i"];
+	NSString* outputFile = [options objectForKey: @"o"];
+	NSString* templateFile = [options objectForKey: @"t"];
+	NSString* menuFile = [options objectForKey: @"m"];
+	NSString* classFile = [options objectForKey: @"c"];
+	NSString* projectClassFile = [options objectForKey: @"p"];
+	NSNumber* help = [options objectForKey: @"h"];
 
-  printError();
+	if (VALID(help))
+	{
+		printHelp();
+		return 0;
+	}
+	// TODO: Argument checking by reusing printError(); when not handled by 
+	// WeavedDocument
 
-  [pool drain];
-}
+	WeavedDocPage *document = [[WeavedDocPage alloc] initWithDocumentFile: inputFile 
+	                                                           templateFile: templateFile 
+	                                                               menuFile: menuFile
+	                                                       classMappingFile: classFile
+	                                                projectClassMappingFile: projectClassFile];
 
-int main (int argc, const char * argv[]) {
-  weaveDocument(argc, argv);
-  return 0;
+	[document writeToURL: [NSURL fileURLWithPath: outputFile]];
+
+	[pool drain];
+	return 0;
 }

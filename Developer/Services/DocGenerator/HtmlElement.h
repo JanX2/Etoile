@@ -6,7 +6,13 @@
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+#import <EtoileFoundation/EtoileFoundation.h>
+
+// FIXME: To turn off the array macro from EtoileFoundation
+#if defined(A)
+#undef A
+#endif
 
 @interface HtmlElement : NSObject {
   NSString* elementName;
@@ -48,3 +54,13 @@
 #define UL [HtmlElement elementWithName: @"ul"]
 #define LI [HtmlElement elementWithName: @"li"]
 
+
+@interface HtmlElement (CommonUseCases)
+- (HtmlElement *) class: (NSString *)aClass with: (id)something;
+- (HtmlElement *) class: (NSString *)aClass with: (id)something and: (id) something;
+- (HtmlElement *) class: (NSString *)aClass with: (id)something and: (id) something and: (id)something;
+- (HtmlElement *) with: (id)something and: (id) something;
+- (HtmlElement *) with: (id)something and: (id) something and: (id)something;
+- (HtmlElement *) id: (NSString *)anID with: (id)something;
+- (HtmlElement *) id: (NSString *)anID with: (id)something and: (id)something;
+@end

@@ -6,7 +6,8 @@
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+#import <EtoileFoundation/EtoileFoundation.h>
 
 
 @interface Header : NSObject 

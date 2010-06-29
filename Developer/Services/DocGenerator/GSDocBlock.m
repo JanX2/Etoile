@@ -7,6 +7,7 @@
 //
 
 #import "GSDocBlock.h"
+#import "HtmlElement.h"
 
 
 @implementation GSDocBlock

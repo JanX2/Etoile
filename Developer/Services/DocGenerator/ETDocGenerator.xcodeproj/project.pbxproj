@@ -17,12 +17,36 @@
 		03FF75DE0DFAAFEB007D79D3 /* Method.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF75DD0DFAAFEB007D79D3 /* Method.m */; };
 		03FF77480DFB1D21007D79D3 /* GSDocParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF77470DFB1D21007D79D3 /* GSDocParserDelegate.m */; };
 		03FF78E50DFB75C9007D79D3 /* Function.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF78E40DFB75C9007D79D3 /* Function.m */; };
-		03FF79860DFCA167007D79D3 /* ETGetOptionsDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF79850DFCA167007D79D3 /* ETGetOptionsDictionary.m */; };
-		03FF79AF0DFCA7B4007D79D3 /* DocumentWeaver.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF79AE0DFCA7B4007D79D3 /* DocumentWeaver.m */; };
+		03FF79AF0DFCA7B4007D79D3 /* WeavedDocPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF79AE0DFCA7B4007D79D3 /* WeavedDocPage.m */; };
+		60B289FB11DA0C4000FC8C20 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */; };
 		8DD76F9A0486AA7600D96B5E /* ETDocGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* ETDocGenerator.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* ETDocGenerator.1 */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		60B289F511DA0C2400FC8C20 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073EAD10074D26007272E6;
+			remoteInfo = EtoileXML;
+		};
+		60B289F711DA0C2400FC8C20 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 603647AC0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
+		60B289F911DA0C2400FC8C20 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
+			remoteInfo = TestEtoileFoundation;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		8DD76F9E0486AA7600D96B5E /* CopyFiles */ = {
@@ -58,14 +82,12 @@
 		03FF77470DFB1D21007D79D3 /* GSDocParserDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSDocParserDelegate.m; sourceTree = "<group>"; };
 		03FF78E30DFB75C9007D79D3 /* Function.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Function.h; sourceTree = "<group>"; };
 		03FF78E40DFB75C9007D79D3 /* Function.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Function.m; sourceTree = "<group>"; };
-		03FF79840DFCA156007D79D3 /* ETGetOptionsDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETGetOptionsDictionary.h; path = ../../reps/trunkEtoile/Etoile/Frameworks/EtoileFoundation/Headers/ETGetOptionsDictionary.h; sourceTree = SOURCE_ROOT; };
-		03FF79850DFCA167007D79D3 /* ETGetOptionsDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETGetOptionsDictionary.m; path = ../../reps/trunkEtoile/Etoile/Frameworks/EtoileFoundation/Source/ETGetOptionsDictionary.m; sourceTree = SOURCE_ROOT; };
-		03FF79AD0DFCA7B4007D79D3 /* DocumentWeaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocumentWeaver.h; sourceTree = "<group>"; };
-		03FF79AE0DFCA7B4007D79D3 /* DocumentWeaver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentWeaver.m; sourceTree = "<group>"; };
+		03FF79AD0DFCA7B4007D79D3 /* WeavedDocPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeavedDocPage.h; sourceTree = "<group>"; };
+		03FF79AE0DFCA7B4007D79D3 /* WeavedDocPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeavedDocPage.m; sourceTree = "<group>"; };
 		08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETDocGenerator.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* ETDocGenerator_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETDocGenerator_Prefix.pch; sourceTree = "<group>"; };
-		607F541611D95B9800906E74 /* glibc_hack_unistd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glibc_hack_unistd.h; path = ../../reps/trunkEtoile/Etoile/Frameworks/EtoileFoundation/Headers/glibc_hack_unistd.h; sourceTree = SOURCE_ROOT; };
+		60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		8DD76FA10486AA7600D96B5E /* ETDocGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ETDocGenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* ETDocGenerator.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = ETDocGenerator.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -76,6 +98,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
+				60B289FB11DA0C4000FC8C20 /* EtoileFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +108,7 @@
 		08FB7794FE84155DC02AAC07 /* ETDocGenerator */ = {
 			isa = PBXGroup;
 			children = (
+				60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859EA2029092E104C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
@@ -96,9 +120,6 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				607F541611D95B9800906E74 /* glibc_hack_unistd.h */,
-				03FF79850DFCA167007D79D3 /* ETGetOptionsDictionary.m */,
-				03FF79840DFCA156007D79D3 /* ETGetOptionsDictionary.h */,
 				32A70AAB03705E1F00C91783 /* ETDocGenerator_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */,
 				03FF75310DF9EFED007D79D3 /* Header.h */,
@@ -111,8 +132,8 @@
 				03FF77470DFB1D21007D79D3 /* GSDocParserDelegate.m */,
 				03FF78E30DFB75C9007D79D3 /* Function.h */,
 				03FF78E40DFB75C9007D79D3 /* Function.m */,
-				03FF79AD0DFCA7B4007D79D3 /* DocumentWeaver.h */,
-				03FF79AE0DFCA7B4007D79D3 /* DocumentWeaver.m */,
+				03FF79AD0DFCA7B4007D79D3 /* WeavedDocPage.h */,
+				03FF79AE0DFCA7B4007D79D3 /* WeavedDocPage.m */,
 				0362712A0E00919B005D79FE /* DescriptionParser.h */,
 				0362712B0E00919B005D79FE /* DescriptionParser.m */,
 				036271910E00B263005D79FE /* Parameter.h */,
@@ -139,6 +160,16 @@
 			isa = PBXGroup;
 			children = (
 				8DD76FA10486AA7600D96B5E /* ETDocGenerator */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		60B289F011DA0C2400FC8C20 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				60B289F611DA0C2400FC8C20 /* EtoileXML.framework */,
+				60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */,
+				60B289FA11DA0C2400FC8C20 /* TestEtoileFoundation.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -182,12 +213,42 @@
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* ETDocGenerator */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 60B289F011DA0C2400FC8C20 /* Products */;
+					ProjectRef = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8DD76F960486AA7600D96B5E /* ETDocGenerator */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		60B289F611DA0C2400FC8C20 /* EtoileXML.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileXML.framework;
+			remoteRef = 60B289F511DA0C2400FC8C20 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileFoundation.framework;
+			remoteRef = 60B289F711DA0C2400FC8C20 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		60B289FA11DA0C2400FC8C20 /* TestEtoileFoundation.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileFoundation.bundle;
+			remoteRef = 60B289F911DA0C2400FC8C20 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8DD76F990486AA7600D96B5E /* Sources */ = {
@@ -200,8 +261,7 @@
 				03FF75DE0DFAAFEB007D79D3 /* Method.m in Sources */,
 				03FF77480DFB1D21007D79D3 /* GSDocParserDelegate.m in Sources */,
 				03FF78E50DFB75C9007D79D3 /* Function.m in Sources */,
-				03FF79860DFCA167007D79D3 /* ETGetOptionsDictionary.m in Sources */,
-				03FF79AF0DFCA7B4007D79D3 /* DocumentWeaver.m in Sources */,
+				03FF79AF0DFCA7B4007D79D3 /* WeavedDocPage.m in Sources */,
 				0362712C0E00919B005D79FE /* DescriptionParser.m in Sources */,
 				036271930E00B263005D79FE /* Parameter.m in Sources */,
 				036273270E048EFB005D79FE /* GSDocParser.m in Sources */,
