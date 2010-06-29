@@ -1,0 +1,317 @@
+<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <title>&Eacute;toil&eacute;</title>
+   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+   <meta name="viewport" content="width = 680" />
+   <link rel="stylesheet" href="_includes/css/reset-fonts-grids.css" type="text/css" />
+   <link rel="stylesheet" href="_includes/css/global.css" type="text/css" />
+   <link rel="stylesheet" href="_includes/css/prettify.css" type="text/css" />
+   <link rel="stylesheet" href="_includes/css/documentation.css" type="text/css" />
+
+   <link rel="alternate" type="application/atom+xml" title="Atom 1.0" href="/feeds/news/atom/" />
+   <link rel="shortcut icon" href="/favicon.ico" />
+   <script type="text/javascript" src="_includes/js/prettify.js"></script>
+   <script type="text/javascript" src="_includes/js/swfobject.js"></script>
+   <script type="text/javascript" src="_includes/js/collapser.js"></script>
+</head>
+<body class="developer" onload="prettyPrint();hideAll();">
+<div id="doc3" class="yui-t7">
+  <div id="hd">
+
+      <div id="nav">
+        <ul>
+          <li><a href="/"><img src="/images/global/flower.png" alt="&Eacute;toil&eacute; Logo" /></a></li>
+          <li><a href="/etoile/">&Eacute;toil&eacute;</a></li>
+          <li><a href="/downloads/">Downloads</a></li>
+          <li><a href="/support/">Support</a></li>
+          <li><a href="/news/">News</a></li>
+
+          <li><a href="/dev/">Development</a></li>
+        </ul>
+      </div>  
+  </div> 
+  <div id="bd" class="team">
+ 	<div class="yui-gc" id="masthead">
+    		<div class="yui-u first">
+			<h1><strong>Documentation</strong></h1><p></p>	  
+		</div>
+  	</div>
+
+  	<div class="yui-gc" id="content">
+    		<div class="yui-u first">
+      			<div id="main">
+				<div id="header"><div id="classname"><h2><a>GSDocParserDelegate</a>
+ : NSObject</h2>
+</div>
+<div id="meta"><p id="metadesc">GSDoc parser + HTML Writing</p>
+<table><tr><th>Authors</th>
+<td>Nicolas Roard </td>
+</tr>
+<tr><th>Declared in:</th>
+<td>GSDocParserDelegate.h</td>
+</tr>
+</table>
+</div>
+<div id="overview"><h3>Overview</h3>
+<h2>Real Presentation</h2>
+
+<p>Ouaip bon enfin quoi quand meme !</p>
+
+<p>This class is a NSXMLParser delegate, which
+extracts informations from a gsdoc file.</p>
+
+<p>Once extracted, an HTML file can be generated
+using a template.</p>
+
+<h2>Template File</h2>
+
+<p>A template is necessary to generate the final
+HTML file. Such template is a normal HTML file,
+containing two special comments: </p>
+
+<ul>
+<li><code>&lt;!-- gsdoc-header --&gt;</code> : insert the generated header</li>
+<li><code>&lt;!-- gsdoc-methods --&gt;</code> : insert the generated methods list</li>
+<li><code>&lt;!-- gsdoc-files --&gt;</code> : insert the content of the file &ldquo;filelist.html&rdquo; (if the file is present in the GSDoc source directory)</li>
+</ul>
+
+</div>
+</div>
+
+				<h3>Instance Methods</h3><h4>Configuration</h4><div class="method"><dl><dt><div class="methodSignature"><div class="methodScope">-</div>
+<div class="returnType">(<div class="type">void</div>
+)</div>
+<div class="selector">setGSDocDirectory:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">aPath</div>
+</div>
+;</div>
+</dt>
+<dd><div class="methodDescription"></div>
+</dd>
+</dl>
+</div>
+<div class="method"><dl><dt><div class="methodSignature"><div class="methodScope">-</div>
+<div class="returnType">(<div class="type">void</div>
+)</div>
+<div class="selector">setGSDocFile:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">aName</div>
+</div>
+;</div>
+</dt>
+<dd><div class="methodDescription"></div>
+</dd>
+</dl>
+</div>
+<h4>Parsing</h4><div class="method"><dl><dt><div class="methodSignature"><div class="methodScope">-</div>
+<div class="returnType">(<div class="type">void</div>
+)</div>
+<div class="selector">newContent</div>
+;</div>
+</dt>
+<dd><div class="methodDescription"></div>
+</dd>
+</dl>
+</div>
+<div class="method"><dl><dt><div class="methodSignature"><div class="methodScope">-</div>
+<div class="returnType">(<div class="type">void</div>
+)</div>
+<div class="selector">parser:</div>
+<div class="parameter">(<div class="type">NSXMLParser*</div>
+)<div class="arg">parser</div>
+</div>
+<div class="selector">didEndElement:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">elementName</div>
+</div>
+<div class="selector">namespaceURI:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">namespaceURI</div>
+</div>
+<div class="selector">qualifiedName:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">qName</div>
+</div>
+;</div>
+</dt>
+<dd><div class="methodDescription"></div>
+</dd>
+</dl>
+</div>
+<div class="method"><dl><dt><div class="methodSignature"><div class="methodScope">-</div>
+<div class="returnType">(<div class="type">void</div>
+)</div>
+<div class="selector">parser:</div>
+<div class="parameter">(<div class="type">NSXMLParser*</div>
+)<div class="arg">parser</div>
+</div>
+<div class="selector">didStartElement:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">elementName</div>
+</div>
+<div class="selector">namespaceURI:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">namespaceURI</div>
+</div>
+<div class="selector">qualifiedName:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">qName</div>
+</div>
+<div class="selector">attributes:</div>
+<div class="parameter">(<div class="type">NSDictionary*</div>
+)<div class="arg">attributeDict</div>
+</div>
+;</div>
+</dt>
+<dd><div class="methodDescription"></div>
+</dd>
+</dl>
+</div>
+<div class="method"><dl><dt><div class="methodSignature"><div class="methodScope">-</div>
+<div class="returnType">(<div class="type">void</div>
+)</div>
+<div class="selector">parser:</div>
+<div class="parameter">(<div class="type">NSXMLParser*</div>
+)<div class="arg">parser</div>
+</div>
+<div class="selector">foundCharacters:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">string</div>
+</div>
+;</div>
+</dt>
+<dd><div class="methodDescription"></div>
+</dd>
+</dl>
+</div>
+<h4>Writing HTML</h4><div class="method"><dl><dt><div class="methodSignature"><div class="methodScope">-</div>
+<div class="returnType">(<div class="type">void</div>
+)</div>
+<div class="selector">outputClassMethodsOn:</div>
+<div class="parameter">(<div class="type">NSMutableString*</div>
+)<div class="arg">html</div>
+</div>
+;</div>
+</dt>
+<dd><div class="methodDescription"></div>
+</dd>
+</dl>
+</div>
+<div class="method"><dl><dt><div class="methodSignature"><div class="methodScope">-</div>
+<div class="returnType">(<div class="type">void</div>
+)</div>
+<div class="selector">outputInstanceMethodsOn:</div>
+<div class="parameter">(<div class="type">NSMutableString*</div>
+)<div class="arg">html</div>
+</div>
+;</div>
+</dt>
+<dd><div class="methodDescription"></div>
+</dd>
+</dl>
+</div>
+<div class="method"><dl><dt><div class="methodSignature"><div class="methodScope">-</div>
+<div class="returnType">(<div class="type">id</div>
+)</div>
+<div class="selector">writeFile:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">outputPath</div>
+</div>
+<div class="selector">usingTemplate:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">templatePath</div>
+</div>
+;</div>
+</dt>
+<dd><div class="methodDescription"></div>
+</dd>
+</dl>
+</div>
+<div class="method"><dl><dt><div class="methodSignature"><div class="methodScope">-</div>
+<div class="returnType">(<div class="type">id</div>
+)</div>
+<div class="selector">writeFile:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">outputPath</div>
+</div>
+<div class="selector">usingTemplate:</div>
+<div class="parameter">(<div class="type">NSString*</div>
+)<div class="arg">templatePath</div>
+</div>
+;</div>
+</dt>
+<dd><div class="methodDescription"></div>
+</dd>
+</dl>
+</div>
+
+      			</div>
+    		</div>
+    		<div class="yui-u">
+      		
+		<div id="sidebar">
+<h2>Search</h2>
+
+<ul>
+    <li>
+        <form method="get" action="http://www.google.com/search">
+            <input type="hidden" name="sitesearch" value="etoileos.com"/>
+            <input type="text" name="q" size="25" maxlength="255" value="" />
+            <input type="submit" value="Search" />
+        </form>
+    </li>
+</ul>
+
+<h2>Documentation</h2>
+<div class="post">
+</div><ul>
+<li>Languages
+
+<ul>
+<li><a href="/dev/docs/languages/io/">Io</a></li>
+<li><a href="/dev/docs/languages/obj-c/">Objective-C</a></li>
+<li><a href="/dev/docs/languages/smalltalk/">Smalltalk</a></li>
+</ul></li>
+</ul>
+
+<div class="post">
+</div>      </div>
+
+<div id="doc-sidebar">
+<h3>Files</h3>
+<ul>
+<li><a href="GSDocParserDelegate.html">GSDocParserDelegate</a></li>
+</ul>
+
+</div>
+	  </div>
+  </div>
+</div>
+  <div id="ft">
+    <div id="bottom_nav">
+      <a href="/feeds/">RSS Feeds</a> | 
+      <a href="/media/">Media Kit</a> | 
+      <a href="/contact/">Contact Us</a>
+
+    </div>
+    <div id="legal">Copyright &copy; 2008 &Eacute;toil&eacute; Project. All rights reserved.</div>
+  </div>
+</div>
+<div>
+  <img src="/images/community/diagonals.gif" class="hidden"/>
+  <img src="/images/developer/diagonals.gif" class="hidden"/>
+
+  <img src="/images/news/diagonals.gif" class="hidden"/>
+  <img src="/images/system/diagonals.gif" class="hidden"/>
+  
+  <img src="/images/community/growth.png" class="hidden"/>
+  <img src="/images/developer/growth.png" class="hidden"/>
+  <img src="/images/news/growth.png" class="hidden"/>
+  <img src="/images/system/growth.png" class="hidden"/>
+</div>
+</body>
+</html>

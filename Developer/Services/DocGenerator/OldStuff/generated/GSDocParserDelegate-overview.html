@@ -1,0 +1,20 @@
+<h2>Presentation</h2>
+
+<p>This class is a NSXMLParser delegate, which
+extracts informations from a gsdoc file.</p>
+
+<p>Once extracted, an HTML file can be generated
+using a template.</p>
+
+<h2>Template File</h2>
+
+<p>A template is necessary to generate the final
+HTML file. Such template is a normal HTML file,
+containing two special comments: </p>
+
+<ul>
+<li><code>&lt;!-- gsdoc-header --&gt;</code> : insert the generated header</li>
+<li><code>&lt;!-- gsdoc-methods --&gt;</code> : insert the generated methods list</li>
+<li><code>&lt;!-- gsdoc-files --&gt;</code> : insert the content of the file &ldquo;filelist.html&rdquo; (if the file is present in the GSDoc source directory)</li>
+</ul>
+

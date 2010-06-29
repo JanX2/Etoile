@@ -1,0 +1,66 @@
+<h2>Architecture of ETDocGenerator</h2>
+
+<p>The architecture is rather simple; the <code>weaveDocument</code> function, after checking
+the arguments passed at the command line, create a DocumentWeaver instance.</p>
+
+<p>The DocumentWeaver class is the one in charge
+with generating the final document; we first indicates the template used,
+via the <code>loadTemplate:</code> method, then create a document using <code>createDocumentUsingFile:</code>.</p>
+
+<p>This method in fact simply checks that the input file has either an HTML or gsdoc extension,
+and call the correspoding methods (createDocumentUsingGSDocFile &amp; createDocumentUsingHTMLFile).</p>
+
+<p>Once this is done, the main program set the class mappings if present (still in the DocumentWeaver class),
+as well as the menu file, and finally ask DocumentWeaver to write the class.</p>
+
+<h2>Document creation &amp; parsing</h2>
+
+<p>If the file is a gsdoc file, we create a NSXMLParser instance and a GSDocParserDelegate instance,
+and parse it. After the parsing, we ask the delegate for a string representing the methods
+(<code>getMethods</code> method) and the header (<code>getHeader</code> method), and then replace the corresponding
+tags in the template with those strings. Classes Header, Function and Method are populated by GSDocParserDelegate.</p>
+
+<p>If the file is an html document, the principle is the same, only we directly replace the corresponding
+tag in the template with the content of the html document.</p>
+
+<h2>Document writing</h2>
+
+<p>The <code>writeDocument:</code> method of DocumentWeaver is very simple:</p>
+
+<pre><code>- (void) writeDocument: (NSString*) outputFile
+{
+  [self insertMenu];
+  [self insertClassesLinks];
+  [self insertProjectClassesList];
+  [template writeToFile: outputFile atomically: YES];
+}
+</code></pre>
+
+<p>We simply insert the menu in the template, then do a pass to add links to any classes mentioned in
+the document, then do a final pass to replace the <code>etoile-list-classes</code> tag, and then write the file.</p>
+
+<h2>HTML generation</h2>
+
+<p>While the parsing is a straightforward NSXMLParser delegate, the HTML generation uses the HtmlElement class.
+The class is pretty simple, with elements having a name, a set of attributes, and a list of children.
+One cool feature is that it uses reflectivity (see the <code>methodSignatureForSelector</code> and <code>forwardInvocation</code> methods)
+ to automatically call the appropriate method, which let
+use write (in my opinion) html in an easier and more readable way:</p>
+
+<pre><code>  H tdAuthors = TD;
+  for (int i=0; i&lt;[authors count]; i++)
+  {
+    [tdAuthors with: [authors objectAtIndex: i] and: @" "];
+  }
+  H table = [TABLE with: [TR with: [TH with: @"Authors"] and: tdAuthors]
+                   and: [TR with: [TH with: @"Declared in:"] and: [TD with: declared]]];
+</code></pre>
+
+<p>H, TD, TABLE, TR, TH are simple define, e.g:</p>
+
+<pre><code>#define H HtmlElement*
+#define DIV [HtmlElement elementWithName: @"div"]
+#define TABLE [HtmlElement elementWithName: @"table"]
+</code></pre>
+
+<p>Yes, it does remind me of the Seaside Canvas.</p>

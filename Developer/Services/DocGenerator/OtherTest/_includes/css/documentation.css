@@ -1,0 +1,147 @@
+dd
+{
+  display: none;
+  margin: 20px;
+}
+
+#doc-sidebar
+{
+  background:#ebebeb;
+  color:#669;
+  margin-top: 2em;
+  margin-left:-16px;
+  padding:7px;
+}
+
+#doc-sidebar a
+{
+  color:#666;
+}
+
+#doc-sidebar ul
+{
+  font:normal 93% Helvetica;
+  line-height:161.6%;
+  margin:10px 0 10px 10px;
+}
+
+.methodSignature
+{
+	display: inline;	
+}
+
+.methodDescription
+{
+	background: #efefef;
+	border-left: solid gray 3px;	
+	padding-left: 1em;
+	margin-top:-1.2em;
+}
+
+.methodScope
+{
+	display: inline;	
+}
+
+.returnType
+{
+	display: inline;	
+}
+
+.type
+{
+/*	font-style: italic; */
+	display: inline;	
+}
+
+.selector
+{
+  	font-weight: bold;
+	display: inline;	
+}
+
+.parameter
+{
+	display: inline;	
+}
+
+.arg
+{
+	display: inline;	
+}
+
+
+dt
+{
+  margin: 10px;
+}
+
+#documentation a::after 
+{
+  content: "";
+}
+
+#classname 
+{
+  margin-bottom: 10px;
+}
+
+#meta
+{
+  margin-bottom: 10px;
+}
+
+#meta #metadesc
+{
+  
+}
+
+#meta table
+{
+  
+}
+
+#meta td
+{
+  padding: 5px;
+}
+
+#meta th
+{
+  font-weight: bold;
+  padding: 5px 5px 5px 0;
+}
+
+#abstract
+{
+  margin-bottom: 10px;
+}
+
+#desc
+{
+  margin-bottom: 10px;
+}
+
+#MethodSummary
+{
+}
+
+.method 
+{
+  margin: 10px;
+}
+
+.method .method-details
+{
+  display: none;
+}
+
+.property 
+{
+  margin: 10px;
+}
+
+.desc
+{
+  margin: 20px;
+}

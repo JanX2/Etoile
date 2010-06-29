@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.xml">
+<gsdoc base="GSDocParserDelegate">
+  <head>
+    <title>GSDocParserDelegate</title>
+    <author name="Nicolas Roard">
+    </author>
+    <abstract>GSDoc parser + HTML Writing</abstract>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the GSDocParserDelegate
+        class
+      </heading>
+      <class name="GSDocParserDelegate" super="NSObject">
+        <declared>GSDocParserDelegate.h</declared>
+        <desc>
+          <title>GSDocParserDelegate</title> Author: Nicolas
+          Roard <abstract>GSDoc parser + HTML Writing</abstract>
+        </desc>
+        <ivariable type="NSString*" name="argType" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="classFile" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableDictionary*" name="classMethods" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableString*" name="content" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="currentTask" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="declaredIn" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableDictionary*" name="functions" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="BOOL" name="head" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="Header*" name="header" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="BOOL" name="inMacro" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="BOOL" name="inMethod" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableDictionary*" name="instanceMethods" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableDictionary*" name="macros" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="Method*" name="method" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="Function*" name="pfunction" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="sourcePath" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <method type="NSString*">
+          <sel>getHeader</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>getMethods</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>newContent</sel>
+          <desc>
+            Reinitialize the current CDATA stored in the
+            content variable. @task Parsing
+          </desc>
+        </method>
+        <method type="void">
+          <sel>outputClassMethodsOn:</sel>
+          <arg type="NSMutableString*">html</arg>
+          <desc>
+            Convenience method to generate the class
+            methods output @task Writing HTML
+          </desc>
+        </method>
+        <method type="void">
+          <sel>outputFunctionsOn:</sel>
+          <arg type="NSMutableString*">html</arg>
+          <desc>
+            Convenience method to generate the list of
+            functions output @task Writing HTML
+          </desc>
+        </method>
+        <method type="void">
+          <sel>outputInstanceMethodsOn:</sel>
+          <arg type="NSMutableString*">html</arg>
+          <desc>
+            Convenience method to generate the instance
+            methods output @task Writing HTML
+          </desc>
+        </method>
+        <method type="void">
+          <sel>outputMethods:</sel>
+          <arg type="NSDictionary*">methods</arg>
+          <sel>withTitle:</sel>
+          <arg type="NSString*">aTitle</arg>
+          <sel>on:</sel>
+          <arg type="NSMutableString*">html</arg>
+          <desc>
+            This method takes one of the dictionary populated by
+            the gsdoc parsing containing the <var>methods</var>,
+            sort them alphabetically by Tasks, and output the
+            result formated in HTML in the string passed in
+            argument. A title is also added, which uses a
+            <h3>
+              header. @task Writing HTML
+          </desc>
+        </method>
+        <method type="void">
+          <sel>parser:</sel>
+          <arg type="NSXMLParser*">parser</arg>
+          <sel>didEndElement:</sel>
+          <arg type="NSString*">elementName</arg>
+          <sel>namespaceURI:</sel>
+          <arg type="NSString*">namespaceURI</arg>
+          <sel>qualifiedName:</sel>
+          <arg type="NSString*">qName</arg>
+          <desc>
+            NSXMLParse delegate method. @task Parsing
+          </desc>
+        </method>
+        <method type="void">
+          <sel>parser:</sel>
+          <arg type="NSXMLParser*">parser</arg>
+          <sel>didStartElement:</sel>
+          <arg type="NSString*">elementName</arg>
+          <sel>namespaceURI:</sel>
+          <arg type="NSString*">namespaceURI</arg>
+          <sel>qualifiedName:</sel>
+          <arg type="NSString*">qName</arg>
+          <sel>attributes:</sel>
+          <arg type="NSDictionary*">attributeDict</arg>
+          <desc>
+            NSXMLParse delegate method. @task Parsing
+          </desc>
+        </method>
+        <method type="void">
+          <sel>parser:</sel>
+          <arg type="NSXMLParser*">parser</arg>
+          <sel>foundCharacters:</sel>
+          <arg type="NSString*">string</arg>
+          <desc>
+            NSXMLParse delegate method. @task Parsing
+          </desc>
+        </method>
+        <method type="void">
+          <sel>setGSDocDirectory:</sel>
+          <arg type="NSString*">aPath</arg>
+          <desc>
+            Set the path of the directory containing the gsdoc
+            sources; This is used while resolving referencings
+            to the overview file. @task Configuration
+          </desc>
+        </method>
+        <method type="void">
+          <sel>setGSDocFile:</sel>
+          <arg type="NSString*">aName</arg>
+          <desc>
+            Set the name of the gsdoc file. Used to fetch the
+            overview file if present, using the name
+            "MyFile-overview.html"; This
+            override the manual inclusion via the overview tag
+            in the gsdoc file. @task Configuration
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

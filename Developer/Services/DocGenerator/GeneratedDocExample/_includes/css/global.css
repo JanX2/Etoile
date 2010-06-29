@@ -1,0 +1,632 @@
+body
+{
+  color:#444;
+  font-family:Helvetica;
+  text-align:center;
+}
+
+a
+{
+  text-decoration:none;
+}
+
+a:hover
+{
+  text-decoration:underline;
+}
+
+b, strong
+{
+  font-weight:bold;
+}
+
+code
+{
+  color:#000;
+  font:normal 93% Monaco;
+}
+
+em, i
+{
+  font-style: italic;
+}
+
+img
+{
+  border:0;
+}
+
+pre
+{
+  background:#f3f3e8;
+  color:#000;
+  font:normal 93% Monaco;
+  margin: 0.5em 0;
+  padding: 5px;
+}
+
+
+/* START DOCUMENT
+=========================================================*/
+#doc3
+{
+  margin:auto;
+  min-width:660px;
+  max-width:880px;
+  padding:0 10px;
+}
+
+
+/* START FOOTER
+=========================================================*/
+#ft
+{
+  color:#999;
+  font:normal 93% Helvetica;
+  margin:10px 0;
+  padding:10px 0;
+  text-align:center;
+}
+
+#ft #bottom_nav
+{
+  float:left;
+  margin:0 0 5px -2px;
+}
+
+#ft #bottom_nav a
+{
+  color:#5476d5;
+  margin:0 2px;
+}
+
+#ft #legal
+{
+  float:right;
+}
+
+
+/* START NAV
+=========================================================*/
+#nav li
+{
+  color:#6f5494;
+  display:inline;
+  float:left;
+  font:normal 100% Helvetica;
+  margin:10px 15px 5px 0;
+  vertical-align:middle;
+}
+
+#nav li a
+{
+  color:#6f5494;
+}
+
+#nav li img
+{
+  vertical-align:middle;
+  margin-top:-5px;
+}
+
+
+/* START MASTHEAD
+=========================================================*/
+#masthead
+{
+  background:#ccc;
+  border-top:1px solid #ccc;
+  clear:both;
+  padding:7px 0;
+  margin-bottom:15px;
+}
+
+#masthead h1
+{
+  background:#ccc;
+  color:#fff;
+  font:normal 174% Helvetica;
+  padding:10px 0 0 10px;
+}
+
+#masthead p
+{
+  background:#ccc;
+  color:#000;
+  font:normal 100% Helvetica;
+  line-height:131%;
+  padding:5px 10px 10px 10px;
+}
+
+#masthead .first
+{
+  background:no-repeat 93% bottom;
+  padding-right:33%;
+  width:67%;
+}
+
+
+/* START MAIN
+=========================================================*/
+#main
+{
+  margin-top: -24px;
+  padding-right:10px;
+}
+
+#main a
+{
+  color:#375dc7;
+}
+
+#main h1 a::after,
+#main h2 a::after,
+#main h3 a::after {
+  content: " \203A";
+  /* http://theorem.ca/~mvcorks/code/charsets/auto.html */
+  /* http://lachy.id.au/log/2005/04/handy-css */
+}
+
+#main h1
+{
+  color:#444;
+  font:normal 131% Helvetica;
+  margin: 20px 0 14px 0;
+}
+
+#main h2
+{
+  border-bottom:1px solid #ccc;
+  font:normal 105% Helvetica;
+  margin:1.1em 0 0.6em 0;
+  padding-bottom:5px;
+}
+
+#main h3
+{
+  color: #666;
+  font:bold 100% Helvetica;
+  margin:1em 0 0.4em 0;
+}
+
+#main img
+{
+  display: block;
+  text-align: center;
+  margin: 10px auto;
+}
+
+#main li:before 
+{
+	content: "\2022  ";
+}
+
+#main li
+{
+  padding: 0.4em 0 0 0.4em;
+}
+
+#main p
+{
+  margin-bottom: 0.6em;
+}
+
+#main ul 
+{
+	list-style: none;
+	margin: 0 0 0.9em 0;
+	padding-left: 1em;
+	text-indent: -1em;
+}
+
+#main .caption
+{
+  font:normal 80% Helvetica;
+}
+
+
+/* START SIDEBAR
+=========================================================*/
+#sidebar
+{
+  background:#ebebeb;
+  color:#666;
+  margin-left:-16px;
+  padding:7px;
+}
+
+#sidebar a
+{
+  color:#666;
+}
+
+#sidebar ul
+{
+  font:normal 93% Helvetica;
+  line-height:161.6%;
+  margin:10px 0 10px 10px;
+}
+
+#sidebar .rss-box
+{
+}
+
+#sidebar .rss-box .rss-item a
+{
+}
+
+#sidebar .rss-box .rss-date
+{
+  font-size: 80%;
+}
+
+/* START INDEX
+=========================================================*/
+#main_feature
+{
+  background:#fff;
+  height:460px;
+  min-width:660px;
+  max-width:880px;
+  overflow:hidden;
+  text-align:center;
+  width:100%;
+}
+
+#main_feature_content
+{
+  position:relative;
+  left:50%;
+  margin-left:-100%;
+  top:0;
+}
+
+#features_container
+{
+  text-align:center;
+}
+
+#features
+{
+  margin:auto;
+  min-width:660px;
+  max-width:880px;
+}
+
+.feature
+{
+  background-image:url("/images/features/gradient.png");
+  background-repeat:repeat-x;
+  float:left;
+  height:155px;
+  text-align:left;
+  width:33%;
+}
+
+.feature_middle
+{
+  width:34%;
+}
+
+.feature_community
+{
+  background-color:#f9c106;
+  border-bottom:1px solid #b94600;
+}
+
+.feature_developer
+{
+  background-color:#7dadce;
+  border-bottom:1px solid #384875;
+}
+
+.feature_news
+{
+  background-color:#429963;
+  border-bottom:1px solid #004000;
+}
+
+.feature_system
+{
+  background-color:#9076b3;
+  border-bottom:1px solid #422667;
+}
+
+.feature_content
+{
+  overflow:hidden;
+}
+
+.hidden
+{
+  display:none;
+}
+
+
+/* START COMMUNITY
+=========================================================*/
+.community #masthead .first
+{
+  background-image:url("/images/community/growth.png");
+}
+
+.community #masthead
+{
+  background:#f9c106;
+  background:url("/images/community/diagonals.gif");
+  border-top-color:#f9c106;
+}
+
+.community #masthead h1
+{
+  background:#f9c106;
+}
+
+.community #masthead p
+{
+  background:#f9c106;
+  color:#b94600;
+}
+
+.community #main h1 a,
+.community #main h2,
+.community #main h2 a
+{
+  color:#ff8b00;
+}
+
+.community .contact
+{
+  float:right;
+}
+
+.community .contact a
+{
+  margin-left:10px;
+}
+
+.community .bio
+{
+  clear: both;
+  padding:2px 0;
+}
+
+.community .bio .team_photo
+{
+  float:left;
+  width:250px;
+}
+
+.community .bio .team_text
+{
+  padding-left:260px;
+}
+
+
+/* START DEVELOPER
+=========================================================*/
+.developer #masthead .first
+{
+  background-image:url("/images/developer/growth.png");
+}
+
+.developer #masthead
+{
+  background:#7dadce;
+  background:url("/images/developer/diagonals.gif");
+  border-top-color:#7dadce;
+}
+
+.developer #masthead h1
+{
+  background:#7dadce;
+}
+
+.developer #masthead p
+{
+  background:#7dadce;
+  color:#384875;
+}
+
+.developer #main h1 a,
+.developer #main h2,
+.developer #main h2 a
+{
+  color:#5286aa;
+}
+
+
+/* START NEWS
+=========================================================*/
+.news #masthead .first
+{
+  background-image:url("/images/news/growth.png");
+}
+
+.news #masthead
+{
+  background:#a0d4a7;
+  background:url("/images/news/diagonals.gif");
+  border-top-color:#a0d4a7;
+}
+
+.news #masthead h1
+{
+  background:#a0d4a7;
+}
+
+.news #masthead p
+{
+  background:#a0d4a7;
+  color:#004000;
+}
+
+.news #main h1 a,
+.news #main h2,
+.news #main h2 a
+{
+  color:#429963;
+}
+
+.news .author, .news .date
+{
+  color:#666;
+  font-weight: bold;
+}
+
+
+/* START SYSTEM
+=========================================================*/
+.system #masthead .first
+{
+  background-image:url("/images/system/growth.png");
+}
+
+.system #masthead
+{
+  background:#9076b3;
+  background:url("/images/system/diagonals.gif");
+  border-top-color:#9076b3;
+}
+
+.system #masthead h1
+{
+  background:#9076b3;
+}
+
+.system #masthead p
+{
+  background:#9076b3;
+  color:#422667;
+}
+
+.system #main h1 a,
+.system #main h2,
+.system #main h2 a
+{
+  color:#6f5494;
+}
+
+
+/* START DOCUMENTATION
+=========================================================*/
+#documentation a
+{
+  color: #444;
+}
+
+#documentation dd
+{
+  display: none;
+  margin: 0 18px 20px 18px;
+}
+
+#documentation dl
+{
+  margin-bottom: 10px;
+}
+
+#documentation dt
+{
+  color: #000;
+  margin: 10px;
+}
+
+#documentation ul 
+{
+	list-style: none;
+	margin: 0 0 10px 10px;
+	padding-left: 1em;
+	text-indent: -1em;
+}
+
+#documentation #classname 
+{
+  margin-bottom: 10px;
+}
+
+#documentation #hider
+{
+  display: none;
+}
+
+#documentation #meta
+{
+  margin-bottom: 10px;
+}
+
+#documentation #meta td
+{
+  padding: 5px;
+}
+
+#documentation #meta th
+{
+  font-weight: bold;
+  padding: 5px 5px 5px 0;
+}
+
+#documentation #overview
+{
+  margin-bottom: 20px;
+}
+
+#documentation #overview-rest
+{
+  display: none;
+}
+
+#documentation #toggler
+{
+  margin: 20px 0;
+}
+
+
+#documentation .arg
+{
+	display: inline;	
+}
+
+#documentation .method 
+{
+  margin: 10px 10px 10px 5px;
+}
+
+#documentation .methodDescription
+{
+  background-color: #f5f5f5;
+  border-left: 1px solid #ccc;
+  margin-top: -7px;
+  padding: 5px 8px;
+}
+
+#documentation .methodScope
+{
+	display: inline;	
+}
+
+#documentation .methodSignature
+{
+	display: inline;	
+}
+
+#documentation .parameter
+{
+	display: none;	
+}
+
+#documentation .returnType
+{
+	display: none;	
+}
+
+#documentation .selector
+{
+	display: inline;
+	font-weight: bold;
+}
+
+#documentation .type
+{
+	display: inline;	
+}

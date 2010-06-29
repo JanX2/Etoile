@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DocumentWeaver</key>
+	<string>DocumentWeaver.html</string>
+	<key>Function</key>
+	<string>Function.html</string>
+	<key>GSDocParserDelegate</key>
+	<string>GSDocParserDelegate.html</string>
+	<key>Header</key>
+	<string>Header.html</string>
+	<key>HtmlElement</key>
+	<string>HtmlElement.html</string>
+	<key>Method</key>
+	<string>Method.html</string>
+</dict>
+</plist>

@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.xml">
+<gsdoc base="ETDocGenerator">
+  <head>
+    <title>ETDocGenerator documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the Grololo class
+      </heading>
+      <class name="Grololo" super="Nouvelle">
+        <declared>ETDocGenerator.m</declared>
+        <desc>
+          <em>Description forthcoming.</em>
+        </desc>
+        <ivariable type="NSString*" name="name" validity="protected">
+          <desc>
+            a name
+          </desc>
+        </ivariable>
+        <method type="void">
+          <sel>rololo</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the Nouvelle class
+      </heading>
+      <class name="Nouvelle" super="NSObject">
+        <declared>ETDocGenerator.m</declared>
+        <desc>
+          Author: Nicolas Roard <br /> Nouvelle classe
+        </desc>
+        <method type="int" factory="yes">
+          <sel>redou</sel>
+          <desc>
+            redou @return redou
+          </desc>
+        </method>
+        <method type="void">
+          <sel>pilou</sel>
+          <desc>
+            pilou
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>ETDocGenerator macros</heading>
+      <p></p>
+      <macro name="VALID">
+        <arg>arg</arg>
+        <desc>
+          Simple macro to check that the argument is different
+          from <code>NO</code> @param <var>arg</var> a NSValue
+          @return <code>YES</code> if the argument is different
+          from <code>NO</code>
+        </desc>
+      </macro>
+    </chapter>
+    <chapter>
+      <heading>ETDocGenerator functions</heading>
+      <p></p>
+      <function type="void" name="generateClassMapping">
+        <arg type="NSString*">classFile</arg>
+        <desc>
+          A simple utility function to generate a class mapping from
+          a list of class names @param <var>classFile</var> A plist
+          file we can use as a base @task Utility
+        </desc>
+      </function>
+      <function type="void" name="printError">
+        <desc>
+          Display a simple error message. @task Display
+        </desc>
+      </function>
+      <function type="void" name="printHelp">
+        <desc>
+          Display the help @task Display @return du vent
+        </desc>
+      </function>
+      <function type="void" name="weaveDocument">
+        <arg type="int">argc</arg>
+        <arg type="const char*[]">argv</arg>
+        <desc>
+          Main function. First, check the passed arguments using
+          ETGetOptionsDictionary, then
+          constructs the DocumentWeaver object and generates
+          the output file. @param <var>argc</var> numbers of
+          arguments @param <var>argv</var> array of char*
+          with the arguments @task Main
+        </desc>
+      </function>
+    </chapter>
+  </body>
+</gsdoc>

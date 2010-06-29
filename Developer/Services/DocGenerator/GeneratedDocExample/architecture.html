@@ -1,0 +1,175 @@
+<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <title>&Eacute;toil&eacute;</title>
+   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+   <meta name="viewport" content="width = 680" />
+   <link rel="stylesheet" href="_includes/css/reset-fonts-grids.css" type="text/css" />
+   <link rel="stylesheet" href="_includes/css/global.css" type="text/css" />
+   <link rel="stylesheet" href="_includes/css/prettify.css" type="text/css" />
+   <link rel="stylesheet" href="_includes/css/documentation.css" type="text/css" />
+
+   <link rel="alternate" type="application/atom+xml" title="Atom 1.0" href="/feeds/news/atom/" />
+   <link rel="shortcut icon" href="/favicon.ico" />
+   <script type="text/javascript" src="_includes/js/prettify.js"></script>
+   <script type="text/javascript" src="_includes/js/swfobject.js"></script>
+   <script type="text/javascript" src="_includes/js/collapser.js"></script>
+</head>
+<body class="developer" onload="prettyPrint();hideAll();">
+<div id="doc3" class="yui-t7">
+  <div id="hd">
+
+      <div id="nav">
+        <ul>
+          <li><a href="/"><img src="/images/global/flower.png" alt="&Eacute;toil&eacute; Logo" /></a></li>
+          <li><a href="/etoile/">&Eacute;toil&eacute;</a></li>
+          <li><a href="/downloads/">Downloads</a></li>
+          <li><a href="/support/">Support</a></li>
+          <li><a href="/news/">News</a></li>
+          <li><a href="/dev/">Development</a></li>
+        </ul>
+      </div>  
+  </div> 
+  <div id="bd" class="team">
+ 	<div class="yui-gc" id="masthead">
+    		<div class="yui-u first">
+			<h1><strong>Documentation</strong></h1><p></p>	  
+		</div>
+  	</div>
+
+  	<div class="yui-gc" id="content">
+    		<div class="yui-u first">
+      			<div id="main">
+      			  <div id="documentation">
+      			    
+				<h2>Architecture of ETDocGenerator</h2>
+
+<p>The architecture is rather simple; the <code>weaveDocument</code> function, after checking
+the arguments passed at the command line, create a <a href="DocumentWeaver.html">DocumentWeaver</a> instance.</p>
+
+<p>The <a href="DocumentWeaver.html">DocumentWeaver</a> class is the one in charge
+with generating the final document; we first indicates the template used,
+via the <code>loadTemplate:</code> method, then create a document using <code>createDocumentUsingFile:</code>.</p>
+
+<p>This method in fact simply checks that the input file has either an HTML or gsdoc extension,
+and call the correspoding methods (createDocumentUsingGSDocFile &amp; createDocumentUsingHTMLFile).</p>
+
+<p>Once this is done, the main program set the class mappings if present (still in the <a href="DocumentWeaver.html">DocumentWeaver</a> class),
+as well as the menu file, and finally ask <a href="DocumentWeaver.html">DocumentWeaver</a> to write the class.</p>
+
+<h2>Document creation &amp; parsing</h2>
+
+<p>If the file is a gsdoc file, we create a <a href="http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSXMLParser_Class/Reference/Reference.html">NSXMLParser</a> instance and a <a href="GSDocParserDelegate.html">GSDocParserDelegate</a> instance,
+and parse it. After the parsing, we ask the delegate for a string representing the methods
+(<code>get<a href="Method.html">Method</a>s</code> method) and the header (<code>get<a href="Header.html">Header</a></code> method), and then replace the corresponding
+tags in the template with those strings. Classes <a href="Header.html">Header</a>, <a href="Function.html">Function</a> and <a href="Method.html">Method</a> are populated by <a href="GSDocParserDelegate.html">GSDocParserDelegate</a>.</p>
+
+<p>If the file is an html document, the principle is the same, only we directly replace the corresponding
+tag in the template with the content of the html document.</p>
+
+<h2>Document writing</h2>
+
+<p>The <code>writeDocument:</code> method of <a href="DocumentWeaver.html">DocumentWeaver</a> is very simple:</p>
+
+<pre><code>- (void) writeDocument: (<a href="http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSString_Class/Reference/NSString.html">NSString</a>*) outputFile
+{
+  [self insertMenu];
+  [self insertClassesLinks];
+  [self insertProjectClassesList];
+  [template writeToFile: outputFile atomically: YES];
+}
+</code></pre>
+
+<p>We simply insert the menu in the template, then do a pass to add links to any classes mentioned in
+the document, then do a final pass to replace the <code>etoile-list-classes</code> tag, and then write the file.</p>
+
+<h2>HTML generation</h2>
+
+<p>While the parsing is a straightforward <a href="http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSXMLParser_Class/Reference/Reference.html">NSXMLParser</a> delegate, the HTML generation uses the <a href="HtmlElement.html">HtmlElement</a> class.
+The class is pretty simple, with elements having a name, a set of attributes, and a list of children.
+One cool feature is that it uses reflectivity (see the <code>methodSignatureForSelector</code> and <code>forwardInvocation</code> methods)
+ to automatically call the appropriate method, which let
+use write (in my opinion) html in an easier and more readable way:</p>
+
+<pre><code>  H tdAuthors = TD;
+  for (int i=0; i&lt;[authors count]; i++)
+  {
+    [tdAuthors with: [authors objectAtIndex: i] and: @" "];
+  }
+  H table = [TABLE with: [TR with: [TH with: @"Authors"] and: tdAuthors]
+                   and: [TR with: [TH with: @"Declared in:"] and: [TD with: declared]]];
+</code></pre>
+
+<p>H, TD, TABLE, TR, TH are simple define, e.g:</p>
+
+<pre><code>#define H <a href="HtmlElement.html">HtmlElement</a>*
+#define DIV [<a href="HtmlElement.html">HtmlElement</a> elementWithName: @"div"]
+#define TABLE [<a href="HtmlElement.html">HtmlElement</a> elementWithName: @"table"]
+</code></pre>
+
+<p>Yes, it does remind me of the Seaside Canvas.</p>
+
+				
+				      </div>
+      			</div>
+    		</div>
+    		<div class="yui-u">
+      		
+		<div id="sidebar">
+		  
+      <h2>ETDocGenerator</h2>
+<ul>
+<li><a href="presentation.html">Quick presentation </a></li>
+<li><a href="architecture.html">Architecture Overview</a></li>
+<li><a href="writing-doc.html">Documenting your code</a></li>
+<li><a href="todo.html">Todo</a></li>
+</ul>
+
+<h3>Main</h3>
+<ul>
+<li><a href="ETDocGenerator.html">ETDocGenerator file</a></li>
+</ul>
+
+<h3>Classes</h3>
+<div id="project-classes-list"><ul><li><a href="DocumentWeaver.html">DocumentWeaver</a></li>
+<li><a href="Function.html">Function</a></li>
+<li><a href="GSDocParserDelegate.html">GSDocParserDelegate</a></li>
+<li><a href="Header.html">Header</a></li>
+<li><a href="HtmlElement.html">HtmlElement</a></li>
+<li><a href="Method.html">Method</a></li>
+</ul>
+</div>
+
+
+    
+    </div>
+
+	  </div>
+  </div>
+</div>
+  <div id="ft">
+    <div id="bottom_nav">
+      <a href="/feeds/">RSS Feeds</a> | 
+      <a href="/media/">Media Kit</a> | 
+      <a href="/contact/">Contact Us</a>
+
+    </div>
+    <div id="legal">Copyright &copy; 2008 &Eacute;toil&eacute; Project. All rights reserved.</div>
+  </div>
+</div>
+<div>
+  <img src="/images/community/diagonals.gif" class="hidden"/>
+  <img src="/images/developer/diagonals.gif" class="hidden"/>
+
+  <img src="/images/news/diagonals.gif" class="hidden"/>
+  <img src="/images/system/diagonals.gif" class="hidden"/>
+  
+  <img src="/images/community/growth.png" class="hidden"/>
+  <img src="/images/developer/growth.png" class="hidden"/>
+  <img src="/images/news/growth.png" class="hidden"/>
+  <img src="/images/system/growth.png" class="hidden"/>
+</div>
+</body>
+</html>
