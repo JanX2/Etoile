@@ -98,28 +98,28 @@
 
 - (void) insertHTMLDocument
 {
-  [self insert: documentContent forTag: @"<!-- etoile-document -->"];
+	[self insert: documentContent forTag: @"<!-- etoile-document -->"];
 }
 
 - (void) insertGSDocDocument
 {
-  NSXMLParser* parser = [[NSXMLParser alloc] initWithData: 
-  	[documentContent dataUsingEncoding: NSUTF8StringEncoding]];
-
-  //GSDocParser* delegate = [GSDocParser new];
-  //[delegate setGSDocDirectory: [gsdocFile stringByDeletingLastPathComponent]];
-  //[delegate setGSDocFile: gsdocFile];
-
-  GSDocParserDelegate* delegate = [GSDocParserDelegate new];
-
-  [parser setDelegate: delegate];
-  [parser parse];
-
-  [self insert: [delegate getMethods] forTag: @"<!-- etoile-methods -->"];
-  [self insert: [delegate getHeader] forTag:  @"<!-- etoile-header -->"];
-
-  [delegate release];  
-  [parser release];
+	NSXMLParser* parser = [[NSXMLParser alloc] initWithData: 
+						   [documentContent dataUsingEncoding: NSUTF8StringEncoding]];
+	
+	//GSDocParser* delegate = [GSDocParser new];
+	//[delegate setGSDocDirectory: [gsdocFile stringByDeletingLastPathComponent]];
+	//[delegate setGSDocFile: gsdocFile];
+	
+	GSDocParserDelegate* delegate = [GSDocParserDelegate new];
+	
+	[parser setDelegate: delegate];
+	[parser parse];
+	
+	[self insert: [delegate getMethods] forTag: @"<!-- etoile-methods -->"];
+	[self insert: [delegate getHeader] forTag:  @"<!-- etoile-header -->"];
+	
+	[delegate release];  
+	[parser release];
 }
 
 - (void) insertDocument
@@ -147,19 +147,21 @@
 {
 	if (nil == projectClassMapping)
   		return;
-
-    NSArray* uclasses = [projectClassMapping allKeys];
-    NSArray* classes = [uclasses sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+	
+    NSArray *classNames = [[projectClassMapping allKeys] 
+		sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
     H list = UL;
-    for (int i=0; i<[classes count]; i++)
+	
+    FOREACH(classNames, className, NSString *)
     {
-      NSString* className = [classes objectAtIndex: i];
-      NSString* url = [projectClassMapping objectForKey: className]; 
-      NSString* link = [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, className];
-      [list and: [LI with: link]];
+		NSString *url = [projectClassMapping objectForKey: className]; 
+		NSString *link = [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, className];
+	
+		[list and: [LI with: link]];
     }
-    H divList = [DIV id: @"project-classes-list" with: list];
-    [self insert: [divList content] forTag: @"<!-- etoile-list-classes -->"];
+
+    [self insert: [[DIV id: @"project-classes-list" with: list] content] 
+	      forTag: @"<!-- etoile-list-classes -->"];
 }
 
 - (void) insertClassesLinks
@@ -170,19 +172,18 @@
     // Add the list of our project classes
     [classMapping addEntriesFromDictionary: projectClassMapping];
 	
-    NSArray* uclasses = [classMapping allKeys];
-    NSArray* classes = [uclasses sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+    NSArray *classNames = [[classMapping allKeys] 
+		sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
     
     // FIXME: This is the _wrong_ way to insert those links -- as we'll miss for example
     // NSConditionLock vs NSCondition (both will point to NSCondition). What should be done
     // is to insert the links in the gsdoc generator directly, and for the html document
     // do correct replacing, not this crude one. But well, that'll be for next version.
     // (Plus this loop is not exactly an efficient way to do this)
-    for (int i=0; i<[classes count]; i++)
+    FOREACH(classNames, className, NSString *)
     {
-		NSString* className = [classes objectAtIndex: i];
-		NSString* url = [classMapping objectForKey: className];
-		NSString* link = [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, className];
+		NSString *url = [classMapping objectForKey: className];
+		NSString *link = [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, className];
 		
 		[self insert: link forTag: className];
     }
@@ -194,7 +195,7 @@
 
 	[self insertDocument];
 	[self insertMenu];
-//  [self insertClassesLinks];
+	[self insertClassesLinks];
 	[self insertProjectClassesList];
 }
 
