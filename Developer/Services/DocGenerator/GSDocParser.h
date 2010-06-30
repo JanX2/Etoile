@@ -29,7 +29,7 @@
  * </abstract>
  */
 
-@interface GSDocParser : NSObject 
+@interface GSDocParser : NSObject <GSDocParserDelegate>
 {
 	NSMutableString *content;
 	
@@ -130,5 +130,13 @@
 - (void) parser: (NSXMLParser*) parser   didEndElement:(NSString *)elementName
                                           namespaceURI:(NSString *)namespaceURI
                                          qualifiedName:(NSString *)qName;
+
+- (void) parser: (GSDocParser *)parser 
+   startElement: (NSString *)anElement
+  withAttributes: (NSDictionary *)theAttributes;
+
+- (void) parser: (GSDocParser *)parser
+     endElement: (NSString *)anElement
+    withContent: (NSString *)aContent;
 
 @end

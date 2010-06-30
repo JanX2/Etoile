@@ -113,33 +113,7 @@ didStartElement:(NSString *)elementName
 //    [macro release];
 //    macro = [Macro new];
   }
-  
-  /*
-  if ([elementName isEqualToString: @"task"])
-  {
-    if ([content length] >0) 
-    {
-      NSString* trimmed = [content stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-      if ([trimmed length] > 0)
-      {
-//        NSLog (@"description: <%@>", trimmed);
-        if (inMethod)
-        {
-          [method appendToDescription: trimmed];
-        }
-        if (inFunction)
-        {
-          [pfunction appendToDescription: trimmed];
-        }
-      }
-    }
-    if (![elementName isEqualToString: @"var"]
-      && ![elementName isEqualToString: @"code"]) 
-    {
-      [self newContent];
-    }
-  }
-  */
+
 }
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
   [content appendString: string];
@@ -246,19 +220,25 @@ didStartElement:(NSString *)elementName
     }
   }
   
-  /*
-  if ([elementName isEqualToString: @"task"])
-  {
-    [currentTask release];
-    currentTask = [trimmed retain];
-  }
-   */
-  
   if (![elementName isEqualToString: @"var"]
     && ![elementName isEqualToString: @"code"]) 
   {
     [self newContent];
   }
+}
+
+- (void) parser: (GSDocParser *)parser 
+   startElement: (NSString *)anElement
+  withAttributes: (NSDictionary *)theAttributes
+{
+
+}
+
+- (void) parser: (GSDocParser *)parser
+     endElement: (NSString *)anElement
+    withContent: (NSString *)aContent
+{
+
 }
 
 - (void) setGSDocDirectory: (NSString*) aPath
