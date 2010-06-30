@@ -10,10 +10,15 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 
 @class Header, Method, Function;
+@class GSDocParser;
 
-@protocol GSDocParserElement
-- (void) startElement: (NSString *)anElement withAttributes: (NSDictionary *)theAttributes;
-- (void) endElement: (NSString *)anElement withContent: (NSString *)aContent;
+@protocol GSDocParserDelegate
+- (void) parser: (GSDocParser *)parser 
+   startElement: (NSString *)anElement
+  withAttributes: (NSDictionary *)theAttributes;
+- (void) parser: (GSDocParser *)parser
+     endElement: (NSString *)anElement
+    withContent: (NSString *)aContent;
 @end
 
 /**

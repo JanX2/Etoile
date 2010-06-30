@@ -14,7 +14,8 @@
 @class Parameter;
 @class DescriptionParser;
 
-@interface GSDocFunction : GSDocBlock <GSDocParserElement>{
+@interface GSDocFunction : GSDocBlock <GSDocParserDelegate>
+{
   NSString* returnType;
   NSString* returnDescription;
   NSMutableArray* parameters;

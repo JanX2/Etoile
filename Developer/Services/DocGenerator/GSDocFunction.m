@@ -55,12 +55,16 @@
   [parameters addObject: aParameter];
 }
 
-- (void) startElement: (NSString*) anElement withAttributes: (NSDictionary*) theAttributes
+- (void) parser: (GSDocParser *)parser 
+   startElement: (NSString *)anElement
+ withAttributes: (NSDictionary *)theAttributes
 {
 //  NSLog (@"FUNCTION <%@> BEGIN <%@>", name, anElement);
 }
 
-- (void) endElement: (NSString*) anElement withContent: (NSString*) aContent
+- (void) parser: (GSDocParser *)parser
+     endElement: (NSString *)anElement
+    withContent: (NSString *)aContent
 {
 //  NSLog (@"FUNCTION <%@> END <%@>", name, anElement);
   if ([anElement isEqualToString: @"desc"])
