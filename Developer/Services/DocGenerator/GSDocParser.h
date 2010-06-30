@@ -1,5 +1,5 @@
 //
-//  GSDocParserDelegate.h
+//  GSDocParser.h
 //  ETDocGenerator
 //
 //  Created by Nicolas Roard (Home) on 6/7/08.
@@ -17,14 +17,14 @@
 @end
 
 /**
- * <title>GSDocParserDelegate</title>
+ * <title>GSDocParser</title>
  * Author: Nicolas Roard
  * <abstract> 
  * GSDoc parser + HTML Writing
  * </abstract>
  */
 
-@interface GSDocParserDelegate : NSObject 
+@interface GSDocParser : NSObject 
 {
   NSMutableString* content;
   

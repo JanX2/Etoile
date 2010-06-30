@@ -14,7 +14,7 @@
 		03FF75330DF9EFED007D79D3 /* Header.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF75320DF9EFED007D79D3 /* Header.m */; };
 		03FF75360DF9F159007D79D3 /* HtmlElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF75350DF9F159007D79D3 /* HtmlElement.m */; };
 		03FF75DE0DFAAFEB007D79D3 /* Method.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF75DD0DFAAFEB007D79D3 /* Method.m */; };
-		03FF77480DFB1D21007D79D3 /* GSDocParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF77470DFB1D21007D79D3 /* GSDocParserDelegate.m */; };
+		03FF77480DFB1D21007D79D3 /* GSDocParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF77470DFB1D21007D79D3 /* GSDocParser.m */; };
 		03FF78E50DFB75C9007D79D3 /* Function.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF78E40DFB75C9007D79D3 /* Function.m */; };
 		03FF79AF0DFCA7B4007D79D3 /* WeavedDocPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF79AE0DFCA7B4007D79D3 /* WeavedDocPage.m */; };
 		60B289FB11DA0C4000FC8C20 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */; };
@@ -24,6 +24,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		602DC5ED11DB9C6D007C36B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 603647AB0E409244003377E0 /* EtoileFoundation */;
+			remoteInfo = EtoileFoundation;
+		};
 		60B289F511DA0C2400FC8C20 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
@@ -75,8 +82,8 @@
 		03FF75350DF9F159007D79D3 /* HtmlElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HtmlElement.m; sourceTree = "<group>"; };
 		03FF75DC0DFAAFEB007D79D3 /* Method.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Method.h; sourceTree = "<group>"; };
 		03FF75DD0DFAAFEB007D79D3 /* Method.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Method.m; sourceTree = "<group>"; };
-		03FF77460DFB1D21007D79D3 /* GSDocParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSDocParserDelegate.h; sourceTree = "<group>"; };
-		03FF77470DFB1D21007D79D3 /* GSDocParserDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSDocParserDelegate.m; sourceTree = "<group>"; };
+		03FF77460DFB1D21007D79D3 /* GSDocParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSDocParser.h; sourceTree = "<group>"; };
+		03FF77470DFB1D21007D79D3 /* GSDocParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSDocParser.m; sourceTree = "<group>"; };
 		03FF78E30DFB75C9007D79D3 /* Function.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Function.h; sourceTree = "<group>"; };
 		03FF78E40DFB75C9007D79D3 /* Function.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Function.m; sourceTree = "<group>"; };
 		03FF79AD0DFCA7B4007D79D3 /* WeavedDocPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeavedDocPage.h; sourceTree = "<group>"; };
@@ -125,8 +132,8 @@
 				03FF75350DF9F159007D79D3 /* HtmlElement.m */,
 				03FF75DC0DFAAFEB007D79D3 /* Method.h */,
 				03FF75DD0DFAAFEB007D79D3 /* Method.m */,
-				03FF77460DFB1D21007D79D3 /* GSDocParserDelegate.h */,
-				03FF77470DFB1D21007D79D3 /* GSDocParserDelegate.m */,
+				03FF77460DFB1D21007D79D3 /* GSDocParser.h */,
+				03FF77470DFB1D21007D79D3 /* GSDocParser.m */,
 				03FF78E30DFB75C9007D79D3 /* Function.h */,
 				03FF78E40DFB75C9007D79D3 /* Function.m */,
 				03FF79AD0DFCA7B4007D79D3 /* WeavedDocPage.h */,
@@ -191,6 +198,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				602DC5EE11DB9C6D007C36B6 /* PBXTargetDependency */,
 			);
 			name = ETDocGenerator;
 			productInstallPath = "$(HOME)/bin";
@@ -254,7 +262,7 @@
 				03FF75330DF9EFED007D79D3 /* Header.m in Sources */,
 				03FF75360DF9F159007D79D3 /* HtmlElement.m in Sources */,
 				03FF75DE0DFAAFEB007D79D3 /* Method.m in Sources */,
-				03FF77480DFB1D21007D79D3 /* GSDocParserDelegate.m in Sources */,
+				03FF77480DFB1D21007D79D3 /* GSDocParser.m in Sources */,
 				03FF78E50DFB75C9007D79D3 /* Function.m in Sources */,
 				03FF79AF0DFCA7B4007D79D3 /* WeavedDocPage.m in Sources */,
 				0362712C0E00919B005D79FE /* DescriptionParser.m in Sources */,
@@ -265,6 +273,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		602DC5EE11DB9C6D007C36B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileFoundation;
+			targetProxy = 602DC5ED11DB9C6D007C36B6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB927508733DD40010E9CD /* Debug */ = {

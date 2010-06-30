@@ -1,19 +1,19 @@
 //
-//  GSDocParserDelegate.m
+//  GSDocParser.m
 //  ETDocGenerator
 //
 //  Created by Nicolas Roard (Home) on 6/7/08.
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import "GSDocParserDelegate.h"
+#import "GSDocParser.h"
 #import "Header.h";
 #import "Method.h";
 #import "Function.h";
 #import "HtmlElement.h";
 #import "DescriptionParser.h";
 
-@implementation GSDocParserDelegate
+@implementation GSDocParser
 
 - (id) init
 {

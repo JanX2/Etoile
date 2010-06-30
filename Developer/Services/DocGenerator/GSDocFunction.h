@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "GSDocBlock.h"
-#import "GSDocParserDelegate.h"
+#import "GSDocParser.h"
 
 @class Parameter;
 @class DescriptionParser;
