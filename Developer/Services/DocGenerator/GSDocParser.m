@@ -18,7 +18,8 @@
 - (id) init
 {
 	SUPERINIT;
-	
+
+	parserDelegateStack = [NSMutableArray new];
 	header = [Header new];
 	method = [Method new];
 	content = [NSMutableString new];
@@ -32,6 +33,7 @@
 
 - (void) dealloc
 {
+	[parserDelegateStack release];
 	[header release];
 	[method release];
 	[pfunction release];
@@ -46,6 +48,21 @@
 {
 	[content release];
 	content = [NSMutableString new];
+}
+
+- (id <GSDocParserDelegate>) parserDelegate
+{
+	return [parserDelegateStack lastObject];
+}
+
+- (void) pushParserDelegate: (id <GSDocParserDelegate>)aDelegate
+{
+	[parserDelegateStack addObject: aDelegate];
+}
+
+- (void) popParserDelegate
+{
+	[parserDelegateStack removeObjectAtIndex: [parserDelegateStack count] - 1];
 }
 
 - (void) parser:(NSXMLParser *)parser

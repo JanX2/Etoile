@@ -31,6 +31,7 @@
 
 @interface GSDocParser : NSObject <GSDocParserDelegate>
 {
+	NSMutableArray *parserDelegateStack;
 	NSMutableString *content;
 	
 	Header *header;
@@ -107,6 +108,10 @@
  * @task Parsing
  */
 - (void) newContent;
+
+- (id <GSDocParserDelegate>) parserDelegate;
+- (void) pushParserDelegate: (id <GSDocParserDelegate>)aDelegate;
+- (void) popParserDelegate;
 
 /**
  * NSXMLParse delegate method.
