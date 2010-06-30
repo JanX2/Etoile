@@ -17,35 +17,35 @@
 
 - (id) init
 {
-  self = [super init];
-  
-  header = [Header new];
-  method = [Method new];
-  content = [NSMutableString new];
-  classMethods = [NSMutableDictionary new];
-  instanceMethods = [NSMutableDictionary new];
-  functions = [NSMutableDictionary new];
-  currentTask = @"Default";
-  
-  return self;
+	SUPERINIT;
+	
+	header = [Header new];
+	method = [Method new];
+	content = [NSMutableString new];
+	classMethods = [NSMutableDictionary new];
+	instanceMethods = [NSMutableDictionary new];
+	functions = [NSMutableDictionary new];
+	ASSIGN(currentTask, @"Default");
+	
+	return self;
 }
 
 - (void) dealloc
 {
-  [header release];
-  [method release];
-  [pfunction release];
-  [content release];
-  [classMethods release];
-  [instanceMethods release];
-  [sourcePath release];
-  [super dealloc];
+	[header release];
+	[method release];
+	[pfunction release];
+	[content release];
+	[classMethods release];
+	[instanceMethods release];
+	[sourcePath release];
+	[super dealloc];
 }
 
 - (void) newContent
 {
-  [content release];
-  content = [NSMutableString new];
+	[content release];
+	content = [NSMutableString new];
 }
 
 - (void)parser:(NSXMLParser *)parser

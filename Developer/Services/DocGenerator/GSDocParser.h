@@ -31,26 +31,26 @@
 
 @interface GSDocParser : NSObject 
 {
-  NSMutableString* content;
-  
-  Header* header;
-  BOOL head;
-  BOOL inMethod, inFunction;
-  BOOL inMacro;
-  
-  NSString* declaredIn;
-  NSMutableDictionary* classMethods;
-  NSMutableDictionary* instanceMethods;
-  NSMutableDictionary* functions;
-  NSMutableDictionary* macros;
-  
-  Method* method;
-  NSString* argType;
-  Function* pfunction;
-  
-  NSString* sourcePath;
-  NSString* classFile;
-  NSString* currentTask;
+	NSMutableString *content;
+	
+	Header *header;
+	BOOL head;
+	BOOL inMethod, inFunction;
+	BOOL inMacro;
+	
+	NSString *declaredIn;
+	NSMutableDictionary *classMethods;
+	NSMutableDictionary *instanceMethods;
+	NSMutableDictionary *functions;
+	NSMutableDictionary *macros;
+	
+	Method *method;
+	NSString *argType;
+	Function *pfunction;
+	
+	NSString *sourcePath;
+	NSString *classFile;
+	NSString *currentTask;
 }
 
 /**
