@@ -48,183 +48,189 @@
 	content = [NSMutableString new];
 }
 
-- (void)parser:(NSXMLParser *)parser
+- (void) parser:(NSXMLParser *)parser
 didStartElement:(NSString *)elementName
-  namespaceURI:(NSString *)namespaceURI
- qualifiedName:(NSString *)qName
-    attributes:(NSDictionary *)attributeDict {
-//    NSLog (@"begin elementName: <%@>", elementName, qName);
-  if ([elementName isEqualToString: @"head"]) { head = YES; }
-  
-  if ([elementName isEqualToString: @"author"]) 
-  {
-    [header addAuthor: [attributeDict objectForKey: @"name"]];
-  }
-  
-  if ([elementName isEqualToString: @"class"]) 
-  {
-    [header setClassName: [attributeDict objectForKey: @"name"]];
-    [header setSuperClassName: [attributeDict objectForKey: @"super"]];
-  }
+   namespaceURI:(NSString *)namespaceURI
+  qualifiedName:(NSString *)qName
+     attributes:(NSDictionary *)attributeDict
+{
+	//NSLog (@"begin elementName: <%@>", elementName, qName);
 
-  /*
-  if ([elementName isEqualToString: @"overview"]) 
-  {
-    NSString* fileOverview = [attributeDict objectForKey: @"file"];
-    if (fileOverview)
-    {
-      NSString* overviewFilePath = [NSString stringWithFormat: @"%@/%@", sourcePath, fileOverview];
-      [header setFileOverview: overviewFilePath];
-    }
-  }
-  */
-  
-  if ([elementName isEqualToString: @"method"])
-  {
-    [method release];
-    method = [Method new];
-    [method setReturnType: [attributeDict objectForKey: @"type"]];
-    if ([[attributeDict objectForKey: @"factory"] isEqualToString: @"yes"]) 
-    {
-      [method setIsClassMethod: YES];
-    }
-    inMethod = YES;
-  }
-  
-  if ([elementName isEqualToString: @"arg"])
-  {
-    [argType release];
-    argType = [attributeDict objectForKey: @"type"];
-    argType = [argType stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    [argType retain];
-  }
+	if ([elementName isEqualToString: @"head"]) 
+	{
+		head = YES;
+	}
+	if ([elementName isEqualToString: @"author"]) 
+	{
+		[header addAuthor: [attributeDict objectForKey: @"name"]];
+	}
+	if ([elementName isEqualToString: @"class"]) 
+	{
+		[header setClassName: [attributeDict objectForKey: @"name"]];
+		[header setSuperClassName: [attributeDict objectForKey: @"super"]];
+	}
+	if ([elementName isEqualToString: @"method"])
+	{
+		[method release];
+		method = [Method new];
+		[method setReturnType: [attributeDict objectForKey: @"type"]];
+		if ([[attributeDict objectForKey: @"factory"] isEqualToString: @"yes"]) 
+		{
+			[method setIsClassMethod: YES];
+		}
 
-  if ([elementName isEqualToString: @"function"])
-  {
-    [pfunction release];
-    pfunction = [Function new];
-    [pfunction setReturnType: [attributeDict objectForKey: @"type"]];
-    [pfunction setFunctionName: [attributeDict objectForKey: @"name"]];
-    inFunction = YES;
-  }
-  
-  if ([elementName isEqualToString: @"macro"])
-  {
-//    [macro release];
-//    macro = [Macro new];
-  }
+		inMethod = YES;
+	}
+	if ([elementName isEqualToString: @"arg"])
+	{
+		[argType release];
+		argType = [attributeDict objectForKey: @"type"];
+		argType = [argType stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		[argType retain];
+	}
+	if ([elementName isEqualToString: @"function"])
+	{
+		[pfunction release];
+		pfunction = [Function new];
+		[pfunction setReturnType: [attributeDict objectForKey: @"type"]];
+		[pfunction setFunctionName: [attributeDict objectForKey: @"name"]];
 
+		inFunction = YES;
+	}
+	if ([elementName isEqualToString: @"macro"])
+	{
+		//    [macro release];
+		//    macro = [Macro new];
+	}
+	
 }
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
-  [content appendString: string];
+- (void) parser: (NSXMLParser *)parser foundCharacters:(NSString *)string 
+{
+	[content appendString: string];
 }
 
-- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
-  //  NSLog (@"end elementName: <%@>:<%@>", elementName, qName);
-  NSString* trimmed = [content stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-  if (head) 
-  {
-    if ([elementName isEqualToString: @"title"]) 
-    { 
-      [header setTitle: trimmed];
-    }
-    if ([elementName isEqualToString: @"abstract"])
-    {
-      [header setAbstract: trimmed];
-    }
-  }
-  if ([elementName isEqualToString: @"head"]) { head = NO; }
-  
-  if ([elementName isEqualToString: @"declared"]) 
-  {
-    [header setDeclaredIn: trimmed];
-  }
-  if ([elementName isEqualToString: @"overview"]) 
-  {
-    [header setOverview: trimmed];
-  }
-  if (inMethod)
-  {
-    if ([elementName isEqualToString: @"sel"]) 
-    {
-      [method addSelector: trimmed];
-    }
-    if ([elementName isEqualToString: @"arg"]) 
-    {
-      [method addParameter: trimmed ofType: argType];
-    }
-    if ([elementName isEqualToString: @"desc"]) 
-    {
-      [method appendToDescription: trimmed];
-    }
-  }
-  if (inFunction)
-  {
-    if ([elementName isEqualToString: @"arg"]) 
-    {
-      [pfunction addParameter: trimmed ofType: argType];
-    }
-    if ([elementName isEqualToString: @"desc"]) 
-    {
-      [pfunction appendToDescription: trimmed];
-    }    
-  }
+- (void) parser: (NSXMLParser *)parser
+  didEndElement: (NSString *)elementName
+   namespaceURI: (NSString *)namespaceURI
+  qualifiedName: (NSString *)qName
+{
+	//NSLog (@"end elementName: <%@>:<%@>", elementName, qName);
 
-  if ([elementName isEqualToString: @"function"])
-  {
-    DescriptionParser* descParser = [DescriptionParser new];
-    [descParser parse: [pfunction functionRawDescription]];
-    NSLog (@"parsed <%@>", [pfunction functionRawDescription]);
-    [pfunction addInformationFrom: descParser];
-    [descParser release];
-    NSLog (@"pfunction task: <%@>", [pfunction task]);
-    
-    NSMutableArray* array = [functions objectForKey: [pfunction task]];
-    if (array == nil)
-    {
-      array = [NSMutableArray new];
-      [functions setObject: array forKey: [pfunction task]];
-      [array release];
-    }
-    [array addObject: pfunction];
-  }
-  
-  if ([elementName isEqualToString: @"method"]) 
-  {
-//    NSLog (@"end of method <%@>, put in task <%@>", [method signature], currentTask);
-    DescriptionParser* descParser = [DescriptionParser new];
-    [descParser parse: [method methodRawDescription]];
-    [method addInformationFrom: descParser];
-    NSLog (@"method (%@) is in task %@", [method signature], [method task]);
-    if ([method isClassMethod])
-    {
-      NSMutableArray* array = [classMethods objectForKey: [method task]];
-      if (array == nil)
-      {
-        array = [NSMutableArray new];
-        [classMethods setObject: array forKey: [method task]];
-        [array release];
-      }
-      [array addObject: method];
-    }
-    else
-    {
-      NSMutableArray* array = [instanceMethods objectForKey: [method task]];
-      if (array == nil)
-      {
-        array = [NSMutableArray new];
-        [instanceMethods setObject: array forKey: [method task]];
-        [array release];
-      }
-      [array addObject: method];
-    }
-  }
-  
-  if (![elementName isEqualToString: @"var"]
-    && ![elementName isEqualToString: @"code"]) 
-  {
-    [self newContent];
-  }
+	NSString* trimmed = [content stringByTrimmingCharactersInSet: 
+	[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+	if (head) 
+	{
+		if ([elementName isEqualToString: @"title"]) 
+		{ 
+			[header setTitle: trimmed];
+		}
+		if ([elementName isEqualToString: @"abstract"])
+		{
+			[header setAbstract: trimmed];
+		}
+	}
+	if ([elementName isEqualToString: @"head"])
+	{
+		head = NO;
+	}
+	if ([elementName isEqualToString: @"declared"]) 
+	{
+		[header setDeclaredIn: trimmed];
+	}
+	if ([elementName isEqualToString: @"overview"]) 
+	{
+		[header setOverview: trimmed];
+	}
+	if (inMethod)
+	{
+		if ([elementName isEqualToString: @"sel"]) 
+		{
+			[method addSelector: trimmed];
+		}
+		if ([elementName isEqualToString: @"arg"]) 
+		{
+			[method addParameter: trimmed ofType: argType];
+		}
+		if ([elementName isEqualToString: @"desc"]) 
+		{
+			[method appendToDescription: trimmed];
+		}
+	}
+	if (inFunction)
+	{
+		if ([elementName isEqualToString: @"arg"]) 
+		{
+			[pfunction addParameter: trimmed ofType: argType];
+		}
+		if ([elementName isEqualToString: @"desc"]) 
+		{
+			[pfunction appendToDescription: trimmed];
+		}    
+	}	
+	if ([elementName isEqualToString: @"function"])
+	{
+		DescriptionParser* descParser = [DescriptionParser new];
+
+		[descParser parse: [pfunction functionRawDescription]];
+
+		NSLog (@"parsed <%@>", [pfunction functionRawDescription]);
+
+		[pfunction addInformationFrom: descParser];
+		[descParser release];
+
+		NSLog (@"pfunction task: <%@>", [pfunction task]);
+		
+		NSMutableArray* array = [functions objectForKey: [pfunction task]];
+
+		if (array == nil)
+		{
+			array = [NSMutableArray new];
+			[functions setObject: array forKey: [pfunction task]];
+			[array release];
+		}
+		[array addObject: pfunction];
+	}
+	if ([elementName isEqualToString: @"method"]) 
+	{
+		//NSLog (@"end of method <%@>, put in task <%@>", [method signature], currentTask);
+		DescriptionParser* descParser = [DescriptionParser new];
+
+		[descParser parse: [method methodRawDescription]];
+		[method addInformationFrom: descParser];
+
+		NSLog (@"method (%@) is in task %@", [method signature], [method task]);
+
+		if ([method isClassMethod])
+		{
+			NSMutableArray* array = [classMethods objectForKey: [method task]];
+			if (array == nil)
+			{
+				array = [NSMutableArray new];
+				[classMethods setObject: array forKey: [method task]];
+				[array release];
+			}
+			[array addObject: method];
+		}
+		else
+		{
+			NSMutableArray* array = [instanceMethods objectForKey: [method task]];
+
+			if (array == nil)
+			{
+				array = [NSMutableArray new];
+				[instanceMethods setObject: array forKey: [method task]];
+				[array release];
+			}
+			[array addObject: method];
+		}
+	}
+	
+	if (![elementName isEqualToString: @"var"] 
+	 && ![elementName isEqualToString: @"code"]) 
+	{
+		[self newContent];
+	}
 }
 
 - (void) parser: (GSDocParser *)parser 
