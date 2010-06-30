@@ -9,9 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class Header;
-@class Method;
-@class Function;
+@class Header, Method, Function;
+
+@protocol GSDocParserElement
+- (void) startElement: (NSString *)anElement withAttributes: (NSDictionary *)theAttributes;
+- (void) endElement: (NSString *)anElement withContent: (NSString *)aContent;
+@end
 
 /**
  * <title>GSDocParserDelegate</title>

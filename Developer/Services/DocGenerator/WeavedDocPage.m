@@ -9,7 +9,7 @@
 #import "WeavedDocPage.h"
 #import "GSDocParserDelegate.h"
 #import "HtmlElement.h"
-#import "GSDocParser.h"
+
 
 @implementation WeavedDocPage
 
@@ -106,12 +106,10 @@
 	NSXMLParser* parser = [[NSXMLParser alloc] initWithData: 
 						   [documentContent dataUsingEncoding: NSUTF8StringEncoding]];
 	
-	//GSDocParser* delegate = [GSDocParser new];
-	//[delegate setGSDocDirectory: [gsdocFile stringByDeletingLastPathComponent]];
-	//[delegate setGSDocFile: gsdocFile];
-	
 	GSDocParserDelegate* delegate = [GSDocParserDelegate new];
-	
+
+	//[delegate setGSDocDirectory: [gsdocFile stringByDeletingLastPathComponent]];
+	//[delegate setGSDocFile: gsdocFile];	
 	[parser setDelegate: delegate];
 	[parser parse];
 	

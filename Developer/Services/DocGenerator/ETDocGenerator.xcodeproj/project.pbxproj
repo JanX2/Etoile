@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0362712C0E00919B005D79FE /* DescriptionParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0362712B0E00919B005D79FE /* DescriptionParser.m */; };
 		036271930E00B263005D79FE /* Parameter.m in Sources */ = {isa = PBXBuildFile; fileRef = 036271920E00B263005D79FE /* Parameter.m */; };
-		036273270E048EFB005D79FE /* GSDocParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 036273260E048EFB005D79FE /* GSDocParser.m */; };
 		0362732A0E048FB6005D79FE /* GSDocFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = 036273290E048FB6005D79FE /* GSDocFunction.m */; };
 		0362732D0E048FD3005D79FE /* GSDocBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 0362732C0E048FD3005D79FE /* GSDocBlock.m */; };
 		03FF75330DF9EFED007D79D3 /* Header.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF75320DF9EFED007D79D3 /* Header.m */; };
@@ -66,8 +65,6 @@
 		0362712B0E00919B005D79FE /* DescriptionParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DescriptionParser.m; sourceTree = "<group>"; };
 		036271910E00B263005D79FE /* Parameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parameter.h; sourceTree = "<group>"; };
 		036271920E00B263005D79FE /* Parameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parameter.m; sourceTree = "<group>"; };
-		036273250E048EFB005D79FE /* GSDocParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSDocParser.h; sourceTree = "<group>"; };
-		036273260E048EFB005D79FE /* GSDocParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSDocParser.m; sourceTree = "<group>"; };
 		036273280E048FB6005D79FE /* GSDocFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSDocFunction.h; sourceTree = "<group>"; };
 		036273290E048FB6005D79FE /* GSDocFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSDocFunction.m; sourceTree = "<group>"; };
 		0362732B0E048FD3005D79FE /* GSDocBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSDocBlock.h; sourceTree = "<group>"; };
@@ -138,8 +135,6 @@
 				0362712B0E00919B005D79FE /* DescriptionParser.m */,
 				036271910E00B263005D79FE /* Parameter.h */,
 				036271920E00B263005D79FE /* Parameter.m */,
-				036273250E048EFB005D79FE /* GSDocParser.h */,
-				036273260E048EFB005D79FE /* GSDocParser.m */,
 				036273280E048FB6005D79FE /* GSDocFunction.h */,
 				036273290E048FB6005D79FE /* GSDocFunction.m */,
 				0362732B0E048FD3005D79FE /* GSDocBlock.h */,
@@ -264,7 +259,6 @@
 				03FF79AF0DFCA7B4007D79D3 /* WeavedDocPage.m in Sources */,
 				0362712C0E00919B005D79FE /* DescriptionParser.m in Sources */,
 				036271930E00B263005D79FE /* Parameter.m in Sources */,
-				036273270E048EFB005D79FE /* GSDocParser.m in Sources */,
 				0362732A0E048FB6005D79FE /* GSDocFunction.m in Sources */,
 				0362732D0E048FD3005D79FE /* GSDocBlock.m in Sources */,
 			);
