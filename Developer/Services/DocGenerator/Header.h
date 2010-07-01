@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
+#import "GSDocParser.h"
 
 
-@interface Header : NSObject 
+@interface Header : NSObject  <GSDocParserDelegate>
 {
   NSString* className;
   NSString* superClassName;

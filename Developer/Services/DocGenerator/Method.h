@@ -8,9 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
+#import "GSDocParser.h"
 
 
-@interface Method : NSObject {
+@interface Method : NSObject <GSDocParserDelegate>
+{
   BOOL isClassMethod;
   NSMutableArray* selectors;
   NSMutableArray* parameters;

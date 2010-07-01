@@ -32,26 +32,19 @@
 @interface GSDocParser : NSObject <GSDocParserDelegate>
 {
 	NSMutableArray *parserDelegateStack;
+	NSMutableDictionary *elementClasses;
+	NSSet *transparentElements;
 	NSMutableString *content;
+	NSDictionary *currentAttributes;
 	
 	Header *header;
-	BOOL head;
-	BOOL inMethod, inFunction;
-	BOOL inMacro;
-	
-	NSString *declaredIn;
 	NSMutableDictionary *classMethods;
 	NSMutableDictionary *instanceMethods;
 	NSMutableDictionary *functions;
-	NSMutableDictionary *macros;
-	
-	Method *method;
-	NSString *argType;
-	Function *pfunction;
+	//NSMutableDictionary *macros;
 	
 	NSString *sourcePath;
 	NSString *classFile;
-	NSString *currentTask;
 }
 
 /**
@@ -109,9 +102,11 @@
  */
 - (void) newContent;
 
+- (Class) elementClassForName: (NSString *)anElementName;
 - (id <GSDocParserDelegate>) parserDelegate;
 - (void) pushParserDelegate: (id <GSDocParserDelegate>)aDelegate;
 - (void) popParserDelegate;
+- (NSSet *) transparentElements;
 
 /**
  * NSXMLParse delegate method.
@@ -143,5 +138,14 @@
 - (void) parser: (GSDocParser *)parser
      endElement: (NSString *)anElement
     withContent: (NSString *)aContent;
+
+- (NSDictionary *) currentAttributes;
+- (NSString *) argTypeFromArgsAttributes: (NSDictionary *)attributeDict;
+
+// TODO: Move to DocPage class and simplify
+- (void) addClassMethod: (Method *)aMethod;
+- (void) addInstanceMethod: (Method *)aMethod;
+- (void) addFunction: (Function *)aFunction;
+- (void) setHeader: (Header *)aHeader;
 
 @end

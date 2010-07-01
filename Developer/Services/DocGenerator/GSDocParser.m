@@ -19,14 +19,18 @@
 {
 	SUPERINIT;
 
-	parserDelegateStack = [NSMutableArray new];
-	header = [Header new];
-	method = [Method new];
+	parserDelegateStack = [[NSMutableArray alloc] initWithObjects: self, nil];
+	elementClasses = [[NSMutableDictionary alloc] initWithObjectsAndKeys: 
+		[Header class], @"head", 
+		[Method class], @"method", 
+		[Function class], @"function", nil];
+	// TODO: Handle them in a better way. Probably apply a style.
+	transparentElements = [[NSSet alloc] initWithObjects: @"var", @"code", @"em", nil];
+
 	content = [NSMutableString new];
 	classMethods = [NSMutableDictionary new];
 	instanceMethods = [NSMutableDictionary new];
 	functions = [NSMutableDictionary new];
-	ASSIGN(currentTask, @"Default");
 	
 	return self;
 }
@@ -34,9 +38,8 @@
 - (void) dealloc
 {
 	[parserDelegateStack release];
+	[elementClasses release];
 	[header release];
-	[method release];
-	[pfunction release];
 	[content release];
 	[classMethods release];
 	[instanceMethods release];
@@ -48,6 +51,11 @@
 {
 	[content release];
 	content = [NSMutableString new];
+}
+
+- (Class) elementClassForName: (NSString *)anElementName
+{
+	return [elementClasses objectForKey: anElementName];
 }
 
 - (id <GSDocParserDelegate>) parserDelegate
@@ -65,6 +73,11 @@
 	[parserDelegateStack removeObjectAtIndex: [parserDelegateStack count] - 1];
 }
 
+- (NSSet *) transparentElements
+{
+	return transparentElements;
+}
+
 - (void) parser:(NSXMLParser *)parser
 didStartElement:(NSString *)elementName
    namespaceURI:(NSString *)namespaceURI
@@ -73,54 +86,24 @@ didStartElement:(NSString *)elementName
 {
 	//NSLog (@"begin elementName: <%@>", elementName, qName);
 
-	if ([elementName isEqualToString: @"head"]) 
-	{
-		head = YES;
-	}
-	if ([elementName isEqualToString: @"author"]) 
-	{
-		[header addAuthor: [attributeDict objectForKey: @"name"]];
-	}
-	if ([elementName isEqualToString: @"class"]) 
-	{
-		[header setClassName: [attributeDict objectForKey: @"name"]];
-		[header setSuperClassName: [attributeDict objectForKey: @"super"]];
-	}
-	if ([elementName isEqualToString: @"method"])
-	{
-		[method release];
-		method = [Method new];
-		[method setReturnType: [attributeDict objectForKey: @"type"]];
-		if ([[attributeDict objectForKey: @"factory"] isEqualToString: @"yes"]) 
-		{
-			[method setIsClassMethod: YES];
-		}
+	if ([transparentElements containsObject: elementName])
+		return;
 
-		inMethod = YES;
-	}
-	if ([elementName isEqualToString: @"arg"])
-	{
-		[argType release];
-		argType = [attributeDict objectForKey: @"type"];
-		argType = [argType stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		[argType retain];
-	}
-	if ([elementName isEqualToString: @"function"])
-	{
-		[pfunction release];
-		pfunction = [Function new];
-		[pfunction setReturnType: [attributeDict objectForKey: @"type"]];
-		[pfunction setFunctionName: [attributeDict objectForKey: @"name"]];
+	ASSIGN(currentAttributes, attributeDict);
 
-		inFunction = YES;
-	}
-	if ([elementName isEqualToString: @"macro"])
+	id parserDelegate = [self parserDelegate];
+
+	/* When we have a parser delegate registered for the new element name, 
+	   we switch this delegate, otherwise we continue with the current one. */
+	if ([self elementClassForName: elementName] != nil)
 	{
-		//    [macro release];
-		//    macro = [Macro new];
+		parserDelegate = [[self elementClassForName: elementName] new];
 	}
-	
+	[self pushParserDelegate: parserDelegate];
+
+	[[self parserDelegate] parser: self startElement: elementName withAttributes: attributeDict];
 }
+
 - (void) parser: (NSXMLParser *)parser foundCharacters:(NSString *)string 
 {
 	[content appendString: string];
@@ -134,134 +117,63 @@ didStartElement:(NSString *)elementName
 	//NSLog (@"end elementName: <%@>:<%@>", elementName, qName);
 
 	NSString* trimmed = [content stringByTrimmingCharactersInSet: 
-	[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-	if (head) 
-	{
-		if ([elementName isEqualToString: @"title"]) 
-		{ 
-			[header setTitle: trimmed];
-		}
-		if ([elementName isEqualToString: @"abstract"])
-		{
-			[header setAbstract: trimmed];
-		}
-	}
-	if ([elementName isEqualToString: @"head"])
-	{
-		head = NO;
-	}
-	if ([elementName isEqualToString: @"declared"]) 
-	{
-		[header setDeclaredIn: trimmed];
-	}
-	if ([elementName isEqualToString: @"overview"]) 
-	{
-		[header setOverview: trimmed];
-	}
-	if (inMethod)
-	{
-		if ([elementName isEqualToString: @"sel"]) 
-		{
-			[method addSelector: trimmed];
-		}
-		if ([elementName isEqualToString: @"arg"]) 
-		{
-			[method addParameter: trimmed ofType: argType];
-		}
-		if ([elementName isEqualToString: @"desc"]) 
-		{
-			[method appendToDescription: trimmed];
-		}
-	}
-	if (inFunction)
-	{
-		if ([elementName isEqualToString: @"arg"]) 
-		{
-			[pfunction addParameter: trimmed ofType: argType];
-		}
-		if ([elementName isEqualToString: @"desc"]) 
-		{
-			[pfunction appendToDescription: trimmed];
-		}    
-	}	
-	if ([elementName isEqualToString: @"function"])
-	{
-		DescriptionParser* descParser = [DescriptionParser new];
+	/* For some tags, we do nothing but we store their content in our content 
+	   accumulator. The next handled element can retrieve the accumulated 
+	   content. For example:
+	   <desc><i>A boat<i> on <j>the</j> river.</desc>
+	   if i and j are transparent elements, the parser behaves exactly as if we 
+	   parsed:
+	   <desc>A boat on the river.</desc> */
+	if ([transparentElements containsObject: elementName])
+		return;
 
-		[descParser parse: [pfunction functionRawDescription]];
+	[[self parserDelegate] parser: self endElement: elementName withContent: trimmed];
 
-		NSLog (@"parsed <%@>", [pfunction functionRawDescription]);
-
-		[pfunction addInformationFrom: descParser];
-		[descParser release];
-
-		NSLog (@"pfunction task: <%@>", [pfunction task]);
-		
-		NSMutableArray* array = [functions objectForKey: [pfunction task]];
-
-		if (array == nil)
-		{
-			array = [NSMutableArray new];
-			[functions setObject: array forKey: [pfunction task]];
-			[array release];
-		}
-		[array addObject: pfunction];
-	}
-	if ([elementName isEqualToString: @"method"]) 
-	{
-		//NSLog (@"end of method <%@>, put in task <%@>", [method signature], currentTask);
-		DescriptionParser* descParser = [DescriptionParser new];
-
-		[descParser parse: [method methodRawDescription]];
-		[method addInformationFrom: descParser];
-
-		NSLog (@"method (%@) is in task %@", [method signature], [method task]);
-
-		if ([method isClassMethod])
-		{
-			NSMutableArray* array = [classMethods objectForKey: [method task]];
-			if (array == nil)
-			{
-				array = [NSMutableArray new];
-				[classMethods setObject: array forKey: [method task]];
-				[array release];
-			}
-			[array addObject: method];
-		}
-		else
-		{
-			NSMutableArray* array = [instanceMethods objectForKey: [method task]];
-
-			if (array == nil)
-			{
-				array = [NSMutableArray new];
-				[instanceMethods setObject: array forKey: [method task]];
-				[array release];
-			}
-			[array addObject: method];
-		}
-	}
-	
-	if (![elementName isEqualToString: @"var"] 
-	 && ![elementName isEqualToString: @"code"]) 
-	{
-		[self newContent];
-	}
+	[self popParserDelegate];
+	/* Discard the content accumulated to handle the element which ends. */
+	[self newContent];
+	DESTROY(currentAttributes);
 }
 
 - (void) parser: (GSDocParser *)parser 
-   startElement: (NSString *)anElement
-  withAttributes: (NSDictionary *)theAttributes
+   startElement: (NSString *)elementName
+  withAttributes: (NSDictionary *)attributeDict
 {
-
+	/* The main parser is responsible to parse the class attributes */
+	if ([elementName isEqualToString: @"class"]) 
+	{
+		ETAssert(nil != header);
+		[header setClassName: [attributeDict objectForKey: @"name"]];
+		[header setSuperClassName: [attributeDict objectForKey: @"super"]];
+	}
 }
 
 - (void) parser: (GSDocParser *)parser
-     endElement: (NSString *)anElement
-    withContent: (NSString *)aContent
+     endElement: (NSString *)elementName
+    withContent: (NSString *)trimmed
 {
+	/* When we parse a class, we parse the declared child element too */
+	if ([elementName isEqualToString: @"declared"])
+	{
+		ETAssert(nil != header);
+		[header setDeclaredIn: trimmed];
+	}
+}
 
+- (NSDictionary *) currentAttributes
+{
+	NSParameterAssert(nil != currentAttributes);
+	return currentAttributes;
+}
+
+- (NSString *) argTypeFromArgsAttributes: (NSDictionary *)attributeDict
+{
+	NSString *argType = [attributeDict objectForKey: @"type"];
+	ETAssert(nil != argType);
+	return [argType stringByTrimmingCharactersInSet: 
+		[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 - (void) setGSDocDirectory: (NSString*) aPath
@@ -335,6 +247,47 @@ didStartElement:(NSString *)elementName
     [header setFileOverview: overviewFile];
   }
   return [header content];
+}
+
+- (void) addClassMethod: (Method *)aMethod
+{
+	NSMutableArray *array = [classMethods objectForKey: [aMethod task]];
+	if (array == nil)
+	{
+		array = [NSMutableArray new];
+		[classMethods setObject: array forKey: [aMethod task]];
+		[array release];
+	}
+	[array addObject: aMethod];
+}
+
+- (void) addInstanceMethod: (Method *)aMethod
+{
+	NSMutableArray *array = [instanceMethods objectForKey: [aMethod task]];
+	if (array == nil)
+	{
+		array = [NSMutableArray new];
+		[instanceMethods setObject: array forKey: [aMethod task]];
+		[array release];
+	}
+	[array addObject: aMethod];
+}
+
+- (void) addFunction: (Function *)aFunction
+{
+	NSMutableArray* array = [functions objectForKey: [aFunction task]];
+	if (array == nil)
+	{
+		array = [NSMutableArray new];
+		[functions setObject: array forKey: [aFunction task]];
+		[array release];
+	}
+	[array addObject: aFunction];
+}
+
+- (void) setHeader: (Header *)aHeader
+{
+	ASSIGN(header, aHeader);
 }
 
 @end

@@ -184,4 +184,45 @@
   return [methodFull content];
 }
 
+- (void) parser: (GSDocParser *)parser 
+   startElement: (NSString *)elementName
+  withAttributes: (NSDictionary *)attributeDict
+{
+	if ([elementName isEqualToString: @"function"]) /* Opening tag */
+	{
+		[self setReturnType: [attributeDict objectForKey: @"type"]];
+		[self setFunctionName: [attributeDict objectForKey: @"name"]];
+	}
+}
+
+- (void) parser: (GSDocParser *)parser
+     endElement: (NSString *)elementName
+    withContent: (NSString *)trimmed
+{
+	if ([elementName isEqualToString: @"arg"]) 
+	{
+		[self addParameter: trimmed
+		            ofType: [parser argTypeFromArgsAttributes: [parser currentAttributes]]];	
+	}
+	else if ([elementName isEqualToString: @"desc"]) 
+	{
+		[self appendToDescription: trimmed];
+	}
+	else if ([elementName isEqualToString: @"function"]) /* Closing tag */
+	{
+		DescriptionParser* descParser = [DescriptionParser new];
+
+		[descParser parse: [self functionRawDescription]];
+
+		NSLog(@"parsed <%@>", [self functionRawDescription]);
+
+		[self addInformationFrom: descParser];
+		[descParser release];
+
+		NSLog(@"Function task: <%@>", [self task]);
+		
+		[parser addFunction: self];
+	}
+}
+
 @end

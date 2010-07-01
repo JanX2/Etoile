@@ -8,10 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
+#import "GSDocParser.h"
 
 @class HtmlElement;
 
-@interface Function : NSObject 
+@interface Function : NSObject <GSDocParserDelegate>
 {
   NSString* name;
   NSMutableArray* parameters; 

@@ -122,4 +122,37 @@
   return [NSString stringWithFormat: @"%@", [header content]];
 }
 
+- (void) parser: (GSDocParser *)parser 
+   startElement: (NSString *)elementName
+  withAttributes: (NSDictionary *)attributeDict
+{
+	if ([elementName isEqualToString: @"head"]) /* Opening tag */
+	{
+		// Do nothing
+	}
+	else if ([elementName isEqualToString: @"author"]) 
+	{
+		[self addAuthor: [attributeDict objectForKey: @"name"]];
+	}
+}
+
+- (void) parser: (GSDocParser *)parser
+     endElement: (NSString *)elementName
+    withContent: (NSString *)trimmed
+{
+	if ([elementName isEqualToString: @"abstract"])
+	{
+		[self setAbstract: trimmed];
+	}
+	else if ([elementName isEqualToString: @"title"]) 
+	{ 
+		[self setTitle: trimmed];
+	}
+	else if ([elementName isEqualToString: @"head"]) /* Closing tag */
+	{
+		[parser setHeader: self];
+	}
+}
+
+
 @end

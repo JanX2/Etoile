@@ -178,4 +178,51 @@
   return [methodFull content];
 }
 
+- (void) parser: (GSDocParser *)parser 
+   startElement: (NSString *)elementName
+  withAttributes: (NSDictionary *)attributeDict
+{
+		[self setReturnType: [attributeDict objectForKey: @"type"]];
+		if ([[attributeDict objectForKey: @"factory"] isEqualToString: @"yes"]) 
+		{
+			[self setIsClassMethod: YES];
+		}
+}
+
+- (void) parser: (GSDocParser *)parser
+     endElement: (NSString *)elementName
+    withContent: (NSString *)trimmed
+{
+	if ([elementName isEqualToString: @"sel"]) 
+	{
+		[self addSelector: trimmed];
+	}
+	else if ([elementName isEqualToString: @"arg"]) 
+	{
+		[self addParameter: trimmed 
+		            ofType: [parser argTypeFromArgsAttributes: [parser currentAttributes]]];
+	}
+	else if ([elementName isEqualToString: @"desc"]) 
+	{
+		[self appendToDescription: trimmed];
+	}
+	else if ([elementName isEqualToString: @"method"]) /* Closing tag */
+	{
+		//NSLog (@"End of method <%@>, put in task <%@>", [self signature], [self task]);
+		DescriptionParser *descParser = AUTORELEASE([DescriptionParser new]);
+
+		[descParser parse: [self methodRawDescription]];
+		[self addInformationFrom: descParser];
+
+		if ([self isClassMethod])
+		{
+			[parser addClassMethod: self];
+		}
+		else
+		{
+			[parser addInstanceMethod: self];
+		}
+	}
+}
+
 @end
