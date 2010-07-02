@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class Header, Method, Function;
+@class DocHeader, DocMethod, DocFunction;
 @class GSDocParser;
 
 @protocol GSDocParserDelegate
@@ -39,7 +39,7 @@
 	NSMutableString *content;
 	NSDictionary *currentAttributes;
 	
-	Header *header;
+	DocHeader *header;
 	NSMutableDictionary *classMethods;
 	NSMutableDictionary *instanceMethods;
 	NSMutableDictionary *functions;
@@ -146,10 +146,10 @@
 - (NSString *) argTypeFromArgsAttributes: (NSDictionary *)attributeDict;
 
 // TODO: Move to DocPage class and simplify
-- (void) addClassMethod: (Method *)aMethod;
-- (void) addInstanceMethod: (Method *)aMethod;
-- (void) addFunction: (Function *)aFunction;
-- (void) setHeader: (Header *)aHeader;
+- (void) addClassMethod: (DocMethod *)aMethod;
+- (void) addInstanceMethod: (DocMethod *)aMethod;
+- (void) addFunction: (DocFunction *)aFunction;
+- (void) setHeader: (DocHeader *)aHeader;
 
 @end
 

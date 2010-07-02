@@ -6,12 +6,12 @@
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import "Function.h"
+#import "DocFunction.h"
 #import "HtmlElement.h"
 #import "DescriptionParser.h"
 #import "Parameter.h"
 
-@implementation Function
+@implementation DocFunction
 
 - (id) init
 {

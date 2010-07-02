@@ -6,11 +6,11 @@
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import "Method.h"
+#import "DocMethod.h"
 #import "HtmlElement.h"
 #import "DescriptionParser.h"
 
-@implementation Method
+@implementation DocMethod
 
 - (id) init
 {

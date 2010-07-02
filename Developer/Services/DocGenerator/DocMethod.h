@@ -11,7 +11,7 @@
 #import "GSDocParser.h"
 
 
-@interface Method : NSObject <GSDocParserDelegate>
+@interface DocMethod : NSObject <GSDocParserDelegate>
 {
   BOOL isClassMethod;
   NSMutableArray* selectors;

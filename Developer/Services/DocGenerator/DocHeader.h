@@ -11,7 +11,7 @@
 #import "GSDocParser.h"
 
 
-@interface Header : NSObject  <GSDocParserDelegate>
+@interface DocHeader : NSObject  <GSDocParserDelegate>
 {
   NSString* className;
   NSString* superClassName;

@@ -6,10 +6,10 @@
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import "Header.h"
+#import "DocHeader.h"
 #import "HtmlElement.h"
 
-@implementation Header
+@implementation DocHeader
 
 - (id) init
 {

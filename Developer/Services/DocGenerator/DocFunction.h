@@ -12,7 +12,7 @@
 
 @class HtmlElement;
 
-@interface Function : NSObject <GSDocParserDelegate>
+@interface DocFunction : NSObject <GSDocParserDelegate>
 {
   NSString* name;
   NSMutableArray* parameters; 

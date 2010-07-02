@@ -7,9 +7,9 @@
 //
 
 #import "GSDocParser.h"
-#import "Header.h";
-#import "Method.h";
-#import "Function.h";
+#import "DocHeader.h";
+#import "DocMethod.h";
+#import "DocFunction.h";
 #import "HtmlElement.h";
 #import "DescriptionParser.h";
 
@@ -23,9 +23,9 @@
 	indentSpaces = @"";
 	indentSpaceUnit = @"  ";
 	elementClasses = [[NSMutableDictionary alloc] initWithObjectsAndKeys: 
-		[Header class], @"head", 
-		[Method class], @"method", 
-		[Function class], @"function", nil];
+		[DocHeader class], @"head", 
+		[DocMethod class], @"method", 
+		[DocFunction class], @"function", nil];
 	// TODO: Handle them in a better way. Probably apply a style.
 	transparentElements = [[NSSet alloc] initWithObjects: @"var", @"code", @"em", nil];
 
@@ -235,7 +235,7 @@ didStartElement:(NSString *)elementName
     NSArray* array = [unsortedArray sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
     for (int j=0; j<[array count]; j++)
     {
-      Method* m = [array objectAtIndex: j];
+      DocMethod* m = [array objectAtIndex: j];
       [html appendString: [m content]];
     }
   }
@@ -278,7 +278,7 @@ didStartElement:(NSString *)elementName
   return [header content];
 }
 
-- (void) addClassMethod: (Method *)aMethod
+- (void) addClassMethod: (DocMethod *)aMethod
 {
 	NSMutableArray *array = [classMethods objectForKey: [aMethod task]];
 	if (array == nil)
@@ -290,7 +290,7 @@ didStartElement:(NSString *)elementName
 	[array addObject: aMethod];
 }
 
-- (void) addInstanceMethod: (Method *)aMethod
+- (void) addInstanceMethod: (DocMethod *)aMethod
 {
 	NSMutableArray *array = [instanceMethods objectForKey: [aMethod task]];
 	if (array == nil)
@@ -302,7 +302,7 @@ didStartElement:(NSString *)elementName
 	[array addObject: aMethod];
 }
 
-- (void) addFunction: (Function *)aFunction
+- (void) addFunction: (DocFunction *)aFunction
 {
 	NSMutableArray* array = [functions objectForKey: [aFunction task]];
 	if (array == nil)
@@ -314,7 +314,7 @@ didStartElement:(NSString *)elementName
 	[array addObject: aFunction];
 }
 
-- (void) setHeader: (Header *)aHeader
+- (void) setHeader: (DocHeader *)aHeader
 {
 	ASSIGN(header, aHeader);
 }
