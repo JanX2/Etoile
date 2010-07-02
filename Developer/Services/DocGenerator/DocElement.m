@@ -95,6 +95,19 @@
 			name, [self task]];
 }
 
+- (void) addInformationFrom: (DescriptionParser *)aParser
+{
+	[super addInformationFrom: aParser];
+
+	FOREACH(parameters, p, Parameter *)
+	{
+		[p setDescription: [aParser descriptionForParameter: [p name]]];
+	}    
+	//NSLog (@"Parser return description <%@>", [aParser returnDescription]);
+
+	[self setTask: [aParser task]];
+}
+
 - (NSString *) task
 {
 	return task;

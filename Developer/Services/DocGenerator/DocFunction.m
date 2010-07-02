@@ -41,19 +41,6 @@
 	}
 }
 
-- (void) addInformationFrom: (DescriptionParser *)aParser
-{
-	[super addInformationFrom: aParser];
-	
-	FOREACH(parameters, p, Parameter *)
-	{
-		[p setDescription: [aParser descriptionForParameter: [p name]]];
-	}    
-	//NSLog (@"Parser return description <%@>", [aParser returnDescription]);
-	[self setReturnDescription: [aParser returnDescription]]; 
-	[self setTask: [aParser task]];
-}
-
 - (H) richDescription
 {
 	H param_list = [DIV class: @"paramsList"];

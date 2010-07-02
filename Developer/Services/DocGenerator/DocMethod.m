@@ -9,6 +9,7 @@
 #import "DocMethod.h"
 #import "HtmlElement.h"
 #import "DescriptionParser.h"
+#import "Parameter.h"
 
 @implementation DocMethod
 
@@ -27,21 +28,15 @@
   [super dealloc];
 }
 
-- (NSString *) description
+- (NSString *) signature
 {
-	return [NSString stringWithFormat: @"%@ - %@, %@", [super description], 
-		[self signature], [self task]];
-}
+  NSMutableString *signature = [NSMutableString string];
 
-- (NSString*) signature
-{
-  NSMutableString* signature = [NSMutableString new];
-  for (int i=0; i<[selectors count]; i++)
-  {
-    NSString* selector = [selectors objectAtIndex: i];
-    [signature appendString: selector];
-  }
-  return [signature autorelease];
+	FOREACH(selectors, keyword, NSString *)
+	{
+    	[signature appendString: keyword];
+	}
+	return signature;
 }
 
 - (NSComparisonResult) caseInsensitiveCompare: (NSString *) aString
@@ -64,28 +59,9 @@
   [selectors addObject: aSelector];
 }
 
-- (void) addParameter: (NSString*) aName ofType: (NSString*) aType
-{
-  [parameters addObject: [NSDictionary dictionaryWithObjectsAndKeys: aName, @"name", aType, @"type", nil]];
-}
-
 - (void) addCategoy: (NSString*) aCategory
 {
   [categories addObject: aCategory];
-}
-
-- (void) addInformationFrom: (DescriptionParser*) aParser
-{
-  [self setFilteredDescription: [aParser description]];
-  /*
-  for (int i=0; i<[parameters count]; i++)
-  {
-    Parameter* p = [parameters objectAtIndex: i];
-    [p setDescription: [aParser descriptionForParameter: [p name]]];
-  } 
-   */
-//  [self setReturnDescription: [aParser returnDescription]]; 
-  [self setTask: [aParser task]];
 }
 
 /*
@@ -123,11 +99,11 @@
     [h_signature and: h_selector];
     if (i<[parameters count])
     {
-      NSDictionary* p = [parameters objectAtIndex: i];
+      Parameter* p = [parameters objectAtIndex: i];
       H h_parameter = [DIV class: @"parameter" with: 
-                            [NSString stringWithFormat: @"(%@) ", [p objectForKey: @"type"]] 
+                            [NSString stringWithFormat: @"(%@) ", [p type]] 
                              //and: [DIV class: @"type" with: [p objectForKey: @"type"]] and: @") "
-                             and: [DIV class: @"arg" with: [p objectForKey: @"name"]]];
+                             and: [DIV class: @"arg" with: [p name]]];
 //      H h_parameter = [DIV class: @"parameter" with: [NSString stringWithFormat: @"(%@)", [p objectForKey: @"type"]] 
 //                             and: [DIV class: @"type" with: [p objectForKey: @"type"]] and: @") "
 //                             and: [DIV class: @"arg" with: [p objectForKey: @"name"]]];
@@ -190,7 +166,11 @@
 		{
 			[parser addInstanceMethod: self];
 		}
-		ENDLOG2([self signature], [self task]);
+		/* Cache the signature as our name and allows inherited methods that use 
+		   -name to work transparently */
+		[self setName: [self signature]];
+
+		ENDLOG2([self name], [self task]);
 	}
 }
 
