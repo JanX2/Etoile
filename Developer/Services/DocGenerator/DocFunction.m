@@ -19,11 +19,6 @@
 	[super dealloc];
 }
 
-- (NSComparisonResult) caseInsensitiveCompare: (NSString *)aString
-{
-	return [aString caseInsensitiveCompare: name];
-}
-
 - (void) setReturnDescription: (NSString *)aDescription
 {
 	ASSIGN(returnDescription, aDescription);

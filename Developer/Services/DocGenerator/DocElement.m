@@ -27,6 +27,11 @@
 	[super dealloc];
 }
 
+- (NSComparisonResult) caseInsensitiveCompare: (NSString *)aString
+{
+	return [aString caseInsensitiveCompare: name];
+}
+
 - (NSString *) name
 {
 	return name;

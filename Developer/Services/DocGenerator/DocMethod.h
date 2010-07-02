@@ -14,16 +14,12 @@
 
 @interface DocMethod : DocSubroutine <GSDocParserDelegate>
 {
-  BOOL isClassMethod;
-  NSMutableArray* selectors;
-  NSMutableArray* categories;
-  NSString* description;
+	BOOL isClassMethod;
+	NSMutableArray *selectorKeywords;
+	NSString *category;
+	NSString *description;
 }
 
-- (void) setIsClassMethod: (BOOL) isTrue;
-- (void) addSelector: (NSString*) aSelector;
-- (void) addCategory: (NSString*) aCategory;
-- (BOOL) isClassMethod;
-- (NSString*) content;
+- (NSString *) content;
 
 @end

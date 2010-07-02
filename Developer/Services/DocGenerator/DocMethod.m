@@ -15,53 +15,48 @@
 
 - (id) init
 {
-  SUPERINIT;
-  selectors = [NSMutableArray new];
-  categories = [NSMutableArray new];
-  return self;
+	SUPERINIT;
+	selectorKeywords = [NSMutableArray new];
+	ASSIGN(category, @"");
+	return self;
 }
 
 - (void) dealloc
 {
-  [selectors release];
-  [categories release];
-  [super dealloc];
+	[selectorKeywords release];
+	DESTROY(category);
+	[super dealloc];
 }
 
 - (NSString *) signature
 {
-  NSMutableString *signature = [NSMutableString string];
-
-	FOREACH(selectors, keyword, NSString *)
+	NSMutableString *signature = [NSMutableString string];
+	
+	FOREACH(selectorKeywords, keyword, NSString *)
 	{
     	[signature appendString: keyword];
 	}
 	return signature;
 }
 
-- (NSComparisonResult) caseInsensitiveCompare: (NSString *) aString
+- (void) setIsClassMethod: (BOOL)isTrue
 {
-  return [aString caseInsensitiveCompare: [self signature]];
-}
-
-- (void) setIsClassMethod: (BOOL) isTrue
-{
-  isClassMethod = isTrue;
+	isClassMethod = isTrue;
 }
 
 - (BOOL) isClassMethod
 {
-  return isClassMethod;
+	return isClassMethod;
 }
 
-- (void) addSelector: (NSString*) aSelector
+- (void) appendSelectorKeyword: (NSString *)aSelector
 {
-  [selectors addObject: aSelector];
+	[selectorKeywords addObject: aSelector];
 }
 
-- (void) addCategoy: (NSString*) aCategory
+- (void) setCategory: (NSString *)aCategory
 {
-  [categories addObject: aCategory];
+	ASSIGN(category, aCategory);
 }
 
 /*
@@ -93,9 +88,9 @@
   
   [h_signature and: h_returnType];
   
-  for (int i=0; i<[selectors count]; i++)
+  for (int i=0; i<[selectorKeywords count]; i++)
   {
-    H h_selector = [DIV class: @"selector" with: [selectors objectAtIndex: i]];
+    H h_selector = [DIV class: @"selector" with: [selectorKeywords objectAtIndex: i]];
     [h_signature and: h_selector];
     if (i<[parameters count])
     {
@@ -139,7 +134,7 @@
 {
 	if ([elementName isEqualToString: @"sel"]) 
 	{
-		[self addSelector: trimmed];
+		[self appendSelectorKeyword: trimmed];
 	}
 	else if ([elementName isEqualToString: @"arg"]) 
 	{

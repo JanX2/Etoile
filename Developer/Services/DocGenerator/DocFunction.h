@@ -19,8 +19,6 @@
 }
 
 - (NSString *) content;
-- (void) setDescription: (NSString *)aDescription forParameter: (NSString *)aName;
-- (void) setReturnDescription: (NSString *)aDescription;
 - (HtmlElement *) richDescription;
 
 @end
