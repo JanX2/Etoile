@@ -14,23 +14,16 @@
 
 - (id) init
 {
-  self = [super init];
+  SUPERINIT;
   selectors = [NSMutableArray new];
-  parameters = [NSMutableArray new];
   categories = [NSMutableArray new];
-  rawDescription = [NSMutableString new];
-  task = [[NSString alloc] initWithString: @"Default"];
   return self;
 }
 
 - (void) dealloc
 {
   [selectors release];
-  [parameters release];
   [categories release];
-  [rawDescription release];
-  [filteredDescription release];
-  [task release];
   [super dealloc];
 }
 
@@ -56,13 +49,6 @@
   return [aString caseInsensitiveCompare: [self signature]];
 }
 
-- (void) setReturnType: (NSString*) aReturnType
-{
-  [aReturnType retain];
-  [returnType release];
-  returnType = aReturnType;
-}
-
 - (void) setIsClassMethod: (BOOL) isTrue
 {
   isClassMethod = isTrue;
@@ -86,35 +72,6 @@
 - (void) addCategoy: (NSString*) aCategory
 {
   [categories addObject: aCategory];
-}
-
-- (void) appendToDescription: (NSString*) aDescription
-{
-  [rawDescription appendString: aDescription];
-}
-
-- (NSString*) methodRawDescription
-{
-  return rawDescription;
-}
-
-- (void) setFilteredDescription: (NSString*) aDescription
-{
-  [aDescription retain];
-  [filteredDescription release];
-  filteredDescription = aDescription;
-}
-
-- (NSString*) task
-{
-  return task;
-}
-
-- (void) setTask: (NSString*) aTask
-{
-  [aTask retain];
-  [task release];
-  task = aTask;
 }
 
 - (void) addInformationFrom: (DescriptionParser*) aParser
@@ -215,14 +172,14 @@
 	}
 	else if ([elementName isEqualToString: @"desc"]) 
 	{
-		[self appendToDescription: trimmed];
+		[self appendToRawDescription: trimmed];
 		CONTENTLOG();
 	}
 	else if ([elementName isEqualToString: @"method"]) /* Closing tag */
 	{
 		DescriptionParser *descParser = AUTORELEASE([DescriptionParser new]);
 
-		[descParser parse: [self methodRawDescription]];
+		[descParser parse: [self rawDescription]];
 		[self addInformationFrom: descParser];
 
 		if ([self isClassMethod])

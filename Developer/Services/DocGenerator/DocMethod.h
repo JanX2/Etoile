@@ -9,33 +9,21 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "GSDocParser.h"
+#import "DocElement.h"
 
 
-@interface DocMethod : NSObject <GSDocParserDelegate>
+@interface DocMethod : DocSubroutine <GSDocParserDelegate>
 {
   BOOL isClassMethod;
   NSMutableArray* selectors;
-  NSMutableArray* parameters;
-  NSString* returnType;
   NSMutableArray* categories;
   NSString* description;
-  
-  NSString* rawDescription;
-  NSString* filteredDescription;
-  NSString* task;
 }
 
-- (void) setReturnType: (NSString*) aReturnType;
 - (void) setIsClassMethod: (BOOL) isTrue;
 - (void) addSelector: (NSString*) aSelector;
-- (void) addParameter: (NSString*) aName ofType: (NSString*) aType;
 - (void) addCategory: (NSString*) aCategory;
-- (void) appendToDescription: (NSString*) aDescription;
-- (NSString*) methodRawDescription;
-- (void) setFilteredDescription: (NSString*) aDescription;
 - (BOOL) isClassMethod;
 - (NSString*) content;
-- (NSString*) task;
-- (void) setTask: (NSString*) aTask;
 
 @end
