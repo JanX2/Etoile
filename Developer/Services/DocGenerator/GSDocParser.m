@@ -236,7 +236,7 @@ didStartElement:(NSString *)elementName
     for (int j=0; j<[array count]; j++)
     {
       DocMethod* m = [array objectAtIndex: j];
-      [html appendString: [m content]];
+      [html appendString: [[m HTMLDescription] content]];
     }
   }
 }
@@ -275,7 +275,7 @@ didStartElement:(NSString *)elementName
   {
     [header setFileOverview: overviewFile];
   }
-  return [header content];
+  return [[header HTMLDescription] content];
 }
 
 - (void) addClassMethod: (DocMethod *)aMethod

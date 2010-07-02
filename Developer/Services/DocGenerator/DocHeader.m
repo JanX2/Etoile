@@ -90,7 +90,7 @@
   title = aTitle;
 }
 
-- (NSString*) content
+- (HtmlElement *) HTMLDescription
 {
   H h_title = [DIV id: @"classname"];
   if (title)
@@ -125,7 +125,7 @@
   }
   H header = [DIV id: @"header" with: h_title and: meta];
   if (setOverview) [header and: h_overview];
-  return [NSString stringWithFormat: @"%@", [header content]];
+  return header;
 }
 
 - (void) parser: (GSDocParser *)parser 

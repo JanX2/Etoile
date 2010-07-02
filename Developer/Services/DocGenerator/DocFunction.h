@@ -18,7 +18,6 @@
 	NSString *returnDescription; 
 }
 
-- (NSString *) content;
 - (HtmlElement *) richDescription;
 
 @end

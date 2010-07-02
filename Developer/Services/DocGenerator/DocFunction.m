@@ -66,7 +66,7 @@
 	return param_list;
 }
 
-- (NSString *) content
+- (HtmlElement *) HTMLDescription
 {
 	H h_signature = [DIV class: @"methodSignature"];
 	H h_returnType = [DIV class: @"returnType" with: [DIV class: @"type" with: returnType]];
@@ -95,7 +95,7 @@
 	H methodFull = [DIV class: @"method" with: 
 	                 [DL with: [DT with: h_signature]
 	                      and: [DD with: [DIV class: @"methodDescription" with: [self richDescription]]]]];
-	return [methodFull content];
+	return methodFull;
 }
 
 - (void) parser: (GSDocParser *)parser 

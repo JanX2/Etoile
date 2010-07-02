@@ -20,6 +20,4 @@
 	NSString *description;
 }
 
-- (NSString *) content;
-
 @end

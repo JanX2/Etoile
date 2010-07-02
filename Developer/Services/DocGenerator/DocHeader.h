@@ -10,6 +10,7 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "GSDocParser.h"
 
+@class HtmlElement;
 
 @interface DocHeader : NSObject  <GSDocParserDelegate>
 {
@@ -32,6 +33,6 @@
 - (void) addAuthor: (NSString*) aName;
 - (void) setTitle: (NSString*) aTitle;
 
-- (NSString*) content;
+- (HtmlElement *) HTMLDescription;
 
 @end

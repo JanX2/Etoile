@@ -27,7 +27,7 @@
 - (NSString *) filteredDescription;
 - (void) addInformationFrom: (DescriptionParser *)aParser;
 
-- (HtmlElement *) htmlDescription;
+- (HtmlElement *) HTMLDescription;
 
 @end
 

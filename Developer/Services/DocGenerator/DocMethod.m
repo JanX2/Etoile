@@ -70,7 +70,7 @@
  </dd>
  </dl>
 */ 
-- (NSString*) content
+- (HtmlElement *) HTMLDescription
 {
   H h_signature = [DIV class: @"methodSignature"];
   
@@ -109,7 +109,7 @@
   H methodFull = [DIV class: @"method" with: 
                   [DL with: [DT with: h_signature]
                        and: [DD with: [DIV class: @"methodDescription" with: filteredDescription]]]];
-  return [methodFull content];
+  return methodFull;
 }
 
 - (void) parser: (GSDocParser *)parser 
