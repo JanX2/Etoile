@@ -9,22 +9,24 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class HtmlElement;
-@class DescriptionParser;
+@class HtmlElement, DescriptionParser;
 
 @interface GSDocBlock : NSObject 
 {
-  NSString* name;
-  NSMutableString* rawDescription;
-  NSString* filteredDescription;
+	NSString *name;
+	NSMutableString *rawDescription;
+	NSString *filteredDescription;
 }
 
-- (void) setName: (NSString*) aName;
-- (void) appendToRawDescription: (NSString*) aDescription;
-- (NSString*) rawDescription;
-- (HtmlElement*) htmlDescription;
-- (void) addInformationFrom: (DescriptionParser*) aParser;
-- (void) setFilteredDescription: (NSString*) aDescription;
-- (NSString*) filteredDescription;
+- (NSString *) name;
+- (void) setName: (NSString *)aName;
+
+- (void) appendToRawDescription: (NSString *)aDescription;
+- (NSString *) rawDescription;
+- (void) setFilteredDescription: (NSString *)aDescription;
+- (NSString *) filteredDescription;
+- (void) addInformationFrom: (DescriptionParser *)aParser;
+
+- (HtmlElement *) htmlDescription;
 
 @end

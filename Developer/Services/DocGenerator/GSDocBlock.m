@@ -14,54 +14,57 @@
 
 - (id) init
 {
-  self = [super init];
-  rawDescription = [NSMutableString new];
-  return self;
+	SUPERINIT;
+	rawDescription = [NSMutableString new];
+	return self;
 }
 
 - (void) dealloc
 {
-  [rawDescription release];
-  [name release];
-  [super dealloc];
+	[rawDescription release];
+	[filteredDescription release];
+	[name release];
+	[super dealloc];
 }
 
-- (void) setName: (NSString*) aName
+- (NSString *) name
 {
-  [aName retain];
-  [name release];
-  name = aName;
+	return name;
 }
 
-- (void) appendToRawDescription: (NSString*) aDescription
+- (void) setName: (NSString *)aName
 {
-  [rawDescription appendString: aDescription];
+	ASSIGN(name, aName);
 }
 
-- (NSString*) rawDescription
+- (void) appendToRawDescription: (NSString *)aDescription
 {
-  return rawDescription;
+	[rawDescription appendString: aDescription];
 }
 
-- (HtmlElement*) htmlDescription
+- (NSString *) rawDescription
 {
-  return [[HtmlElement new] autorelease];
+	return rawDescription;
 }
 
-- (NSString*) filteredDescription
+- (NSString *) filteredDescription
 {
-  return filteredDescription;
+	return filteredDescription;
 }
 
-- (void) setFilteredDescription: (NSString*) aDescription
+- (void) setFilteredDescription: (NSString *)aDescription
 {
-  [aDescription retain];
-  [filteredDescription release];
-  filteredDescription = aDescription;
+	ASSIGN(filteredDescription, aDescription);
 }
 
-- (void) addInformationFrom: (DescriptionParser*) aParser
+- (void) addInformationFrom: (DescriptionParser *)aParser
 {
-  [self setFilteredDescription: [aParser description]];
-}  
+	[self setFilteredDescription: [aParser description]];
+}
+
+- (HtmlElement *) htmlDescription
+{
+	return [[HtmlElement new] autorelease];
+}
+
 @end
