@@ -32,6 +32,8 @@
 @interface GSDocParser : NSObject <GSDocParserDelegate>
 {
 	NSMutableArray *parserDelegateStack;
+	NSString *indentSpaces;
+	NSString *indentSpaceUnit;
 	NSMutableDictionary *elementClasses;
 	NSSet *transparentElements;
 	NSMutableString *content;
@@ -106,6 +108,7 @@
 - (id <GSDocParserDelegate>) parserDelegate;
 - (void) pushParserDelegate: (id <GSDocParserDelegate>)aDelegate;
 - (void) popParserDelegate;
+- (NSString *) indentSpaces;
 - (NSSet *) transparentElements;
 
 /**
@@ -149,3 +152,15 @@
 - (void) setHeader: (Header *)aHeader;
 
 @end
+
+
+#define BEGINLOG() \
+	NSLog(@"%@BEGIN <%@>", [parser indentSpaces], elementName);
+#define CONTENTLOG() \
+	NSLog(@"%@%@", [parser indentSpaces], trimmed);
+#define ENDLOG() \
+	NSLog(@"%@END   <%@> %@\n\n", [parser indentSpaces]);
+#define ENDLOG2(a, b) \
+	NSLog(@"%@END   <%@> %@\n\n", [parser indentSpaces], elementName, [NSString stringWithFormat: @"%@, %@", a, b]);
+#define ENDLOG3(a, b, c) \
+	NSLog(@"%@END   <%@> %@\n\n", [parser indentSpaces], elementName, [NSString stringWithFormat: @"%@, %@, %@", a, b, c]);

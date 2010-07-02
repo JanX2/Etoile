@@ -24,12 +24,12 @@
 
 @end
 
-@interface Grololo : Nouvelle
+@interface lala : Nouvelle
 {
   /** a name */
   NSString* name;
 }
-- (void) rololo;
+- (void) lili;
 @end
 
 /**

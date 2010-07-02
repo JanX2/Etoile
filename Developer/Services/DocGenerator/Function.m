@@ -35,9 +35,10 @@
   [super dealloc];
 }
 
-- (NSString*) name
+- (NSString *) description
 {
-  return name;
+	return [NSString stringWithFormat: @"%@ - %@, %@", [super description], 
+		name, [self task]];
 }
 
 - (NSComparisonResult) caseInsensitiveCompare: (NSString *) aString
@@ -105,7 +106,7 @@
     Parameter* p = [parameters objectAtIndex: i];
     [p setDescription: [aParser descriptionForParameter: [p name]]];
   }    
-  NSLog (@"Parser return description <%@>", [aParser returnDescription]);
+  //NSLog (@"Parser return description <%@>", [aParser returnDescription]);
   [self setReturnDescription: [aParser returnDescription]]; 
   [self setTask: [aParser task]];
 }
@@ -190,6 +191,7 @@
 {
 	if ([elementName isEqualToString: @"function"]) /* Opening tag */
 	{
+		BEGINLOG();
 		[self setReturnType: [attributeDict objectForKey: @"type"]];
 		[self setFunctionName: [attributeDict objectForKey: @"name"]];
 	}
@@ -207,6 +209,7 @@
 	else if ([elementName isEqualToString: @"desc"]) 
 	{
 		[self appendToDescription: trimmed];
+		CONTENTLOG();
 	}
 	else if ([elementName isEqualToString: @"function"]) /* Closing tag */
 	{
@@ -214,14 +217,14 @@
 
 		[descParser parse: [self functionRawDescription]];
 
-		NSLog(@"parsed <%@>", [self functionRawDescription]);
+		//NSLog(@"Function raw description <%@>", [self functionRawDescription]);
 
 		[self addInformationFrom: descParser];
 		[descParser release];
-
-		NSLog(@"Function task: <%@>", [self task]);
 		
 		[parser addFunction: self];
+
+		ENDLOG2(name, [self task]);
 	}
 }
 

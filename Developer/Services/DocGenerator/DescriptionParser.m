@@ -91,7 +91,7 @@
       [params setObject: current forKey: word];
       [current release];
       param = paramNameSet = NO;
-      NSLog (@"PARAM NAME");
+      //NSLog (@"PARAM NAME");
     } 
     else
     {

@@ -34,6 +34,12 @@
   [super dealloc];
 }
 
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@ - %@, %@", [super description], 
+		[self signature], [self task]];
+}
+
 - (NSString*) signature
 {
   NSMutableString* signature = [NSMutableString new];
@@ -182,11 +188,16 @@
    startElement: (NSString *)elementName
   withAttributes: (NSDictionary *)attributeDict
 {
+	if ([elementName isEqualToString: @"method"]) /* Opening tag */
+	{
+		BEGINLOG();
+
 		[self setReturnType: [attributeDict objectForKey: @"type"]];
 		if ([[attributeDict objectForKey: @"factory"] isEqualToString: @"yes"]) 
 		{
 			[self setIsClassMethod: YES];
 		}
+	}
 }
 
 - (void) parser: (GSDocParser *)parser
@@ -205,10 +216,10 @@
 	else if ([elementName isEqualToString: @"desc"]) 
 	{
 		[self appendToDescription: trimmed];
+		CONTENTLOG();
 	}
 	else if ([elementName isEqualToString: @"method"]) /* Closing tag */
 	{
-		//NSLog (@"End of method <%@>, put in task <%@>", [self signature], [self task]);
 		DescriptionParser *descParser = AUTORELEASE([DescriptionParser new]);
 
 		[descParser parse: [self methodRawDescription]];
@@ -222,6 +233,7 @@
 		{
 			[parser addInstanceMethod: self];
 		}
+		ENDLOG2([self signature], [self task]);
 	}
 }
 

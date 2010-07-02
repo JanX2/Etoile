@@ -20,6 +20,8 @@
 	SUPERINIT;
 
 	parserDelegateStack = [[NSMutableArray alloc] initWithObjects: self, nil];
+	indentSpaces = @"";
+	indentSpaceUnit = @"  ";
 	elementClasses = [[NSMutableDictionary alloc] initWithObjectsAndKeys: 
 		[Header class], @"head", 
 		[Method class], @"method", 
@@ -63,14 +65,41 @@
 	return [parserDelegateStack lastObject];
 }
 
+- (void) increaseIndentSpaces
+{
+	ASSIGN(indentSpaces, [indentSpaces stringByAppendingString: indentSpaceUnit]);
+}
+
+- (void) decreaseIndentSpaces
+{
+	NSUInteger i = [indentSpaces length] - [indentSpaceUnit length];
+	ETAssert(i >= 0);
+	ASSIGN(indentSpaces, [indentSpaces substringToIndex: i]);
+}
+
 - (void) pushParserDelegate: (id <GSDocParserDelegate>)aDelegate
 {
+	if ([parserDelegateStack lastObject] != aDelegate)
+	{
+		[self increaseIndentSpaces];
+	}
 	[parserDelegateStack addObject: aDelegate];
 }
 
 - (void) popParserDelegate
 {
+	id objectBeforeLast = [parserDelegateStack objectAtIndex: [parserDelegateStack count] - 2];
+
+	if ([parserDelegateStack lastObject] != objectBeforeLast)
+	{
+		[self decreaseIndentSpaces];
+	}
 	[parserDelegateStack removeObjectAtIndex: [parserDelegateStack count] - 1];
+}
+
+- (NSString *) indentSpaces
+{
+	return indentSpaces;
 }
 
 - (NSSet *) transparentElements
@@ -101,6 +130,7 @@ didStartElement:(NSString *)elementName
 	}
 	[self pushParserDelegate: parserDelegate];
 
+	//NSLog(@"%@Begin <%@>, parser %@", indentSpaces, elementName, [[self parserDelegate] primitiveDescription]);
 	[[self parserDelegate] parser: self startElement: elementName withAttributes: attributeDict];
 }
 
@@ -114,8 +144,6 @@ didStartElement:(NSString *)elementName
    namespaceURI: (NSString *)namespaceURI
   qualifiedName: (NSString *)qName
 {
-	//NSLog (@"end elementName: <%@>:<%@>", elementName, qName);
-
 	NSString* trimmed = [content stringByTrimmingCharactersInSet: 
 		[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
@@ -130,6 +158,7 @@ didStartElement:(NSString *)elementName
 		return;
 
 	[[self parserDelegate] parser: self endElement: elementName withContent: trimmed];
+	//NSLog(@"%@ End <%@> --> %@", indentSpaces, elementName);
 
 	[self popParserDelegate];
 	/* Discard the content accumulated to handle the element which ends. */

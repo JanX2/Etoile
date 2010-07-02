@@ -36,6 +36,12 @@
   declared = aFile;
 }
 
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@ - %@, %@", [super description], 
+	title, className];
+}
+
 - (void) setClassName: (NSString*) aName
 {
   [aName retain];
@@ -128,7 +134,7 @@
 {
 	if ([elementName isEqualToString: @"head"]) /* Opening tag */
 	{
-		// Do nothing
+		BEGINLOG();
 	}
 	else if ([elementName isEqualToString: @"author"]) 
 	{
@@ -143,6 +149,7 @@
 	if ([elementName isEqualToString: @"abstract"])
 	{
 		[self setAbstract: trimmed];
+		CONTENTLOG();
 	}
 	else if ([elementName isEqualToString: @"title"]) 
 	{ 
@@ -151,6 +158,8 @@
 	else if ([elementName isEqualToString: @"head"]) /* Closing tag */
 	{
 		[parser setHeader: self];
+
+		ENDLOG2(title, className);
 	}
 }
 

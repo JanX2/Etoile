@@ -28,7 +28,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 603647AB0E409244003377E0 /* EtoileFoundation */;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
 			remoteInfo = EtoileFoundation;
 		};
 		60B289F511DA0C2400FC8C20 /* PBXContainerItemProxy */ = {
