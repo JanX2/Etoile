@@ -69,19 +69,20 @@
 - (HtmlElement *) HTMLDescription
 {
 	H h_signature = [DIV class: @"methodSignature"];
-	H h_returnType = [DIV class: @"returnType" with: [DIV class: @"type" with: returnType]];
+	H h_returnType = [DIV class: @"returnType" 
+	                       with: [DIV class: @"type" with: returnType]];
 	
 	[h_signature and: h_returnType];
-	
 	[h_signature and: [DIV class: @"selector" with: name]];
 	[h_signature with: @"("];
 
 	BOOL isFirst = YES;
 	FOREACH(parameters, p, Parameter *)
 	{
-		H h_parameter = [DIV class: @"parameter" with: 
-		                [DIV class: @"type" with: [p type]] 
-		                       and: @" " and: [DIV class: @"arg" with: [p name]]];
+		H h_parameter = [DIV class: @"parameter" 
+		                      with: [DIV class: @"type" with: [p type]] 
+		                       and: @" "
+		                       and: [DIV class: @"arg" with: [p name]]];
 		if (NO == isFirst)
 		{
 			[h_signature and: @","];
@@ -92,9 +93,10 @@
 	}
 	[h_signature with: @")"];
 	
-	H methodFull = [DIV class: @"method" with: 
-	                 [DL with: [DT with: h_signature]
-	                      and: [DD with: [DIV class: @"methodDescription" with: [self richDescription]]]]];
+	H methodFull = [DIV class: @"method" 
+	                     with: [DL with: [DT with: h_signature]
+                                    and: [DD with: [DIV class: @"methodDescription" 
+	                                                     with: [self richDescription]]]]];
 	return methodFull;
 }
 
