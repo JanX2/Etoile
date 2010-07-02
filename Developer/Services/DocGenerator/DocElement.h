@@ -30,3 +30,19 @@
 - (HtmlElement *) htmlDescription;
 
 @end
+
+
+@interface DocSubroutine : DocElement
+{
+	NSMutableArray *parameters;
+	NSString *returnType;
+	NSString *task;
+}
+
+- (NSString *) task;
+- (void) setTask: (NSString *)aTask;
+- (void) setReturnType: (NSString *)aReturnType;
+- (void) addParameter: (NSString *)aName ofType: (NSString* )aType;
+
+@end
+

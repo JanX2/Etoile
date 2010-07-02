@@ -8,7 +8,7 @@
 
 #import "DocElement.h"
 #import "HtmlElement.h"
-
+#import "Parameter.h"
 
 @implementation DocElement
 
@@ -68,3 +68,53 @@
 }
 
 @end
+
+
+@implementation DocSubroutine
+
+- (id) init
+{
+	SUPERINIT;
+	parameters = [NSMutableArray new];
+	task = [[NSString alloc] initWithString: @"Default"];
+	return self;
+}
+
+- (void) dealloc
+{
+	[parameters release];
+	[task release];
+	[task release];
+	[returnType release];
+	[super dealloc];
+}
+
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@ - %@, %@", [super description], 
+			name, [self task]];
+}
+
+- (NSString *) task
+{
+	return task;
+}
+
+- (void) setTask: (NSString *)aTask
+{
+	ASSIGN(task, aTask);
+}
+
+- (void) setReturnType: (NSString *) aReturnType
+{
+	ASSIGN(returnType, aReturnType);
+}
+
+- (void) addParameter: (NSString *)aName ofType: (NSString *)aType
+{
+	//  [parameters addObject: [NSDictionary dictionaryWithObjectsAndKeys: aName, @"name", aType, @"type", nil]];
+	[parameters addObject: [Parameter newWithName: aName andType: aType]];
+}
+
+@end
+

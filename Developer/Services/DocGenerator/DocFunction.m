@@ -13,28 +13,10 @@
 
 @implementation DocFunction
 
-- (id) init
-{
-	SUPERINIT;
-	parameters = [NSMutableArray new];
-	task = [[NSString alloc] initWithString: @"Default"];
-	return self;
-}
-
 - (void) dealloc
 {
-	[parameters release];
-	[task release];
 	[returnDescription release];
-	[task release];
-	[returnType release];
 	[super dealloc];
-}
-
-- (NSString *) description
-{
-	return [NSString stringWithFormat: @"%@ - %@, %@", [super description], 
-			name, [self task]];
 }
 
 - (NSComparisonResult) caseInsensitiveCompare: (NSString *)aString
@@ -42,30 +24,9 @@
 	return [aString caseInsensitiveCompare: name];
 }
 
-- (NSString *) task
-{
-	return task;
-}
-
-- (void) setTask: (NSString *)aTask
-{
-	ASSIGN(task, aTask);
-}
-
-- (void) setReturnType: (NSString *) aReturnType
-{
-	ASSIGN(returnType, aReturnType);
-}
-
 - (void) setReturnDescription: (NSString *)aDescription
 {
 	ASSIGN(returnDescription, aDescription);
-}
-
-- (void) addParameter: (NSString *)aName ofType: (NSString *)aType
-{
-	//  [parameters addObject: [NSDictionary dictionaryWithObjectsAndKeys: aName, @"name", aType, @"type", nil]];
-	[parameters addObject: [Parameter newWithName: aName andType: aType]];
 }
 
 - (void) setDescription: (NSString *)aDescription forParameter: (NSString *)aName
