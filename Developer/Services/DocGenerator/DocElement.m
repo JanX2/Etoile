@@ -6,11 +6,11 @@
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import "GSDocBlock.h"
+#import "DocElement.h"
 #import "HtmlElement.h"
 
 
-@implementation GSDocBlock
+@implementation DocElement
 
 - (id) init
 {

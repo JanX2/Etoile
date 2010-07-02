@@ -11,7 +11,7 @@
 
 @class HtmlElement, DescriptionParser;
 
-@interface GSDocBlock : NSObject 
+@interface DocElement : NSObject 
 {
 	NSString *name;
 	NSMutableString *rawDescription;
