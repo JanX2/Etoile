@@ -17,7 +17,6 @@
 {
   self = [super init];
   parameters = [NSMutableArray new];
-  rawDescription = [NSMutableString new];
   task = [[NSString alloc] initWithString: @"Default"];
   return self;
 }
@@ -25,11 +24,8 @@
 - (void) dealloc
 {
   [parameters release];
-  [rawDescription release];
-  [name release];
   [task release];
   [returnDescription release];
-  [filteredDescription release];
   [task release];
   [returnType release];
   [super dealloc];
@@ -65,13 +61,6 @@
   returnType = aReturnType;
 }
 
-- (void) setFunctionName: (NSString*) aName
-{
-  [aName retain];
-  [name release];
-  name = aName;
-}
-
 - (void) setReturnDescription: (NSString*) aDescription
 {
   [aDescription retain];
@@ -100,7 +89,8 @@
 
 - (void) addInformationFrom: (DescriptionParser*) aParser
 {
-  [self setFilteredDescription: [aParser description]];
+  [super addInformationFrom: aParser];
+
   for (int i=0; i<[parameters count]; i++)
   {
     Parameter* p = [parameters objectAtIndex: i];
@@ -109,23 +99,6 @@
   //NSLog (@"Parser return description <%@>", [aParser returnDescription]);
   [self setReturnDescription: [aParser returnDescription]]; 
   [self setTask: [aParser task]];
-}
-
-- (void) appendToDescription: (NSString*) aDescription
-{
-  [rawDescription appendString: aDescription];
-}
-
-- (void) setFilteredDescription: (NSString*) aDescription
-{
-  [aDescription retain];
-  [filteredDescription release];
-  filteredDescription = aDescription;
-}
-
-- (NSString*) functionRawDescription
-{
-  return rawDescription;
 }
 
 - (H) richDescription
@@ -193,7 +166,7 @@
 	{
 		BEGINLOG();
 		[self setReturnType: [attributeDict objectForKey: @"type"]];
-		[self setFunctionName: [attributeDict objectForKey: @"name"]];
+		[self setName: [attributeDict objectForKey: @"name"]];
 	}
 }
 
@@ -208,16 +181,16 @@
 	}
 	else if ([elementName isEqualToString: @"desc"]) 
 	{
-		[self appendToDescription: trimmed];
+		[self appendToRawDescription: trimmed];
 		CONTENTLOG();
 	}
 	else if ([elementName isEqualToString: @"function"]) /* Closing tag */
 	{
 		DescriptionParser* descParser = [DescriptionParser new];
 
-		[descParser parse: [self functionRawDescription]];
+		[descParser parse: [self rawDescription]];
 
-		//NSLog(@"Function raw description <%@>", [self functionRawDescription]);
+		//NSLog(@"Function raw description <%@>", [self rawDescription]);
 
 		[self addInformationFrom: descParser];
 		[descParser release];
