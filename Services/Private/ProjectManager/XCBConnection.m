@@ -339,7 +339,7 @@ XCBConnection *XCBConn;
 			NSDebugLLog(@"XCBConnection",@"Got reply for %d", sequenceNumber);
 			if (error) 
 			{
-				NSDebugLLog(@"XCBConnection",@"ERROR for request seq %d: %d (response type %d)",
+				NSLog(@"XCBConnection: ERROR for request seq %d: %d (response type %d)",
 				error->sequence,
 				error->error_code,
 				error->response_type);
@@ -471,12 +471,25 @@ XCBConnection *XCBConn;
 }
 - (void)grab
 {
-	xcb_grab_server(connection);
+	xcb_void_cookie_t c = xcb_grab_server_checked(connection);
+	xcb_generic_error_t *e = xcb_request_check(connection, c);
+	if (e) 
+	{
+		NSLog(@"Error grabbing server");
+		free(e);
+	}
 }
 
 - (void)ungrab
 {
-	xcb_ungrab_server(connection);
+	
+	xcb_void_cookie_t c = xcb_ungrab_server_checked(connection);
+	xcb_generic_error_t *e = xcb_request_check(connection, c);
+	if (e) 
+	{
+		NSLog(@"Error un-grabbing server");
+		free(e);
+	}
 }
 - (xcb_connection_t*) connection
 {
@@ -487,6 +500,7 @@ XCBConnection *XCBConn;
 	xcb_disconnect(connection);
 	[handle release];
 	[replyHandlers release];
+	[screens release];
 	[super dealloc];
 }
 - (void)setNeedsFlush: (BOOL)shouldFlush

@@ -94,6 +94,7 @@
 	self->screens = [NSMutableDictionary new];
 
 	[XCBConn grab];
+	xcb_flush([XCBConn connection]);
 	uint32_t screen_id = 0;
 	FOREACH([XCBConn screens], screen, XCBScreen*)
 	{
@@ -160,7 +161,7 @@
 	{
 		[self newWindow: subject pendingEvent: nil];
 	}
-	else
+	else if (![decorationWindows containsObject: subject])
 		// Make ourselves the delegate so we get the *Request events
 		[subject setDelegate: self];
 }
@@ -232,7 +233,7 @@
 	{
 		PMScreen *screen = [self findScreenWithRootWindow: [damagedWindow parent]];
 		if (nil == screen)
-			NSDebugLLog(@"PMConnectionDelegate", @"-[PMConnectionDelegate damageNotify:] ERROR screen not found.");
+			NSDebugLLog(@"PMConnectionDelegate", @"-[PMConnectionDelegate damageNotify:] ERROR screen not found for parent of %@.", damagedWindow);
 		// FIXME: Find out why we don't deal with the area that was damaged
 		// I'm thinking the XServer knows automatically, but I cannot understand
 		// the spec (carmstrong)
@@ -240,7 +241,7 @@
 		[screen appendDamage: partsRegion];
 	}
 	else
-		NSDebugLLog(@"PMConnectionDelegate", @"-[PMConnectionDelegate damageNotify:] ERROR compositewindow for XCBWindow %@ not found.", damagedWindow);
+		NSLog(@"-[PMConnectionDelegate damageNotify:] ERROR compositewindow for XCBWindow %@ not found.", damagedWindow);
 }
 
 - (void)handleNewCompositedWindow: (XCBWindow*)window

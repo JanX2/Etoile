@@ -78,9 +78,9 @@
 {
 	self->screen = scr;
 }
-- (XCBWindow*) window { return window; }
+- (XCBWindow*)window { return window; }
 
-- (void) determineMode
+- (void)determineMode
 {
 	if (alphaPicture)
 		DESTROY(alphaPicture);

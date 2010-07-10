@@ -49,6 +49,41 @@ extern NSString* ICCCMWMTakeFocus;
 extern NSString* ICCCMWMSaveYourself;
 extern NSString* ICCCMWMDeleteWindow;
 
+typedef enum _ICCCMWindowState
+{
+	ICCCMWithdrawnWindowState = 0,
+	ICCCMNormalWindowState = 1,
+	ICCCMIconicWindowState = 3
+} ICCCMWindowState;
+
+typedef enum _ICCCMGravity
+{
+	ICCCMNorthWestGravity = 1,
+	ICCCMNorthGravity = 2,
+	ICCCMNorthEastGravity = 3,
+	ICCCMWestGravity = 4,
+	ICCCMCenterGravity = 5,
+	ICCCMEastGravity = 6,
+	ICCCMSouthWestGravity = 7,
+	ICCCMSouthGravity = 8,
+	ICCCMSouthEastGravity = 9,
+	ICCCMStaticGravity = 10
+} ICCCMWindowGravity;
+
+enum _ICCCMWMSizeHintsFlags
+{
+	ICCCMUSPosition = 1,
+	ICCCMUSSize = 2,
+	ICCCMPPosition = 4,
+	ICCCMPSize = 8,
+	ICCCMPMinSize = 16,
+	ICCCMPMaxSize = 32,
+	ICCCMPResizeInc = 64,
+	ICCCMPAspect = 128,
+	ICCCMPBaseSize = 256,
+	ICCCMPWinGravity = 512
+};
+
 NSArray *ICCCMAtomsList(void);
 
 @interface XCBWindow (ICCCM)
@@ -63,4 +98,11 @@ NSArray *ICCCMAtomsList(void);
 - (xcb_wm_hints_t)asWMHints;
 @end
 
-
+enum _BorderWidthDirection {
+	ICCCMBorderNorth = 0,
+	ICCCMBorderEast = 1,
+	ICCCMBorderSouth = 2,
+	ICCCMBorderWest = 3
+};
+XCBPoint ICCCMCalculateReferencePoint(ICCCMWindowGravity, XCBRect initialRect, const uint32_t border_widths[4]);
+void ICCCMCalculateWindowFrame(XCBPoint *refPoint, ICCCMWindowGravity gravity, NSDictionary* values, const uint32_t border_widths[4], XCBRect *decorationWindowRect, XCBRect *childWindowRect, XCBRect* newReferenceFrame);

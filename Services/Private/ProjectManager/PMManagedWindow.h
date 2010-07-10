@@ -23,6 +23,7 @@
  *
  **/
 #import "XCBWindow.h"
+#import "ICCCM.h"
 
 typedef enum _PMManagedWindowState
 {
@@ -59,6 +60,13 @@ typedef enum _PMManagedWindowState
 	NSMutableSet *pendingWindowProperties;
 	BOOL ignoreUnmap;
 	BOOL reparented;
+
+	// Other fields
+	XCBPoint refPoint;
+	ICCCMWindowGravity window_gravity;
+	int32_t min_width, min_height, max_width, max_height,
+		width_inc, height_inc, base_width, base_height;
+	float min_aspect, max_aspect;
 }
 - (id)initWithChildWindow: (XCBWindow*)win pendingEvents: (NSArray*)pending;
 - (XCBWindow*)childWindow;

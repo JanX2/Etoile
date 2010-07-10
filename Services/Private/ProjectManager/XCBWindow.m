@@ -246,6 +246,7 @@ static XCBWindow* UnknownWindow;
                       dY: (uint16_t)dy
 {
 	xcb_reparent_window([XCBConn connection], window, [newParent xcbWindowId], dx, dy);
+	//ASSIGN(parent, newParent);
 	[XCBConn setNeedsFlush: YES];
 }
 - (void)setInputFocus: (uint8_t)revert_to
@@ -359,10 +360,19 @@ static XCBWindow* UnknownWindow;
                 stackMode: (xcb_stack_mode_t)stackMode
 {
 	uint32_t values[2];
-	uint16_t mask = XCB_CONFIG_WINDOW_SIBLING |
-		XCB_CONFIG_WINDOW_STACK_MODE;
-	values[0] = [otherWindow xcbWindowId];
-	values[1] = stackMode;
+	uint16_t mask;
+	if (nil != otherWindow)
+	{
+		mask = XCB_CONFIG_WINDOW_SIBLING |
+			XCB_CONFIG_WINDOW_STACK_MODE;
+		values[0] = [otherWindow xcbWindowId];
+		values[1] = stackMode;
+	}
+	else
+	{
+		mask = XCB_CONFIG_WINDOW_STACK_MODE;
+		values[0] = stackMode;
+	}
 	[self configureWindow: mask
 	               values: values];
 }
@@ -376,8 +386,8 @@ static XCBWindow* UnknownWindow;
 	[self restackRelativeTo: aboveWindow
 	              stackMode: XCB_STACK_MODE_ABOVE];
 }
-- (void) configureWindow: (uint16_t)valueMask
-                  values: (const uint32_t*)values
+- (void)configureWindow: (uint16_t)valueMask
+                 values: (const uint32_t*)values
 {
 	xcb_configure_window([XCBConn connection],
 		window,
@@ -395,7 +405,7 @@ static XCBWindow* UnknownWindow;
 {
 	return border_width;
 }
-- (xcb_drawable_t) xcbDrawableId
+- (xcb_drawable_t)xcbDrawableId
 {
 	return window;
 }
@@ -537,7 +547,6 @@ static XCBWindow* UnknownWindow;
 	XCBDELEGATE_U(WindowPropertyDidRefresh, userInfo);
 	XCBNOTIFY_U(WindowPropertyDidRefresh, userInfo);
 	[property release];
-	[propertyName release];
 }
 - (void)checkIfAvailable
 {

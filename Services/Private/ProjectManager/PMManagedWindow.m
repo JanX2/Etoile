@@ -31,7 +31,10 @@
 #import "EWMH.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
+const uint16_t XCB_MOD_MASK_ANY = 32768;
+
 static const int DecorationWindowBorderSize = 4;
+static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 
 @interface PMManagedWindow (Private)
 - (XCBRect)idealDecorationWindowFrame;
@@ -144,11 +147,15 @@ static const int DecorationWindowBorderSize = 4;
 	uint32_t values[3];
 	// FIXME: Do these have to be in the same order as the
 	// mask declarations?
-	values[0] = 0x80FFFFA0;
+	values[0] = 0x00000000;
 	values[1] = 0;
 	values[2] = XCB_EVENT_MASK_EXPOSURE |
 		XCB_EVENT_MASK_BUTTON_PRESS | 
-		XCB_EVENT_MASK_BUTTON_RELEASE;
+		XCB_EVENT_MASK_BUTTON_RELEASE | 
+		XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+		XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
+		XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
+		XCB_EVENT_MASK_FOCUS_CHANGE;
 	decorationWindow = 
 		[[root createChildInRect: [self idealDecorationWindowFrame]
 		            borderWidth: 0
@@ -173,24 +180,6 @@ static const int DecorationWindowBorderSize = 4;
 - (XCBRect)idealDecorationWindowFrame
 {
 	XCBRect frame = [child frame];
-	// FIXME
-	xcb_translate_coordinates_cookie_t c = xcb_translate_coordinates(
-		[XCBConn connection], 
-		[decorationWindow xcbWindowId], 
-		[[decorationWindow parent] xcbWindowId],
-		frame.origin.x,
-		frame.origin.y);
-	xcb_translate_coordinates_reply_t *r = xcb_translate_coordinates_reply(
-		[XCBConn connection],
-		c,
-		NULL);
-	if (r!=NULL) 
-	{
-		frame.origin.x = r->dst_x;
-		frame.origin.y = r->dst_y;
-		free(r);
-	}
-	// END FIXME
 	frame.origin.x -= DecorationWindowBorderSize;
 	frame.origin.y -= DecorationWindowBorderSize;
 	frame.size.height += 2 * DecorationWindowBorderSize;
@@ -228,6 +217,33 @@ static const int DecorationWindowBorderSize = 4;
 	NSDebugLLog(@"PMManagedWindow", @"%@: -[PMManagedWindow xcbWindowMapRequest:]", self);
 	[self handleMapRequest];
 }
+- (void)managedWindowFocusIn: (NSNotification*)aNotification
+{
+	NSDebugLLog(@"PMManagedWindow", @"%@ raising to top and releasing grab", self);
+	XCBWindow *w = reparented ? decorationWindow : child;
+	[w ungrabButton: XCB_BUTTON_INDEX_1 modifiers: XCB_MOD_MASK_ANY];
+	[w restackAboveWindow: nil];
+}
+- (void)managedWindowFocusOut: (NSNotification*)aNotification
+{
+	NSDebugLLog(@"PMManagedWindow", @"%@ focus out, grabbing", self);
+	XCBWindow *w = reparented ? decorationWindow : child;
+	[w grabButton: XCB_BUTTON_INDEX_1
+	    modifiers: XCB_MOD_MASK_ANY
+	  ownerEvents: NO
+	    eventMask: XCB_EVENT_MASK_BUTTON_PRESS
+	  pointerMode: XCB_GRAB_MODE_ASYNC
+	 keyboardMode: XCB_GRAB_MODE_ASYNC
+	    confineTo: nil
+	       cursor: XCB_NONE];
+}
+- (void)managedWindowButtonPress: (NSNotification*)aNotification
+{
+	NSDebugLLog(@"PMManagedWindow", @"%@ button press, focusing window", self);
+	XCBWindow *w = reparented ? decorationWindow : child;
+	[child setInputFocus: XCB_INPUT_FOCUS_PARENT time: [XCBConn currentTime]];
+}
+
 - (void)xcbWindowDidMap: (NSNotification*)notification
 {
 	NSDebugLLog(@"PMManagedWindow", @"%@: -[PMManagedWindow xcbWindowDidMap:] child window mapped.", self);
@@ -245,6 +261,13 @@ static const int DecorationWindowBorderSize = 4;
 		XCBWindowForwardConfigureRequest(aNotification);
 	else
 	{
+		XCBRect newReferenceFrame, newDecorationFrame, newChildFrame;
+		ICCCMCalculateWindowFrame(&refPoint, window_gravity, [aNotification userInfo],
+			BORDER_WIDTHS, &newDecorationFrame, &newChildFrame,
+			&newReferenceFrame);
+		[[self childWindow] setFrame: newChildFrame];
+		[[self decorationWindow] setFrame: newDecorationFrame];
+		// FIXME: Post fake ConfigureNotify
 	}
 }
 - (void)xcbWindowDidUnMap: (NSNotification*)aNotification
@@ -267,8 +290,6 @@ static const int DecorationWindowBorderSize = 4;
 - (void)xcbWindowFrameDidChange: (NSNotification*)aNotification
 {
 	NSDebugLLog(@"PMManagedWindow", @"%@: -[PMManagedWindow xcbWindowFrameDidChange]", self);
-	XCBRect frame = [self idealDecorationWindowFrame];
-	[[self decorationWindow] setFrame: frame];
 }
 - (XCBWindow*)decorationWindow
 {
@@ -287,6 +308,7 @@ static const int DecorationWindowBorderSize = 4;
 	// 1c) Map the child window
 	// 2. DOESN'T NEED DECORATION
 	// 2a) Map the child window
+
 
 	BOOL decorate = YES;
 	XCBCachedProperty *wmHintsProperty = [child cachedPropertyValue: ICCCMWMHints];
@@ -307,11 +329,63 @@ static const int DecorationWindowBorderSize = 4;
 		else
 			decorate = NO;
 	}
-	// FIXME: Assuming reparenting (i.e. decoration) is needed
-	NSDebugLLog(@"PMManagedWindow", @"%@: mapping the decoration window and then reparenting the child.", self);
+	XCBCachedProperty *wmNormalHintsProperty = [child cachedPropertyValue: ICCCMWMNormalHints];
+	if (![wmNormalHintsProperty isEmpty])
+	{
+		xcb_size_hints_t h = [wmNormalHintsProperty asWMSizeHints];
+		if (h.flags & ICCCMPMinSize)
+		{
+			min_width = h.min_width;
+			min_height = h.min_height;
+		}
+		else if (h.flags & ICCCMPBaseSize)
+		{
+			min_width = h.base_width;
+			min_height = h.base_height;
+		}
+		else
+		{
+			min_width = 10;
+			min_height = 10;
+		}
+
+		if (h.flags & ICCCMPBaseSize)
+		{
+			base_width = h.base_width;
+			base_height = h.base_height;
+		}
+		else
+		{
+			base_width = min_width;
+			base_width = min_height;
+		}
+
+		if (h.flags & ICCCMPMaxSize)
+		{
+			max_width = h.max_width;
+			max_height = h.max_height;
+		}
+		else
+		{
+			max_width = -1;
+			min_width = -1;
+		}
+
+		if (h.flags & ICCCMPWinGravity)
+			window_gravity = h.win_gravity;
+		else
+			window_gravity = ICCCMNorthWestGravity;
+		// FIXME: Complete
+	}
+	else
+	{
+		// FIXME: Complete
+	}
+	refPoint = ICCCMCalculateReferencePoint(window_gravity, [[self childWindow] frame], BORDER_WIDTHS);
 	ignoreUnmap = YES;
 	if (decorate)
 	{
+		NSDebugLLog(@"PMManagedWindow", @"%@: mapping the decoration window and then reparenting the child.", self);
 		if (decorationWindow == nil)
 			[self createDecorationWindow];
 		else
@@ -322,6 +396,7 @@ static const int DecorationWindowBorderSize = 4;
 	}
 	else
 	{
+		NSDebugLLog(@"PMManagedWindow", @"%@: mapping the child without decoration.", self);
 		[self mapChildWindow];
 	}
 }
@@ -331,23 +406,46 @@ static const int DecorationWindowBorderSize = 4;
 	// Reposition the decoration window just above the original
 	// window before reparenting so it comes out in the same
 	// position
-	[[self decorationWindow] restackAboveWindow: child];
+	[decorationWindow restackAboveWindow: child];
 	[[self decorationWindow] map];
 	child_origin = [child frame].origin;
 	[child reparentToWindow: decorationWindow
 	                     dX: DecorationWindowBorderSize
 	                     dY: DecorationWindowBorderSize];
-	uint32_t value = XCB_EVENT_MASK_STRUCTURE_NOTIFY |
-		XCB_EVENT_MASK_PROPERTY_CHANGE;
-	[child changeWindowAttributes: XCB_CW_EVENT_MASK
-	                       values: &value];
 	
 	[XCBConn setNeedsFlush: YES];
 }
 
 - (void)mapChildWindow
 {
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+		   selector: @selector(managedWindowFocusIn:)
+		       name: XCBWindowFocusInNotification
+		     object: child];
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+		   selector: @selector(managedWindowFocusOut:)
+		       name: XCBWindowFocusOutNotification
+		     object: child];
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+		   selector: @selector(managedWindowButtonPress:)
+		       name: XCBWindowButtonPressNotification
+		     object: reparented ? decorationWindow : child];
+
+	uint32_t values[1];
+	// FIXME: Do these have to be in the same order as the
+	// mask declarations?
+	values[0] = XCB_EVENT_MASK_EXPOSURE |
+		XCB_EVENT_MASK_BUTTON_PRESS | 
+		XCB_EVENT_MASK_BUTTON_RELEASE | 
+		XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+		XCB_EVENT_MASK_FOCUS_CHANGE | 
+		XCB_EVENT_MASK_PROPERTY_CHANGE;
+	[child changeWindowAttributes: XCB_CW_EVENT_MASK values: values];
 	[child map];
+	[child setInputFocus: XCB_INPUT_FOCUS_PARENT time: [XCBConn currentTime]];
 	[child addToSaveSet];
 }
 - (void)decorationWindowCreated: (NSNotification*)notification 
@@ -360,6 +458,10 @@ static const int DecorationWindowBorderSize = 4;
 - (void)handleUnMap
 {
 	NSDebugLLog(@"PMManagedWindow", @"%@: unmapping the decoration window and then unparenting the child.",self);
+	XCBWindow *managed = reparented ? decorationWindow : child;
+	[[NSNotificationCenter defaultCenter] removeObserver: self name: XCBWindowFocusInNotification object: managed];
+	[[NSNotificationCenter defaultCenter] removeObserver: self name: XCBWindowFocusOutNotification object: managed];
+	[[NSNotificationCenter defaultCenter] removeObserver: self name: XCBWindowButtonPressNotification object: managed];
 	if (reparented)
 	{
 		[decorationWindow unmap];
@@ -369,6 +471,7 @@ static const int DecorationWindowBorderSize = 4;
 				     dY: child_origin.y];
 	}
 	reparented = NO;
+	[child removeFromSaveSet];
 	[delegate managedWindowWithdrawn: self];
 }
 

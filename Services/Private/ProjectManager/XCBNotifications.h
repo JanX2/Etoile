@@ -57,7 +57,7 @@ DEFINE_NOTIFICATION(WindowButtonRelease);
 #define XCBNOTIFY_U(x, ui) \
 {\
 	NSNotificationCenter *_center = [NSNotificationCenter defaultCenter];\
-	NSDebugLLog([self className], @"%@ posting XCB" # x "Notification", self);\
+	NSDebugLLog([self className], @"%@ posting XCB" # x "Notification userInfo=%@", self, ui);\
 	[_center postNotificationName: XCB ## x ## Notification\
 	                      object: self\
 			    userInfo: ui];\
@@ -65,7 +65,7 @@ DEFINE_NOTIFICATION(WindowButtonRelease);
 #define XCBNOTIFY(x) XCBNOTIFY_U(x, nil)
 #define XCBDELEGATE_U(x, ui) \
 	if ([delegate respondsToSelector:@selector(xcb##x :)]) {\
-		NSDebugLLog([self className], @"%@ delegate " # x, self); \
+		NSDebugLLog([self className], @"%@ delegate userInfo=%@" # x, self, ui); \
 		[delegate xcb##x :\
 			[NSNotification\
 			notificationWithName:\

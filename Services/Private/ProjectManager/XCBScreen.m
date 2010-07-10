@@ -34,6 +34,18 @@
           aboveWindow: (id)xcbAboveWindow;
 
 - (void)discoverChildWindows;
+/**
+  * Register a new child window. It is added at the end
+  * of the child windows list. If the childWindows list
+  * already contains this object, this method does nothing.
+  */
+- (void)registerChildWindow: (XCBWindow*)newWindow;
+/**
+  * Remove a child window from the childWindows list. This
+  * method does nothing if the child window is not in the
+  * list.
+  */
+- (void)unregisterChildWindow: (XCBWindow*)deleteWindow;
 @end
 
 @implementation XCBScreen 
@@ -159,9 +171,9 @@
 		return;
 	XCBWindow *xcbWindow = [notification object];
 	if ([[xcbWindow parent] isEqual: root])
-		[childWindows addObject: xcbWindow];
+		[self registerChildWindow: xcbWindow];
 	else if ([childWindows containsObject: xcbWindow])
-		[childWindows removeObject: xcbWindow];
+		[self unregisterChildWindow: xcbWindow];
 }
 - (void)childWindowDidCreate: (NSNotification*)notification
 {
@@ -186,7 +198,7 @@
 	{
 		// Add window at the top
 		[window setAboveWindow: [childWindows lastObject]];
-		[childWindows addObject: window];
+		[self registerChildWindow: window];
 	}
 }
 - (void)handleQueryTree: (xcb_query_tree_reply_t*)query_tree_reply
@@ -214,7 +226,7 @@
 		// just add them in bottom->top stacking order, which is the
 		// order returned by xcb_query_tree()
 		[newWindow setAboveWindow: previous];
-		[childWindows addObject: newWindow];
+		[self registerChildWindow: newWindow];
 		previous = newWindow;
 	}
 	[XCBConn setNeedsFlush: YES];
@@ -255,5 +267,22 @@
 		setHandler: self
 		  forReply: query_tree_cookie.sequence
 		  selector: @selector(handleQueryTree:)];
+}
+- (void)registerChildWindow: (XCBWindow*)newWindow
+{
+	if (nil != childWindows &&
+		![childWindows containsObject: newWindow])
+		[childWindows addObject: newWindow];
+}
+/**
+  * Remove a child window from the childWindows list. This
+  * method does nothing if the child window is not in the
+  * list.
+  */
+- (void)unregisterChildWindow: (XCBWindow*)deleteWindow
+{
+	if (nil != childWindows &&
+		[childWindows containsObject: deleteWindow])
+		[childWindows removeObject: deleteWindow];
 }
 @end

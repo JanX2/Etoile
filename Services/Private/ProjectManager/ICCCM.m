@@ -23,6 +23,7 @@
  *
  **/
 #import "ICCCM.h"
+#import "XCBGeometry.h"
 
 NSString* ICCCMWMName = @"WM_NAME";
 NSString* ICCCMWMIconName = @"WM_ICON_NAME";
@@ -88,3 +89,154 @@ NSArray *ICCCMAtomsList(void)
 }
 @end
 
+void ICCCMCalculateWindowFrame(XCBPoint *refPoint, ICCCMWindowGravity gravity, NSDictionary* values, const uint32_t border_widths[4], XCBRect *decorationWindowRect, XCBRect *childWindowRect, XCBRect* newReferenceFrame)
+{
+	int valueMask = [[values objectForKey: @"ValueMask"] integerValue];
+	// The inner child frame if it was not reparented (i.e. with the same internal 
+	// width and height, but the x and y translated to root window coordinates)
+	XCBPoint rfp; XCBSize rfs;
+
+	// The request frame rect (could contain incomplete values; it depends
+	// on the valueMask (some values may be invalid)
+	XCBRect reqFrame = [[values objectForKey: @"Frame"] xcbRectValue];
+
+	// 1. Copy in the original coordinates. These are calculated
+	// from the decoration window and the child window
+	if (valueMask & XCB_CONFIG_WINDOW_X)
+		rfp.x = reqFrame.origin.x;
+	else
+		rfp.x = decorationWindowRect->origin.x + border_widths[ICCCMBorderWest];
+	if (valueMask & XCB_CONFIG_WINDOW_Y)
+		rfp.y = reqFrame.origin.y;
+	else
+		rfp.y = decorationWindowRect->origin.y + border_widths[ICCCMBorderNorth];
+	if (valueMask & XCB_CONFIG_WINDOW_WIDTH)
+		rfs.width = reqFrame.size.width;
+	else
+		rfs.width = childWindowRect->size.width;
+	if (valueMask & XCB_CONFIG_WINDOW_HEIGHT)
+		rfs.height = reqFrame.size.height;
+	else
+		rfs.height = childWindowRect->size.height;
+
+	// 2. If a reposition was requested, we need to calculate
+	// the new reference point
+	if (valueMask & (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y))
+	{
+		*refPoint = ICCCMCalculateReferencePoint(gravity, 
+			XCBMakeRect(rfp.x, rfp.y, rfs.width, rfs.height),
+			border_widths);
+	}
+
+	// 3. Use the reference point and gravity to calculate the new reference frame based on the
+	// requested width and height. This is really just a reverse of the
+	// process performed above to get back to the reference frame, but
+	// it is needed when a new width/height pair is given without a
+	// change in the reference point (see EWMH Window Geometry clarifications
+	// for more details). 
+	
+	// When a new size (but not ref point) is given,
+	// this process moves the (x,y) of the reference frame in the
+	// opposite direction of the gravity.
+	switch (gravity)
+	{
+	case ICCCMNorthWestGravity:
+	case ICCCMStaticGravity:
+		break;
+	case ICCCMNorthGravity:
+		rfp.x = refPoint->x - (rfs.width / 2);
+		break;
+	case ICCCMNorthEastGravity:
+		rfp.x = refPoint->x -  rfs.width - border_widths[ICCCMBorderEast];
+		break;
+	case ICCCMWestGravity:
+		rfp.y = refPoint->y - (rfs.height / 2);
+		break;
+	case ICCCMCenterGravity:
+		rfp.x = refPoint->x - rfs.width / 2;
+		rfp.y = refPoint->y - rfs.height / 2;
+		break;
+	case ICCCMEastGravity:
+		rfp.x = refPoint->x - rfs.width - border_widths[ICCCMBorderEast];
+		rfp.y = refPoint->y - rfs.height / 2;
+		break;
+	case ICCCMSouthWestGravity:
+		rfp.y = refPoint->y - rfs.height - border_widths[ICCCMBorderSouth];
+		break;
+	case ICCCMSouthGravity:
+		rfp.x = refPoint->x - rfs.width / 2;
+		rfp.y = refPoint->y - rfs.height - border_widths[ICCCMBorderSouth];
+		break;
+	case ICCCMSouthEastGravity:
+		rfp.x = refPoint->x - rfs.width - border_widths[ICCCMBorderEast];
+		rfp.y = refPoint->y - rfs.height - border_widths[ICCCMBorderSouth];
+		break;
+	default:
+		break;
+	}
+	
+	// Now that we have the new reference frame, calculate the new decoration
+	// and child rect
+	*childWindowRect = XCBMakeRect(border_widths[ICCCMBorderWest], border_widths[ICCCMBorderNorth],
+		rfs.width, rfs.height);
+	*decorationWindowRect = XCBMakeRect(
+			rfp.x - border_widths[ICCCMBorderWest], 
+			rfp.y - border_widths[ICCCMBorderNorth],
+			rfs.width + border_widths[ICCCMBorderWest] + border_widths[ICCCMBorderEast],
+			rfs.height + border_widths[ICCCMBorderNorth] + border_widths[ICCCMBorderSouth]);
+	newReferenceFrame->origin = rfp;
+	newReferenceFrame->size = rfs;
+}
+XCBPoint ICCCMCalculateReferencePoint(ICCCMWindowGravity gravity, XCBRect initialRect, const uint32_t border_widths[4])
+{
+	XCBPoint refPoint;
+	XCBPoint rfp = initialRect.origin;
+	XCBSize rfs = initialRect.size;
+	switch (gravity)
+	{
+	case ICCCMNorthWestGravity:
+		refPoint.x = rfp.x - border_widths[ICCCMBorderWest];
+		refPoint.y = rfp.y - border_widths[ICCCMBorderNorth];
+		break;
+	case ICCCMNorthGravity:
+		refPoint.x = rfp.x + rfs.width / 2;
+		refPoint.y = rfp.y - border_widths[ICCCMBorderNorth];
+		break;
+	case ICCCMNorthEastGravity:
+		refPoint.x = rfp.x + rfs.width + border_widths[ICCCMBorderEast];
+		refPoint.y = rfp.y - border_widths[ICCCMBorderNorth];
+		break;
+	case ICCCMWestGravity:
+		refPoint.x = rfp.x - border_widths[ICCCMBorderWest];
+		refPoint.y = rfp.y + rfs.height / 2;
+		break;
+	case ICCCMCenterGravity:
+		refPoint.x = rfp.x + rfs.width / 2;
+		refPoint.y = rfp.y + rfs.height / 2;
+		break;
+	case ICCCMEastGravity:
+		refPoint.x = rfp.x + rfs.width + border_widths[ICCCMBorderEast];
+		refPoint.y = rfp.y + rfs.height / 2;
+		break;
+	case ICCCMSouthWestGravity:
+		refPoint.x = rfp.x + border_widths[ICCCMBorderWest];
+		refPoint.y = rfp.y + rfs.height + border_widths[ICCCMBorderSouth];
+		break;
+	case ICCCMSouthGravity:
+		refPoint.x = rfp.x + rfs.width / 2; 
+		refPoint.y = rfp.y + rfs.height + border_widths[ICCCMBorderSouth];
+		break;
+	case ICCCMSouthEastGravity:
+		refPoint.x = rfp.x + rfs.width + border_widths[ICCCMBorderEast];
+		refPoint.y = rfp.y + rfs.height + border_widths[ICCCMBorderSouth];
+		break;
+	default:
+		NSLog(@"ICCCMCalculateWindowFrame called with unknown gravity %d; using Static gravity instead",
+				gravity);
+	case ICCCMStaticGravity:
+		refPoint.x = rfp.x;
+		refPoint.y = rfp.y;
+		break;
+	}
+	return refPoint;
+}
