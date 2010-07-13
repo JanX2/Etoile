@@ -35,9 +35,16 @@
 #import "XCBComposite.h"
 #import "XCBPixmap.h"
 
+const uint32_t OPAQUE = UINT32_MAX;
 @interface PMCompositeWindow (Private)
 @end
 
+#define REGISTER_OBSERVER(x) \
+	[[NSNotificationCenter defaultCenter] \
+		addObserver: self \
+		   selector: @selector(xcbWindow##x :) \
+		       name: XCBWindow##x##Notification \
+		     object: window]
 @implementation PMCompositeWindow
 + (PMCompositeWindow*)windowWithXCBWindow: (XCBWindow*)xcbWindow
 {
@@ -48,12 +55,20 @@
 {
 	SELFINIT;
 	self->window = [win retain];
-	[window setDelegate:self];
+
+	NSNotificationCenter * c =[NSNotificationCenter defaultCenter]; 
+	REGISTER_OBSERVER(BecomeAvailable);
+	REGISTER_OBSERVER(FrameDidChange);
+	REGISTER_OBSERVER(FrameWillChange);
+	REGISTER_OBSERVER(DidMap);
+	REGISTER_OBSERVER(DidUnMap);
+	                         
 	if ([window windowLoadState] == XCBWindowAvailableState)
 	{
 		[self xcbWindowFrameDidChange: nil];
 		[self xcbWindowBecomeAvailable: nil];
 	}
+	self->opacity = OPAQUE;
 	return self;
 }
 - (void)dealloc
@@ -66,6 +81,7 @@
 	[borderSize release];
 	[extents release];
 	[window release];
+	[alphaPicture release];
 	[[NSNotificationCenter defaultCenter] 
 		removeObserver: self];
 	[super dealloc];
@@ -92,7 +108,7 @@
 		format = [XCBRender findVisualFormat: [window visual]];
 	if ((format && [format type] == XCB_RENDER_PICT_TYPE_DIRECT &&
 			[format direct].alpha_mask != 0) ||
-		1/* opacity != OPAQUE */)
+		opacity != OPAQUE)
 		mode = PMCompositeWindowARGB;
 	else
 		mode = PMCompositeWindowSolid;
@@ -149,7 +165,9 @@
 			damageWithDrawable: window 
 			       reportLevel: XCB_DAMAGE_REPORT_LEVEL_NON_EMPTY]);
 	}
-	
+
+	[self determineMode];
+
 	// We need to simulate this notification because
 	// we may not get a ConfigureNotify event before the
 	// window attributes becomes available (generally
@@ -208,8 +226,8 @@
 	if (nil == borderSize) 
 	{
 		borderSize = [[XCBFixesRegion 
-				regionWithWindow:window 
-				shape:XCB_SHAPE_SK_BOUNDING] retain];
+				regionWithWindow: window 
+				           shape: XCB_SHAPE_SK_BOUNDING] retain];
 		[borderSize translateWithDX:frame.origin.x + border_width
 			dY:frame.origin.y + border_width];
 	}
@@ -218,7 +236,7 @@
 		extents = [[self calculateExtents] retain];
 	}
 	/** Assuming SOLID window mode */
-	if (1)
+	if (PMCompositeWindowSolid == mode)
 	{
 		XCBRect destRect = XCBMakeRect(
 			frame.origin.x,
@@ -244,6 +262,63 @@
 	{
 		borderClip = [[XCBFixesRegion regionWithRectangles: 0 count: 0] retain];
 		[region copyIntoRegion: borderClip];
+	}
+}
+
+- (void)paintWithAlphaIntoBuffer: (XCBRenderPicture*)buffer 
+                      withRegion: (XCBFixesRegion*)region
+                     clipChanged: (BOOL)clipChanged
+{
+	if (nil != picture)
+	{
+		if (OPAQUE != opacity &&
+			nil == alphaPicture)
+		{
+			XCBRenderPictureFormat *format =
+				[XCBRender findStandardVisualFormat: XCB_PICT_STANDARD_A_8];
+			XCBPixmap *alphapixmap = 
+				[XCBPixmap pixmapWithDepth: 8
+				                  drawable: window
+				                     width: 1
+				                    height: 1];
+			uint32_t repeat = 1;
+			alphaPicture =
+				[[XCBRenderPicture 
+					pictureWithDrawable: alphapixmap
+					             format: format
+					          valueMask: XCB_RENDER_CP_REPEAT
+					          valueList: &repeat] retain];
+			xcb_rectangle_t rect = XCBRectangleFromRect(XCBMakeRect(0, 0, 1, 1));
+			xcb_render_color_t col;
+			uint16_t a = ((double)opacity / OPAQUE) * 0xFFFF;
+			col = XCBRenderMakeColor(0, 0, 0, a);
+			[alphaPicture 
+				fillRectangles: &rect
+				         count: 1
+				         color: col
+				     operation: XCB_RENDER_PICT_OP_SRC];
+		}
+		[borderClip intersectRegion: borderSize 
+		            intoDestination: borderClip];
+		[borderClip clipPicture: buffer atPoint: XCBMakePoint(0, 0)];
+
+		if (PMCompositeWindowARGB == mode)
+		{
+			XCBRect rect = [window frame];
+			rect.size.width += [window borderWidth] * 2;
+			rect.size.height += [window borderWidth] * 2;
+			[picture 
+				compositeWithOperation: XCB_RENDER_PICT_OP_OVER
+					          mask: alphaPicture
+					   destination: buffer
+					     fromPoint: XCBMakePoint(0, 0)
+					     maskPoint: XCBMakePoint(0, 0)
+					      intoRect: rect];
+		}
+	}
+	if (nil != borderClip)
+	{
+		ASSIGN(borderClip, nil);
 	}
 }
 

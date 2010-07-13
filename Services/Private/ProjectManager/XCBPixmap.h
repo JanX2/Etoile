@@ -31,6 +31,10 @@
 {
 	xcb_pixmap_t pixmap_id;
 }
++ (XCBPixmap*)pixmapWithDepth: (uint8_t)depth
+                     drawable: (id<XCBDrawable>)drawable
+                        width: (uint16_t)width
+                       height: (uint16_t)height;
 - (id)initWithPixmapId: (xcb_pixmap_t)id;
 - (id)initWithDepth: (uint8_t)depth
            drawable: (id<XCBDrawable>)drawable

@@ -356,6 +356,23 @@ static XCBWindow* UnknownWindow;
 	[self configureWindow: mask
 	               values: values];
 }
+- (void)moveWindow: (XCBPoint)newpoint
+{
+	uint32_t values[2];
+	uint32_t mask = 0;
+	int i = 0;
+	if (newpoint.x != frame.origin.x)
+	{
+		values[i++] = newpoint.x;
+		mask |= XCB_CONFIG_WINDOW_X;
+	}
+	if (newpoint.y != frame.origin.y)
+	{
+		values[i++] = newpoint.y;
+		mask |= XCB_CONFIG_WINDOW_Y;
+	}
+	[self configureWindow: mask values: values];
+}
 - (void)restackRelativeTo: (XCBWindow*)otherWindow
                 stackMode: (xcb_stack_mode_t)stackMode
 {
@@ -501,6 +518,19 @@ static XCBWindow* UnknownWindow;
 		format,
 		elementCount,
 		data);
+}
+- (void)replaceProperty: (NSString*)propertyName
+                   type: (NSString*)type
+                 format: (uint8_t)format
+                   data: (const void*)data
+                  count: (uint32_t)elementCount
+{
+	[self changeProperty: propertyName
+	                type: type
+	              format: format
+	                mode: XCB_PROP_MODE_REPLACE
+	                data: data
+	               count: elementCount];
 }
 
 @end
@@ -707,6 +737,7 @@ static XCBWindow* UnknownWindow;
 }
 - (void)handleDestroyNotifyEvent: (xcb_destroy_notify_event_t*)anEvent
 {
+	window_load_state = XCBWindowDestroyedState;
 	XCBDELEGATE(WindowDidDestroy);
 	XCBNOTIFY(WindowDidDestroy);
 	[XCBConn cancelHandlersForObject: self];
@@ -780,6 +811,9 @@ static XCBWindow* UnknownWindow;
 	NSDictionary *dictionary = [NSDictionary 
 		dictionaryWithObject: oldParent
 		              forKey: @"OldParent"];
+	// There are no ConfigureNotify events to update these
+	frame.origin.x = anEvent->x;
+	frame.origin.y = anEvent->y;
 	XCBDELEGATE_U(WindowParentDidChange, dictionary);
 	XCBNOTIFY_U(WindowParentDidChange, dictionary);
 	[oldParent release];
@@ -845,6 +879,25 @@ static XCBWindow* UnknownWindow;
 			nil];
 	XCBDELEGATE_U(WindowFocusOut, dictionary);
 	XCBNOTIFY_U(WindowFocusOut, dictionary);
+}
+- (void)handleMotionNotify: (xcb_motion_notify_event_t*)anEvent
+{
+	XCBWindow *rootWindow = [XCBWindow windowWithXCBWindow: anEvent->root],
+		  *childWindow = [XCBWindow windowWithXCBWindow: anEvent->child];
+	XCBPoint rootPoint = XCBMakePoint(anEvent->root_x, anEvent->root_y),
+		 eventPoint = XCBMakePoint(anEvent->event_x, anEvent->event_y);
+	NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithUnsignedChar: anEvent->detail], @"Detail",
+		[NSNumber numberWithUnsignedLong: anEvent->time], @"Time",
+		[NSValue valueWithXCBPoint: rootPoint], @"RootPoint",
+		[NSValue valueWithXCBPoint: eventPoint], @"EventPoint",
+		[NSNumber numberWithUnsignedInteger: anEvent->state], @"State",
+		[NSNumber numberWithBool: anEvent->same_screen ? YES : NO], @"SameScreen",
+		rootWindow, @"Root",
+		childWindow, @"Child",
+		nil];
+	XCBDELEGATE_U(WindowMotionNotify, dictionary);
+	XCBNOTIFY_U(WindowMotionNotify, dictionary);
 }
 @end
 

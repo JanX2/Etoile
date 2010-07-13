@@ -29,6 +29,17 @@
 
 @implementation XCBPixmap
 
++ (XCBPixmap*)pixmapWithDepth: (uint8_t)depth
+                     drawable: (id<XCBDrawable>)drawable
+                        width: (uint16_t)width
+                       height: (uint16_t)height
+{
+	XCBPixmap *pixmap = [self alloc];
+	return [[pixmap initWithDepth: depth
+	                     drawable: drawable
+	                        width: width
+	                       height: height] autorelease];
+}
 - (id)initWithPixmapId: (xcb_pixmap_t)id
 {
 	self = [super init]; 

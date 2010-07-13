@@ -383,6 +383,7 @@
 			     withRegion: region
 			    clipChanged: clipChanged];
 	}
+
 	[region clipPicture: rootBuffer 
 	            atPoint: XCBMakePoint(0, 0)];
 	[rootTile compositeWithOperation: XCB_RENDER_PICT_OP_SRC
@@ -391,6 +392,18 @@
 		               fromPoint: XCBMakePoint(0, 0)
 	                       maskPoint: XCBMakePoint(0,0)
 	                        intoRect: XCBMakeRect(0, 0, root_width, root_height)];
+
+	window_enum = [[screen childWindows] objectEnumerator];
+	for (XCBWindow *window = [window_enum nextObject];
+			nil != window;
+			window = [window_enum nextObject])
+	{
+		PMCompositeWindow *compositeWindow = [self findCompositeWindow: window];
+		[compositeWindow 
+			paintWithAlphaIntoBuffer: rootBuffer
+			              withRegion: region
+			             clipChanged: clipChanged];
+	}
 	
 	[[XCBFixesRegion nilRegion] 
 		clipPicture: rootBuffer 
@@ -425,7 +438,7 @@
 	xcb_rectangle_t rect = { 0, 0, 1, 1};
 	[picture fillRectangles: &rect 
 	                  count: 1 
-	                  color: XCBMakeColor(0x8000, 0x2000, 0x8000, 0xffff)
+	                  color: XCBRenderMakeColor(0x8000, 0x2000, 0x8000, 0xffff)
 	              operation: XCB_RENDER_PICT_OP_SRC];
 
 	[pixmap release];

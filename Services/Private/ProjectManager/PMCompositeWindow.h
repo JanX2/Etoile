@@ -32,6 +32,7 @@
 @class XCBRenderPicture;
 @class XCBPixmap;
 @class XCBFixesRegion;
+@class XCBScreen;
 
 enum PMCompositeWindowMode
 {
@@ -50,6 +51,7 @@ enum PMCompositeWindowMode
 	XCBRenderPicture *picture, *alphaPicture;
 	XCBPixmap *pixmap;
 	XCBFixesRegion *clipRegion, *borderSize, *extents, *borderClip;
+	uint32_t opacity;
 	enum PMCompositeWindowMode mode;
 }
 + (PMCompositeWindow*)windowWithXCBWindow: (XCBWindow*)xcbWindow;
@@ -58,6 +60,9 @@ enum PMCompositeWindowMode
 - (void)paintIntoBuffer: (XCBRenderPicture*)buffer 
              withRegion: (XCBFixesRegion*)region 
             clipChanged: (BOOL)cc;
+- (void)paintWithAlphaIntoBuffer: (XCBRenderPicture*)buffer 
+                      withRegion: (XCBFixesRegion*)region
+                     clipChanged: (BOOL)clipChanged;
 /**
   * The current extents of the window. Only updated during painting.
   */

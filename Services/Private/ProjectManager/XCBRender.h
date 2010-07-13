@@ -42,13 +42,17 @@
 + (XCBRenderPictureFormat*)findStandardVisualFormat: (xcb_pict_standard_t)visual;
 @end
 
-static inline xcb_render_color_t XCBMakeColor(
+static inline xcb_render_color_t XCBRenderMakeColor(
 		uint16_t r, 
-		uint16_t b,
-		uint16_t g, 
+		uint16_t g,
+		uint16_t b, 
 		uint16_t a)
 {
-	xcb_render_color_t c = { r, b, g, a};
+	xcb_render_color_t c;
+	c.red = r;
+	c.green = g;
+	c.blue = b;
+	c.alpha = a;
 	return c;
 }
 

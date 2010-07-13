@@ -112,7 +112,9 @@
 - (void) handleMotionNotify: (xcb_motion_notify_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Motion notify");
+	XCBWindow *win = [self windowForXCBId: anEvent->event];
 	currentTime = anEvent->time;
+	[win handleMotionNotify: anEvent];
 }
 - (void) handleEnterNotify: (xcb_enter_notify_event_t*)anEvent
 {
@@ -482,7 +484,6 @@ XCBConnection *XCBConn;
 
 - (void)ungrab
 {
-	
 	xcb_void_cookie_t c = xcb_ungrab_server_checked(connection);
 	xcb_generic_error_t *e = xcb_request_check(connection, c);
 	if (e) 
@@ -490,6 +491,10 @@ XCBConnection *XCBConn;
 		NSLog(@"Error un-grabbing server");
 		free(e);
 	}
+}
+- (void)allowEvents: (xcb_allow_t)allow timestamp: (xcb_timestamp_t)time
+{
+	xcb_allow_events(connection, allow, time);
 }
 - (xcb_connection_t*) connection
 {

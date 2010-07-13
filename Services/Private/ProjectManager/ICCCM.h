@@ -24,7 +24,6 @@
  **/
 #import "XCBWindow.h"
 #import "XCBCachedProperty.h"
-#import <xcb/xcb_icccm.h>
 
 @class NSString;
 
@@ -56,6 +55,12 @@ typedef enum _ICCCMWindowState
 	ICCCMIconicWindowState = 3
 } ICCCMWindowState;
 
+typedef struct _icccm_wm_state_t
+{
+	uint32_t state;
+	xcb_window_t icon;
+} icccm_wm_state_t;
+
 typedef enum _ICCCMGravity
 {
 	ICCCMNorthWestGravity = 1,
@@ -84,6 +89,49 @@ enum _ICCCMWMSizeHintsFlags
 	ICCCMPWinGravity = 512
 };
 
+typedef struct _icccm_wm_size_hints_t
+{
+	uint32_t flags;
+	uint32_t pad[4];
+	int32_t min_width;
+	int32_t min_height;
+	int32_t max_width;
+	int32_t max_height;
+	int32_t width_inc;
+	int32_t height_inc;
+	struct {
+		int32_t num; 
+		int32_t den;
+	} min_aspect, max_aspect;
+	int32_t base_width;
+	int32_t base_height;
+	int32_t win_gravity;
+} icccm_wm_size_hints_t;
+
+enum
+{
+	ICCCMInputHint = 1,
+	ICCCMStateHint = 2,
+	ICCCMIconPixmapHint = 4,
+	ICCCMIconWindowHint = 8,
+	ICCCMIconPositionHint = 16,
+	ICCCMIconMaskHint = 32,
+	ICCCMWindowGroupHint = 64,
+	// DEPRECATED ICCCMMessageHint = 128,
+	ICCCMUrgencyHint = 256
+};
+
+typedef struct _icccm_wm_hints_t
+{
+	uint32_t flags;
+	uint32_t input;
+	uint32_t initial_state;
+	xcb_pixmap_t pixmap;
+	xcb_window_t icon_window;
+	int32_t icon_x, icon_y;
+	xcb_pixmap_t icon_mask;
+	xcb_window_t window_group;
+} icccm_wm_hints_t;
 NSArray *ICCCMAtomsList(void);
 
 @interface XCBWindow (ICCCM)
@@ -91,11 +139,13 @@ NSArray *ICCCMAtomsList(void);
 // - (void)setWMIconName: (NSString*)newWMIconName;
 // - (void)setWMClientMachine: (NSString*)newWMClientMachine;
 // - (void)setWMProtocols: (const xcb_atom_t*)newProtocols count: (uint32_t)len;
+- (void)setWMState: (uint32_t)newState iconWindow: (XCBWindow*)iconWindow;
 @end
 
 @interface XCBCachedProperty (ICCCM)
-- (xcb_size_hints_t)asWMSizeHints;
-- (xcb_wm_hints_t)asWMHints;
+- (icccm_wm_size_hints_t)asWMSizeHints;
+- (icccm_wm_hints_t)asWMHints;
+- (icccm_wm_state_t)asWMState;
 @end
 
 enum _BorderWidthDirection {
@@ -105,4 +155,4 @@ enum _BorderWidthDirection {
 	ICCCMBorderWest = 3
 };
 XCBPoint ICCCMCalculateReferencePoint(ICCCMWindowGravity, XCBRect initialRect, const uint32_t border_widths[4]);
-void ICCCMCalculateWindowFrame(XCBPoint *refPoint, ICCCMWindowGravity gravity, NSDictionary* values, const uint32_t border_widths[4], XCBRect *decorationWindowRect, XCBRect *childWindowRect, XCBRect* newReferenceFrame);
+void ICCCMCalculateWindowFrame(XCBPoint *refPoint, ICCCMWindowGravity gravity, XCBRect notificationFrame, int notificationValueMask, const uint32_t border_widths[4], XCBRect *decorationWindowRect, XCBRect *childWindowRect, XCBRect* newReferenceFrame);

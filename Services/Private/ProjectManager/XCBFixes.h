@@ -57,6 +57,8 @@
 - (void)copyIntoRegion: (XCBFixesRegion*)dest;
 - (void)unionWithRegion: (XCBFixesRegion*)source2 
         intoDestination: (XCBFixesRegion*)dest;
+- (void)intersectRegion: (XCBFixesRegion*)source2
+        intoDestination: (XCBFixesRegion*)dest;
 
 + (XCBFixesRegion*)regionWithWindow: (XCBWindow*)w 
                               shape: (xcb_shape_kind_t)k;

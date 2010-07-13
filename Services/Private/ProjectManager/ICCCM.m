@@ -70,35 +70,55 @@ NSArray *ICCCMAtomsList(void)
 	                           count: sizeof(atoms) / sizeof(NSString*)];
 }
 
-@implementation XCBCachedProperty (ICCCM)
-- (xcb_size_hints_t)asWMSizeHints
+@implementation XCBWindow (ICCCM)
+- (void)setWMState: (uint32_t)newState iconWindow: (XCBWindow*)iconWindow
 {
-	xcb_size_hints_t size_hints;
+	icccm_wm_state_t new_icccm_state = { newState, [iconWindow xcbWindowId] };
+	[self replaceProperty: ICCCMWMState
+	                  type: ICCCMWMState
+	                format: XCB32PropertyFormat
+	                  data: &new_icccm_state
+	                 count: 2];
+}
+@end
+
+@implementation XCBCachedProperty (ICCCM)
+- (icccm_wm_size_hints_t)asWMSizeHints
+{
+	icccm_wm_size_hints_t size_hints;
 	[self checkAtomType: ICCCMWMSizeHints];
 	[[self data] getBytes: &size_hints
-	               length: sizeof(xcb_size_hints_t)];
+	               length: sizeof(icccm_wm_size_hints_t)];
 	return size_hints;
 }
-- (xcb_wm_hints_t)asWMHints
+- (icccm_wm_hints_t)asWMHints
 {
-	xcb_wm_hints_t hints;
+	icccm_wm_hints_t hints;
 	[self checkAtomType: ICCCMWMHints];
 	[[self data] getBytes: &hints
-	               length: sizeof(xcb_wm_hints_t)];
+	               length: sizeof(icccm_wm_hints_t)];
+	return hints;
+}
+- (icccm_wm_state_t)asWMState
+{
+	icccm_wm_state_t hints;
+	[self checkAtomType: ICCCMWMState];
+	[[self data] getBytes: &hints
+	               length: sizeof(icccm_wm_state_t)];
 	return hints;
 }
 @end
 
-void ICCCMCalculateWindowFrame(XCBPoint *refPoint, ICCCMWindowGravity gravity, NSDictionary* values, const uint32_t border_widths[4], XCBRect *decorationWindowRect, XCBRect *childWindowRect, XCBRect* newReferenceFrame)
+void ICCCMCalculateWindowFrame(XCBPoint *refPoint, ICCCMWindowGravity gravity, XCBRect notificationFrame, int notificationValueMask, const uint32_t border_widths[4], XCBRect *decorationWindowRect, XCBRect *childWindowRect, XCBRect* newReferenceFrame)
 {
-	int valueMask = [[values objectForKey: @"ValueMask"] integerValue];
+	int valueMask = notificationValueMask;
 	// The inner child frame if it was not reparented (i.e. with the same internal 
 	// width and height, but the x and y translated to root window coordinates)
 	XCBPoint rfp; XCBSize rfs;
 
 	// The request frame rect (could contain incomplete values; it depends
 	// on the valueMask (some values may be invalid)
-	XCBRect reqFrame = [[values objectForKey: @"Frame"] xcbRectValue];
+	XCBRect reqFrame = notificationFrame;
 
 	// 1. Copy in the original coordinates. These are calculated
 	// from the decoration window and the child window

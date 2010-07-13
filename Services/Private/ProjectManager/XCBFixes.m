@@ -161,6 +161,15 @@
 			source2->region_id,
 			dest->region_id);
 }
+- (void)intersectRegion: (XCBFixesRegion*)source2
+        intoDestination: (XCBFixesRegion*)dest
+{
+	xcb_xfixes_intersect_region(
+			[XCBConn connection],
+			self->region_id,
+			source2->region_id,
+			dest->region_id);
+}
 
 - (void)copyIntoRegion: (XCBFixesRegion*)dest
 {

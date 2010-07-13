@@ -65,9 +65,18 @@ enum _XCBWindowLoadState
 	  * The Create Window request failed, and/or this object
 	  * references an invalid window identifier.
 	  */
-	XCBWindowInvalidState
+	XCBWindowInvalidState,
+
+	XCBWindowDestroyedState
 };
 typedef enum _XCBWindowLoadState XCBWindowLoadState;
+
+enum 
+{
+	XCB8PropertyFormat = 8,
+	XCB16PropertyFormat = 16,
+	XCB32PropertyFormat = 32
+} _XCBPropertyFormats;
 
 @interface XCBWindow : NSObject <XCBDrawable> {
 	xcb_window_t window;
@@ -167,6 +176,7 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
 
 - (XCBRect)frame;
 - (void)setFrame: (XCBRect)aRect;
+- (void)moveWindow: (XCBPoint)newPoint;
 - (void)restackAboveWindow: (XCBWindow*)aboveWindow;
 - (void)restackBelowWindow: (XCBWindow*)belowWindow;
 - (void)restackRelativeTo: (XCBWindow*)otherWindow
@@ -257,7 +267,12 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
                   mode: (xcb_prop_mode_t)mode
                   data: (const void*)data
                  count: (uint32_t)elementCount;
-
+- (void)replaceProperty: (NSString*)propertyName
+                  type: (NSString*)type
+                format: (uint8_t)format
+                  data: (const void*)data
+                 count: (uint32_t)elementCount;
+                   
 /** XCBDrawable **/
 - (xcb_drawable_t)xcbDrawableId;
 
@@ -287,6 +302,7 @@ typedef enum _XCBWindowLoadState XCBWindowLoadState;
 - (void)xcbWindowButtonRelease: (NSNotification*)notification;
 - (void)xcbWindowFocusIn: (NSNotification*)notification;
 - (void)xcbWindowFocusOut: (NSNotification*)notification;
+- (void)xcbWindowMotionNotify: (NSNotification*)notification;
 @end
 
 void XCBWindowForwardConfigureRequest(NSNotification* notification);

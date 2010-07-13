@@ -53,6 +53,7 @@ DEFINE_NOTIFICATION(WindowFocusIn);
 DEFINE_NOTIFICATION(WindowFocusOut);
 DEFINE_NOTIFICATION(WindowButtonPress);
 DEFINE_NOTIFICATION(WindowButtonRelease);
+DEFINE_NOTIFICATION(WindowMotionNotify);
 
 #define XCBNOTIFY_U(x, ui) \
 {\

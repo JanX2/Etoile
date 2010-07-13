@@ -185,7 +185,7 @@
                       intoRect: (XCBRect)destRect;
 {
 	xcb_render_picture_t mask_id = 0;
-	if (mask)
+	if (nil != mask)
 		mask_id = mask->picture_id;
 	xcb_render_composite([XCBConn connection],
 			op,

@@ -161,13 +161,14 @@
 	{
 		[self newWindow: subject pendingEvent: nil];
 	}
-	else if (![decorationWindows containsObject: subject])
+	else 
 		// Make ourselves the delegate so we get the *Request events
 		[subject setDelegate: self];
 }
 
 - (void)xcbWindowConfigureRequest: (NSNotification*)notification
 {
+	NSDebugLLog(@"PMConnectionDelegate", @"-[PMConnectionDelegate xcbWindowConfigureRequest:] forwarding configure request for %@", [notification object]);
 	// We just fulfil these without interruption
 	XCBWindowForwardConfigureRequest(notification);
 }
@@ -204,9 +205,16 @@
 	if (screen == nil)
 		return;
 	NSDebugLLog(@"PMConnectionDelegate", @"-[PMConnectionDelegate windowDidMap:] handling newly mapped window %@", window);
+	
 	[self handleNewCompositedWindow: window];
 }
-
+- (void)managedWindowDidMap: (PMManagedWindow*)managedWindow
+{
+	XCBWindow * window = [managedWindow decorationWindow] != nil ?
+		[managedWindow decorationWindow] :
+		[managedWindow childWindow];
+	[self handleNewCompositedWindow: window];
+}
 - (void)compositeWindowDidDestroy: (NSNotification*)notification
 {
 	XCBWindow *window = [notification object];
@@ -263,9 +271,14 @@
 		     object: window];
 }
 
+- (void)managedWindowDestroyed: (PMManagedWindow*)managedWindow
+{
+	NSDebugLLog(@"PMConnectionDelegate", @"-[PMConnectionDelegate managedWindowDestroyed:]: %@", managedWindow);
+	[managedWindows removeObjectForKey: [managedWindow childWindow]];
+}
 - (void)managedWindowWithdrawn: (PMManagedWindow*)managedWindow
 {
-	NSDebugLLog(@"PMConnectionDelegate", @"-[PMConnectionDelegate removeManagedWindow:]: %@", managedWindow);
+	NSDebugLLog(@"PMConnectionDelegate", @"-[PMConnectionDelegate managedWindowWithdrawn:]: %@", managedWindow);
 	if ([managedWindow decorationWindow] != nil)
 	{
 		[self removeCompositeWindow: [managedWindow decorationWindow]];
@@ -274,7 +287,6 @@
 	{
 		[self removeCompositeWindow: [managedWindow childWindow]];
 	}
-	[managedWindows removeObjectForKey: [managedWindow childWindow]];
 }
 
 - (void)finishedProcessingEvents: (XCBConnection*)connection

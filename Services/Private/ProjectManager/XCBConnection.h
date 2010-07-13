@@ -72,6 +72,7 @@ extern NSString* XCBConnectionEstablishmentException;
 - (BOOL)needsFlush;
 - (void)startMessageLoop;
 - (xcb_timestamp_t)currentTime;
+- (void)allowEvents: (xcb_allow_t)allow timestamp: (xcb_timestamp_t)time;
 @end
 
 @interface NSObject (XCBConnectionDelegate)

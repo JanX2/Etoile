@@ -61,12 +61,17 @@ typedef enum _PMManagedWindowState
 	BOOL ignoreUnmap;
 	BOOL reparented;
 
+	// Fields used during window moving and resizing
+	XCBPoint lastMovePosition, lastRefPosition;
+	BOOL isMoving;
+
 	// Other fields
 	XCBPoint refPoint;
 	ICCCMWindowGravity window_gravity;
 	int32_t min_width, min_height, max_width, max_height,
 		width_inc, height_inc, base_width, base_height;
 	float min_aspect, max_aspect;
+	xcb_window_t window_group;
 }
 - (id)initWithChildWindow: (XCBWindow*)win pendingEvents: (NSArray*)pending;
 - (XCBWindow*)childWindow;
@@ -76,4 +81,6 @@ typedef enum _PMManagedWindowState
 
 @interface NSObject (PMManagedWindowDelegate)
 - (void)managedWindowWithdrawn: (PMManagedWindow*)managedWindow;
+- (void)managedWindowDestroyed: (PMManagedWindow*)managedWindow;
+- (void)managedWindowDidMap: (PMManagedWindow*)managedWindow;
 @end

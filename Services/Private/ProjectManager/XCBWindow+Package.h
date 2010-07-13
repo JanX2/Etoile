@@ -41,6 +41,7 @@
 - (void)handleButtonRelease: (xcb_button_release_event_t*)anEvent;
 - (void)handleFocusIn: (xcb_focus_in_event_t*)anEvent;
 - (void)handleFocusOut: (xcb_focus_out_event_t*)anEvent;
+- (void)handleMotionNotify: (xcb_motion_notify_event_t*)anEvent;
 /**
   * Set the window that this window is positioned above.
   * This method must not be used as a public API. It is
