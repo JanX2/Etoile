@@ -285,5 +285,25 @@ typedef struct
 {
 	[(ETTextTree*)parent replaceChild: self withNode: aNode];
 }
+- (NSArray*)properties
+{
+	return A(@"textType", @"customAttributes");
+}
+- (BOOL)isOrdered
+{
+	return YES;
+}
+- (BOOL)isEmpty
+{
+	return [children count] == 0;
+}
+- (id)content
+{
+	return children;
+}
+- (NSArray*)contentArray
+{
+	return children;
+}
 @end
 

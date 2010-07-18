@@ -1,6 +1,7 @@
 #import "EtoileText.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "ETTeXHandlers.h"
+#import <EtoileUI/NSObject+EtoileUI.h>
 
 /**
  * Handle listings of the form:
@@ -350,7 +351,7 @@
 	[self retain];
 	// Remove self as the handler for footnotes, so that they are passed
 	// through as-is
-	[aWriter setDelegate: nil forTextType: @"footnote"];
+	[aWriter setDelegate: nil forTextType: ETTextFootnoteType];
 	ETXMLWriter *writer = aWriter.writer;
 	NSInteger footnoteNumber = 1;
 	for (id<ETText> footnote in footnotes)
@@ -360,7 +361,7 @@
 		NSString *footnoteLabel = 
 			[NSString stringWithFormat: @"footnote%d", footnoteNumber];
 		[writer startElement: @"p"
-		          attributes: D(@"footnote", @"class")];
+		          attributes: D(ETTextFootnoteType, @"class")];
 		[writer startElement: @"sup"];
 		[writer startAndEndElement: @"a"
 		                attributes: D(footnoteLabel, @"name")
@@ -373,7 +374,7 @@
 		footnoteNumber++;
 	}
 	[footnotes removeAllObjects];
-	[aWriter setDelegate: self forTextType: @"footnote"];
+	[aWriter setDelegate: self forTextType: ETTextFootnoteType];
 	[self release];
 }
 @end
@@ -941,7 +942,7 @@ int main(int argc, char **argv)
 	[r finishVisiting];
 	ETXHTMLWriter *w = [ETXHTMLWriter new];
 	ETXHTMLFootnoteBuilder *footnotes = [ETXHTMLFootnoteBuilder new];
-	[w setDelegate: footnotes forTextType: @"footnote"];
+	[w setDelegate: footnotes forTextType: ETTextFootnoteType];
 	[footnotes release];
 	TRXHTMLImportBuilder *importer = [TRXHTMLImportBuilder new];
 	importer.rootPath = projectRoot;
@@ -970,4 +971,11 @@ int main(int argc, char **argv)
 	NSString *html = [w endDocument];
 	//NSLog(@"Parsed TeX: \n%@", html);
 	[html writeToFile: @"tex.html" atomically: NO];
+	/*
+	[d2 retain];
+	[NSApplication sharedApplication];
+	[d2.document.text inspector];
+	[[NSRunLoop currentRunLoop] run];
+	*/
+	return 0;
 }

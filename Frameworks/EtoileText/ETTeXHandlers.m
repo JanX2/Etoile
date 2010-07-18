@@ -5,7 +5,7 @@ static NSMutableDictionary *CommandTypes;
 + (void)initialize
 {
 	if ([ETTeXSimpleHandler class] != self) { return; }
-	CommandTypes = [NSMutableDictionary new];
+	CommandTypes = [D(ETTextFootnoteType, @"footnote") mutableCopy];
 }
 + (void)setTextType: (NSString*)aType forTeXCommand: (NSString*)aCommand
 {

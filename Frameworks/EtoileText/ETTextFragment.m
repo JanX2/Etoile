@@ -93,5 +93,9 @@
 {
 	[(ETTextTree*)parent replaceChild: self withNode: aNode];
 }
+- (NSArray*)properties
+{
+	return A(@"textType", @"customAttributes", @"text");
+}
 @end
 
