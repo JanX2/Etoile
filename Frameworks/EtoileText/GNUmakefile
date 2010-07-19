@@ -2,13 +2,16 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 VERSION = 0.1
 FRAMEWORK_NAME = EtoileText
-#TOOL_NAME = EtoileTextExample TeXtoHTML
+ifeq ($(build_examples), yes)
+TOOL_NAME = EtoileTextExample TeXtoHTML
+endif
 
 EtoileText_OBJC_FILES = \
 					   ETTeXHandlers.m\
 					   ETTeXScanner.m\
 					   ETTextDocument.m\
 					   ETTextFragment.m\
+					   ETTextHTML.m\
 					   ETTextStorage.m\
 					   ETTextTree.m\
 					   ETTextTreeBuilder.m\
@@ -21,6 +24,7 @@ EtoileText_HEADER_FILES = \
 	ETTeXScanner.h\
 	ETTextDocument.h\
 	ETTextFragment.h\
+	ETTextHTML.h\
 	ETTextProtocols.h\
 	ETTextStorage.h\
 	ETTextTree.h\

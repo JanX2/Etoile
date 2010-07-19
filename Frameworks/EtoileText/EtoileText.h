@@ -8,6 +8,7 @@
 #import "ETTextTree.h"
 #import "ETTextTreeBuilder.h"
 #import "ETTextTypes.h"
+#import "ETTextHTML.h"
 #import "ETXMLTextParser.h"
 #if !__has_feature(objc_nonfragile_abi)
 #error EtoileText requires the non-fragile ABI.
