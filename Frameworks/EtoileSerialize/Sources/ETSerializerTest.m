@@ -351,6 +351,7 @@ id testRoundTrip(NSString * tempfile, id object)
 	[fake appendString:@" some character."];
 	[(ESProxy*)fake setVersion:2];
 	UKStringsEqual(fake, @"A string containing");
+	UKStringsEqual(@"A string containing", fake);
 }
 #endif
 @end

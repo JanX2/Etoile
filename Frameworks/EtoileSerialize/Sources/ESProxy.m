@@ -138,4 +138,12 @@ static id logBackend;
 		[fullSave serializeObject:object withName:@"FullSave"];
 	}
 }
+- (NSUInteger)hash
+{
+	return [object hash];
+}
+- (NSString*)description
+{
+	return [object description];
+}
 @end

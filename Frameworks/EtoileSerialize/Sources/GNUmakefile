@@ -19,7 +19,7 @@ libEtoileSerialize_OBJC_FILES = \
 					GSDictionary+ETSerializable.m \
 					GSSet+ETSerializable.m \
 					GSMutableString+ETSerializable.m \
-					NSDataStatic+ETSerializable.m \
+					NSData+ETSerializable.m \
 					NSInvocation+ETSerializable.m \
 					NSString+Conversions.m \
 					NSURL+ETSerializable.m \
