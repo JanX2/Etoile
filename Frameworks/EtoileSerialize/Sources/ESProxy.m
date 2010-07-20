@@ -129,7 +129,6 @@ static id logBackend;
 		record = YES;
 		[serializer serializeObject:anInvocation withName:@"Delta"];
 	}
-	//[logBackend serializeObject:anInvocation withName:@"Delta"];
 	[anInvocation invokeWithTarget: object];
 	/* Periodically save a full copy */
 	if(record && (version % FULL_SAVE_INTERVAL == 0))

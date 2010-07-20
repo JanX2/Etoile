@@ -394,6 +394,13 @@ LOAD_METHOD(Selector, SEL)
 #undef CHECK_CUSTOM
 @end
 
+static void *nszoneDeserializer(char *varName, void *aBlob, void *aLocation)
+{
+	NSLog(@"Loading NSZone");
+	*(NSZone**)aLocation = NSDefaultMallocZone();
+	return aLocation;
+}
+
 /**
  * The deserializer is responsible for creating objects from a stream of (name,
  * type, value) tuples supplied as messages from the back end.
@@ -407,6 +414,7 @@ LOAD_METHOD(Selector, SEL)
 	[super initialize];
 	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
 	deserializerFunctions = NSCreateMapTable(STRING_MAP_KEY_CALLBACKS, valuecallbacks, 100);
+	[self registerDeserializer: nszoneDeserializer forStructNamed: "_NSZone"];
 	/* Custom serializers for known types */
 }
 + (void) registerDeserializer:(custom_deserializer)aDeserializer forStructNamed:(char*)aName

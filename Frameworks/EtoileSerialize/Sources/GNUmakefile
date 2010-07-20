@@ -4,7 +4,6 @@ SUBPROJECT_NAME = libEtoileSerialize
 
 libEtoileSerialize_OBJC_FILES = \
 					ESCORefTable.m \
-					ESProxy.m \
 					COProxy_NSAttributedString.m \
 					ETDeserializer.m \
 					ETDeserializerBackendBinary.m \
@@ -33,6 +32,7 @@ libEtoileSerialize_OBJC_FILES = \
 
 ifeq ($(test), yes)
 libEtoileSerialize_OBJC_FILES +=\
+					ESProxy.m \
 					ETSerializerTest.m 
 endif
 

@@ -37,7 +37,7 @@
 			_contents.c = calloc(_count+1, sizeof(char));\
 			memcpy(_contents.u, aBlob, _count * sizeof(char));\
 		}\
-		_flags.free = 1;\
+		_flags.owned = 1;\
 		return (void*)YES;\
 	}
 @implementation GSString (ETSerializable)
@@ -65,7 +65,6 @@
 - (BOOL) serialize:(char*)aVariable using:(ETSerializer*)aSerializer
 {
 	STORE_FLAGS_AND_CONTENTS();
-	_zone = NSDefaultMallocZone();
 	return [super serialize:aVariable using:aSerializer];
 }
 //WARNING! Not endian-safe for unicode strings!
@@ -87,6 +86,7 @@
 			_capacity = _count;
 		}
 	}
+	_zone = NSDefaultMallocZone();
 	return (void*)NO;
 }
 @end
