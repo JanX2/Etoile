@@ -127,7 +127,8 @@
 		@"dd", ETTextListDescriptionItemType,
 		@"li", ETTextListItemType) mutableCopy];
 	defaultAttributes = [NSMutableDictionary new];
-	customHandlers = [NSMutableDictionary new];
+	STACK_SCOPED ETXHTMLHeadingBuilder *headings = [ETXHTMLHeadingBuilder new];
+	customHandlers = [D(headings, ETTextHeadingType) mutableCopy];
 	return self;
 }
 - (void)dealloc
