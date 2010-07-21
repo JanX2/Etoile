@@ -4,7 +4,6 @@ SUBPROJECT_NAME = libEtoileSerialize
 
 libEtoileSerialize_OBJC_FILES = \
 					ESCORefTable.m \
-					COProxy_NSAttributedString.m \
 					ETDeserializer.m \
 					ETDeserializerBackendBinary.m \
 					ETDeserializerBackendXML.m \
