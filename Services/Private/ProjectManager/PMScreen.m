@@ -32,6 +32,7 @@
 #import "XCBPixmap.h"
 #import "XCBAtomCache.h"
 #import "XCBSelection.h"
+#import "XCBDamage.h"
 
 #import <EtoileFoundation/EtoileFoundation.h>
 
@@ -42,6 +43,7 @@
 - (void)childWindowBecomeAvailable: (NSNotification*)notification;
 - (void)childWindowWillUnMap: (NSNotification*)notification;
 - (void)childWindowDidUnMap: (NSNotification*)notification;
+- (void)childWindowDamaged: (NSNotification*)notification;
 @end
 
 @implementation PMScreen
@@ -76,7 +78,7 @@
 }
 - (void) dealloc
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	[manager_window destroy];
 	[manager_window release];
 	[rootBuffer release];
@@ -181,6 +183,7 @@
 	XCBREM_OBSERVER(WindowFrameWillChange, xcbWindow);
 	XCBREM_OBSERVER(WindowFrameDidChange, xcbWindow);
 	XCBREM_OBSERVER(WindowDidUnMap, xcbWindow);
+	XCBREM_OBSERVER(WindowDamageNotify, xcbWindow);
 	if (window)
 		[compositeMap removeObjectForKey: window];
 }
@@ -224,6 +227,11 @@
 		   selector: @selector(childWindowDidUnMap:)
 		       name: XCBWindowDidUnMapNotification
 		     object: child];
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+		   selector: @selector(childWindowDamaged:)
+		       name: XCBWindowDamageNotifyNotification
+		     object: child];
 }
 - (void)childWindowWillUnMap: (NSNotification*)notification
 {
@@ -241,6 +249,22 @@
 {
 	XCBWindow *xcbWindow = [notification object];
 	[self childWindowRemoved: xcbWindow];
+}
+
+- (void)childWindowDamaged: (NSNotification*)notification
+{
+	XCBWindow *damagedWindow = [notification object];
+	PMCompositeWindow *compositeWindow = [self findCompositeWindow: damagedWindow];
+	if (compositeWindow != nil)
+	{
+		// FIXME: Find out why we don't deal with the area that was damaged
+		// I'm thinking the XServer knows automatically, but I cannot understand
+		// the spec (carmstrong)
+		XCBFixesRegion *partsRegion = [compositeWindow windowDamaged];
+		[self appendDamage: partsRegion];
+	}
+	else
+		NSLog(@"-[PMConnectionDelegate damageNotify:] ERROR compositewindow for XCBWindow %@ not found.", damagedWindow);
 }
 
 - (void)setRootBuffer: (XCBRenderPicture*)picture 

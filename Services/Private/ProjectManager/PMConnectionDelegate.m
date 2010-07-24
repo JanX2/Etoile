@@ -35,6 +35,7 @@
 #import "XCBPixmap.h"
 #import "XCBGeometry.h"
 #import "XCBWindow.h"
+#import "XCBShape.h"
 #import "ICCCM.h"
 #import "EWMH.h"
 #import "XCBAtomCache.h"
@@ -60,9 +61,7 @@
 - (void)newWindow: (XCBWindow*)window pendingEvent: (NSNotification*)notification;
 @end
 
-
 @implementation PMConnectionDelegate
-
 - (id)init
 {
 	SUPERINIT;
@@ -74,6 +73,7 @@
 	[XCBComposite initializeExtensionWithConnection: XCBConn];
 	[XCBRender initializeExtensionWithConnection: XCBConn];
 	[XCBFixes initializeExtensionWithConnection: XCBConn];
+	[XCBShape initializeExtensionWithConnection: XCBConn];
 
 	[[XCBAtomCache sharedInstance]
 		cacheAtoms: ICCCMAtomsList()];
@@ -229,27 +229,6 @@
 		XCBREM_OBSERVER(WindowDidDestroy, window);
 		[compositeWindows removeObjectForKey: window];
 	}
-}
-
-- (void)XCBConnection: (XCBConnection*)connection damageNotify: (xcb_damage_notify_event_t*)event
-{
-	//NSDebugLLog(@"PMConnectionDelegate", @"Damage notify {%d, %d, %d, %d}", 
-	//	event->area.x, event->area.y, event->area.width, event->area.height);
-	XCBWindow *damagedWindow = [XCBWindow windowWithXCBWindow: event->drawable];
-	PMCompositeWindow *compositeWindow = [self findCompositeWindow: damagedWindow];
-	if (compositeWindow != nil)
-	{
-		PMScreen *screen = [self findScreenWithRootWindow: [damagedWindow parent]];
-		if (nil == screen)
-			NSDebugLLog(@"PMConnectionDelegate", @"-[PMConnectionDelegate damageNotify:] ERROR screen not found for parent of %@.", damagedWindow);
-		// FIXME: Find out why we don't deal with the area that was damaged
-		// I'm thinking the XServer knows automatically, but I cannot understand
-		// the spec (carmstrong)
-		XCBFixesRegion *partsRegion = [compositeWindow windowDamaged];
-		[screen appendDamage: partsRegion];
-	}
-	else
-		NSLog(@"-[PMConnectionDelegate damageNotify:] ERROR compositewindow for XCBWindow %@ not found.", damagedWindow);
 }
 
 - (void)handleNewCompositedWindow: (XCBWindow*)window

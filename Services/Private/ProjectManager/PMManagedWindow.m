@@ -29,11 +29,12 @@
 #import "XCBAtomCache.h"
 #import "ICCCM.h"
 #import "EWMH.h"
+#import "XCBShape.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
 const uint16_t XCB_MOD_MASK_ANY = 32768;
 
-static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
+static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 
 @interface PMManagedWindow (Private)
 - (id)initWithChildWindow: (XCBWindow*)win;
@@ -382,11 +383,26 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 	{
 		// 2. Align decoration frame's ref point with the
 		//    child's reference point.
-		XCBRect decorationFrame = ICCCMDecorationFrameWithReferencePoint(wm_size_hints.win_gravity, refPoint, newRect.size, BORDER_WIDTHS);
-		[child setFrame: XCBMakeRect(BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth], newRect.size.width, newRect.size.height) 
+		XCBRect decorationFrame = ICCCMDecorationFrameWithReferencePoint(
+				wm_size_hints.win_gravity, refPoint, newRect.size, BORDER_WIDTHS);
+		XCBRect childFrame = XCBMakeRect(
+				BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth], 
+				newRect.size.width, newRect.size.height);
+		[child setFrame: childFrame
 		         border: 0];
 		[decorationWindow setFrame: decorationFrame border: 0];
 		[self sendSyntheticConfigureNotify: newRect];
+		// Shape bounding rect experiment - to be removed
+		// xcb_rectangle_t clip_rects[2] = {
+		// 	{ 0, 0, 10, 4 },
+		// 	XCBRectangleFromRect(childFrame) };
+		// 	
+		// [decorationWindow setShapeRectangles: clip_rects
+		// 			       count: 2
+		// 			    ordering: XCB_SHAPE_UNSORTED
+		// 			   operation: XCB_SHAPE_SO_SET
+		// 				kind: XCB_SHAPE_SK_BOUNDING
+		// 			      offset: XCBMakePoint(0, 0)];
 	}
 	else
 	{

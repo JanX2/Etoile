@@ -301,9 +301,8 @@ XCBConnection *XCBConn;
 			
 					if (extSel != (SEL)0)
 					{
-						[delegate performSelector: extSel
-						               withObject: self
-						               withObject: (id)event];
+						[self performSelector: extSel
+						           withObject: (id)event];
 					}
 					else
 					{

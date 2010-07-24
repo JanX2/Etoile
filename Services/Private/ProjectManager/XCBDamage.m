@@ -27,8 +27,16 @@
 #import "XCBConnection.h"
 #import "XCBExtension.h"
 #import "XCBFixes.h"
+#import "XCBWindow.h"
+#import "XCBNotifications.h"
 
 #import <EtoileFoundation/EtoileFoundation.h>
+
+NSString* XCBWindowDamageNotifyNotification = @"XCBWindowDamageNotifyNotification";
+
+@interface XCBWindow (XCBDamage)
+- (void)handleDamageNotifyEvent: (xcb_damage_notify_event_t*)event;
+@end
 
 @implementation XCBDamage
 + (void)initializeExtensionWithConnection: (XCBConnection*)connection;
@@ -63,12 +71,10 @@
 			raise];
 	}
 
-	if ([delegate respondsToSelector: @selector(XCBConnection:damageNotify:)])
-	{
-		[XCBConn setSelector: @selector(XCBConnection:damageNotify:)
-		           forXEvent: reply->first_event + XCB_DAMAGE_NOTIFY];
-		NSLog(@"Registering damageNotify: handler for delegate.");
-	}
+	[XCBConn setSelector: @selector(damageNotify:)
+		   forXEvent: reply->first_event + XCB_DAMAGE_NOTIFY];
+	NSDebugLLog(@"XCBDamage", @"Registering damageNotify: handler for delegate.");
+	
 	NSLog(@"Initialized damage extension for connection %@", connection);
 	free(version_reply);
 	free(reply);	
@@ -116,5 +122,23 @@
 			damage,
 			repair_id,
 			parts_id);
+}
+@end
+
+@implementation XCBConnection (XCBDamage)
+
+- (void)damageNotify: (xcb_damage_notify_event_t*)event
+{
+	XCBWindow *damagedWindow = [XCBWindow windowWithXCBWindow: event->drawable];
+	[damagedWindow handleDamageNotifyEvent: event];
+}
+@end
+
+@implementation XCBWindow (XCBDamage)
+- (void)handleDamageNotifyEvent: (xcb_damage_notify_event_t*)event
+{
+	// FIXME: Add parameters from event
+	XCBDELEGATE(WindowDamageNotify)
+	XCBNOTIFY(WindowDamageNotify);
 }
 @end

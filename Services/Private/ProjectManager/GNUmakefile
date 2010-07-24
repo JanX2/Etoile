@@ -34,13 +34,17 @@ $(TOOL_NAME)_OBJC_FILES = \
 	 XCBVisual.m \
 	 XCBCachedProperty.m \
 	 XCBSelection.m \
+	 XCBShape.m \
 	 ICCCM.m \
 	 EWMH.m \
 	 main.m
 
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Wno-unused  -Werror -Wall
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
-ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lxcb -lxcb-composite -lxcb-damage -lxcb-render-util -lxcb-xfixes
+ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lxcb \
+	-lxcb-composite -lxcb-damage \
+	-lxcb-render-util -lxcb-xfixes \
+	-lxcb-shape
 
 include $(GNUSTEP_MAKEFILES)/tool.make
 -include ../../../etoile.make

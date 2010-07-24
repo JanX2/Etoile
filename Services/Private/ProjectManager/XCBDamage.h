@@ -67,7 +67,13 @@
                      parts: (XCBFixesRegion*)parts;
 @end
 
+extern NSString* XCBWindowDamageNotifyNotification;
+
+/**
+  * A callback interface for damage notify events. Implement
+  * this on the delegate of an XCBWindow to receive for damage
+  * notify events on that window
+  */
 @interface NSObject (XCBDamageDelegate)
-- (void) XCBConnection: (XCBConnection*)conn 
-          damageNotify: (struct xcb_damage_notify_event_t*)request;
+- (void)xcbWindowDamageNotify: (NSNotification*)notification;
 @end
