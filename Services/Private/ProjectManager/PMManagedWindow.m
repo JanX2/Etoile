@@ -383,7 +383,8 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 		// 2. Align decoration frame's ref point with the
 		//    child's reference point.
 		XCBRect decorationFrame = ICCCMDecorationFrameWithReferencePoint(wm_size_hints.win_gravity, refPoint, newRect.size, BORDER_WIDTHS);
-		[child setFrame: XCBMakeRect(BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth], newRect.size.width, newRect.size.height)];
+		[child setFrame: XCBMakeRect(BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth], newRect.size.width, newRect.size.height) 
+		         border: 0];
 		[decorationWindow setFrame: decorationFrame border: 0];
 		[self sendSyntheticConfigureNotify: newRect];
 	}
