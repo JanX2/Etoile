@@ -44,7 +44,6 @@ typedef struct _XCBRect
 {
 	XCBPoint origin;
 	XCBSize size;
-	int16_t border_width;
 } XCBRect;
 
 static const XCBRect XCBInvalidRect = {{0xffff, 0xffff}, {0xffff, 0xffff}};
@@ -78,6 +77,13 @@ static inline xcb_rectangle_t XCBRectangleFromRect(XCBRect rect)
 static inline XCBRect XCBRectFromRectangle(xcb_rectangle_t rect)
 {
 	XCBRect r = {{rect.x, rect.y}, {rect.width, rect.height}};
+	return r;
+}
+
+static inline XCBRect XCBCalculateBorderAdjustedFrame(XCBRect specifiedFrame, int16_t border_width)
+{
+	XCBRect r = {{ specifiedFrame.origin.x + border_width, specifiedFrame.origin.y + border_width},
+		{ specifiedFrame.size.width, specifiedFrame.size.height } };
 	return r;
 }
 

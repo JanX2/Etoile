@@ -176,6 +176,12 @@ enum
 
 - (XCBRect)frame;
 - (void)setFrame: (XCBRect)aRect;
+- (void)setFrame: (XCBRect)aRect
+          border: (int16_t)border_width;
+- (void)setFrame: (XCBRect)aRect
+          border: (int16_t)aBorderWidth
+           above: (XCBWindow*)above
+       stackMode: (xcb_stack_mode_t)stackMode;
 - (void)moveWindow: (XCBPoint)newPoint;
 - (void)restackAboveWindow: (XCBWindow*)aboveWindow;
 - (void)restackBelowWindow: (XCBWindow*)belowWindow;
@@ -209,8 +215,11 @@ enum
       keyboardMode: (uint8_t)keyboardMode
          confineTo: (XCBWindow*)confineWindow
             cursor: (xcb_cursor_t)cursor;
-- (void)ungrabButton: (uint8_t)button
-           modifiers: (uint8_t)modifiers;
+- (void)ungrabButton: (xcb_button_index_t)button
+           modifiers: (uint16_t)modifiers;
+- (void)sendEvent: (uint32_t)event_mask
+        propagate: (uint8_t)propagate
+             data: (const char*)event_data;
 /**
   * Request an update of the window attributes. Once
   * the reply has been received, a XCBWindowFrame(Will/Did)ChangeNotification
@@ -237,13 +246,6 @@ enum
   * this one is unknown.
   */
 - (XCBWindow*)aboveWindow;
-
-/**
-  * Reconfigure the window according to values
-  * listed in xcb_config_window_t
-  */
-- (void)configureWindow: (uint16_t)valueMask
-                 values: (const uint32_t*)values;
 
 /**
   * Refresh the cached value of a property, or cache it

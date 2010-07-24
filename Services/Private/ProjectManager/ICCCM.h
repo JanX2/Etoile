@@ -154,5 +154,5 @@ enum _BorderWidthDirection {
 	ICCCMBorderSouth = 2,
 	ICCCMBorderWest = 3
 };
-XCBPoint ICCCMCalculateReferencePoint(ICCCMWindowGravity, XCBRect initialRect, const uint32_t border_widths[4]);
-void ICCCMCalculateWindowFrame(XCBPoint *refPoint, ICCCMWindowGravity gravity, XCBRect notificationFrame, int notificationValueMask, const uint32_t border_widths[4], XCBRect *decorationWindowRect, XCBRect *childWindowRect, XCBRect* newReferenceFrame);
+XCBRect ICCCMDecorationFrameWithReferencePoint(ICCCMWindowGravity gravity, XCBPoint rp, XCBSize cs, const uint32_t bws[4]);
+XCBPoint ICCCMCalculateRefPointForClientFrame(ICCCMWindowGravity gravity, XCBRect initialRect, uint32_t bw);

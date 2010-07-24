@@ -33,11 +33,9 @@
 
 const uint16_t XCB_MOD_MASK_ANY = 32768;
 
-static const int DecorationWindowBorderSize = 4;
 static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 
 @interface PMManagedWindow (Private)
-- (XCBRect)idealDecorationWindowFrame;
 - (id)initWithChildWindow: (XCBWindow*)win;
 /**
   * Reparent the child window into the decoration window
@@ -76,27 +74,31 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
   */
 - (void)windowReadyForTransition;
 - (void)xcbWindowBecomeAvailable: (NSNotification*)notification;
+
 /**
-  * Configure the frame of a decorated window. This process is:
-  *  1. Getting the newly requested frame from a ConfigureRequest (or otherwise),
-  *  2. Calculating the new decoration and child frames, 
-  *  3. Issuing the configure requests for the new frames
-  *  4. Notifying the client via a fake ConfigureNotify (if necessary)
-  *
-  * This method should not be used for non-decorated managed windows.
-  * 
-  * valueMask should have the bits set for the X, Y, WIDTH, and HEIGHT
-  * components of a ConfigureRequest that have changed.
-  */ 
-- (void)configureDecoratedWindowFrame: (XCBRect)newRequestedFrame 
-                            valueMask: (int)valueMask;
-/**
-  * Calculate the so called reference frame. This is the child
-  * window rectangle in root coordinates. If the child window
-  * is reparented, this gives the origin of it in root instead
-  * of decoration window coordinates.
+  * The term "client frame", as used in this file, is a rectangle
+  * with the size (w,h) of the child window, and with the
+  * position (x,y) of the outer border-adjusted or decoration-adjusted
+  * north-west corner. A window that has been reparented will
+  * use the decoration frame position, whilst an undecorated 
+  * window will use the child-specified position (which is the
+  * same as the outer-north west corner of the frame and which
+  * automatically disregards border width
   */
-- (XCBRect)referenceFrame;
+- (XCBRect)clientFrame;
+- (XCBRect)calculateDecorationFrame: (XCBRect)clientFrame;
+- (void)sendSyntheticConfigureNotify: (XCBRect)clientFrame;
+/**
+  * Update the reference point of the window. This is the
+  * point on the outer window frame (either the outer part
+  * of a decoration window or on the outer part of a border)
+  * selected for the current window gravity. 
+  * 
+  * This method must be called when the position of the frame
+  * is to be adjusted, before -[PMManagedWindow repositionManagedWindow].
+  */
+- (void)updateRefPoint: (XCBRect)newRect;
+- (void)repositionManagedWindow: (XCBRect)newRect ;
 @end
 
 @implementation PMManagedWindow
@@ -149,6 +151,9 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 - (void)xcbWindowBecomeAvailable: (NSNotification*)notification
 {
 	state = PMManagedWindowWaitingOnPropertiesState;
+	
+	req_border_width = [child borderWidth];
+
 	if ([pendingWindowProperties count] == 0) {
 		NSDebugLLog(@"PMManagedWindow", @"Become ready for transition form xcbWindowBecomeAvailable");
 		[self windowReadyForTransition];
@@ -178,7 +183,7 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 		XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
 		XCB_EVENT_MASK_FOCUS_CHANGE;
 	decorationWindow = 
-		[[root createChildInRect: [self idealDecorationWindowFrame]
+		[[root createChildInRect: [self calculateDecorationFrame: [child frame]]
 		            borderWidth: 0
 		             valuesMask: XCB_CW_BACK_PIXEL | XCB_CW_OVERRIDE_REDIRECT | XCB_CW_EVENT_MASK
 		                 values: values
@@ -194,13 +199,21 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 {
 	self->delegate = dg;
 }
-- (XCBRect)idealDecorationWindowFrame
+- (XCBRect)calculateDecorationFrame: (XCBRect)clientFrame
 {
-	XCBRect frame = [child frame];
-	frame.origin.x -= DecorationWindowBorderSize;
-	frame.origin.y -= DecorationWindowBorderSize;
-	frame.size.height += 2 * DecorationWindowBorderSize;
-	frame.size.width += 2 * DecorationWindowBorderSize;
+	/**
+	  * There are two border_widths: the one that the child window specifies
+	  *  * -[XCBWindow borderWidth] This is a border drawn by X11, that we cannot
+	  *    change as a WM. It is not included in [child frame], so we have to work
+	  *    it out ourselves. The client specifies this. e.g. xterm uses a 1px one.
+	  *  * BORDER_WIDTHS - this is our hardcoded border widths, which we specify
+	  */
+	int16_t x_border_width = [child borderWidth];
+	XCBRect frame = clientFrame;
+	frame.origin.x -= BORDER_WIDTHS[ICCCMBorderWest];
+	frame.origin.y -= BORDER_WIDTHS[ICCCMBorderNorth];
+	frame.size.height += BORDER_WIDTHS[ICCCMBorderNorth] + BORDER_WIDTHS[ICCCMBorderSouth] + 2 * x_border_width;
+	frame.size.width += BORDER_WIDTHS[ICCCMBorderWest] + BORDER_WIDTHS[ICCCMBorderEast] + 2 * x_border_width;
 	return frame;
 }
 - (void)xcbWindowPropertyDidRefresh: (NSNotification*)notification
@@ -261,7 +274,7 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 	if (state == PMManagedWindowWithdrawnState)
 		return;
 	lastMovePosition = [[[aNotification userInfo] objectForKey: @"RootPoint"] xcbPointValue];
-	lastRefPosition = [self referenceFrame].origin;
+	lastRefPosition = [self clientFrame].origin;
 	isMoving = NO;
 }
 - (void)managedWindowButton1Move: (NSNotification*)notification
@@ -274,17 +287,13 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 	isMoving = YES;
 	lastRefPosition.x += x_diff;
 	lastRefPosition.y += y_diff;
-	if (nil != decorationWindow)
-	{
-		[self 
-			configureDecoratedWindowFrame: XCBMakeRect(lastRefPosition.x, lastRefPosition.y, 0, 0)
-		                            valueMask: XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y];
-	}
-	else
-	{
-		
-		[child moveWindow: lastRefPosition];  
-	}
+
+	// Move the window
+	XCBRect childFrame = [child frame];
+	XCBRect newClientFrame = XCBMakeRect(lastRefPosition.x, lastRefPosition.y, childFrame.size.width, childFrame.size.height);
+	[self updateRefPoint: newClientFrame];
+	[self repositionManagedWindow: newClientFrame];
+
 	lastMovePosition = currentPosition;
 }
 - (void)managedWindowButton1Release: (NSNotification*)notification
@@ -321,35 +330,79 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 	// We receive configure requests in root window coordinates, even
 	// when the client has been reparented into one of our decoration 
 	// windows (this is an ICCCM requirement)
-	
+
+	NSDictionary *userInfo = [aNotification userInfo];
+	XCBRect requestedFrame = [[userInfo 
+		objectForKey: @"Frame"] xcbRectValue];
+	NSInteger valueMask = [[userInfo
+		objectForKey: @"ValueMask"] intValue];
+
+	XCBRect newRect;
+	if (valueMask & XCB_CONFIG_WINDOW_X)
+		newRect.origin.x = requestedFrame.origin.x;
+	else
+		newRect.origin.x = [child frame].origin.x;
+	if (valueMask & XCB_CONFIG_WINDOW_Y)
+		newRect.origin.y = requestedFrame.origin.y;
+	else
+		newRect.origin.y = [child frame].origin.y;
+	if (valueMask & XCB_CONFIG_WINDOW_WIDTH)
+		newRect.size.width = requestedFrame.size.width;
+	else
+		newRect.size.width = [child frame].size.width;
+	if (valueMask & XCB_CONFIG_WINDOW_HEIGHT)
+		newRect.size.height = requestedFrame.size.height;
+	else
+		newRect.size.height = [child frame].size.height;
+
+	if (valueMask & XCB_CONFIG_WINDOW_BORDER_WIDTH)
+	{
+		req_border_width = [[userInfo objectForKey: @"BorderWidth"] intValue];
+	}
+
+	if (valueMask & (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y))
+		[self updateRefPoint: newRect];
+	[self repositionManagedWindow: newRect];
+
 	// FIXME: We will need to do stacking and window size constraints here
 	NSDebugLLog(@"PMManagedWindow", @"%@, -[PMManagedWindow xcbWindowConfigureRequest:]",  self);
-	if (nil == decorationWindow)
-		XCBWindowForwardConfigureRequest(aNotification);
+}
+- (void)updateRefPoint: (XCBRect)newRect
+{
+	// 1. Calculate reference point of child window outer frame
+	XCBRect childInnerFrame = XCBCalculateBorderAdjustedFrame(newRect, req_border_width);
+	// Update the reference point if origin changed
+	refPoint =  ICCCMCalculateRefPointForClientFrame(wm_size_hints.win_gravity,
+		childInnerFrame, 
+		req_border_width);
+}
+- (void)repositionManagedWindow: (XCBRect)newRect 
+{
+	if (decorationWindow)
+	{
+		// 2. Align decoration frame's ref point with the
+		//    child's reference point.
+		XCBRect decorationFrame = ICCCMDecorationFrameWithReferencePoint(wm_size_hints.win_gravity, refPoint, newRect.size, BORDER_WIDTHS);
+		[child setFrame: XCBMakeRect(BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth], newRect.size.width, newRect.size.height)];
+		[decorationWindow setFrame: decorationFrame border: 0];
+		[self sendSyntheticConfigureNotify: newRect];
+	}
 	else
 	{
-		XCBRect requestedFrame = [[[aNotification userInfo] 
-			objectForKey: @"Frame"] xcbRectValue];
-		NSInteger valueMask = [[[aNotification userInfo] 
-			objectForKey: @"ValueMask"] intValue];
-		[self configureDecoratedWindowFrame: requestedFrame
-		                          valueMask: valueMask];
-	}
-}
+		// 2. Align decoration frame's ref point (in this case just a 1px border) with the
+		//    child's reference point.
+		uint32_t bws[4] = { 1, 1, 1, 1 };
+		XCBRect decorationFrame = ICCCMDecorationFrameWithReferencePoint(wm_size_hints.win_gravity, refPoint, newRect.size, bws);
+		// Okay, the width and size in decorationFrame is wrong, because the X server
+		// automatically takes into account the border_width when specified. We really
+		// just want the point from this function, as it tells us where to plonk
+		// the child frame, adjusted for the child frame
 
-- (void)configureDecoratedWindowFrame: (XCBRect)newRequestedFrame valueMask: (int)valueMask
-{
-	XCBRect newReferenceFrame, decorationFrame, childFrame;
-	// Need to set these values as they are used by the following 
-	// function call (they are in and out values)
-	childFrame = [child frame];
-	decorationFrame = [decorationWindow frame];
-	ICCCMCalculateWindowFrame(&refPoint, window_gravity, newRequestedFrame, valueMask,
-		BORDER_WIDTHS, &decorationFrame, &childFrame,
-		&newReferenceFrame);
-	[[self childWindow] setFrame: childFrame];
-	[[self decorationWindow] setFrame: decorationFrame];
-	// FIXME: Post fake ConfigureNotify
+		// No need for decoration window update or synthentic ConfigureNotify, as
+		// this is the real deal
+		[child setFrame: XCBMakeRect(decorationFrame.origin.x, decorationFrame.origin.y, newRect.size.width, newRect.size.height)
+		         border: 1];
+	}
 }
 - (void)xcbWindowDidUnMap: (NSNotification*)aNotification
 {
@@ -400,29 +453,23 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 		state == PMManagedWindowWithdrawnState)
 	{
 		XCBCachedProperty *wmHintsProperty = [child cachedPropertyValue: ICCCMWMHints];
+		mapState = ICCCMNormalWindowState;
+		window_group = XCB_NONE;
 		if (![wmHintsProperty isEmpty])
 		{
 			icccm_wm_hints_t wm_hints = [wmHintsProperty asWMHints];
 			if (wm_hints.flags & ICCCMStateHint)
 				mapState = wm_hints.initial_state;
-			else
-				mapState = ICCCMNormalWindowState;
 			if (wm_hints.flags & ICCCMWindowGroupHint)
 				window_group = wm_hints.window_group;
-			else
-				window_group = XCB_NONE;
 		}
-		else
-		{
-			mapState = ICCCMNormalWindowState;
-			window_group = XCB_NONE;
-		}
+
 		XCBCachedProperty *ewmhWindowType = [child cachedPropertyValue: EWMH_WMWindowType];
 		if (![ewmhWindowType isEmpty])
 		{
 			// FIXME: This is an atom list, not a single atom
 			xcb_atom_t value = [ewmhWindowType asAtom];
-			if (/*[atomCache atomNamed: EWMH_WMWindowTypeNormal] == value || */
+			if ([atomCache atomNamed: EWMH_WMWindowTypeNormal] == value ||
 				[atomCache atomNamed: EWMH_WMWindowTypeUtility] == value ||
 				[atomCache atomNamed: EWMH_WMWindowTypeDialog] == value)
 				decorate = YES;
@@ -432,56 +479,13 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 		XCBCachedProperty *wmNormalHintsProperty = [child cachedPropertyValue: ICCCMWMNormalHints];
 		if (![wmNormalHintsProperty isEmpty])
 		{
-			icccm_wm_size_hints_t h = [wmNormalHintsProperty asWMSizeHints];
-			if (h.flags & ICCCMPMinSize)
-			{
-				min_width = h.min_width;
-				min_height = h.min_height;
-			}
-			else if (h.flags & ICCCMPBaseSize)
-			{
-				min_width = h.base_width;
-				min_height = h.base_height;
-			}
-			else
-			{
-				min_width = 10;
-				min_height = 10;
-			}
-
-			if (h.flags & ICCCMPBaseSize)
-			{
-				base_width = h.base_width;
-				base_height = h.base_height;
-			}
-			else
-			{
-				base_width = min_width;
-				base_width = min_height;
-			}
-
-			if (h.flags & ICCCMPMaxSize)
-			{
-				max_width = h.max_width;
-				max_height = h.max_height;
-			}
-			else
-			{
-				max_width = -1;
-				min_width = -1;
-			}
-
-			if (h.flags & ICCCMPWinGravity)
-				window_gravity = h.win_gravity;
-			else
-				window_gravity = ICCCMNorthWestGravity;
-			// FIXME: Complete
+			wm_size_hints = [wmNormalHintsProperty asWMSizeHints];
 		}
 		else
 		{
-			// FIXME: Complete
+			wm_size_hints.win_gravity = ICCCMNorthWestGravity;
 		}
-		refPoint = ICCCMCalculateReferencePoint(window_gravity, [[self childWindow] frame], BORDER_WIDTHS);
+		
 	}
 
 	// 2. Perform window transition to new state
@@ -542,16 +546,22 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 	// position
 	[decorationWindow restackAboveWindow: child];
 	[[self decorationWindow] map];
-	child_origin = [child frame].origin;
 	[child reparentToWindow: decorationWindow
-	                     dX: DecorationWindowBorderSize
-	                     dY: DecorationWindowBorderSize];
+	                     dX: BORDER_WIDTHS[ICCCMBorderWest]
+	                     dY: BORDER_WIDTHS[ICCCMBorderEast]];
 	
 	[XCBConn setNeedsFlush: YES];
 }
 
 - (void)mapChildWindow
 {
+	// Reposition the decoration and child window
+	// to where they were requested, based on gravity
+	XCBRect childFrame = [child frame];
+	[self updateRefPoint: childFrame];
+	[self repositionManagedWindow: childFrame];
+
+	// Register for useful notifications
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
 		   selector: @selector(managedWindowFocusIn:)
@@ -622,9 +632,17 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 	{
 		[decorationWindow unmap];
 		// FIXME: Should we calculate where it was before?
+		XCBRect clientFrame = [self clientFrame];
 		[child reparentToWindow: [decorationWindow parent]
-				     dX: refPoint.x
-				     dY: refPoint.y];
+				     dX: clientFrame.origin.x
+				     dY: clientFrame.origin.y];
+
+		// Reparenting windows does not send ConfigureNotify events.
+		// According to Metacity bug 399552, we should not expect
+		// clients to track ReparentNotify events to check their position,
+		// so we should send a synthentic configure notify for 
+		// them so they can update their internal state.
+		[self sendSyntheticConfigureNotify: clientFrame];
 	}
 	reparented = NO;
 	[child removeFromSaveSet];
@@ -637,16 +655,36 @@ static const uint32_t BORDER_WIDTHS[4] = { 4, 4, 4, 4};
 		[child xcbWindowId],
 		[decorationWindow xcbWindowId]];
 }
-- (XCBRect)referenceFrame
+- (XCBRect)clientFrame
 {
 	XCBRect decorationFrame = [decorationWindow frame];
 	XCBRect childFrame =  [child frame];
 	if (nil == decorationWindow)
+	{
 		return childFrame;
+	}
 	else
-		return XCBMakeRect(decorationFrame.origin.x + BORDER_WIDTHS[ICCCMBorderWest],
-			decorationFrame.origin.y + BORDER_WIDTHS[ICCCMBorderNorth],
+		return XCBMakeRect(decorationFrame.origin.x,
+			decorationFrame.origin.y,
 			childFrame.size.width,
 			childFrame.size.height);
+}
+- (void)sendSyntheticConfigureNotify: (XCBRect)clientFrame
+{
+	xcb_configure_notify_event_t event;
+	event.response_type = XCB_CONFIGURE_NOTIFY;
+	event.event = [[self childWindow] xcbWindowId];
+	event.window = [[self childWindow] xcbWindowId];
+	event.x = clientFrame.origin.x;
+	event.y = clientFrame.origin.y;
+	event.width = clientFrame.size.width;
+	event.height = clientFrame.size.height;
+	event.above_sibling = XCB_NONE;
+	event.border_width = req_border_width;
+	event.override_redirect = 0;
+	[[self childWindow] 
+		sendEvent: XCB_EVENT_MASK_STRUCTURE_NOTIFY
+		propagate: 0
+		     data: (const char*)&event];
 }
 @end

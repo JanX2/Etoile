@@ -51,8 +51,6 @@ typedef enum _PMManagedWindowState
 	XCBWindow *decorationWindow;
 	PMManagedWindowState state;
 
-	XCBPoint child_origin;
-
 	// Fields containing pending events
 	NSArray* pendingEvents;
 
@@ -67,11 +65,10 @@ typedef enum _PMManagedWindowState
 
 	// Other fields
 	XCBPoint refPoint;
-	ICCCMWindowGravity window_gravity;
-	int32_t min_width, min_height, max_width, max_height,
-		width_inc, height_inc, base_width, base_height;
-	float min_aspect, max_aspect;
+	icccm_wm_size_hints_t wm_size_hints;
+
 	xcb_window_t window_group;
+	int16_t req_border_width;
 }
 - (id)initWithChildWindow: (XCBWindow*)win pendingEvents: (NSArray*)pending;
 - (XCBWindow*)childWindow;

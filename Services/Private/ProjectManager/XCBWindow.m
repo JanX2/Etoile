@@ -275,13 +275,23 @@ static XCBWindow* UnknownWindow;
 		button,
 		modifiers);
 }
-- (void)ungrabButton: (uint8_t)button
-           modifiers: (uint8_t)modifiers
+- (void)ungrabButton: (xcb_button_index_t)button
+           modifiers: (uint16_t)modifiers
 {
 	xcb_ungrab_button([XCBConn connection],
 		button,
 		[self xcbWindowId],
 		modifiers);
+}
+- (void)sendEvent: (uint32_t)event_mask
+        propagate: (uint8_t)propagate
+             data: (const char*)event_data
+{
+	xcb_send_event([XCBConn connection],
+		propagate,
+		[self xcbWindowId],
+		event_mask,
+		event_data);
 }
 - (void)setGeometry: (xcb_get_geometry_reply_t*)reply
 {
@@ -328,7 +338,51 @@ static XCBWindow* UnknownWindow;
 }
 - (void)setFrame: (XCBRect)aRect
 {
-	uint32_t values[4];
+	[self setFrame: aRect
+	        border: [self borderWidth]];
+}
+- (void)setFrame: (XCBRect)aRect
+          border: (int16_t)aBorderWidth
+{
+	uint32_t values[5];
+	unsigned int i = 0;
+	uint16_t mask = 0;
+	if (aRect.origin.x != frame.origin.x)
+	{
+		values[i++] = aRect.origin.x;
+		mask |= XCB_CONFIG_WINDOW_X;
+	}
+	if (aRect.origin.y != frame.origin.y)
+	{
+		values[i++] = aRect.origin.y;
+		mask |= XCB_CONFIG_WINDOW_Y;
+	}
+	if (aRect.size.width != frame.size.width)
+	{
+		values[i++] = aRect.size.width;
+		mask |= XCB_CONFIG_WINDOW_WIDTH;
+	}
+	if (aRect.size.height != frame.size.height)
+	{
+		values[i++] = aRect.size.height;
+		mask |= XCB_CONFIG_WINDOW_HEIGHT;
+	}
+	if (border_width != aBorderWidth)
+	{
+		values[i++] = aBorderWidth;
+		mask |= XCB_CONFIG_WINDOW_BORDER_WIDTH;
+	}
+
+	
+	[self configureWindow: mask
+	               values: values];
+}
+- (void)setFrame: (XCBRect)aRect
+          border: (int16_t)aBorderWidth
+           above: (XCBWindow*)anAbove
+       stackMode: (xcb_stack_mode_t)stackMode
+{
+	uint32_t values[7];
 	unsigned int i = 0;
 	uint16_t mask = 0;
 	// Only send the components that have changed to the server.
@@ -353,6 +407,17 @@ static XCBWindow* UnknownWindow;
 		values[i++] = aRect.size.height;
 		mask |= XCB_CONFIG_WINDOW_HEIGHT;
 	}
+	if (border_width != aBorderWidth)
+	{
+		values[i++] = aBorderWidth;
+		mask |= XCB_CONFIG_WINDOW_BORDER_WIDTH;
+	}
+
+	values[i++] = [anAbove xcbWindowId];
+	mask |= XCB_CONFIG_WINDOW_SIBLING;
+	values[i++] = stackMode;
+	mask |= XCB_CONFIG_WINDOW_STACK_MODE;
+	
 	[self configureWindow: mask
 	               values: values];
 }
