@@ -51,8 +51,10 @@ typedef enum _PMManagedWindowState
 	XCBWindow *decorationWindow;
 	PMManagedWindowState state;
 
-	// Fields containing pending events
+	// Pending events to be processed
 	NSArray* pendingEvents;
+
+	BOOL has_focus;
 
 	// Fields used during map and unmap transitions
 	NSMutableSet *pendingWindowProperties;

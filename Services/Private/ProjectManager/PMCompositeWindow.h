@@ -44,8 +44,8 @@ enum PMCompositeWindowMode
 
 @interface PMCompositeWindow : NSObject
 {
-	PMScreen *screen;
 	XCBWindow *window;
+	id delegate;
 	BOOL damaged;
 	XCBDamage *damage;
 	XCBRenderPicture *picture, *alphaPicture;
@@ -56,6 +56,7 @@ enum PMCompositeWindowMode
 }
 + (PMCompositeWindow*)windowWithXCBWindow: (XCBWindow*)xcbWindow;
 - (id)initWithXCBWindow: (XCBWindow*)xcbWindow;
+- (void)setDelegate: (id)delegate;
 - (XCBWindow*)window;
 - (void)paintIntoBuffer: (XCBRenderPicture*)buffer 
              withRegion: (XCBFixesRegion*)region 
@@ -67,8 +68,6 @@ enum PMCompositeWindowMode
   * The current extents of the window. Only updated during painting.
   */
 - (XCBFixesRegion*)extents;
-- (PMScreen*)screen;
-- (void)setScreen: (PMScreen*)screen;
 /**
   * The window was damaged. This method
   * returns a newly created (autoreleased) region which is
@@ -85,4 +84,10 @@ enum PMCompositeWindowMode
   * Don't forget to destroy
   */
 - (XCBFixesRegion*)calculateExtents;
+@end
+
+@interface NSObject (PMCompositeWindowDelegate)
+- (void)compositeWindow: (PMCompositeWindow*)compositeWindow 
+         extentsChanged: (XCBFixesRegion*)newExtents
+             oldExtents: (XCBFixesRegion*)oldExtents;
 @end

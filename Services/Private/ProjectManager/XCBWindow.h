@@ -91,6 +91,9 @@ enum
 	uint32_t _cache_load_values;
 
 	NSMutableDictionary *cached_property_values;
+
+	// Flags
+	BOOL ignore_synthetic_configure_notify;
 }
 
 /**
@@ -278,6 +281,8 @@ enum
 /** XCBDrawable **/
 - (xcb_drawable_t)xcbDrawableId;
 
+- (void)setIgnoreSyntheticConfigureNotify: (BOOL)ig;
+- (BOOL)ignoreSyntheticConfigureNotify;
 @end
 
 @interface NSObject (XCBWindowDelegate)

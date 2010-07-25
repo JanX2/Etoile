@@ -42,12 +42,21 @@ enum
 @end
 
 @interface XCBWindow (XCBShape)
+/**
+  * Change the rectangles that define the Bounding,
+  * Clip or Input client regions of a window using
+  * a set operation.
+  */
 - (void)setShapeRectangles: (xcb_rectangle_t*)rects
                      count: (uint32_t)len
                   ordering: (uint8_t)ordering
                  operation: (xcb_shape_op_t)op
                       kind: (xcb_shape_kind_t)kind
                     offset: (XCBPoint)offset;
+/**
+  * Turn ShapeNotify events on or off.
+  */
+- (void)setShapeSelectInput: (BOOL)selectShapeInput;
 @end
 
 @interface NSObject (XCBShape_Delegate)

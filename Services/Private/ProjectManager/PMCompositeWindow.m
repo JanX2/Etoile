@@ -34,6 +34,7 @@
 #import "XCBDamage.h"
 #import "XCBComposite.h"
 #import "XCBPixmap.h"
+#import "XCBShape.h"
 
 const uint32_t OPAQUE = UINT32_MAX;
 @interface PMCompositeWindow (Private)
@@ -62,6 +63,7 @@ const uint32_t OPAQUE = UINT32_MAX;
 	REGISTER_OBSERVER(FrameWillChange);
 	REGISTER_OBSERVER(DidMap);
 	REGISTER_OBSERVER(DidUnMap);
+	REGISTER_OBSERVER(ShapeNotify);
 	                         
 	if ([window windowLoadState] == XCBWindowAvailableState)
 	{
@@ -69,6 +71,7 @@ const uint32_t OPAQUE = UINT32_MAX;
 		[self xcbWindowBecomeAvailable: nil];
 	}
 	self->opacity = OPAQUE;
+	[win setShapeSelectInput: YES];
 	return self;
 }
 - (void)dealloc
@@ -86,15 +89,16 @@ const uint32_t OPAQUE = UINT32_MAX;
 		removeObserver: self];
 	[super dealloc];
 }
-- (PMScreen*)screen
+
+- (void)setDelegate: (id)del
 {
-	return screen;
+	self->delegate = del;
 }
-- (void)setScreen: (PMScreen*)scr
-{
-	self->screen = scr;
+
+- (XCBWindow*)window 
+{ 
+	return window; 
 }
-- (XCBWindow*)window { return window; }
 
 - (void)determineMode
 {
@@ -136,11 +140,12 @@ const uint32_t OPAQUE = UINT32_MAX;
 
 - (void)xcbWindowFrameWillChange: (NSNotification*)notification
 {
-
 }
 
 - (void)xcbWindowFrameDidChange: (NSNotification*)notification
 {
+	XCBFixesRegion *old_extents = [extents retain];
+
 	// FIXME: need more information about what changed so that we don't
 	// unnecessarily reallocate pixmaps
 	if (pixmap)
@@ -153,8 +158,17 @@ const uint32_t OPAQUE = UINT32_MAX;
 			picture = nil;
 		}
 	}
+	
 	[extents release];
 	extents = [[self calculateExtents] retain];
+
+	// Notify that we have damaged due to new extents
+	if ([delegate respondsToSelector: @selector(compositeWindow:extentsChanged:oldExtents:)])
+		[delegate compositeWindow: self
+		           extentsChanged: extents
+		               oldExtents: old_extents];
+	
+	[old_extents release];
 }
 
 - (void)xcbWindowBecomeAvailable: (NSNotification*)notification
@@ -176,6 +190,14 @@ const uint32_t OPAQUE = UINT32_MAX;
 	// not post a WindowFrameDidChange notification).
 	[self xcbWindowFrameDidChange: nil];
 }
+
+- (void)xcbWindowShapeNotify: (NSNotification*)notification
+{
+	NSDebugLLog(@"PMCompositeWindow", @"Shape notify event for %@", self);
+	// Damage ourselves by imitating ConfigureNotify
+	[self xcbWindowFrameDidChange: nil];
+}
+
 - (void)paintIntoBuffer: (XCBRenderPicture*)buffer 
              withRegion: (XCBFixesRegion*)region
             clipChanged: (BOOL)clipChanged
@@ -228,8 +250,8 @@ const uint32_t OPAQUE = UINT32_MAX;
 		borderSize = [[XCBFixesRegion 
 				regionWithWindow: window 
 				           shape: XCB_SHAPE_SK_BOUNDING] retain];
-		[borderSize translateWithDX:frame.origin.x + border_width
-			dY:frame.origin.y + border_width];
+		[borderSize translateWithDX: frame.origin.x + border_width
+		                         dY: frame.origin.y + border_width];
 	}
 	if (nil == extents) 
 	{
@@ -344,14 +366,17 @@ const uint32_t OPAQUE = UINT32_MAX;
 	if (!self->damaged)
 	{
 		parts = [self calculateExtents];
-		[damage subtractWithRepair:nil parts:nil];
+		[damage subtractWithRepair: nil 
+		                     parts: nil];
 	}
 	else
 	{
 		XCBRect frame = [window frame];
 		int16_t border_width = [window borderWidth];
-		parts = [XCBFixesRegion regionWithRectangles:NULL count:0];
-		[damage subtractWithRepair:nil parts:parts];
+		parts = [XCBFixesRegion regionWithRectangles: NULL 
+		                                       count: 0];
+		[damage subtractWithRepair: nil 
+		                     parts: parts];
 		[parts translateWithDX: frame.origin.x + border_width
 				    dY: frame.origin.y + border_width];
 	}

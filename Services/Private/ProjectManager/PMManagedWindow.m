@@ -32,19 +32,28 @@
 #import "XCBShape.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
-const uint16_t XCB_MOD_MASK_ANY = 32768;
+/**
+  * XCB_MOD_MASK_MANY, renamed to workaround old
+  * version of XCB not declaring it in xproto.h
+  */
+const uint16_t PM_XCB_MOD_MASK_ANY = 32768;
 
-static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
+/**
+  * The width of the border used to house the
+  * resize handles. This should be at least 1px
+  * greater than the resize handle width to allow
+  * some space between the outer child border and
+  * the resize handles
+  */
+static const uint32_t BORDER_WIDTHS[4] = { 8, 8, 8, 8};
+
+static const uint32_t CHILD_BORDER_WIDTH = 1;
+
+static const uint32_t RH_WIDTH = 4;
+static const uint32_t MIN_RH_LENGTH = 20;
+static const float RH_QUOTIENT = 0.15;
 
 @interface PMManagedWindow (Private)
-- (id)initWithChildWindow: (XCBWindow*)win;
-/**
-  * Reparent the child window into the decoration window
-  * and then map the decoration window.
-  *
-  * Still requires that the child window be mapped using
-  * -mapChildWindow
-  */
 - (void)mapDecorationWindow;
 /**
   * Clean up after the child window was unmapped, including
@@ -99,7 +108,10 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
   * is to be adjusted, before -[PMManagedWindow repositionManagedWindow].
   */
 - (void)updateRefPoint: (XCBRect)newRect;
-- (void)repositionManagedWindow: (XCBRect)newRect ;
+- (void)repositionManagedWindow: (XCBRect)newRect;
+- (void)updateShape;
+- (void)updateShapeWithDecorationFrame: (XCBRect)decorationFrame
+                            childFrame: (XCBRect)childFrame;
 @end
 
 @implementation PMManagedWindow
@@ -119,18 +131,38 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 		[self xcbWindowBecomeAvailable: nil];
 	return self;
 }
+
 - (void)dealloc
 {
 	NSDebugLLog(@"PMManagedWindow", @"%@: -[PMManagedWindow dealloc]", self);
-	NSNotificationCenter *center =
-		[NSNotificationCenter defaultCenter];
-	[center removeObserver: self];
+	[[NSNotificationCenter defaultCenter]
+		removeObserver: self];
 	[child setDelegate: nil];
 	[child release];
 	[pendingEvents release];
 	[decorationWindow release];
 	[super dealloc];
 }
+- (NSString*)description
+{
+	return [NSString stringWithFormat: @"PMManagedWindow (child=%x,decorationWindow=%x)",
+		[child xcbWindowId],
+		[decorationWindow xcbWindowId]];
+}
+- (XCBWindow*)childWindow
+{
+	return child;
+}
+- (void)setDelegate: (id)dg
+{
+	self->delegate = dg;
+}
+- (XCBWindow*)decorationWindow
+{
+	return decorationWindow;
+}
+@end
+@implementation PMManagedWindow (Private)
 - (void)xcbWindowDidCreate: (NSNotification*)notification
 {
 	NSString *neededPropertyValuesArray[] = {
@@ -154,15 +186,16 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 	state = PMManagedWindowWaitingOnPropertiesState;
 	
 	req_border_width = [child borderWidth];
+	// We send synthetic ConfigureNotify events but we
+	// must ignore them because they mess up our child
+	// frame values stored in XCBWindow and used to
+	// calculate a range of internal values
+	[child setIgnoreSyntheticConfigureNotify: YES];
 
 	if ([pendingWindowProperties count] == 0) {
 		NSDebugLLog(@"PMManagedWindow", @"Become ready for transition form xcbWindowBecomeAvailable");
 		[self windowReadyForTransition];
 	}
-}
-- (XCBWindow*)childWindow
-{
-	return child;
 }
 - (void)createDecorationWindow
 {
@@ -195,10 +228,6 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 	           selector: @selector(decorationWindowCreated:)
 	               name: XCBWindowBecomeAvailableNotification
 	             object: decorationWindow];
-}
-- (void)setDelegate: (id)dg
-{
-	self->delegate = dg;
 }
 - (XCBRect)calculateDecorationFrame: (XCBRect)clientFrame
 {
@@ -252,8 +281,10 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 {
 	NSDebugLLog(@"PMManagedWindow", @"%@ raising to top and releasing grab", self);
 	XCBWindow *w = reparented ? decorationWindow : child;
-	[w ungrabButton: XCB_BUTTON_INDEX_1 modifiers: XCB_MOD_MASK_ANY];
+	[w ungrabButton: XCB_BUTTON_INDEX_1 modifiers: PM_XCB_MOD_MASK_ANY];
 	[w restackAboveWindow: nil];
+	self->has_focus = YES;
+	[self updateShape];
 }
 - (void)managedWindowFocusOut: (NSNotification*)aNotification
 {
@@ -262,13 +293,15 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 	NSDebugLLog(@"PMManagedWindow", @"%@ focus out, grabbing", self);
 	XCBWindow *w = reparented ? decorationWindow : child;
 	[w grabButton: XCB_BUTTON_INDEX_1
-	    modifiers: XCB_MOD_MASK_ANY
+	    modifiers: PM_XCB_MOD_MASK_ANY
 	  ownerEvents: YES
 	    eventMask: XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_1_MOTION | XCB_EVENT_MASK_BUTTON_RELEASE
 	  pointerMode: XCB_GRAB_MODE_ASYNC
 	 keyboardMode: XCB_GRAB_MODE_ASYNC
 	    confineTo: nil
 	       cursor: XCB_NONE];
+	self->has_focus = NO;
+	[self updateShape];
 }
 - (void)managedWindowButton1Press: (NSNotification*)aNotification
 {
@@ -323,8 +356,8 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 	NSDebugLLog(@"PMManagedWindow", @"%@: -[PMManagedWindow xcbWindowDidMap:] child window mapped.", self);
 	// If we are withdrawn and get a map request, we
 	// re-manage the window
-	if (state == PMManagedWindowWithdrawnState)
-		[self handleMapRequest];
+	//if (state == PMManagedWindowWithdrawnState)
+	//	[self handleMapRequest];
 }
 - (void)xcbWindowConfigureRequest: (NSNotification*)aNotification
 {
@@ -388,21 +421,11 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 		XCBRect childFrame = XCBMakeRect(
 				BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth], 
 				newRect.size.width, newRect.size.height);
+		[self updateShapeWithDecorationFrame: decorationFrame childFrame: childFrame];
 		[child setFrame: childFrame
 		         border: 0];
 		[decorationWindow setFrame: decorationFrame border: 0];
 		[self sendSyntheticConfigureNotify: newRect];
-		// Shape bounding rect experiment - to be removed
-		// xcb_rectangle_t clip_rects[2] = {
-		// 	{ 0, 0, 10, 4 },
-		// 	XCBRectangleFromRect(childFrame) };
-		// 	
-		// [decorationWindow setShapeRectangles: clip_rects
-		// 			       count: 2
-		// 			    ordering: XCB_SHAPE_UNSORTED
-		// 			   operation: XCB_SHAPE_SO_SET
-		// 				kind: XCB_SHAPE_SK_BOUNDING
-		// 			      offset: XCBMakePoint(0, 0)];
 	}
 	else
 	{
@@ -415,8 +438,8 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 		// just want the point from this function, as it tells us where to plonk
 		// the child frame, adjusted for the child frame
 
-		// No need for decoration window update or synthentic ConfigureNotify, as
-		// this is the real deal
+		// No need for decoration window update or synthentic ConfigureNotify
+		// because there is only the child window
 		[child setFrame: XCBMakeRect(decorationFrame.origin.x, decorationFrame.origin.y, newRect.size.width, newRect.size.height)
 		         border: 1];
 	}
@@ -445,10 +468,6 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 	NSDebugLLog(@"PMManagedWindow", @"%@: -[PMManagedWindow xcbWindowFrameDidChange]", self);
 }
 
-- (XCBWindow*)decorationWindow
-{
-	return decorationWindow;
-}
 - (void)handleMapRequest
 {
 	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
@@ -640,11 +659,26 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 {
 	NSDebugLLog(@"PMManagedWindow", @"%@: unmapping the decoration window and then unparenting the child.",self);
 	XCBWindow *managed = reparented ? decorationWindow : child;
-	[[NSNotificationCenter defaultCenter] removeObserver: self name: XCBWindowFocusInNotification object: managed];
-	[[NSNotificationCenter defaultCenter] removeObserver: self name: XCBWindowFocusOutNotification object: managed];
-	[[NSNotificationCenter defaultCenter] removeObserver: self name: XCBWindowButtonPressNotification object: managed];
-	[[NSNotificationCenter defaultCenter] removeObserver: self name: XCBWindowButtonReleaseNotification object: managed];
-	[[NSNotificationCenter defaultCenter] removeObserver: self name: XCBWindowMotionNotifyNotification object: managed];
+	[[NSNotificationCenter defaultCenter] 
+		removeObserver: self 
+		          name: XCBWindowFocusInNotification 
+		        object: managed];
+	[[NSNotificationCenter defaultCenter] 
+		removeObserver: self 
+		          name: XCBWindowFocusOutNotification 
+		        object: managed];
+	[[NSNotificationCenter defaultCenter] 
+		removeObserver: self 
+		          name: XCBWindowButtonPressNotification 
+		        object: managed];
+	[[NSNotificationCenter defaultCenter] 
+		removeObserver: self 
+		          name: XCBWindowButtonReleaseNotification 
+		        object: managed];
+	[[NSNotificationCenter defaultCenter] 
+		removeObserver: self 
+		          name: XCBWindowMotionNotifyNotification 
+		        object: managed];
 	if (reparented)
 	{
 		[decorationWindow unmap];
@@ -666,12 +700,6 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 	[delegate managedWindowWithdrawn: self];
 }
 
-- (NSString*)description
-{
-	return [NSString stringWithFormat: @"PMManagedWindow (child=%x,decorationWindow=%x)",
-		[child xcbWindowId],
-		[decorationWindow xcbWindowId]];
-}
 - (XCBRect)clientFrame
 {
 	XCBRect decorationFrame = [decorationWindow frame];
@@ -703,5 +731,65 @@ static const uint32_t BORDER_WIDTHS[4] = { 6, 6, 6, 6};
 		sendEvent: XCB_EVENT_MASK_STRUCTURE_NOTIFY
 		propagate: 0
 		     data: (const char*)&event];
+}
+- (void)updateShape
+{
+	[self updateShapeWithDecorationFrame: [decorationWindow frame]
+	                          childFrame: [child frame]];
+}
+- (void)updateShapeWithDecorationFrame: (XCBRect)decorationFrame
+                            childFrame: (XCBRect)childFrame
+{
+	if (nil != decorationWindow)
+	{
+		// Child location
+		XCBPoint cp = childFrame.origin;
+
+		// Child size
+		XCBSize cs = childFrame.size;
+
+		// Decoration Size
+		XCBSize ds = [decorationWindow frame].size;
+
+		// Resize Handle Length
+		int16_t rhl = MAX(MIN_RH_LENGTH, RH_QUOTIENT * MIN(cs.width, cs.height));
+
+		// Resize Handle Width
+		int16_t rhw = RH_WIDTH;
+
+		// Child border width
+		int16_t cbw = CHILD_BORDER_WIDTH;
+		if (has_focus)
+		{
+
+			xcb_rectangle_t rects[9] = {
+				{ 0, 0, rhw + rhl, rhw }, // NW H
+				{ ds.width - rhw - rhl, 0, rhw + rhl, rhw }, // NE H
+				{ 0, rhw, rhw, rhl }, // NW V
+				{ ds.width - rhw, rhw, rhw, rhl }, // NE V
+				{ cp.x - cbw, cp.y - cbw, cs.width + cbw * 2, cs.height + cbw * 2}, // Child
+				{ 0, ds.height - rhw - rhl, rhw, rhl }, // SW V
+				{ ds.width - rhw, ds.height - rhl - rhw, rhw, rhl }, // SE V
+				{ 0, ds.height - rhw, rhw + rhl, rhw }, // SW H
+				{ ds.width - rhl - rhw, ds.height - rhw, rhl + rhw, rhw } // SE H
+			};
+			[decorationWindow setShapeRectangles: rects
+						       count: 9
+						    ordering: XCB_SHAPE_YXSORTED
+						   operation: XCB_SHAPE_SO_SET
+							kind: XCB_SHAPE_SK_BOUNDING
+						      offset: XCBMakePoint(0, 0)];
+		}
+		else
+		{
+			xcb_rectangle_t rect = { cp.x - cbw, cp.y - cbw, cs.width + cbw * 2, cs.height + cbw*2};
+			[decorationWindow setShapeRectangles: &rect
+						       count: 1
+						    ordering: XCB_SHAPE_UNSORTED
+						   operation: XCB_SHAPE_SO_SET
+							kind: XCB_SHAPE_SK_BOUNDING
+						      offset: XCBMakePoint(0, 0)];
+		}
+	}
 }
 @end

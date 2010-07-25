@@ -33,6 +33,7 @@
 #import "XCBAtomCache.h"
 #import "XCBSelection.h"
 #import "XCBDamage.h"
+#import "XCBShape.h"
 
 #import <EtoileFoundation/EtoileFoundation.h>
 
@@ -152,21 +153,25 @@
               compositeWindow: (PMCompositeWindow*)compositeWindow
 {
 	if (compositeWindow != nil)
-		[compositeMap setObject: compositeWindow forKey: child];
-	if ([child windowLoadState] == XCBWindowAvailableState)
 	{
-		NSNotification *fakeNotification = 
-			[NSNotification notificationWithName: XCBWindowBecomeAvailableNotification
-			                              object: child];
-		[self childWindowBecomeAvailable: fakeNotification];
-	}
-	else
-	{
-		[[NSNotificationCenter defaultCenter]
-			addObserver: self
-			   selector: @selector(childWindowBecomeAvailable:)
-			       name: XCBWindowBecomeAvailableNotification
-			     object: child];
+		[compositeMap setObject: compositeWindow 
+		                 forKey: child];
+		[compositeWindow setDelegate: self];
+		if ([child windowLoadState] == XCBWindowAvailableState)
+		{
+			NSNotification *fakeNotification = 
+				[NSNotification notificationWithName: XCBWindowBecomeAvailableNotification
+							      object: child];
+			[self childWindowBecomeAvailable: fakeNotification];
+		}
+		else
+		{
+			[[NSNotificationCenter defaultCenter]
+				addObserver: self
+				   selector: @selector(childWindowBecomeAvailable:)
+				       name: XCBWindowBecomeAvailableNotification
+				     object: child];
+		}
 	}
 }
 - (void)childWindowRemoved: (XCBWindow*)xcbWindow
@@ -206,16 +211,6 @@
 		addObserver: self
 		   selector: @selector(childWindowDidDestroy:)
 		       name: XCBWindowDidDestroyNotification
-		     object: child];
-	[[NSNotificationCenter defaultCenter]
-		addObserver: self
-		   selector: @selector(childWindowFrameWillChange:)
-		       name: XCBWindowFrameWillChangeNotification
-		     object: child ];
-	[[NSNotificationCenter defaultCenter]
-		addObserver: self
-		   selector: @selector(childWindowFrameDidChange:)
-		       name: XCBWindowFrameDidChangeNotification
 		     object: child];
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
@@ -277,28 +272,17 @@
 	ASSIGN(rootPicture, picture);
 }
 
-- (void)childWindowFrameWillChange: (NSNotification*)notification
+- (void)compositeWindow: (PMCompositeWindow*)compositeWindow 
+         extentsChanged: (XCBFixesRegion*)extents
+             oldExtents: (XCBFixesRegion*)oldExtents
 {
-	XCBWindow *xcbWindow = [notification object];
-	PMCompositeWindow *window = [self findCompositeWindow: xcbWindow];
-	XCBFixesRegion *extents = [window extents];
-	if (extents)
-	{
-		[self appendDamage:extents];
-	}
-}
-- (void)childWindowFrameDidChange: (NSNotification*)notification
-{
-	XCBWindow *xcbWindow = [notification object];
-	PMCompositeWindow *compositeWindow = [self findCompositeWindow: xcbWindow];
-	XCBFixesRegion *extents = [compositeWindow extents];
-
-
-	// Union the damage with the accumulated damage
+	if (oldExtents)
+		[self appendDamage: oldExtents];
 	if (extents)
 		[self appendDamage: extents];
 	clipChanged = YES;
 }
+
 - (void)windowDidExpose: (NSNotification*)notification
 {
 	NSLog(@"-[XCBScreen windowDidExpose:]");

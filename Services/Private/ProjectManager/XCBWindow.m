@@ -467,6 +467,14 @@ static XCBWindow* UnknownWindow;
 	[self restackRelativeTo: aboveWindow
 	              stackMode: XCB_STACK_MODE_ABOVE];
 }
+- (void)setIgnoreSyntheticConfigureNotify: (BOOL)ig
+{
+	ignore_synthetic_configure_notify = ig;
+}
+- (BOOL)ignoreSyntheticConfigureNotify
+{
+	return ignore_synthetic_configure_notify;
+}
 - (void)configureWindow: (uint16_t)valueMask
                  values: (const uint32_t*)values
 {
@@ -779,20 +787,25 @@ static XCBWindow* UnknownWindow;
 	NSValue *frameRectValue = [NSValue 
 		valueWithBytes:&frameRect
 		objCType:@encode(XCBRect)];
-	NSValue *borderWidth = [NSNumber numberWithInt:anEvent->border_width];
+	NSValue *borderWidth = [NSNumber numberWithInt: anEvent->border_width];
+	NSNumber *sendEvent = [NSNumber numberWithBool: anEvent->response_type & 0x80];
 	NSDictionary *userInfo = 
 		[NSDictionary dictionaryWithObjectsAndKeys:
 		frameRectValue, @"Rect",
 		borderWidth, @"BorderWidth",
+		sendEvent, @"SendEvent",
 		aboveWindow, @"Above", // Place last as aboveWindow == nil, which then cuts off the rest of the dictionary (and hence it is absent, indicating stacked at the bottom). maybe we should have the concept of a nil window or just [NSNull null]
 		nil];
 		
 	_cache_load_values |= XCBWindowLoadedGeometry;
 	XCBDELEGATE_U(WindowFrameWillChange, userInfo);
 	XCBNOTIFY_U(WindowFrameWillChange, userInfo);
-	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
-	border_width = anEvent->border_width;
-	attributes.override_redirect = anEvent->override_redirect;
+	if (!([sendEvent boolValue] && ignore_synthetic_configure_notify))
+	{
+		frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
+		border_width = anEvent->border_width;
+		attributes.override_redirect = anEvent->override_redirect;
+	}
 	ASSIGN(above, [XCBWindow windowWithXCBWindow: anEvent->above_sibling]);
 	XCBDELEGATE_U(WindowFrameDidChange, userInfo);
 	XCBNOTIFY_U(WindowFrameDidChange, userInfo);

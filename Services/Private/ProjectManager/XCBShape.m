@@ -98,6 +98,12 @@ NSString* XCBWindowShapeNotifyNotification = @"XCBWindowShapeNotifyNotification"
 		len,
 		rects);
 }
+- (void)setShapeSelectInput: (BOOL)selectShapeInput
+{
+	xcb_shape_select_input([XCBConn connection],
+		[self xcbWindowId],
+		selectShapeInput ? 1 : 0);
+}
 @end
 
 @implementation XCBConnection (XCBShape)

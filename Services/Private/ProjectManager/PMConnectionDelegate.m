@@ -139,8 +139,8 @@
 
 - (void)redirectRootsForWindow: (XCBWindow*)rootWindow
 {
-	[XCBComposite redirectSubwindows: rootWindow 
-	                          method: XCB_COMPOSITE_REDIRECT_MANUAL];
+	 [XCBComposite redirectSubwindows: rootWindow 
+	                           method: XCB_COMPOSITE_REDIRECT_MANUAL];
 }
 
 - (void)windowBecomeAvailable: (NSNotification*)notification
