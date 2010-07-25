@@ -294,7 +294,7 @@ static const float RH_QUOTIENT = 0.15;
 	XCBWindow *w = reparented ? decorationWindow : child;
 	[w grabButton: XCB_BUTTON_INDEX_1
 	    modifiers: PM_XCB_MOD_MASK_ANY
-	  ownerEvents: YES
+	  ownerEvents: NO
 	    eventMask: XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_1_MOTION | XCB_EVENT_MASK_BUTTON_RELEASE
 	  pointerMode: XCB_GRAB_MODE_ASYNC
 	 keyboardMode: XCB_GRAB_MODE_ASYNC

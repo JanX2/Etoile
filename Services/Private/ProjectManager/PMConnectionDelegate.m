@@ -68,7 +68,11 @@
 	compositeWindows = [NSMutableDictionary new];
 	managedWindows = [NSMutableDictionary new];
 	decorationWindows = [NSMutableSet new];
-	[[XCBConnection sharedConnection] setDelegate:self];
+	XCBConnection *conn = [XCBConnection sharedConnection];
+	if (conn == nil)
+		[NSException raise: NSInternalInconsistencyException
+		            format: @"Unable to create connection to the server"];
+	[XCBConn setDelegate: self];
 	[XCBDamage initializeExtensionWithConnection: XCBConn];
 	[XCBComposite initializeExtensionWithConnection: XCBConn];
 	[XCBRender initializeExtensionWithConnection: XCBConn];

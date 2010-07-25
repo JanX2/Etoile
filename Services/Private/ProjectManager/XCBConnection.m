@@ -187,7 +187,7 @@ XCBConnection *XCBConn;
 	}
 	return XCBConn;
 }
-- (id) init
+- (id)init
 {
 	SUPERINIT;
 	NSDebugLLog(@"XCBConnection",@"Creating connection...");
@@ -202,7 +202,7 @@ XCBConnection *XCBConn;
 
 	if (xcb_connection_has_error(connection)) 
 	{
-		NSDebugLLog(@"XCBConnection",@"Unknown error creating connection.");
+		NSLog(@"Unknown error creating connection.");
 		[self release];
 		return nil;
 	}
@@ -222,7 +222,7 @@ XCBConnection *XCBConn;
 	int fd = xcb_get_file_descriptor(connection);
 	if (-1 == fd)
 	{
-		NSDebugLLog(@"XCBConnection",@"Received invalid file descriptor for XCBConnection");
+		NSLog(@"Received invalid file descriptor for XCBConnection");
 		[self release];
 		return nil;
 	}

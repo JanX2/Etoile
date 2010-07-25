@@ -31,7 +31,7 @@
 
 int main(const int argc, const char* argv[])
 {
-	PMConnectionDelegate *connectionDelegate;
+	PMConnectionDelegate *connectionDelegate = nil;
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	@try
 	{
@@ -44,11 +44,6 @@ int main(const int argc, const char* argv[])
 	@catch (NSException* e)
 	{
 		NSLog(@"Aborted with exception: %@", e);
-	}
-	@finally
-	{
-		[connectionDelegate release];
-		[pool release];
 	}
 	return 0;
 }
