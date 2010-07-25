@@ -191,7 +191,7 @@ XCBConnection *XCBConn;
 {
 	SUPERINIT;
 	NSDebugLLog(@"XCBConnection",@"Creating connection...");
-	NSDebugLLog(@"XCBConnection",@"Self: %x", self);
+	NSDebugLLog(@"XCBConnection",@"Self: %p", self);
 	[NSRunLoop currentRunLoop];
 	connection = xcb_connect(NULL, NULL);
 	if (NULL == connection)

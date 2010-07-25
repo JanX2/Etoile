@@ -63,11 +63,10 @@ static XCBWindow* UnknownWindow;
 @end
 
 @implementation XCBWindow
-+ initialize
++ (void)initialize
 {
 	UnknownWindow = [[XCBWindow alloc]
 		initWithXCBWindow: 0 parent: 0 above: 0];
-	return self;
 }
 + (XCBWindow*)unknownWindow
 {
