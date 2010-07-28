@@ -37,6 +37,9 @@ ADDITIONAL_OBJCFLAGS += -fobjc-nonfragile-abi
 #ADDITIONAL_OBJCFLAGS += -Werror 
 CC=clang
 
+EtoileText_INCLUDE_DIRS = -I`pg_config --includedir`
+EtoileText_LIB_DIRS = -L`pg_config --libdir`
+
 ADDITIONAL_LDFLAGS += -lgnustep-gui -lCoreObject -lEtoileUI
 
 EtoileTextExample_OBJC_FILES = $(EtoileText_OBJC_FILES)\
