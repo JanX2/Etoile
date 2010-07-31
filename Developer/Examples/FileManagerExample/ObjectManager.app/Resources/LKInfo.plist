@@ -1,0 +1,5 @@
+{
+	Frameworks = ("CoreObject", "IconKit", "EtoileUI", "SmalltalkSupport", "ScriptKit");
+	Sources = ("ObjectManager.st");
+	PrincipalClass = "ObjectManager";
+}

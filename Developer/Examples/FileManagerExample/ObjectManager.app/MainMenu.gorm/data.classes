@@ -1,0 +1,51 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    ETController = {
+	Actions = (
+	    "add:",
+	    "addNewGroup:",
+	    "insert:",
+	    "insertNewGroup:",
+	    "remove:"
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "add:",
+	    "addNewGroup:",
+	    "addObject:",
+	    "changeLayout:",
+	    "collapse:",
+	    "expand:",
+	    "goBack:",
+	    "goForward:",
+	    "goHome:",
+	    "goToParent:",
+	    "insert:",
+	    "insertNewGroup:",
+	    "inspect:",
+	    "inspectSelection:",
+	    "changeMainViewItemLayoutFromMenu:",
+	    "remove:",
+	    "removeObject:",
+	    "scale:",
+	    "setDelegate:",
+	    "setRenderer:",
+	    "setSource:",
+	    "setTarget:",
+	    "stack:",
+	    "switchUsesScrollView:"
+	);
+	Super = NSObject;
+    };
+    ObjectManagerMainController = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = ETController;
+    };
+}
