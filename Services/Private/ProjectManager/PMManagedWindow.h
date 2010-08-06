@@ -62,8 +62,9 @@ typedef enum _PMManagedWindowState
 	BOOL reparented;
 
 	// Fields used during window moving and resizing
-	XCBPoint lastMovePosition, lastRefPosition;
-	BOOL isMoving;
+	XCBPoint mouseDownPosition;
+	XCBRect mouseDownClientFrame;
+	int moveresizeType;
 
 	// Other fields
 	XCBPoint refPoint;

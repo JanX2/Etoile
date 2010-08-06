@@ -290,7 +290,7 @@
 {
 	FOREACH(screens, screen, PMScreen*)
 	{
-		if ([[screen rootWindow] isEqual:root])
+		if ([[screen rootWindow] isEqual: root])
 			return screen;
 	}
 	return nil;

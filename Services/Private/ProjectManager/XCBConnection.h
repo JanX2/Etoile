@@ -73,6 +73,15 @@ extern NSString* XCBConnectionEstablishmentException;
 - (void)startMessageLoop;
 - (xcb_timestamp_t)currentTime;
 - (void)allowEvents: (xcb_allow_t)allow timestamp: (xcb_timestamp_t)time;
+- (uint8_t)grabPointerWithWindow: (XCBWindow*)grabWindow
+                     ownerEvents: (BOOL)ownerEvents
+                       eventMask: (uint16_t)eventMask
+                     pointerMode: (uint8_t)pointerMode
+                    keyboardMode: (uint8_t)keyboardMode
+                       confineTo: (XCBWindow*)confineWindow
+                          cursor: (xcb_cursor_t)cursor
+                            time: (xcb_timestamp_t)time;
+- (void)ungrabPointer: (xcb_timestamp_t)time;
 @end
 
 @interface NSObject (XCBConnectionDelegate)

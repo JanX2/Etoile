@@ -85,80 +85,80 @@
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	[win handleConfigureRequest: anEvent];
 }
-- (void) handleButtonPress: (xcb_button_press_event_t*)anEvent
+- (void)handleButtonPress: (xcb_button_press_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Button pressed");
 	XCBWindow *win = [self windowForXCBId: anEvent->event];
 	currentTime = anEvent->time;
 	[win handleButtonPress: anEvent];
 }
-- (void) handleButtonRelease: (xcb_button_release_event_t*)anEvent
+- (void)handleButtonRelease: (xcb_button_release_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Button released");
 	XCBWindow *win = [self windowForXCBId: anEvent->event];
 	currentTime = anEvent->time;
 	[win handleButtonRelease: anEvent];
 }
-- (void) handleKeyPress: (xcb_key_press_event_t*)anEvent
+- (void)handleKeyPress: (xcb_key_press_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Key pressed");
 	currentTime = anEvent->time;
 }
-- (void) handleKeyRelease: (xcb_key_release_event_t*)anEvent
+- (void)handleKeyRelease: (xcb_key_release_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Key released");
 	currentTime = anEvent->time;
 }
-- (void) handleMotionNotify: (xcb_motion_notify_event_t*)anEvent
+- (void)handleMotionNotify: (xcb_motion_notify_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Motion notify");
 	XCBWindow *win = [self windowForXCBId: anEvent->event];
 	currentTime = anEvent->time;
 	[win handleMotionNotify: anEvent];
 }
-- (void) handleEnterNotify: (xcb_enter_notify_event_t*)anEvent
+- (void)handleEnterNotify: (xcb_enter_notify_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Enter notify");
 	currentTime = anEvent->time;
 }
-- (void) handleLeaveNotify: (xcb_leave_notify_event_t*)anEvent
+- (void)handleLeaveNotify: (xcb_leave_notify_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Leave notify");
 	currentTime = anEvent->time;
 }
-- (void) handleConfigureNotify: (xcb_configure_notify_event_t*)anEvent
+- (void)handleConfigureNotify: (xcb_configure_notify_event_t*)anEvent
 {
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	[win handleConfigureNotifyEvent: anEvent];
 }
-- (void) handleDestroyNotify: (xcb_destroy_notify_event_t*)anEvent
+- (void)handleDestroyNotify: (xcb_destroy_notify_event_t*)anEvent
 {
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	[win handleDestroyNotifyEvent: anEvent];
 }
-- (void) handleUnMapNotify: (xcb_unmap_notify_event_t*)anEvent
+- (void)handleUnMapNotify: (xcb_unmap_notify_event_t*)anEvent
 {
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
 	NSDebugLLog(@"XCBConnection",@"UnMapping window %@ (%x)", win, anEvent->window);
 	[win handleUnMapNotifyEvent: anEvent];
 }
-- (void) handleMapNotify: (xcb_map_notify_event_t*)anEvent
+- (void)handleMapNotify: (xcb_map_notify_event_t*)anEvent
 {
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
 	[win handleMapNotifyEvent: anEvent];
 }
-- (void) handleCirculateNotify: (xcb_circulate_notify_event_t*)anEvent
+- (void)handleCirculateNotify: (xcb_circulate_notify_event_t*)anEvent
 {
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
 	[win handleCirculateNotifyEvent: anEvent];
 }
-- (void) handleCreateNotify: (xcb_create_notify_event_t*)anEvent
+- (void)handleCreateNotify: (xcb_create_notify_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Created window %x", anEvent->window);
 	XCBWindow *win  = [XCBWindow windowWithCreateEvent: anEvent];
 	// No need to post notification, as this is handled by XCBWindow itself.
 }
-- (void) handleExpose: (xcb_expose_event_t*)anEvent
+- (void)handleExpose: (xcb_expose_event_t*)anEvent
 {
 	XCBWindow *win = [self windowForXCBId:anEvent->window];
 	[win handleExpose:anEvent];
@@ -494,6 +494,33 @@ XCBConnection *XCBConn;
 - (void)allowEvents: (xcb_allow_t)allow timestamp: (xcb_timestamp_t)time
 {
 	xcb_allow_events(connection, allow, time);
+}
+- (uint8_t)grabPointerWithWindow: (XCBWindow*)grabWindow
+                     ownerEvents: (BOOL)ownerEvents
+                       eventMask: (uint16_t)eventMask
+                     pointerMode: (uint8_t)pointerMode
+                    keyboardMode: (uint8_t)keyboardMode
+                       confineTo: (XCBWindow*)confineWindow
+                          cursor: (xcb_cursor_t)cursor
+                            time: (xcb_timestamp_t)time
+{
+	xcb_grab_pointer_cookie_t cookie = xcb_grab_pointer(connection,
+		ownerEvents ? 1 : 0,
+		[grabWindow xcbWindowId],
+		eventMask,
+		pointerMode,
+		keyboardMode,
+		[confineWindow xcbWindowId],
+		cursor,
+		time);
+	xcb_grab_pointer_reply_t *reply = xcb_grab_pointer_reply(connection, cookie, NULL);
+	uint8_t status = reply->status;
+	free(reply);
+	return status;
+}
+- (void)ungrabPointer: (xcb_timestamp_t)time
+{
+	xcb_ungrab_pointer(connection, time);
 }
 - (xcb_connection_t*) connection
 {

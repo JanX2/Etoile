@@ -62,6 +62,12 @@ static inline XCBRect XCBMakeRect(int16_t x,
 	return rect;
 }
 
+static inline XCBSize XCBMakeSize(int16_t width, int16_t height)
+{
+	XCBSize s = { width, height};
+	return s;
+}
+
 static inline NSString *XCBStringFromRect(XCBRect rect)
 {
 	return [NSString stringWithFormat:@"(%hd, %hd), (%hd, %hd)",
@@ -85,6 +91,15 @@ static inline XCBRect XCBCalculateBorderAdjustedFrame(XCBRect specifiedFrame, in
 	XCBRect r = {{ specifiedFrame.origin.x + border_width, specifiedFrame.origin.y + border_width},
 		{ specifiedFrame.size.width, specifiedFrame.size.height } };
 	return r;
+}
+
+static inline BOOL XCBPointInRect(XCBPoint point, XCBRect rect)
+{
+	if (point.x >= rect.origin.x && point.x < (rect.origin.x + rect.size.width) &&
+		point.y >= rect.origin.y && point.y < (rect.origin.y + rect.size.height))
+		return YES;
+	else
+		return NO;
 }
 
 @interface NSValue (XCBGeometry)
