@@ -104,6 +104,22 @@ NSString* XCBWindowShapeNotifyNotification = @"XCBWindowShapeNotifyNotification"
 		[self xcbWindowId],
 		selectShapeInput ? 1 : 0);
 }
+- (void)shapeCombineWithKind: (xcb_shape_kind_t)destKind
+                   operation: (xcb_shape_op_t)op
+                      offset: (XCBPoint)offset
+                      source: (XCBWindow*)sourceWindow
+                  sourceKind: (xcb_shape_kind_t)sourceKind
+{
+	xcb_shape_combine([XCBConn connection],
+		op,
+		destKind,
+		sourceKind,
+		[self xcbWindowId],
+		offset.x,
+		offset.y,
+		[sourceWindow xcbWindowId]
+		);
+}
 @end
 
 @implementation XCBConnection (XCBShape)

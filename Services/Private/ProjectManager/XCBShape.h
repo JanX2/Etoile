@@ -57,6 +57,11 @@ enum
   * Turn ShapeNotify events on or off.
   */
 - (void)setShapeSelectInput: (BOOL)selectShapeInput;
+- (void)shapeCombineWithKind: (xcb_shape_kind_t)destKind
+                   operation: (xcb_shape_op_t)op
+                      offset: (XCBPoint)offset
+                      source: (XCBWindow*)sourceWindow
+                  sourceKind: (xcb_shape_kind_t)sourceKind;
 @end
 
 @interface NSObject (XCBShape_Delegate)

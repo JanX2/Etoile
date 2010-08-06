@@ -281,12 +281,11 @@ static const float RH_QUOTIENT = 0.15;
   */
 - (XCBRect)calculateDecorationFrame: (XCBRect)clientFrame
 {
-	int16_t x_border_width = CHILD_BORDER_WIDTH;
 	XCBRect frame = clientFrame;
 	frame.origin.x -= BORDER_WIDTHS[ICCCMBorderWest];
 	frame.origin.y -= BORDER_WIDTHS[ICCCMBorderNorth];
-	frame.size.height += BORDER_WIDTHS[ICCCMBorderNorth] + BORDER_WIDTHS[ICCCMBorderSouth] + 2 * x_border_width;
-	frame.size.width += BORDER_WIDTHS[ICCCMBorderWest] + BORDER_WIDTHS[ICCCMBorderEast] + 2 * x_border_width;
+	frame.size.height += BORDER_WIDTHS[ICCCMBorderNorth] + BORDER_WIDTHS[ICCCMBorderSouth] ;
+	frame.size.width += BORDER_WIDTHS[ICCCMBorderWest] + BORDER_WIDTHS[ICCCMBorderEast];
 	return frame;
 }
 - (void)xcbWindowPropertyDidRefresh: (NSNotification*)notification
@@ -600,7 +599,7 @@ static const float RH_QUOTIENT = 0.15;
 		XCBRect decorationFrame = ICCCMDecorationFrameWithReferencePoint(
 				gravity, refPoint, newRect.size, BORDER_WIDTHS);
 		XCBRect childFrame = XCBMakeRect(
-				BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth], 
+				BORDER_WIDTHS[ICCCMBorderWest] - CHILD_BORDER_WIDTH, BORDER_WIDTHS[ICCCMBorderNorth] - CHILD_BORDER_WIDTH, 
 				newRect.size.width, newRect.size.height);
 		[child setFrame: childFrame
 		         border: CHILD_BORDER_WIDTH];
@@ -764,8 +763,8 @@ static const float RH_QUOTIENT = 0.15;
 	[decorationWindow restackAboveWindow: child];
 	[[self decorationWindow] map];
 	[child reparentToWindow: decorationWindow
-		dX: BORDER_WIDTHS[ICCCMBorderWest]
-		dY: BORDER_WIDTHS[ICCCMBorderEast]];
+		dX: BORDER_WIDTHS[ICCCMBorderWest] - CHILD_BORDER_WIDTH
+		dY: BORDER_WIDTHS[ICCCMBorderEast] - CHILD_BORDER_WIDTH];
 
 	[XCBConn setNeedsFlush: YES];
 }
@@ -936,7 +935,7 @@ static const float RH_QUOTIENT = 0.15;
 		XCBSize cs = childFrame.size;
 
 		// Decoration Size
-		XCBSize ds = [decorationWindow frame].size;
+		XCBSize ds = decorationFrame.size;
 
 		// Resize Handle Length
 		int16_t rhl = MIN_RH_LENGTH;
@@ -954,28 +953,40 @@ static const float RH_QUOTIENT = 0.15;
 				{ ds.width - rhw - rhl, 0, rhw + rhl, rhw }, // NE H
 				{ 0, rhw, rhw, rhl }, // NW V
 				{ ds.width - rhw, rhw, rhw, rhl }, // NE V
-				{ cp.x, cp.y, cs.width + cbw * 2, cs.height + cbw * 2}, // Child
+				/* { cp.x, cp.y, cs.width + cbw * 2, cs.height + cbw * 2}, // Child */
 				{ 0, ds.height - rhw - rhl, rhw, rhl }, // SW V
 				{ ds.width - rhw, ds.height - rhl - rhw, rhw, rhl }, // SE V
 				{ 0, ds.height - rhw, rhw + rhl, rhw }, // SW H
 				{ ds.width - rhl - rhw, ds.height - rhw, rhl + rhw, rhw } // SE H
 			};
 			[decorationWindow setShapeRectangles: rects
-						       count: 9
+						       count: 8
 						    ordering: XCB_SHAPE_YXSORTED
 						   operation: XCB_SHAPE_SO_SET
 							kind: XCB_SHAPE_SK_BOUNDING
 						      offset: XCBMakePoint(0, 0)];
+			[decorationWindow 
+				shapeCombineWithKind: XCB_SHAPE_SK_BOUNDING
+				           operation: XCB_SHAPE_SO_UNION
+				              offset: XCBMakePoint(BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth])
+				              source: child
+				          sourceKind: XCB_SHAPE_SK_BOUNDING];
 		}
 		else
 		{
-			xcb_rectangle_t rect = { cp.x, cp.y, cs.width + cbw * 2, cs.height + cbw*2};
-			[decorationWindow setShapeRectangles: &rect
-						       count: 1
-						    ordering: XCB_SHAPE_UNSORTED
-						   operation: XCB_SHAPE_SO_SET
-							kind: XCB_SHAPE_SK_BOUNDING
-						      offset: XCBMakePoint(0, 0)];
+			[decorationWindow 
+				shapeCombineWithKind: XCB_SHAPE_SK_BOUNDING
+				           operation: XCB_SHAPE_SO_SET
+				              offset: XCBMakePoint(BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth])
+				              source: child
+				          sourceKind: XCB_SHAPE_SK_BOUNDING];
+			// xcb_rectangle_t rect = { cp.x, cp.y, cs.width + cbw * 2, cs.height + cbw*2};
+			// [decorationWindow setShapeRectangles: &rect
+			// 			       count: 1
+			// 			    ordering: XCB_SHAPE_UNSORTED
+			// 			   operation: XCB_SHAPE_SO_SET
+			// 				kind: XCB_SHAPE_SK_BOUNDING
+			// 			      offset: XCBMakePoint(0, 0)];
 		}
 	}
 }
