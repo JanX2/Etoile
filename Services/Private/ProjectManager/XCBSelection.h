@@ -24,4 +24,4 @@
  **/
 #import "XCBWindow.h"
 
-BOOL XCBAcquireManagerSelection(XCBScreen *screen, XCBWindow* manager_window, xcb_atom_t atom);
+BOOL XCBAcquireManagerSelection(XCBScreen *screen, XCBWindow* manager_window, xcb_atom_t atom, BOOL doReplace);

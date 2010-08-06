@@ -58,12 +58,12 @@
 	clipChanged = YES;
 	rootTile = [[self generateRootTile] retain];
 
-	XCBRenderPictureFormat *visualFormat = 
+	XCBRenderPictureFormat *visualFormat =
 		[XCBRender findVisualFormat: [screen defaultVisual]];
 	if (nil == visualFormat)
 		visualFormat = [XCBRender findStandardVisualFormat: XCB_PICT_STANDARD_RGB_24];
 	uint32_t includeInferiors = 1;
-	rootPicture = 
+	rootPicture =
 		[[XCBRenderPicture alloc]
 			initWithDrawable: [screen rootWindow]
 			   pictureFormat: visualFormat
@@ -102,7 +102,7 @@
 	xcb_atom_t screen_atom = [[XCBAtomCache sharedInstance]
 		atomNamed: [NSString stringWithFormat: @"WM_S%d", screen_id]];
 	XCBWindow *window = [rootWindow createChildInRect: XCBMakeRect(0, 0, 1, 1) borderWidth: 0];
-	if (!XCBAcquireManagerSelection([self screen], manager_window, screen_atom))
+	if (!XCBAcquireManagerSelection([self screen], manager_window, screen_atom, NO))
 	{
 		NSLog(@"There is a window manager already running on screen #%d", screen_id);
 		[window destroy];
@@ -115,7 +115,7 @@
 	// Must be in this order because of the order of the
 	// XCB_CW_* flags
 	events[0] = 1;
-	events[1] = 
+	events[1] =
 		XCB_EVENT_MASK_FOCUS_CHANGE |
 		XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_BUTTON_PRESS |
 		XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
@@ -129,7 +129,7 @@
 		   selector: @selector(windowDidExpose:)
 		       name: XCBWindowExposeNotification
 		     object: [screen rootWindow]];
-	
+
 	EWMHSetSupported([screen rootWindow], manager_window,
 		[NSArray arrayWithObjects: EWMH_WMWindowType,
 			EWMH_WMWindowTypeDock,
@@ -154,12 +154,12 @@
 {
 	if (compositeWindow != nil)
 	{
-		[compositeMap setObject: compositeWindow 
+		[compositeMap setObject: compositeWindow
 		                 forKey: child];
 		[compositeWindow setDelegate: self];
 		if ([child windowLoadState] == XCBWindowAvailableState)
 		{
-			NSNotification *fakeNotification = 
+			NSNotification *fakeNotification =
 				[NSNotification notificationWithName: XCBWindowBecomeAvailableNotification
 							      object: child];
 			[self childWindowBecomeAvailable: fakeNotification];
@@ -180,7 +180,7 @@
 	NSNotification *notification = [NSNotification
 		notificationWithName: XCBWindowWillUnMapNotification
 		              object: xcbWindow];
-	
+
 	[self childWindowWillUnMap: notification];
 	[self childWindowDidUnMap: notification];
 
@@ -196,7 +196,7 @@
 - (void)childWindowBecomeAvailable: (NSNotification*)notification
 {
 	XCBWindow *child = [notification object];
-	PMCompositeWindow *compositeWindow = 
+	PMCompositeWindow *compositeWindow =
 		[self findCompositeWindow: child];
 
 	if ([compositeWindow extents] != nil)
@@ -262,17 +262,17 @@
 		NSLog(@"-[PMConnectionDelegate damageNotify:] ERROR compositewindow for XCBWindow %@ not found.", damagedWindow);
 }
 
-- (void)setRootBuffer: (XCBRenderPicture*)picture 
-{ 
+- (void)setRootBuffer: (XCBRenderPicture*)picture
+{
 	ASSIGN(rootBuffer, picture);
 }
 
-- (void)setRootPicture: (XCBRenderPicture*)picture 
+- (void)setRootPicture: (XCBRenderPicture*)picture
 {
 	ASSIGN(rootPicture, picture);
 }
 
-- (void)compositeWindow: (PMCompositeWindow*)compositeWindow 
+- (void)compositeWindow: (PMCompositeWindow*)compositeWindow
          extentsChanged: (XCBFixesRegion*)extents
              oldExtents: (XCBFixesRegion*)oldExtents
 {
@@ -290,12 +290,12 @@
 	// the rects according to the anEvent->count parameter (see XLib manual)
 	XCBRect exposeRect;
 	xcb_rectangle_t exposeRectangle;
-	[[[notification userInfo] objectForKey: @"Rect"] 
+	[[[notification userInfo] objectForKey: @"Rect"]
 		getValue: &exposeRect];
 	exposeRectangle = XCBRectangleFromRect(exposeRect);
 
-	XCBFixesRegion *exposeRegion = [XCBFixesRegion 
-		regionWithRectangles: &exposeRectangle 
+	XCBFixesRegion *exposeRegion = [XCBFixesRegion
+		regionWithRectangles: &exposeRectangle
 		               count: 1];
 	[self appendDamage: exposeRegion];
 }
@@ -305,7 +305,7 @@
 	{
 		allDamage = [[XCBFixesRegion regionWithRectangles: 0 count: 0] retain];
 	}
-	[allDamage unionWithRegion: damage 
+	[allDamage unionWithRegion: damage
 	           intoDestination: allDamage];
 	[XCBConn setNeedsFlush: YES];
 }
@@ -320,15 +320,15 @@
 		rootBuffer = nil;
 	}
 	xcb_rectangle_t damage = XCBRectangleFromRect([rootWindow frame]);
-	[self appendDamage: [XCBFixesRegion 
-		regionWithRectangles: &damage 
+	[self appendDamage: [XCBFixesRegion
+		regionWithRectangles: &damage
 		               count: 1]];
 }
 - (void)paintAll
 {
 	[self paintAllWithRegion: nil];
 }
-- (void)paintAllDamaged 
+- (void)paintAllDamaged
 {
 	if (allDamage != nil)
 	{
@@ -373,9 +373,9 @@
 			          valueList: 0]];
 		[pixmap release];
 	}
-	[region clipPicture: rootPicture 
+	[region clipPicture: rootPicture
 	            atPoint: XCBMakePoint(0, 0)];
-	
+
 	// Use a reverse enumerator. Why?
 	// Because when I was porting the code over from xcompmgr,
 	// I didn't realise the algorithm it was using was top to bottom,
@@ -386,13 +386,13 @@
 		window = [window_enum nextObject])
 	{
 		PMCompositeWindow *compositeWindow = [self findCompositeWindow: window];
-		[compositeWindow 
-			paintIntoBuffer: rootBuffer 
+		[compositeWindow
+			paintIntoBuffer: rootBuffer
 			     withRegion: region
 			    clipChanged: clipChanged];
 	}
 
-	[region clipPicture: rootBuffer 
+	[region clipPicture: rootBuffer
 	            atPoint: XCBMakePoint(0, 0)];
 	[rootTile compositeWithOperation: XCB_RENDER_PICT_OP_SRC
 	                            mask: nil
@@ -407,14 +407,14 @@
 			window = [window_enum nextObject])
 	{
 		PMCompositeWindow *compositeWindow = [self findCompositeWindow: window];
-		[compositeWindow 
+		[compositeWindow
 			paintWithAlphaIntoBuffer: rootBuffer
 			              withRegion: region
 			             clipChanged: clipChanged];
 	}
-	
-	[[XCBFixesRegion nilRegion] 
-		clipPicture: rootBuffer 
+
+	[[XCBFixesRegion nilRegion]
+		clipPicture: rootBuffer
 		    atPoint: XCBMakePoint(0, 0)];
 	[rootBuffer compositeWithOperation: XCB_RENDER_PICT_OP_SRC
 	                              mask: nil
@@ -437,15 +437,15 @@
 		     drawable: [screen rootWindow]
 		        width: 1
 		       height: 1];
-	picture = [XCBRenderPicture 
+	picture = [XCBRenderPicture
 		pictureWithDrawable: pixmap
 		             format: [XCBRender findVisualFormat:[screen defaultVisual]]
 		          valueMask: XCB_RENDER_CP_REPEAT
 		          valueList: &repeat];
 
 	xcb_rectangle_t rect = { 0, 0, 1, 1};
-	[picture fillRectangles: &rect 
-	                  count: 1 
+	[picture fillRectangles: &rect
+	                  count: 1
 	                  color: XCBRenderMakeColor(0x8000, 0x2000, 0x8000, 0xffff)
 	              operation: XCB_RENDER_PICT_OP_SRC];
 

@@ -24,18 +24,28 @@
  **/
 #import "XCBSelection.h"
 
-BOOL XCBAcquireManagerSelection(XCBScreen *screen, XCBWindow* managerWindow, xcb_atom_t atom)
+BOOL XCBAcquireManagerSelection(XCBScreen *screen, XCBWindow* managerWindow, xcb_atom_t atom, BOOL doReplace)
 {
-	xcb_get_selection_owner_cookie_t req  = 
+	xcb_get_selection_owner_cookie_t req  =
 		xcb_get_selection_owner([XCBConn connection], atom);
-	xcb_get_selection_owner_reply_t *resp = 
+	xcb_get_selection_owner_reply_t *resp =
 		xcb_get_selection_owner_reply([XCBConn connection],
 			req,
 			NULL);
 	xcb_window_t current_owner = resp->owner;
 	free(resp);
 	if (current_owner)
-		return NO;
+	{
+		if (NO == doReplace)
+		{
+			return NO;
+		}
+		xcb_void_cookie_t req = xcb_destroy_window_checked([XCBConn connection], current_owner);
+		if (xcb_request_check([XCBConn connection], req))
+		{
+			return NO;
+		}
+	}
 
 	xcb_timestamp_t server_time = [XCBConn currentTime];
 
@@ -45,7 +55,7 @@ BOOL XCBAcquireManagerSelection(XCBScreen *screen, XCBWindow* managerWindow, xcb
 		atom,
 		server_time);
 	xcb_generic_error_t *error = xcb_request_check([XCBConn connection], cookie);
-	if (error) 
+	if (error)
 	{
 		NSDebugLLog(@"XCBSelection", @"XCBAcquireManagerSelection: SetSelectionOwner failed.");
 		return NO;
