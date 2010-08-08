@@ -59,7 +59,7 @@
 }
 - (NSString*)description
 {
-	return [NSString stringWithFormat: @"XCBScreen screen=%d rootWindow=%@", screen, root];
+	return [NSString stringWithFormat: @"XCBScreen rootWindow=%@", root];
 }
 + (XCBScreen*) screenWithXCBScreen: (xcb_screen_t*)aScreen
 {
