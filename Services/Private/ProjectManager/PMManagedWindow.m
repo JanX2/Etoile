@@ -142,6 +142,8 @@ static const float RH_QUOTIENT = 0.15;
   * positive size).
   */
 - (XCBSize)adjustSizeForHints: (XCBSize)newSize;
+- (void)establishInactiveGrabs;
+- (void)setFocus;
 @end
 
 @implementation PMManagedWindow
@@ -321,38 +323,49 @@ static const float RH_QUOTIENT = 0.15;
 }
 - (void)managedWindowFocusIn: (NSNotification*)aNotification
 {
-	NSDebugLLog(@"PMManagedWindow", @"%@ raising to top and releasing grab", self);
+	NSDebugLLog(@"PMManagedWindow", @"%@ received focus in, raising to top and releasing grab", self);
 	XCBWindow *w = reparented ? decorationWindow : child;
-	[child ungrabButton: XCB_BUTTON_INDEX_1 modifiers: PM_XCB_MOD_MASK_ANY];
 	[w restackAboveWindow: nil];
 	self->has_focus = YES;
+	[child ungrabButton: XCB_BUTTON_INDEX_1 modifiers: PM_XCB_MOD_MASK_ANY];
 	// TODO: Move to decoration strategy through delegate or callback
 	[self updateShape];
 }
 - (void)managedWindowFocusOut: (NSNotification*)aNotification
 {
-	if (state == PMManagedWindowWithdrawnState)
-		return;
+	//if (state == PMManagedWindowWithdrawnState)
+	//	return;
 	NSDebugLLog(@"PMManagedWindow", @"%@ focus out, grabbing", self);
-	XCBWindow *w = child;
-	[w grabButton: XCB_BUTTON_INDEX_1
-	    modifiers: PM_XCB_MOD_MASK_ANY
-	    // Must be false so that the real window doesn't get normal events and undo the grab
-	  ownerEvents: NO
-	    eventMask: XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_1_MOTION | XCB_EVENT_MASK_BUTTON_RELEASE
-	  pointerMode: XCB_GRAB_MODE_ASYNC
-	 keyboardMode: XCB_GRAB_MODE_ASYNC
-	    confineTo: nil
-	       cursor: XCB_NONE];
+	// FIXME: Move this so it occurs when the window is below the top,
+	// not when it loses its focus.
+	// 
+	[self establishInactiveGrabs];
 	self->has_focus = NO;
 
 	// TODO: Move to decoration strategy through delegate or callback
 	[self updateShape];
 }
+- (void)establishInactiveGrabs
+{
+	XCBWindow *w = reparented ? decorationWindow : child;
+	int status = [child grabButton: XCB_BUTTON_INDEX_1
+	    modifiers: PM_XCB_MOD_MASK_ANY
+	    // Must be false so that the real window doesn't get normal events and undo the grab
+	  ownerEvents: YES
+	    eventMask: XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_1_MOTION | XCB_EVENT_MASK_BUTTON_RELEASE
+	  pointerMode: XCB_GRAB_MODE_SYNC
+	 keyboardMode: XCB_GRAB_MODE_ASYNC
+	    confineTo: nil
+	       cursor: XCB_NONE];
+	NSDebugLLog(@"PMManagedWindow", @"%@ Grabbed button with status %d", self, status);
+}
 - (void)managedWindowButton1Press: (NSNotification*)aNotification
 {
 	if (state == PMManagedWindowWithdrawnState)
 		return;
+	NSDebugLLog(@"PMManagedWindow", @"%@ managedWindowButton1Press:", self);
+	[XCBConn allowEvents: XCB_ALLOW_SYNC_POINTER timestamp: XCB_CURRENT_TIME /*[XCBConn currentTime]*/];
+	//[XCBConn allowEvents: XCB_ALLOW_REPLAY_POINTER timestamp: XCB_CURRENT_TIME /*[XCBConn currentTime]*/];
 	mouseDownPosition = [[[aNotification userInfo] objectForKey: @"RootPoint"] xcbPointValue];
 	mouseDownClientFrame = [self clientFrame];
 	moveresizeType = EWMH_WMMoveresizeCancel;
@@ -506,10 +519,15 @@ static const float RH_QUOTIENT = 0.15;
 }
 - (void)managedWindowButton1Release: (NSNotification*)notification
 {
+	[XCBConn allowEvents: XCB_ALLOW_ASYNC_POINTER timestamp: [XCBConn currentTime]];
+
 	if (moveresizeType == EWMH_WMMoveresizeCancel)
 	{
 		NSDebugLLog(@"PMManagedWindow", @"%@ button press and release, focusing window", self);
-		[child setInputFocus: XCB_INPUT_FOCUS_POINTER_ROOT time: [XCBConn currentTime]];
+		// FIXME: Raise the window, offer/give it the focus and release
+		// the grab
+		[child ungrabButton: XCB_BUTTON_INDEX_1 modifiers: PM_XCB_MOD_MASK_ANY];
+		[self setFocus];
 	}
 	else if (moveresizeType == EWMH_WMMoveresizeMove || moveresizeType == EWMH_WMMoveresizeMoveKeyboard)
 	{
@@ -521,7 +539,6 @@ static const float RH_QUOTIENT = 0.15;
 		NSDebugLLog(@"PMManagedWindow", @"%@ resize complete", self);
 		[XCBConn ungrabPointer: [XCBConn currentTime]];
 	}
-	[XCBConn allowEvents: XCB_ALLOW_ASYNC_POINTER timestamp: [XCBConn currentTime]];
 }
 - (void)managedWindowDidMap: (NSNotification*)notification
 {
@@ -678,6 +695,10 @@ static const float RH_QUOTIENT = 0.15;
 				mapState = wm_hints.initial_state;
 			if (wm_hints.flags & ICCCMWindowGroupHint)
 				window_group = wm_hints.window_group;
+			if (wm_hints.flags & ICCCMInputHint)
+				input_hint = wm_hints.input ? YES : NO;
+			else
+				input_hint = YES;
 		}
 
 		XCBCachedProperty *ewmhWindowType = [child cachedPropertyValue: EWMH_WMWindowType];
@@ -685,6 +706,8 @@ static const float RH_QUOTIENT = 0.15;
 		{
 			// FIXME: This is an atom list, not a single atom
 			xcb_atom_t value = [ewmhWindowType asAtom];
+			NSDebugLLog(@"PMManagedWindow", @"%@ window type = %@", self, [[XCBAtomCache sharedInstance] nameForAtom: value]);
+
 			if ([atomCache atomNamed: EWMH_WMWindowTypeNormal] == value ||
 					[atomCache atomNamed: EWMH_WMWindowTypeUtility] == value ||
 					[atomCache atomNamed: EWMH_WMWindowTypeDialog] == value)
@@ -697,11 +720,22 @@ static const float RH_QUOTIENT = 0.15;
 		{
 			wm_size_hints = [wmNormalHintsProperty asWMSizeHints];
 		}
-		else
+		if (!(wm_size_hints.flags & ICCCMPWinGravity))
 		{
 			wm_size_hints.win_gravity = ICCCMNorthWestGravity;
 		}
 
+		XCBCachedProperty *wmProtocols = [child cachedPropertyValue: ICCCMWMProtocols];
+		if (![wmProtocols isEmpty])
+		{
+			NSDebugLLog(@"PMManagedWindow", @"%@ WM_PROTOCOLS found: %@", self, [wmProtocols asAtomArray]);
+			wm_take_focus = [[wmProtocols asAtomArray] containsObject: ICCCMWMTakeFocus];
+		}
+		else
+		{
+			wm_take_focus = NO;
+		}
+		NSDebugLLog(@"PMManagedWindow", @"%@ wm_take_focus = %d", self, wm_take_focus);
 	}
 
 	// 2. Perform window transition to new state
@@ -752,7 +786,7 @@ static const float RH_QUOTIENT = 0.15;
 	}
 
 	// Update WM_STATE
-	[child setWMState: mapState iconWindow: nil];
+	[child setWMState: state iconWindow: nil];
 }
 - (void)mapDecorationWindow
 {
@@ -762,9 +796,10 @@ static const float RH_QUOTIENT = 0.15;
 	// position
 	[decorationWindow restackAboveWindow: child];
 	[[self decorationWindow] map];
-	[child reparentToWindow: decorationWindow
-		dX: BORDER_WIDTHS[ICCCMBorderWest] - CHILD_BORDER_WIDTH
-		dY: BORDER_WIDTHS[ICCCMBorderEast] - CHILD_BORDER_WIDTH];
+	[child 
+		reparentToWindow: decorationWindow
+		              dX: BORDER_WIDTHS[ICCCMBorderWest] - CHILD_BORDER_WIDTH
+		              dY: BORDER_WIDTHS[ICCCMBorderEast] - CHILD_BORDER_WIDTH];
 
 	[XCBConn setNeedsFlush: YES];
 }
@@ -782,12 +817,12 @@ static const float RH_QUOTIENT = 0.15;
 		addObserver: self
 		   selector: @selector(managedWindowFocusIn:)
 		       name: XCBWindowFocusInNotification
-		     object: child];
+		     object: reparented ? decorationWindow : child];
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
 		   selector: @selector(managedWindowFocusOut:)
 		       name: XCBWindowFocusOutNotification
-		     object: child];
+		     object: reparented ? decorationWindow : child];
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
 		   selector: @selector(managedWindowButton1Press:)
@@ -818,14 +853,18 @@ static const float RH_QUOTIENT = 0.15;
 		XCB_EVENT_MASK_STRUCTURE_NOTIFY |
 		XCB_EVENT_MASK_FOCUS_CHANGE | 
 		XCB_EVENT_MASK_PROPERTY_CHANGE;
-	[child changeWindowAttributes: XCB_CW_EVENT_MASK values: values];
+	[child changeWindowAttributes: XCB_CW_EVENT_MASK 
+	                       values: values];
+	[child map];
 	// If we are attached to a window that has already
 	// been mapped, we need to call this manually because
 	// there will be no MapNotify
 	if ([child mapState] == XCB_MAP_STATE_VIEWABLE)
 		[delegate managedWindowDidMap: self];
-	[child map];
-	[child setInputFocus: XCB_INPUT_FOCUS_POINTER_ROOT time: [XCBConn currentTime]];
+	[self establishInactiveGrabs];
+	// FIXME: Establish a more sophisticated system of setting
+	// initial window mapping focus
+	//[self setFocus];
 	[child addToSaveSet];
 }
 - (void)decorationWindowCreated: (NSNotification*)notification 
@@ -850,14 +889,18 @@ static const float RH_QUOTIENT = 0.15;
 	[[NSNotificationCenter defaultCenter] 
 		removeObserver: self 
 		          name: XCBWindowButtonPressNotification 
-		        object: managed];
+		        object: child];
 	[[NSNotificationCenter defaultCenter] 
 		removeObserver: self 
 		          name: XCBWindowButtonReleaseNotification 
-		        object: managed];
+		        object: child];
 	[[NSNotificationCenter defaultCenter] 
 		removeObserver: self 
 		          name: XCBWindowMotionNotifyNotification 
+		        object: child];
+	[[NSNotificationCenter defaultCenter] 
+		removeObserver: self 
+		          name: XCBWindowDidMapNotification 
 		        object: managed];
 	if (reparented)
 	{
@@ -865,8 +908,8 @@ static const float RH_QUOTIENT = 0.15;
 		// FIXME: Should we calculate where it was before?
 		XCBRect clientFrame = [self clientFrame];
 		[child reparentToWindow: [decorationWindow parent]
-				     dX: clientFrame.origin.x
-				     dY: clientFrame.origin.y];
+		                     dX: clientFrame.origin.x
+		                     dY: clientFrame.origin.y];
 
 		// Reparenting windows does not send ConfigureNotify events.
 		// According to Metacity bug 399552, we should not expect
@@ -897,7 +940,7 @@ static const float RH_QUOTIENT = 0.15;
 - (void)sendSyntheticConfigureNotify: (XCBRect)clientFrame
 {
 	xcb_configure_notify_event_t event;
-	event.response_type = XCB_CONFIGURE_NOTIFY;
+	event.response_type = XCB_CONFIGURE_NOTIFY | 0x80;
 	event.event = [[self childWindow] xcbWindowId];
 	event.window = [[self childWindow] xcbWindowId];
 	event.x = clientFrame.origin.x;
@@ -1050,5 +1093,27 @@ static const float RH_QUOTIENT = 0.15;
 	else if (ns.height > max_height)
 		ns.height = max_height;
 	return ns;
+}
+- (void)setFocus
+{
+	if (input_hint)
+	{
+		NSLog(@"%@ Setting focus by SetInputFocus", self);
+		[child setInputFocus: XCB_INPUT_FOCUS_PARENT time: [XCBConn currentTime]];
+	}
+	if (wm_take_focus)
+	{
+		NSLog(@"%@ Setting focus by WM_TAKE_FOCUS", self);
+		xcb_client_message_event_t m;
+		m.response_type = XCB_CLIENT_MESSAGE ;
+		m.format = 32;
+		m.type = [[XCBAtomCache sharedInstance] atomNamed: ICCCMWMProtocols];
+		m.window = [child xcbWindowId];
+		m.data.data32[0] = [[XCBAtomCache sharedInstance] atomNamed: ICCCMWMTakeFocus];
+		m.data.data32[1] = [XCBConn currentTime];
+		[child sendEvent: XCB_EVENT_MASK_NO_EVENT
+		       propagate: NO
+		            data: (const char*)&m];
+	}
 }
 @end

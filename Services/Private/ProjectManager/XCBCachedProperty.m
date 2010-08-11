@@ -104,7 +104,7 @@ const NSString *XCBInvalidTypeException = @"XCBInvalidTypeException";
 	NSMutableArray *atomArray = [NSMutableArray arrayWithCapacity: format_length];
 	for (uint32_t i = 0; i < format_length; i++)
 	{
-		[atomArray addObject: [NSValue valueWithXCBAtom: (xcb_atom_t)longs[i]]];
+		[atomArray addObject: [[XCBAtomCache sharedInstance] nameForAtom:(xcb_atom_t)longs[i]]];
 	}
 	return atomArray;
 }

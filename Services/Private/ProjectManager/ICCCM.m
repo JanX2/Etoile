@@ -24,6 +24,7 @@
  **/
 #import "ICCCM.h"
 #import "XCBGeometry.h"
+#import "XCBPropertyHelpers.h"
 
 NSString* ICCCMWMName = @"WM_NAME";
 NSString* ICCCMWMIconName = @"WM_ICON_NAME";
@@ -246,10 +247,6 @@ XCBPoint ICCCMCalculateRefPointForClientFrame(ICCCMWindowGravity gravity, XCBRec
 	XCBSize rfs = initialRect.size;
 	switch (gravity)
 	{
-	case ICCCMNorthWestGravity:
-		refPoint.x = rfp.x - bw;
-		refPoint.y = rfp.y - bw;
-		break;
 	case ICCCMNorthGravity:
 		refPoint.x = rfp.x + rfs.width / 2;
 		refPoint.y = rfp.y;
@@ -282,13 +279,23 @@ XCBPoint ICCCMCalculateRefPointForClientFrame(ICCCMWindowGravity gravity, XCBRec
 		refPoint.x = rfp.x + rfs.width + bw;
 		refPoint.y = rfp.y + rfs.height + bw;
 		break;
-	default:
-		NSLog(@"ICCCMCalculateWindowFrame called with unknown gravity %d; using Static gravity instead",
-				gravity);
 	case ICCCMStaticGravity:
 		refPoint.x = rfp.x;
 		refPoint.y = rfp.y;
 		break;
+	
+	default:
+		NSLog(@"ICCCMCalculateWindowFrame called with unknown gravity %d; using NorthWest (ICCCM default for non-specified gravity)",
+				gravity);
+	case ICCCMNorthWestGravity:
+		refPoint.x = rfp.x - bw;
+		refPoint.y = rfp.y - bw;
+		break;
 	}
 	return refPoint;
+}
+void ICCCMSetSupportedProtocols(XCBWindow* rootWindow, NSArray* protocols)
+{
+	xcb_atom_t *list;
+	[rootWindow replaceProperty: ICCCMWMProtocols atomList: protocols];
 }

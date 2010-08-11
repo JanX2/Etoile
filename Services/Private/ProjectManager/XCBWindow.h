@@ -210,7 +210,7 @@ enum
                       dY: (uint16_t)dy;
 - (void)setInputFocus: (uint8_t)revert_to
                  time: (xcb_timestamp_t)time;
-- (void)grabButton: (uint8_t)button
+- (int)grabButton: (uint8_t)button
          modifiers: (uint16_t)modifiers
        ownerEvents: (uint8_t)ownerEvents
          eventMask: (uint16_t)eventMask
@@ -221,7 +221,7 @@ enum
 - (void)ungrabButton: (xcb_button_index_t)button
            modifiers: (uint16_t)modifiers;
 - (void)sendEvent: (uint32_t)event_mask
-        propagate: (uint8_t)propagate
+        propagate: (BOOL)propagate
              data: (const char*)event_data;
 /**
   * Request an update of the window attributes. Once

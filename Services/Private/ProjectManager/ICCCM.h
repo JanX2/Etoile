@@ -156,3 +156,4 @@ enum _BorderWidthDirection {
 };
 XCBRect ICCCMDecorationFrameWithReferencePoint(ICCCMWindowGravity gravity, XCBPoint rp, XCBSize cs, const uint32_t bws[4]);
 XCBPoint ICCCMCalculateRefPointForClientFrame(ICCCMWindowGravity gravity, XCBRect initialRect, uint32_t bw);
+void ICCCMSetSupportedProtocols(XCBWindow* rootWindow, NSArray* protocols);

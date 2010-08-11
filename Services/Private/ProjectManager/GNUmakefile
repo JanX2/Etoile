@@ -35,6 +35,7 @@ $(TOOL_NAME)_OBJC_FILES = \
 	 XCBCachedProperty.m \
 	 XCBSelection.m \
 	 XCBShape.m \
+	 XCBPropertyHelpers.m \
 	 ICCCM.m \
 	 EWMH.m \
 	 main.m

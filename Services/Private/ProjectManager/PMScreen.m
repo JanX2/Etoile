@@ -24,6 +24,7 @@
  **/
 #import "PMScreen.h"
 #import "EWMH.h"
+#import "ICCCM.h"
 #import "XCBScreen.h"
 #import "XCBConnection.h"
 #import "XCBRender.h"
@@ -121,8 +122,9 @@
 		XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
 		XCB_EVENT_MASK_STRUCTURE_NOTIFY |
 		XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT;
-	[rootWindow changeWindowAttributes: XCB_CW_EVENT_MASK | XCB_CW_OVERRIDE_REDIRECT
-				    values: events];
+	[rootWindow 
+		changeWindowAttributes: XCB_CW_EVENT_MASK | XCB_CW_OVERRIDE_REDIRECT
+		                values: events];
 
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
@@ -132,6 +134,7 @@
 
 	EWMHSetSupported([screen rootWindow], manager_window,
 		[NSArray arrayWithObjects: EWMH_WMWindowType,
+			
 			EWMH_WMWindowTypeDock,
 			EWMH_WMWindowTypeDesktop,
 			EWMH_WMWindowTypeMenu,
@@ -141,6 +144,16 @@
 			EWMH_WMWindowTypeDialog,
 			EWMH_WMWindowTypeDropdownMenu,
 			EWMH_WMWindowTypePopupMenu,
+			EWMH_WMWindowTypeSplash,
+			EWMH_WMWindowTypeTooltip,
+			EWMH_WMWindowTypeNotification,
+			EWMH_WMWindowTypeCombo,
+			EWMH_WMWindowTypeDnd,
+			ICCCMWMTakeFocus,
+			nil]);
+	ICCCMSetSupportedProtocols([screen rootWindow], 
+		[NSArray arrayWithObjects:
+			ICCCMWMTakeFocus,
 			nil]);
 	return YES;
 }

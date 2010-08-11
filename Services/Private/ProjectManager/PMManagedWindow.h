@@ -66,6 +66,10 @@ typedef enum _PMManagedWindowState
 	XCBRect mouseDownClientFrame;
 	int moveresizeType;
 
+	// Fields used during focus
+	BOOL input_hint;
+	BOOL wm_take_focus;
+
 	// Other fields
 	XCBPoint refPoint;
 	icccm_wm_size_hints_t wm_size_hints;

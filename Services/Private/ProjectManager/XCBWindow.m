@@ -254,7 +254,7 @@ static XCBWindow* UnknownWindow;
 	xcb_set_input_focus([XCBConn connection], revert_to, window, time);
 	[XCBConn setNeedsFlush: YES];
 }
-- (void)grabButton: (uint8_t)button
+- (int)grabButton: (uint8_t)button
          modifiers: (uint16_t)modifiers
        ownerEvents: (uint8_t)ownerEvents
          eventMask: (uint16_t)eventMask
@@ -263,7 +263,7 @@ static XCBWindow* UnknownWindow;
          confineTo: (XCBWindow*)confineWindow
             cursor: (xcb_cursor_t)cursor
 {
-	xcb_grab_button([XCBConn connection],
+	xcb_void_cookie_t cookie = xcb_grab_button([XCBConn connection],
 		ownerEvents,
 		[self xcbWindowId],
 		eventMask,
@@ -273,7 +273,22 @@ static XCBWindow* UnknownWindow;
 		cursor,
 		button,
 		modifiers);
+	[XCBConn setNeedsFlush: YES];
+	xcb_generic_error_t *error = xcb_request_check([XCBConn connection], cookie);
+	int error_code = 0;
+	if (error)
+	{
+		NSLog(@"%@ error grabbing button %d: %d %d %d", self,
+			button,
+			error->response_type,
+			error->error_code,
+			error->sequence);
+		error_code = error->error_code;
+		free(error);
+	}
+	return error_code;
 }
+
 - (void)ungrabButton: (xcb_button_index_t)button
            modifiers: (uint16_t)modifiers
 {
@@ -281,16 +296,18 @@ static XCBWindow* UnknownWindow;
 		button,
 		[self xcbWindowId],
 		modifiers);
+	[XCBConn setNeedsFlush: YES];
 }
 - (void)sendEvent: (uint32_t)event_mask
-        propagate: (uint8_t)propagate
+        propagate: (BOOL)propagate
              data: (const char*)event_data
 {
 	xcb_send_event([XCBConn connection],
-		propagate,
+		propagate ? 1 : 0,
 		[self xcbWindowId],
 		event_mask,
 		event_data);
+	[XCBConn setNeedsFlush: YES];
 }
 - (void)setGeometry: (xcb_get_geometry_reply_t*)reply
 {

@@ -479,6 +479,7 @@ XCBConnection *XCBConn;
 		NSLog(@"Error grabbing server");
 		free(e);
 	}
+	[self setNeedsFlush: YES];
 }
 
 - (void)ungrab
@@ -490,10 +491,12 @@ XCBConnection *XCBConn;
 		NSLog(@"Error un-grabbing server");
 		free(e);
 	}
+	[self setNeedsFlush: YES];
 }
 - (void)allowEvents: (xcb_allow_t)allow timestamp: (xcb_timestamp_t)time
 {
 	xcb_allow_events(connection, allow, time);
+	[self setNeedsFlush: YES];
 }
 - (uint8_t)grabPointerWithWindow: (XCBWindow*)grabWindow
                      ownerEvents: (BOOL)ownerEvents
@@ -516,11 +519,13 @@ XCBConnection *XCBConn;
 	xcb_grab_pointer_reply_t *reply = xcb_grab_pointer_reply(connection, cookie, NULL);
 	uint8_t status = reply->status;
 	free(reply);
+	[self setNeedsFlush: YES];
 	return status;
 }
 - (void)ungrabPointer: (xcb_timestamp_t)time
 {
 	xcb_ungrab_pointer(connection, time);
+	[self setNeedsFlush: YES];
 }
 - (xcb_connection_t*) connection
 {

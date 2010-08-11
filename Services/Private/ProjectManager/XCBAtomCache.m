@@ -141,16 +141,23 @@ static XCBAtomCache *sharedInstance;
 			xcb_get_atom_name([XCBConn connection], atom);
 		xcb_get_atom_name_reply_t *reply =
 			xcb_get_atom_name_reply([XCBConn connection], cookie, NULL);
-		atomName = [[[NSString alloc]
-			initWithBytes: xcb_get_atom_name_name(reply)
-			       length: xcb_get_atom_name_name_length(reply)
-			     encoding: NSASCIIStringEncoding] autorelease];
-		[fetchedAtoms setObject: atomValue
-		                 forKey: atomName];
-		[fetchedAtomNames setObject: atomName
-		                     forKey: atomValue];
-		xcb_get_atom_name_name_end(reply);
-		free(reply);
+		if (reply != NULL)
+		{
+			atomName = [[[NSString alloc]
+				initWithBytes: xcb_get_atom_name_name(reply)
+				       length: xcb_get_atom_name_name_length(reply)
+				     encoding: NSASCIIStringEncoding] autorelease];
+			[fetchedAtoms setObject: atomValue
+					 forKey: atomName];
+			[fetchedAtomNames setObject: atomName
+					     forKey: atomValue];
+			xcb_get_atom_name_name_end(reply);
+			free(reply);
+		}
+		else
+		{
+			NSLog(@"There is no atom with value %@", atomValue);
+		}
 	}
 	return atomName;
 }
