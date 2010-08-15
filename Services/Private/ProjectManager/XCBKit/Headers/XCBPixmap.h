@@ -1,7 +1,7 @@
 /**
- * Étoilé ProjectManager - PMDecorationWindow.h
+ * Étoilé ProjectManager - XCBPixmap.h
  *
- * Copyright (C) 2009 David Chisnall
+ * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,24 @@
  * THE SOFTWARE.
  *
  **/
-#import <XCBKit/XCBWindow.h>
+#import <XCBKit/XCBConnection.h>
+#import <Foundation/NSObject.h>
+#import <XCBKit/XCBDrawable.h>
+#include <xcb/xcb.h>
 
-@interface PMDecorationWindow : XCBWindow {}
+@interface XCBPixmap : NSObject <XCBDrawable>
+{
+	xcb_pixmap_t pixmap_id;
+}
++ (XCBPixmap*)pixmapWithDepth: (uint8_t)depth
+                     drawable: (id<XCBDrawable>)drawable
+                        width: (uint16_t)width
+                       height: (uint16_t)height;
+- (id)initWithPixmapId: (xcb_pixmap_t)id;
+- (id)initWithDepth: (uint8_t)depth
+           drawable: (id<XCBDrawable>)drawable
+              width: (uint16_t)width
+             height: (uint16_t)height;
+- (xcb_pixmap_t)xcbPixmapId;
+- (xcb_drawable_t)xcbDrawableId;
 @end

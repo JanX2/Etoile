@@ -1,7 +1,7 @@
 /**
- * Étoilé ProjectManager - PMDecorationWindow.h
+ * Étoilé ProjectManager - XCBPropertyHelpers.m
  *
- * Copyright (C) 2009 David Chisnall
+ * Copyright (C) 2010 Christopher Armstrong
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,25 @@
  * THE SOFTWARE.
  *
  **/
-#import <XCBKit/XCBWindow.h>
+#include <XCBKit/XCBPropertyHelpers.h>
+#include <XCBKit/XCBAtomCache.h>
 
-@interface PMDecorationWindow : XCBWindow {}
+@implementation XCBWindow (XCBPropertyHelpers)
+- (void)replaceProperty: (NSString*)propertyName atomList: (NSArray*)atomList
+{
+	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
+	xcb_atom_t *atom_list = calloc([atomList count], sizeof(xcb_atom_t));
+	for (int i = 0; i < [atomList count]; i++)
+	{
+		atom_list[i] = [atomCache atomNamed: [atomList objectAtIndex: i]];
+	}
+	[self changeProperty: propertyName
+	                type: @"ATOM"
+	              format: 32
+	                mode: XCB_PROP_MODE_REPLACE
+	                data: atom_list
+	               count: [atomList count]];
+	free(atom_list);
+}
 @end
+

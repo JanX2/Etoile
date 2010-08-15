@@ -1,7 +1,6 @@
 /**
- * Étoilé ProjectManager - PMConnectionDelegate.h
+ * Étoilé ProjectManager - XCBExtension.m
  *
- * Copyright (C) 2009 David Chisnall
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,24 +22,40 @@
  * THE SOFTWARE.
  *
  **/
-#import <Foundation/NSObject.h>
-#import <XCBKit/XCBRender.h>
-#import <XCBKit/XCBWindow.h>
+#import <XCBKit/XCBExtension.h>
+#import <Foundation/Foundation.h>
 
-typedef enum _PMConnectionDelegateState
+NSString* XCBExtensionNotPresentException = 
+	@"XCBExtensionNotPresentException";
+
+xcb_query_extension_reply_t* XCBInitializeExtension(XCBConnection* connection, const char* extensionName)
 {
-	PMConnectionDelegateUnitialised = 0,
-	PMConnectionDelegateInitialisingState,
-	PMConnectionDelegateRunningState
-} PMConnectionDelegateState;
-@interface PMConnectionDelegate : NSObject
-{
-	NSMutableDictionary *screens;
-	NSMutableDictionary *compositeWindows;
-	NSMutableDictionary* managedWindows;
-	NSMutableSet *decorationWindows;
-	PMConnectionDelegateState state;
-	BOOL clipChanged;
+	xcb_query_extension_cookie_t cookie = xcb_query_extension(
+			[connection connection],
+			strlen(extensionName),
+			extensionName);
+	xcb_query_extension_reply_t *reply = 
+		xcb_query_extension_reply([connection connection], cookie, NULL);
+	if (!reply->present)
+	{
+		free(reply);
+		@throw [NSException exceptionWithName:XCBExtensionNotPresentException
+			reason:[NSString stringWithFormat:
+				@"The %s extension is not present on the X server.",
+				extensionName]
+			userInfo:[NSDictionary dictionary]
+			];
+	}
+
+	return reply;
 }
-- (id)init;
-@end
+BOOL XCBCheckExtensionVersion(int minMajor, int minMinor, int actualMajor, int actualMinor)
+{
+	if (actualMajor > minMajor)
+		return YES;
+	else if (actualMajor == minMajor &&
+			actualMinor >= minMinor)
+		return YES;
+	else
+		return NO;
+}

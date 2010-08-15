@@ -1,5 +1,5 @@
 /**
- * Étoilé ProjectManager - PMScreen.h
+ * Étoilé ProjectManager - XCBVisual.h
  *
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
@@ -22,50 +22,13 @@
  * THE SOFTWARE.
  *
  **/
-#import "PMCompositeWindow.h"
+#import <XCBKit/XCBConnection.h>
 
-@class XCBScreen;
-@class XCBRenderPicture;
-@class XCBFixesRegion;
-@class NSMutableArray;
-@class XCBSelection;
-
-@interface PMScreen : NSObject
+@interface XCBVisual : NSObject 
 {
-	XCBScreen *screen;
-	uint32_t screen_id;
-	
-	XCBWindow *manager_window;
-	XCBSelection *manager_selection;
-
-	XCBRenderPicture *rootBuffer, *rootPicture;
-	XCBRenderPicture *rootTile;
-	XCBFixesRegion *allDamage;
-
-	NSMutableDictionary *compositeMap;
-	
-	BOOL clipChanged;
+	xcb_visualid_t visual_id;
 }
+- (id)initWithVisualId: (xcb_visualid_t)visual_id;
+- (xcb_visualid_t)visualId;
 
-- (id)initWithScreen: (XCBScreen*)screen id: (uint32_t)id;
-- (XCBScreen*)screen;
-- (uint32_t)screenId;
-- (BOOL)manageScreen;
-
-- (XCBWindow*)rootWindow;
-- (XCBRenderPicture*)rootBuffer;
-- (void)setRootBuffer: (XCBRenderPicture*)rb;
-- (XCBRenderPicture*)rootPicture;
-- (void)setRootPicture: (XCBRenderPicture*)rp;
-- (void)appendDamage: (XCBFixesRegion*)damage;
-
-// Event handlers
-- (void)childWindowDiscovered: (XCBWindow*)child
-              compositeWindow: (PMCompositeWindow*)compositeWindow;
-- (void)childWindowRemoved: (XCBWindow*)child;
-
-// Paint the damaged areas and remove accumulated damage
-- (void)paintAllDamaged;
-// Paint everything regardless of accumulated damage
-- (void)paintAll;
 @end

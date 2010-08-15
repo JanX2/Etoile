@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  *
  **/
-#import "XCBConnection.h"
+#import <XCBKit/XCBConnection.h>
 
 @class PMScreen;
 

@@ -1,7 +1,7 @@
 /**
- * Étoilé ProjectManager - PMDecorationWindow.h
+ * Étoilé ProjectManager - XCBComposite.h
  *
- * Copyright (C) 2009 David Chisnall
+ * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,17 @@
  * THE SOFTWARE.
  *
  **/
-#import <XCBKit/XCBWindow.h>
+#import <Foundation/NSObject.h>
+#import <XCBKit/XCBConnection.h>
 
-@interface PMDecorationWindow : XCBWindow {}
+@class XCBPixmap;
+
+#include <xcb/composite.h>
+
+@interface XCBComposite : NSObject
+{
+}
++ (void)initializeExtensionWithConnection: (XCBConnection*)connection;
++ (void)redirectSubwindows: (XCBWindow*)root method: (xcb_composite_redirect_t)method;
++ (XCBPixmap*)nameWindowPixmap: (XCBWindow*)window;
 @end

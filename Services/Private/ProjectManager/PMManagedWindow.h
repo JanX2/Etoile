@@ -22,8 +22,8 @@
  * THE SOFTWARE.
  *
  **/
-#import "XCBWindow.h"
-#import "ICCCM.h"
+#import <XCBKit/XCBWindow.h>
+#import <XCBKit/ICCCM.h>
 
 typedef enum _PMManagedWindowState
 {

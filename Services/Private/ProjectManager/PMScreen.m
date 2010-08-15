@@ -23,18 +23,19 @@
  *
  **/
 #import "PMScreen.h"
-#import "EWMH.h"
-#import "ICCCM.h"
-#import "XCBScreen.h"
-#import "XCBConnection.h"
-#import "XCBRender.h"
-#import "XCBFixes.h"
-#import "XCBWindow.h"
-#import "XCBPixmap.h"
-#import "XCBAtomCache.h"
-#import "XCBSelection.h"
-#import "XCBDamage.h"
-#import "XCBShape.h"
+#import <XCBKit/EWMH.h>
+#import <XCBKit/ICCCM.h>
+#import <XCBKit/XCBScreen.h>
+#import <XCBKit/XCBConnection.h>
+#import <XCBKit/XCBRender.h>
+#import <XCBKit/XCBFixes.h>
+#import <XCBKit/XCBWindow.h>
+#import <XCBKit/XCBPixmap.h>
+#import <XCBKit/XCBAtomCache.h>
+#import <XCBKit/XCBSelection.h>
+#import <XCBKit/XCBComposite.h>
+#import <XCBKit/XCBDamage.h>
+#import <XCBKit/XCBShape.h>
 
 #import <EtoileFoundation/EtoileFoundation.h>
 
@@ -83,6 +84,7 @@
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	[manager_window destroy];
 	[manager_window release];
+	[manager_selection release];
 	[rootBuffer release];
 	[rootPicture release];
 	[allDamage release];
@@ -100,18 +102,26 @@
 - (BOOL)manageScreen
 {
 	XCBWindow *rootWindow = [screen rootWindow];
-	xcb_atom_t screen_atom = [[XCBAtomCache sharedInstance]
-		atomNamed: [NSString stringWithFormat: @"WM_S%d", screen_id]];
-	XCBWindow *window = [rootWindow createChildInRect: XCBMakeRect(0, 0, 1, 1) borderWidth: 0];
-	if (!XCBAcquireManagerSelection([self screen], manager_window, screen_atom, NO))
+	manager_selection = [[XCBSelection alloc]
+		initWithAtomNamed: [NSString stringWithFormat: @"WM_S%d", screen_id]];
+	const uint32_t window_values[1] = {
+		XCB_EVENT_MASK_STRUCTURE_NOTIFY
+	};
+	XCBWindow *window = [rootWindow 
+		createChildInRect: XCBMakeRect(0, 0, 1, 1) 
+		      borderWidth: 0];
+	if (![manager_selection 
+		acquireWithManagerWindow: window
+		        replace: [[NSUserDefaults standardUserDefaults] boolForKey: @"ReplaceWM"]])
 	{
-		NSLog(@"There is a window manager already running on screen #%d", screen_id);
+		NSLog(@"There is a window manager already running on screen #%d and it was not replaced", screen_id);
+		DESTROY(manager_selection);
 		[window destroy];
 		return NO;
 	}
 	ASSIGN(self->manager_window, window);
 
-	[screen setTrackingChildren: YES];
+
 	uint32_t events[2];
 	// Must be in this order because of the order of the
 	// XCB_CW_* flags
@@ -125,6 +135,11 @@
 	[rootWindow 
 		changeWindowAttributes: XCB_CW_EVENT_MASK | XCB_CW_OVERRIDE_REDIRECT
 		                values: events];
+	
+	[screen setTrackingChildren: YES];
+
+	[XCBComposite redirectSubwindows: rootWindow 
+	                          method: XCB_COMPOSITE_REDIRECT_MANUAL];
 
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self

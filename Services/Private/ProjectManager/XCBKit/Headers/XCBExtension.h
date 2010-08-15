@@ -1,7 +1,7 @@
 /**
- * Étoilé ProjectManager - PMDecorationWindow.h
+ * Étoilé ProjectManager - XCBExtension.h
  *
- * Copyright (C) 2009 David Chisnall
+ * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,11 @@
  * THE SOFTWARE.
  *
  **/
-#import <XCBKit/XCBWindow.h>
+#import <Foundation/Foundation.h>
+#import <xcb/xcb.h>
 
-@interface PMDecorationWindow : XCBWindow {}
-@end
+#import <XCBKit/XCBConnection.h>
+extern NSString* XCBExtensionNotPresentException;
+
+xcb_query_extension_reply_t* XCBInitializeExtension(XCBConnection* connection, const char* name);
+BOOL XCBCheckExtensionVersion(int minMajor, int minMinor, int actualMajor, int actualMinor);

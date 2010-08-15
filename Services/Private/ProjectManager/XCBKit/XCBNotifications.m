@@ -1,5 +1,5 @@
 /**
- * Étoilé ProjectManager - PMDecorationWindow.h
+ * Étoilé ProjectManager - XCBNotifications.m
  *
  * Copyright (C) 2009 David Chisnall
  *
@@ -22,7 +22,5 @@
  * THE SOFTWARE.
  *
  **/
-#import <XCBKit/XCBWindow.h>
-
-@interface PMDecorationWindow : XCBWindow {}
-@end
+#define DEFINE_NOTIFICATION(x) NSString *XCB ## x ## Notification = @"XCB" #x "Notification";
+#import <XCBKit/XCBNotifications.h>

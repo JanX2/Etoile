@@ -28,13 +28,13 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import <Foundation/NSNotification.h>
 
-#import "XCBWindow.h"
-#import "XCBFixes.h"
-#import "XCBRender.h"
-#import "XCBDamage.h"
-#import "XCBComposite.h"
-#import "XCBPixmap.h"
-#import "XCBShape.h"
+#import <XCBKit/XCBWindow.h>
+#import <XCBKit/XCBFixes.h>
+#import <XCBKit/XCBRender.h>
+#import <XCBKit/XCBDamage.h>
+#import <XCBKit/XCBComposite.h>
+#import <XCBKit/XCBPixmap.h>
+#import <XCBKit/XCBShape.h>
 
 const uint32_t OPAQUE = UINT32_MAX;
 @interface PMCompositeWindow (Private)

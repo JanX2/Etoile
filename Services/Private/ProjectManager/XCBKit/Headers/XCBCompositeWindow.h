@@ -1,5 +1,5 @@
 /**
- * Étoilé ProjectManager - PMDecorationWindow.h
+ * Étoilé ProjectManager - XCBCompositeWindow.h
  *
  * Copyright (C) 2009 David Chisnall
  *
@@ -24,5 +24,8 @@
  **/
 #import <XCBKit/XCBWindow.h>
 
-@interface PMDecorationWindow : XCBWindow {}
+@interface XCBCompositeWindow : XCBWindow {
+	xcb_pixmap_t pixmap;
+	xcb_picture_t picture;
+}
 @end

@@ -2,6 +2,9 @@ ETOILE_CORE_MODULE = YES
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
+SUBPROJECTS = XCBKit
+DEPENDENCIES = XCBKit
+
 #
 # Application
 #
@@ -19,33 +22,12 @@ $(TOOL_NAME)_OBJC_FILES = \
 	 PMScreen.m \
 	 PMCompositeWindow.m \
 	 PMManagedWindow.m \
-	 XCBAtomCache.m\
-	 XCBConnection.m\
-	 XCBNotifications.m\
-	 XCBWindow.m\
-	 XCBScreen.m\
-	 XCBDamage.m \
-	 XCBExtension.m \
-	 XCBComposite.m \
-	 XCBGeometry.m \
-	 XCBRender.m \
-	 XCBFixes.m \
-	 XCBPixmap.m \
-	 XCBVisual.m \
-	 XCBCachedProperty.m \
-	 XCBSelection.m \
-	 XCBShape.m \
-	 XCBPropertyHelpers.m \
-	 ICCCM.m \
-	 EWMH.m \
 	 main.m
 
+$(TOOL_NAME)_TOOL_LIBS = -lXCBKit
+
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Wno-unused  -Werror -Wall
-ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
-ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lxcb \
-	-lxcb-composite -lxcb-damage \
-	-lxcb-render-util -lxcb-xfixes \
-	-lxcb-shape
 
 include $(GNUSTEP_MAKEFILES)/tool.make
+include $(GNUSTEP_MAKEFILES)/aggregate.make
 -include ../../../etoile.make

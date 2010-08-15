@@ -24,12 +24,12 @@
  *
  **/
 #import "PMManagedWindow.h"
-#import "XCBWindow.h"
-#import "XCBCachedProperty.h"
-#import "XCBAtomCache.h"
-#import "ICCCM.h"
-#import "EWMH.h"
-#import "XCBShape.h"
+#import <XCBKit/XCBWindow.h>
+#import <XCBKit/XCBCachedProperty.h>
+#import <XCBKit/XCBAtomCache.h>
+#import <XCBKit/ICCCM.h>
+#import <XCBKit/EWMH.h>
+#import <XCBKit/XCBShape.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
 /**
@@ -621,6 +621,13 @@ static const float RH_QUOTIENT = 0.15;
 		[child setFrame: childFrame
 		         border: CHILD_BORDER_WIDTH];
 		[decorationWindow setFrame: decorationFrame border: 0];
+		
+
+		[child replaceProperty: EWMH_WMFrameExtents
+		                  type: @"CARDINAL"
+		                format: 32
+		                  data: BORDER_WIDTHS
+		                 count: 4];
 		[self updateShapeWithDecorationFrame: decorationFrame childFrame: childFrame];
 		[self sendSyntheticConfigureNotify: newRect];
 	}
@@ -722,6 +729,7 @@ static const float RH_QUOTIENT = 0.15;
 		}
 		if (!(wm_size_hints.flags & ICCCMPWinGravity))
 		{
+			NSLog(@"Window gravity for %@ not specified, assuming NorthWest");
 			wm_size_hints.win_gravity = ICCCMNorthWestGravity;
 		}
 
@@ -786,7 +794,7 @@ static const float RH_QUOTIENT = 0.15;
 	}
 
 	// Update WM_STATE
-	[child setWMState: state iconWindow: nil];
+	[child setWMState: mapState iconWindow: nil];
 }
 - (void)mapDecorationWindow
 {

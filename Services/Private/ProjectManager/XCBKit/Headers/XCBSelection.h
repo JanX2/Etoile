@@ -1,7 +1,7 @@
 /**
- * Étoilé ProjectManager - PMDecorationWindow.h
+ * Étoilé ProjectManager - XCBSelection.h
  *
- * Copyright (C) 2009 David Chisnall
+ * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,15 @@
  *
  **/
 #import <XCBKit/XCBWindow.h>
-
-@interface PMDecorationWindow : XCBWindow {}
+@interface XCBSelection : NSObject
+{
+	xcb_atom_t atom;
+}
+- (id)initWithAtomNamed: (NSString*)atomName;
+- (id)initWithAtom: (xcb_atom_t)atom;
+- (BOOL)acquireWithManagerWindow: (XCBWindow*)managerWindow
+                         replace: (BOOL)replace;
+- (XCBWindow*)requestOwner;
+- (xcb_atom_t)atom;
 @end
+

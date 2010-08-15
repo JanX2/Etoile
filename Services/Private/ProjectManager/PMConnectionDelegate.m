@@ -27,18 +27,18 @@
 #import "PMScreen.h"
 #import "PMCompositeWindow.h"
 #import "PMManagedWindow.h"
-#import "XCBConnection.h"
-#import "XCBDamage.h"
-#import "XCBRender.h"
-#import "XCBFixes.h"
-#import "XCBComposite.h"
-#import "XCBPixmap.h"
-#import "XCBGeometry.h"
-#import "XCBWindow.h"
-#import "XCBShape.h"
-#import "ICCCM.h"
-#import "EWMH.h"
-#import "XCBAtomCache.h"
+#import <XCBKit/XCBConnection.h>
+#import <XCBKit/XCBDamage.h>
+#import <XCBKit/XCBRender.h>
+#import <XCBKit/XCBFixes.h>
+#import <XCBKit/XCBComposite.h>
+#import <XCBKit/XCBPixmap.h>
+#import <XCBKit/XCBGeometry.h>
+#import <XCBKit/XCBWindow.h>
+#import <XCBKit/XCBShape.h>
+#import <XCBKit/ICCCM.h>
+#import <XCBKit/EWMH.h>
+#import <XCBKit/XCBAtomCache.h>
 
 #import <Foundation/NSArray.h>
 #import <Foundation/NSDictionary.h>
@@ -84,6 +84,8 @@
 	[[XCBAtomCache sharedInstance]
 		cacheAtoms: EWMHAtomsList()];
 
+	self->screens = [NSMutableDictionary new];
+
 	NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
 
 	[defaultCenter addObserver: self
@@ -94,31 +96,26 @@
 	                  selector: @selector(windowBecomeAvailable:)
 	                      name: XCBWindowBecomeAvailableNotification
 	                    object: nil];
-
-	self->screens = [NSMutableDictionary new];
-
-	[XCBConn grab];
-	xcb_flush([XCBConn connection]);
 	uint32_t screen_id = 0;
 	FOREACH([XCBConn screens], screen, XCBScreen*)
 	{
 		PMScreen *pm_screen = [[PMScreen alloc] 
 			initWithScreen: screen 
 			            id: screen_id++];
+		
+		[screens setObject: pm_screen 
+		            forKey: screen];
 		if (![pm_screen manageScreen])
 		{
 			[pm_screen release];
+			[screens removeObjectForKey: screen];
 			continue;
 		}
 
-		[screens setObject: pm_screen 
-		            forKey: screen];
 		[pm_screen release];
 
 		[self redirectRootsForWindow: [screen rootWindow]];
 	}
-	[XCBConn ungrab];
-	xcb_flush([XCBConn connection]);
 	if ([screens count] == 0)
 	{
 		NSDebugLLog(@"PMConnectionDelegate", @"No screens to manage!");

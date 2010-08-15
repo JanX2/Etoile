@@ -1,7 +1,7 @@
 /**
- * Étoilé ProjectManager - PMDecorationWindow.h
+ * Étoilé ProjectManager - XCBGeometry.m
  *
- * Copyright (C) 2009 David Chisnall
+ * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,37 @@
  * THE SOFTWARE.
  *
  **/
-#import <XCBKit/XCBWindow.h>
+#import <XCBKit/XCBGeometry.h>
 
-@interface PMDecorationWindow : XCBWindow {}
+@implementation NSValue (XCBGeometry)
+- (XCBPoint)xcbPointValue
+{
+	XCBPoint v;
+	[self getValue: &v];
+	return v;
+}
++ (NSValue*)valueWithXCBPoint: (XCBPoint)pointValue
+{
+	return [self valueWithBytes: &pointValue objCType: @encode(XCBPoint)];
+}
+- (XCBSize)xcbSizeValue
+{
+	XCBSize v;
+	[self getValue: &v];
+	return v;
+}
++ (NSValue*)valueWithXCBSize: (XCBSize)sizeValue
+{
+	return [self valueWithBytes: &sizeValue objCType: @encode(XCBSize)];
+}
+- (XCBRect)xcbRectValue
+{
+	XCBRect v;
+	[self getValue: &v];
+	return v;
+}
++ (NSValue*)valueWithXCBRect: (XCBRect)rectValue
+{
+	return [self valueWithBytes: &rectValue objCType: @encode(XCBRect)];
+}
 @end
