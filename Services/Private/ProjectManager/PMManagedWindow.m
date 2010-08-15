@@ -729,7 +729,7 @@ static const float RH_QUOTIENT = 0.15;
 		}
 		if (!(wm_size_hints.flags & ICCCMPWinGravity))
 		{
-			NSLog(@"Window gravity for %@ not specified, assuming NorthWest");
+			NSLog(@"Window gravity for %@ not specified, assuming NorthWest", wmNormalHintsProperty);
 			wm_size_hints.win_gravity = ICCCMNorthWestGravity;
 		}
 

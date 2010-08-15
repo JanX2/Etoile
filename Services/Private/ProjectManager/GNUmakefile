@@ -16,6 +16,9 @@ TOOL_NAME = ProjectManager
 #
 $(TOOL_NAME)_LANGUAGES = English
 
+$(TOOL_NAME)_CPPFLAGS += -I.
+$(TOOL_NAME)_LDFLAGS += -L./XCBKit/XCBKit.framework/
+
 $(TOOL_NAME)_OBJC_FILES = \
 	 PMNotifications.m\
 	 PMConnectionDelegate.m \
@@ -28,6 +31,6 @@ $(TOOL_NAME)_TOOL_LIBS = -lXCBKit
 
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Wno-unused  -Werror -Wall
 
-include $(GNUSTEP_MAKEFILES)/tool.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
+include $(GNUSTEP_MAKEFILES)/tool.make
 -include ../../../etoile.make

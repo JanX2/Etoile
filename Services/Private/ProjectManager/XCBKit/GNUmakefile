@@ -34,7 +34,6 @@ $(FRAMEWORK_NAME)_OBJC_FILES = \
 	 ICCCM.m \
 	 EWMH.m 
 
-$(FRAMEWORK_NAME)_HEADER_FILES_DIR = Headers
 $(FRAMEWORK_NAME)_HEADER_FILES = \
 	 XCBAtomCache.h \
 	 XCBConnection.h \
