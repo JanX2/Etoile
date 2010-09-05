@@ -1,0 +1,135 @@
+EtoileUI Quick Start Guide
+====================
+
+How to write an Objective-C or Smalltalk skeleton application?
+------------------------------------------------------------------------------------
+
+This chapter explains how the launch code is structured in an EtoileUI application. You might want to skip it and start directly with  the Hello World! example, and later come back to this chapter if needed.
+
+### Objective-C
+
+You need a basic main.m that invokes ETApplicationMain() instead of NSApplicationMain() as the AppKit does.
+
+int main(int argc, char *argv[])
+{
+	return ETApplicationMain(argc,  (const char **) argv);
+}
+
+Then you can specify the class of the first object to be instantiated with the key 'ETPrincipalControllerClass' in the Info plist file to be packaged in the application bundle.
+For instance, MyExampleInfo.plist could be as simple as:
+
+{
+	ETPrincipalControllerClass = "MyExampleController";
+}
+
+In this case, EtoileUI will set up basic UI elements such as the menu bar at launch time.
+
+The principal controller once instantiated is automatically registered as the application's delegate. The usual way to receive the control once the launch is finished is to implement the delegate method:
+
+- (void) applicationDidFinishLaunching: (NSNotification *)notif
+{
+	// Do something 
+}
+
+An alternative is to use a main Nib file that provides a menu bar and a main controller. You just need to set the controller as the application's delegate in the Nib file and implement -applicationDidFinishLaunching: as above in your controller class.
+
+See also ETApplication documentation which covers the launch topic in a more detailed way.
+
+For AppKit users, take note that the EtoileUI application object is +[ETApplication sharedApplication] and not an NSApplication instance. For conveniency, an 'ETApp' macro is also available to get the application object.
+
+### Smalltalk
+
+You can write a similar code skeleton in Smalltalk. In that case, you usually fit it into a single file. This example doesn't use 'ETPrincipalControllerClass' to instantiate a main controller but reuses the object that implements the -run method, that gets instantiated by 'edlc', as the main controller.
+
+NSObject subclass: MainController [
+
+	"edlc looks for this -run method to start the program"
+	run [ 
+            ETApplication sharedApplication setDelegate: self.
+		ETApplication sharedApplication run.
+	]
+
+	applicationDidFinishLaunching: notif  [ 
+		"Do something"
+	]
+]
+
+If you decide to specify a 'ETPrincipalControllerClass' key in the plist, the code would look like:
+
+"Here the Launcher class is equivalent to the main() an Objective-C application"
+NSObject subclass: Launcher [
+
+	run [ 
+		ETApplication sharedApplication run.
+	]
+]
+
+NSObject subclass: MainController [
+
+	applicationDidFinishLaunching: notif  [ 
+		"Do something"
+	]
+]
+
+Alternatively you can use a main Nib file to instantiate a main controller as explained in the previous Objective-C section.
+
+To run these Smalltalk examples supposing the code is put in a file named 'MyExample.st', just do:
+edlc -l EtoileUI -f MyExample.st
+
+
+Hello World
+----------------
+
+As a first example, let's see at to create a Hello World application. The application will consist of a single text label whose value will be 'Hello World!' and enclosed in a window.
+
+TODO: Write more about ETLayoutItem and ETLayoutItemFactory
+
+### Objective-C
+
+@interface MainController : NSObject
+@end
+
+@implementation MainController
+
+- (void) applicationDidFinishLaunching: (NSNotification *)notif
+{
+	ETLayoutItemFactory *itemFactory = [ETLayoutItemFactory factory];
+	ETLayoutItem *helloItem = [itemFactory labelWithTitle: @"Hello World!"];
+
+	[itemFactory windowGroup] addItem: helloItem];
+}
+
+@end
+
+int main(int argc, char *argv[])
+{
+	return ETApplicationMain(argc,  (const char **) argv);
+}
+
+See the concrete example to know to organize, compile and run this code (either with gnustep-make or Xcode).
+
+#### Smalltalk
+
+Here is the same example now in Smalltalk and in a single file. 
+
+NSObject subclass: HelloWorld [
+
+	run [ 
+            ETApplication sharedApplication setDelegate: self.
+		ETApplication sharedApplication run.
+	]
+
+	applicationDidFinishLaunching: notif  [ | itemFactory helloItem |
+		itemFactory := ETLayoutItemFactory factory.
+		helloItem := factory itemWithValue: ‘Hello World!’.
+		factory windowGroup addItem:  helloItem.
+	]
+]
+
+If the file is named HelloWorld.st, you can run it with:
+
+edlc -l EtoileUI -f HelloWorld.st
+
+
+Temperature Converter
+--------------------------------
