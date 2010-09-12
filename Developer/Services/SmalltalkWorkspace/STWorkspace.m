@@ -42,15 +42,18 @@
 	NSString *printed = [[self runCode: [self selectedString]] description];
 	NSLog(@"result: %@", printed);
 
-	// Insert the result after the code that was run
-	NSRange codeRange = [self selectedRange];
-	[_textView setSelectedRange:
-		NSMakeRange(codeRange.location + codeRange.length, 0)];
-	[_textView insertText: printed];
+	if (nil != printed)
+	{
+		// Insert the result after the code that was run
+		NSRange codeRange = [self selectedRange];
+		[_textView setSelectedRange:
+			NSMakeRange(codeRange.location + codeRange.length, 0)];
+		[_textView insertText: printed];
 
-	// Select the inserted result
-	[_textView setSelectedRange:
-		NSMakeRange(codeRange.location + codeRange.length, [printed length])];
+		// Select the inserted result
+		[_textView setSelectedRange:
+			NSMakeRange(codeRange.location + codeRange.length, [printed length])];
+	}
 }
 
 /**
@@ -152,7 +155,9 @@
 generatedWarning: (NSString*)aWarning
          details: (NSDictionary*)info
 {
-	[self appendTranscriptString: [info valueForKey: kLKHumanReadableDescription]];
+	[self appendTranscriptString:
+		[NSString stringWithFormat:@"Warning: %@",
+		 [info valueForKey: kLKHumanReadableDescription]]];
 	return YES;
 }
 
@@ -162,6 +167,7 @@ generatedWarning: (NSString*)aWarning
 {
 	LKAST *ast = [info valueForKey: kLKASTNode];
 
+	// Assignment to undefined variables automatically creates a new variable
 	if ([[ast parent] isKindOfClass: [LKAssignExpr class]] &&
 	    ast == [(LKAssignExpr*)[ast parent] target] &&
 	    [[ast symbols] scopeOfSymbol: [(LKDeclRef*)ast symbol]] == LKSymbolScopeInvalid)
@@ -170,7 +176,9 @@ generatedWarning: (NSString*)aWarning
 		return YES;
 	}
 
-	[self appendTranscriptString: [info valueForKey: kLKHumanReadableDescription]];
+	[self appendTranscriptString:
+	 [NSString stringWithFormat:@"Error: %@",
+	  [info valueForKey: kLKHumanReadableDescription]]];
 	return NO;
 }
 
