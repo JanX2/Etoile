@@ -97,6 +97,13 @@
 			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
 			remoteInfo = TestEtoileFoundation;
 		};
+		66708939123FFB2D00E65F00 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 660D2DAE10EF13910022F82C /* LanguageKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6697AFDE1048CFC800456911 /* Smalltalk */;
+			remoteInfo = Smalltalk;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -248,6 +255,7 @@
 				660D2DC210EF13A40022F82C /* PBXTargetDependency */,
 				660D2DC410EF13A40022F82C /* PBXTargetDependency */,
 				660D2DC610EF13A40022F82C /* PBXTargetDependency */,
+				6670893A123FFB2D00E65F00 /* PBXTargetDependency */,
 			);
 			name = SmalltalkWorkspace;
 			productInstallPath = "$(HOME)/Applications";
@@ -381,6 +389,11 @@
 			isa = PBXTargetDependency;
 			name = SmalltalkSupport;
 			targetProxy = 660D2DC510EF13A40022F82C /* PBXContainerItemProxy */;
+		};
+		6670893A123FFB2D00E65F00 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Smalltalk;
+			targetProxy = 66708939123FFB2D00E65F00 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

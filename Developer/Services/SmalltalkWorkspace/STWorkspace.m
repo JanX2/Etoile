@@ -5,11 +5,9 @@
 
 @implementation STWorkspace
 
-- (id)init
+- (void)awakeFromNib
 {
-	SUPERINIT;
-
-	LKSymbolTable *table = [[LKMethodSymbolTable alloc] initWithLocals: nil
+  LKSymbolTable *table = [[LKMethodSymbolTable alloc] initWithLocals: nil
 	                                                               args: nil];
 
 	_interpreterContext = [[LKInterpreterContext alloc] initWithSymbolTable: table
@@ -17,7 +15,11 @@
 	[LKCompiler setDefaultDelegate: self];
 	_parser = [[[[LKCompiler compilerForLanguage: @"Smalltalk"] parserClass] alloc] init];
 
-	return self;
+  if (nil == _parser)
+  {
+    [[_textView window] makeKeyAndOrderFront: nil];
+    NSBeginAlertSheet(@"Error loading Smalltalk",@"Ok",nil,nil,[_textView window],nil,nil,nil,nil,@"Ensure the Smalltalk bundle is in ~/Library/Bundles/LanguageKit/Smalltalk.bundle");
+  }
 }
 
 - (void)dealloc
