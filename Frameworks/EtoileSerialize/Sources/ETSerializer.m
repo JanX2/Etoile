@@ -40,6 +40,8 @@
                                                to: (NSString*)receiverJID;
 @end
 
+// NOTE: Object implementation is empty in libobjc2
+#ifndef __GNUSTEP_RUNTIME__
 /**
  * Objects that inherit from Object instead of NSObject don't understand
  * isKindOfClass:
@@ -50,6 +52,7 @@
 	return aClass == [Object class];
 }
 @end
+#endif
 
 /**
  * Informal protocol for serialization-aware objects.
