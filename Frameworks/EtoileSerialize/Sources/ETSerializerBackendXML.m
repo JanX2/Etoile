@@ -161,7 +161,7 @@
 - (void) beginObjectWithID: (CORef)aReference withName: (char *)aName withClass: (Class)aClass
 {
 	[writer startElement: @"object"
-	          attributes: D([NSString stringWithCString: aClass->name
+	          attributes: D([NSString stringWithCString: class_getName(aClass)
 	                                           encoding: NSASCIIStringEncoding],
 	                        @"class",
 	                        [NSString stringWithCString: aName

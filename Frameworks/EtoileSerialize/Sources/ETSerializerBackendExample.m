@@ -91,7 +91,7 @@
 {
 	FORMAT("(Object with ID:%"PRIu32")\n",aReference);
 	[self indent];
-	FORMAT("%s * %s {\n",aClass->name,aName);
+	FORMAT("%s * %s {\n", class_getName(aClass), aName);
 	indent++;
 }
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName
@@ -189,12 +189,12 @@
 - (void) storeClass:(Class)aClass withName:(char*)aName
 {
 	[self indent];
-	FORMAT("Class %s=[%s class];\n",aName,aClass->class_pointer->name);
+	FORMAT("Class %s=[%s class];\n", aName, class_getName(object_getClass(aClass)));
 }
 - (void) storeSelector:(SEL)aSelector withName:(char*)aName
 {
 	[self indent];
-	FORMAT("SEL %s=@selector(%s);\n",aName,sel_get_name(aSelector));
+	FORMAT("SEL %s=@selector(%s);\n", aName, sel_getName(aSelector));
 }
 - (void) storeCString:(const char*)aCString withName:(char*)aName
 {

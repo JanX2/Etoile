@@ -523,16 +523,18 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 {
 	//NSLog(@"Starting object %s", aName);
 	int lastVersion = -1;
-	currentClass = anObject->class_pointer;
+	currentClass = object_getClass(anObject);
 	[backend beginObjectWithID:COREF_FROM_ID(anObject)
 	                  withName:aName
 	                 withClass:currentClass];
 	//Loop over instance variables.
 	do
 	{
-		struct objc_ivar_list* ivarlist = currentClass->ivars;
-		//NSLog(@"Serializing ivars belonging to class %s", currentClass->name);
-		if(ivarlist != NULL)
+		unsigned int count = 0;
+		Ivar *ivarList = class_copyIvarList(currentClass, &count);
+
+		//NSLog(@"Serializing ivars belonging to class %s", class_getName(currentClass));
+		if (ivarList != NULL)
 		{
 			int version = [currentClass version];
 			if(version != lastVersion)
@@ -540,14 +542,16 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 				lastVersion = version;
 				[backend setClassVersion:[currentClass version]];
 			}
-			for(int i=0 ; i<ivarlist->ivar_count ; i++)
+			for (int i = 0; i < count; i++)
 			{
-				void * address = ((char*)anObject + (ivarlist->ivar_list[i].ivar_offset));
-				char * name = (char*)ivarlist->ivar_list[i].ivar_name;
-				char * type = (char*)ivarlist->ivar_list[i].ivar_type;
+				void *address = (char *)anObject + ivar_getOffset(ivarList[i]);
+				char *name = (char *)ivar_getName(ivarList[i]);
+				char *type = (char *)ivar_getTypeEncoding(ivarList[i]);
+
 				//NSLog(@"Found ivar: %s", name);
+
 				/* Don't bother with the isa pointer; we get that filled in for us automatically */
-				if(strcmp("isa", name) != 0)
+				if (strcmp("isa", name) != 0)
 				{
 					//NSLog(@"Serializing ivar: %s in %@", name, anObject);
 					if(![anObject serialize:name using:self])
@@ -557,12 +561,13 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 					}
 				}
 			}
+			free(ivarList);
 		}
 		//NOTE: This is a bit of a hack, but there's no clean way of handling 
 		//it that I can think of
 
 		//Special handling for invocation
-		if(strcmp(currentClass->name, "NSInvocation") == 0)
+		if (strcmp(class_getName(currentClass), "NSInvocation") == 0)
 		{
 			NSMethodSignature * sig = [anObject methodSignature];
 			char name[6] = {'a','r','g','.','\0','\0'};
@@ -576,8 +581,9 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 				[self parseType:[sig getArgumentTypeAtIndex:i] atAddress:buffer withName:name];
 			}
 		}
+
 		//Get ivars from superclass as well.
-		currentClass = currentClass->super_class;
+		currentClass = class_getSuperclass(currentClass);
 	}
 	while(currentClass != NULL);
 	[backend endObject];

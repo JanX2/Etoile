@@ -17,23 +17,29 @@
 inline static void * addressForIVarName(id anObject, char * aName, int hint)
 {
 	//Find a real iVar
-	Class class = anObject->class_pointer;
-	while(class != Nil && class != (Class)class->super_class)
+	Class class = object_getClass(anObject);
+	while(class != Nil && class != class_getSuperclass(class))
 	{
-		struct objc_ivar_list* ivarlist = class->ivars;
-		if(ivarlist != NULL) 
+		unsigned int count = 0;
+		Ivar *ivarList = class_copyIvarList(class, &count);
+
+		if (ivarList != NULL)
 		{
-			for(int i=0 ; i<ivarlist->ivar_count ; i++)
+			for (int i = 0; i < count; i++)
 			{
-				char * name = (char*)ivarlist->ivar_list[i].ivar_name;
-				if(strcmp(aName, name) == 0)
+				char *name = (char *)ivar_getName(ivarList[i]);
+				if (strcmp(aName, name) == 0)
 				{
-					return ((char*)anObject + (ivarlist->ivar_list[i].ivar_offset));
+					ptrdiff_t offset = ivar_getOffset(ivarList[i]);
+					free(ivarList);
+					return ((char *)anObject + offset);
 				}
 			}
+			free(ivarList);
 		}
+
 		//If the instance variable is not from this class, check the superclass.
-		class = class->super_class;
+		class = class_getSuperclass(class);
 	}
 	return NULL;
 }
@@ -518,7 +524,7 @@ static void *nszoneDeserializer(char *varName, void *aBlob, void *aLocation)
 	NSZone *deserialiserZone = NSDefaultMallocZone();
 	loadedIVar = 0;
 	object = NSAllocateObject(aClass, 0, deserialiserZone);
-	object->class_pointer = aClass;
+	object_setClass(object, aClass);
 	//NSLog(@"Loading %@ at address 0x%x for ref %d", [aClass className], object, aReference);
 	SET_REF(aReference, object);
 	if([object isKindOfClass:[NSInvocation class]])
@@ -536,7 +542,7 @@ static void *nszoneDeserializer(char *varName, void *aBlob, void *aLocation)
  */
 - (void) endObject 
 {
-	if(class_getInstanceMethod(object->class_pointer, @selector(finishedDeserializing)))
+	if(class_getInstanceMethod(object_getClass(object), @selector(finishedDeserializing)))
 	{
 		[loadedObjectList addObject:object];
 	}

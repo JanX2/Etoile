@@ -145,7 +145,7 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 {
 	uint32_t offset = OFFSET;
 	NSIntMapInsert(offsets, aReference, offset);
-	FORMAT("<%s%c",aClass->name,0);
+	FORMAT("<%s%c", class_getName(aClass), 0);
 }
 
 - (void) storeObjectReference: (CORef)aReference withName: (char *)aName
@@ -220,7 +220,7 @@ STORE_METHOD(UnsignedLongLong, unsigned long long, "Q")
 
 - (void) storeClass: (Class)aClass withName: (char *)aName
 {
-	FORMAT("#%s%c%s%c", aName, 0,aClass->name,0);
+	FORMAT("#%s%c%s%c", aName, 0, class_getName(aClass),0);
 }
 
 - (void) storeSelector: (SEL)aSelector withName: (char *)aName
