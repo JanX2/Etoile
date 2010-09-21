@@ -13,8 +13,10 @@ export bookmarkkitexample ?= no
 export coreobjectexample ?= yes
 export etoilethreadexample ?= yes
 export lucenekitexample ?= yes
+export microblogpushexample ?=yes
 export ogrekitexample ?= yes
 export opmlkitexample ?= no
+export sketch ?= yes
 
 #
 # Projects (listed by dependency order, then alphabetical order)
@@ -36,12 +38,20 @@ ifeq ($(lucenekitexample), yes)
 	SUBPROJECTS += LuceneKitExample
 endif
 
+ifeq ($(microblogpushexample), yes)
+	SUBPROJECTS += MicroblogPushExample
+endif
+
 ifeq ($(ogrekitexample), yes)
 	SUBPROJECTS += OgreKitExample
 endif
 
 ifeq ($(opmlkitexample), yes)
 	SUBPROJECTS += OPMLKitExample
+endif
+
+ifeq ($(sketch), yes)
+	SUBPROJECTS += Sketch
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
