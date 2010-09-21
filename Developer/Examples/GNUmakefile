@@ -12,9 +12,9 @@ include $(GNUSTEP_MAKEFILES)/common.make
 export bookmarkkitexample ?= no
 export coreobjectexample ?= yes
 export etoilethreadexample ?= yes
-export ioexample ?= no
 export lucenekitexample ?= yes
 export ogrekitexample ?= yes
+export opmlkitexample ?= no
 
 #
 # Projects (listed by dependency order, then alphabetical order)
@@ -32,10 +32,6 @@ ifeq ($(etoilethreadexample), yes)
 	SUBPROJECTS += EtoileThreadExample
 endif
 
-ifeq ($(distributedviewexample), yes)	
-	SUBPROJECTS += DistributedViewExample
-endif
-
 ifeq ($(lucenekitexample), yes)
 	SUBPROJECTS += LuceneKitExample
 endif
@@ -44,8 +40,8 @@ ifeq ($(ogrekitexample), yes)
 	SUBPROJECTS += OgreKitExample
 endif
 
-ifeq ($(ioexample), yes)
-	SUBPROJECTS += IoExample
+ifeq ($(opmlkitexample), yes)
+	SUBPROJECTS += OPMLKitExample
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
