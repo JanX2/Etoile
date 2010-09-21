@@ -14,7 +14,6 @@
 - (void) statusChanged:(NSNotification*)aNotification
 {
 	NSString * status = [[aNotification userInfo] objectForKey:@"status"];
-	NSString * script = nil;
 	/* Avoid duplicates */
 	if(!(status == nil || [status isEqualToString:@""] || [lastStatus isEqualToString:status]))
 	{
