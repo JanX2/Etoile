@@ -13,14 +13,12 @@ export addressmanager ?= yes
 export codeeditor ?= no
 export dictionaryreader ?= yes
 export fontmanager ?= yes
-export grr ?= no
 export hardware ?= yes
-export jabber ?= yes
 export lookandbehavior ?= yes
 export melodie ?= yes
-export microblogger ?= no
+export microblog ?= yes
 export newsstand ?= no
-export sketch ?= no
+export stepchat ?= yes
 export termx ?= no
 export typewriter ?= yes
 export vindaloo ?= yes
@@ -45,16 +43,8 @@ ifeq ($(fontmanager), yes)
 	SUBPROJECTS += FontManager
 endif
 
-ifeq ($(grr), yes)
-	SUBPROJECTS += Grr
-endif
-
 ifeq ($(hardware), yes)
 	SUBPROJECTS += Hardware
-endif
-
-ifeq ($(jabber), yes)
-	SUBPROJECTS += Jabber
 endif
 
 ifeq ($(lookandbehavior), yes)
@@ -65,16 +55,16 @@ ifeq ($(melodie), yes)
 	SUBPROJECTS += Melodie
 endif
 
-ifeq ($(microblogger), yes)
-	SUBPROJECTS += Microblogger
+ifeq ($(microblog), yes)
+	SUBPROJECTS += MicroblogAtom Microblogger
 endif
 
 ifeq ($(newsstand), yes)
 	SUBPROJECTS += NewsStand
 endif
 
-ifeq ($(sketch), yes)
-	SUBPROJECTS += Sketch
+ifeq ($(stepchat), yes)
+	SUBPROJECTS += StepChat
 endif
 
 ifeq ($(termx), yes)
