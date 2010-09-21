@@ -38,12 +38,12 @@ static id logBackend;
 	Class proxyClass = Nil;
 	while(objectClass != Nil)
 	{
-		if(Nil != (proxyClass = NSClassFromString([NSString stringWithFormat:@"COProxy_%s", objectClass->name])))
+		if(Nil != (proxyClass = NSClassFromString([NSString stringWithFormat:@"COProxy_%s", class_getName(objectClass)])))
 		{
-			self->isa = proxyClass;
+			object_setClass(self, proxyClass);
 			break;
 		}
-		objectClass = objectClass->super_class;
+		objectClass = class_getSuperclass(objectClass);
 	}
 	ASSIGN(baseURL,anURL);
 	if(aSerializer == nil)
