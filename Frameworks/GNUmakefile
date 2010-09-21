@@ -9,14 +9,12 @@ PACKAGE_NAME = Frameworks
 
 -include ../modules.make
 
-export objc-2 ?= no
 export addresseskit ?= yes
 export bookmarkkit ?= no
 export coreobject ?= yes
 export etoilefoundation ?= yes
 export etoileui ?= yes
 export etoileserialize ?= yes
-export gckit ?= no
 export iconkit ?= yes
 export lucenekit ?= yes
 export mediakit ?= yes
@@ -35,11 +33,6 @@ export xwindowserverkit ?= yes
 #
 # Projects (listed by dependency order, then alphabetical order)
 #
-
-# No particular dependency
-ifeq ($(gckit), yes)
-   SUBPROJECTS += GCKit 
-endif
 
 # We need to build UnitKit first because other frameworks may depend on it 
 # (the whole repository may build with 'make test=yes').
