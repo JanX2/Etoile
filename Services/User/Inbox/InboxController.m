@@ -14,7 +14,7 @@
 
 - (void) applicationDidFinishLaunching: (id)notif
 {
-	ETUIItemFactory *factory = [ETUIItemFactory factory];
+	ETLayoutItemFactory *factory = [ETLayoutItemFactory factory];
 	
 	ETMailAccount *account = [[ETMailAccount alloc] init];
 	[account setValue: @"*****" forProperty: @"username"];
