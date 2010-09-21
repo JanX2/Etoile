@@ -7,17 +7,8 @@
 //
 
 #import "StatusAtom.h"
+#import <EtoileFoundation/ETUUID.h>
 
-//TODO: Replace this with something sensible like the UUID code from OrganizeKit
-NSString * uuid(void)
-{
-	return [NSString stringWithFormat:@"urn:uuid:%0x-%0hx-%0hx-%0hx%0x",
-		   random(),
-		   (short)random(),
-		   (short)random(),
-		   (short)random(),
-		   random()];
-}
 extern char * publish;
 /**
  * Helper function for escaping XML character data.
@@ -61,7 +52,7 @@ static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
 					@"\n\n\t<entry>\n\t\t<title>%@</title>\n\t\t<summary>%@</summary>\n\t\t<id>%@</id>\n\t\t<updated>%@</updated>\n\t</entry>",
 					escapeXMLCData(title),
 					escapeXMLCData(message),
-					uuid(),
+					[ETUUID UUID],
 					[[NSCalendarDate calendarDate] descriptionWithCalendarFormat:@"%Y-%m-%dT%H:%M:%SZ"]];
 			const char * utf8 = [entry UTF8String];
 			fwrite(utf8, strlen(utf8), 1, file);
