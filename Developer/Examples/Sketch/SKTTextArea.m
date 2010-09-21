@@ -124,7 +124,7 @@
         [[self fillColor] set];
         NSRectFill(bounds);
     }
-    if (view && ([view editingGraphic] == self) || ([view creatingGraphic] == self)) 
+    if ((view && [view editingGraphic] == self) || [view creatingGraphic] == self) 
 	{
         [[NSColor knobColor] set];
         NSFrameRect(NSInsetRect(bounds, -1.0, -1.0));

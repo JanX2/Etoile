@@ -57,4 +57,5 @@ Sketch_RESOURCE_FILES = \
 	Resources/Sketch.tiff
 
 include $(GNUSTEP_MAKEFILES)/application.make
+-include ../../../etoile.make
 -include GNUmakefile.postamble
