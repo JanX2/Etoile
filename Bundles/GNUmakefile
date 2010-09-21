@@ -9,7 +9,6 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 -include ../modules.make
 
-export camaelon ?= no
 export etoilebehavior ?= yes
 export etoilewildmenus ?= yes
 export powermenulet ?= no
@@ -19,10 +18,6 @@ export volumecontrolmenulet ?= no
 #
 # Projects (listed by dependency order, then alphabetical order)
 #
-
-ifeq ($(camaelon), yes)
-    SUBPROJECTS += Camaelon
-endif
 
 ifeq ($(etoilebehavior), yes)
     SUBPROJECTS += EtoileBehavior
