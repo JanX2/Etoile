@@ -2,31 +2,32 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 DEPENDENCIES = OgreKit
 
-APP_NAME = SimpleCodeEditor
+APP_NAME = Typewriter
 
-SimpleCodeEditor_OBJC_FILES = \
+Typewriter_OBJC_FILES = \
 	main.m \
 	Controller.m \
 	TWTextView.m \
 	TWDocument.m \
 	TWCharacterPanel.m
 
-SimpleCodeEditor_GUI_LIBS += -lOgreKit -lScriptKit -lIDEKit
+Typewriter_GUI_LIBS += -lOgreKit -lScriptKit -lIDEKit
 
-SimpleCodeEditor_LANGUAGES = \
+Typewriter_LANGUAGES = \
 	English
 
-SimpleCodeEditor_LOCALIZED_RESOURCE_FILES = \
+Typewriter_LOCALIZED_RESOURCE_FILES = \
 	MainMenu.gorm \
 	Document.gorm \
 	CharacterPanel.gorm
 
-SimpleCodeEditor_RESOURCE_FILES = \
+Typewriter_RESOURCE_FILES = \
 	Resources/Document-Text.tiff \
 	Resources/Document-RichText.tiff \
-	Resources/SimpleCodeEditor.tiff
+	Resources/Typewriter.tiff
 
-SimpleCodeEditor_MAIN_MODEL_FILE = MainMenu.gorm
+Typewriter_MAIN_MODEL_FILE = MainMenu.gorm
+CC=clang
 
 include $(GNUSTEP_MAKEFILES)/application.make
 -include ../../../etoile.make
