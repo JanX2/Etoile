@@ -11,7 +11,7 @@ Typewriter_OBJC_FILES = \
 	TWDocument.m \
 	TWCharacterPanel.m
 
-Typewriter_GUI_LIBS += -lOgreKit -lScriptKit -lIDEKit
+Typewriter_GUI_LIBS += -lOgreKit -lScriptKit
 
 Typewriter_LANGUAGES = \
 	English
