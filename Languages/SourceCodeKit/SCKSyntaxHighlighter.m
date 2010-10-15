@@ -1,7 +1,7 @@
-#import "IDESyntaxHighlighter.h"
+#import "SCKSyntaxHighlighter.h"
 #import <Cocoa/Cocoa.h>
 #import <EtoileFoundation/EtoileFoundation.h>
-#import "IDETextTypes.h"
+#import "SCKTextTypes.h"
 #include <time.h>
 
 #define NSLog(...)
@@ -21,14 +21,14 @@ NSRange NSRangeFromCXSourceRange(CXSourceRange sr)
 	return r;
 }
 
-@interface IDESyntaxHighlighter ()
+@interface SCKSyntaxHighlighter ()
 /**
  * Perform lexical highlighting on a specified source range.
  */
 - (void)highlightRange: (CXSourceRange)r syntax: (BOOL)highightSyntax;
 @end
 
-@implementation IDESyntaxHighlighter
+@implementation SCKSyntaxHighlighter
 - (id)init
 {
 	SUPERINIT;
@@ -125,9 +125,9 @@ NSRange NSRangeFromCXSourceRange(CXSourceRange sr)
 
 - (void)highlightRange: (CXSourceRange)r syntax: (BOOL)highightSyntax;
 {
-	NSString *TokenTypes[] = {IDETextTokenTypePunctuation, IDETextTokenTypeKeyword,
-		IDETextTokenTypeIdentifier, IDETextTokenTypeLiteral,
-		IDETextTokenTypeComment};
+	NSString *TokenTypes[] = {SCKTextTokenTypePunctuation, SCKTextTokenTypeKeyword,
+		SCKTextTokenTypeIdentifier, SCKTextTokenTypeLiteral,
+		SCKTextTokenTypeComment};
 	if (clang_equalLocations(clang_getRangeStart(r), clang_getRangeEnd(r)))
 	{
 		NSLog(@"Range has no length!");
@@ -163,37 +163,37 @@ NSRange NSRangeFromCXSourceRange(CXSourceRange sr)
 				switch (cursors[i].kind)
 				{
 					case CXCursor_FirstRef... CXCursor_LastRef:
-						type = IDETextTypeReference;
+						type = SCKTextTypeReference;
 						break;
 					case CXCursor_MacroDefinition:
-						type = IDETextTypeMacroDefinition;
+						type = SCKTextTypeMacroDefinition;
 						break;
 					case CXCursor_MacroInstantiation:
-						type = IDETextTypeMacroInstantiation;
+						type = SCKTextTypeMacroInstantiation;
 						break;
 					case CXCursor_FirstDecl...CXCursor_LastDecl:
-						type = IDETextTypeDeclaration;
+						type = SCKTextTypeDeclaration;
 						break;
 					case CXCursor_ObjCMessageExpr:
-						type = IDETextTypeMessageSend;
+						type = SCKTextTypeMessageSend;
 						break;
 					case CXCursor_DeclRefExpr:
-						type = IDETextTypeDeclRef;
+						type = SCKTextTypeDeclRef;
 						break;
 					case CXCursor_PreprocessingDirective:
-						type = IDETextTypePreprocessorDirective;
+						type = SCKTextTypePreprocessorDirective;
 						break;
 					default:
 						type = nil;
 				}
 				if (nil != type)
 				{
-					[source addAttribute: kIDETextSemanticType
+					[source addAttribute: kSCKTextSemanticType
 								   value: type
 								   range: range];
 				}
 			}
-			[source addAttribute: kIDETextTokenType
+			[source addAttribute: kSCKTextTokenType
 			               value: TokenTypes[clang_getTokenKind(tokens[i])]
 			               range: range];
 		}
@@ -212,19 +212,19 @@ NSRange NSRangeFromCXSourceRange(CXSourceRange sr)
 	NSDictionary *keyword = D([NSColor redColor], NSForegroundColorAttributeName);
 	NSDictionary *literal = D([NSColor redColor], NSForegroundColorAttributeName);
 	NSDictionary *tokenAttributes = D(
-			comment, IDETextTokenTypeComment,
-			noAttributes, IDETextTokenTypePunctuation,
-			keyword, IDETextTokenTypeKeyword,
-			literal, IDETextTokenTypeLiteral);
+			comment, SCKTextTokenTypeComment,
+			noAttributes, SCKTextTokenTypePunctuation,
+			keyword, SCKTextTokenTypeKeyword,
+			literal, SCKTextTokenTypeLiteral);
 
 	NSDictionary *semanticAttributes = D(
-			D([NSColor blueColor], NSForegroundColorAttributeName), IDETextTypeDeclRef,
-			D([NSColor brownColor], NSForegroundColorAttributeName), IDETextTypeMessageSend,
-			//D([NSColor greenColor], NSForegroundColorAttributeName), IDETextTypeDeclaration,
-			D([NSColor magentaColor], NSForegroundColorAttributeName), IDETextTypeMacroInstantiation,
-			D([NSColor magentaColor], NSForegroundColorAttributeName), IDETextTypeMacroDefinition,
-			D([NSColor orangeColor], NSForegroundColorAttributeName), IDETextTypePreprocessorDirective,
-			D([NSColor purpleColor], NSForegroundColorAttributeName), IDETextTypeReference);
+			D([NSColor blueColor], NSForegroundColorAttributeName), SCKTextTypeDeclRef,
+			D([NSColor brownColor], NSForegroundColorAttributeName), SCKTextTypeMessageSend,
+			//D([NSColor greenColor], NSForegroundColorAttributeName), SCKTextTypeDeclaration,
+			D([NSColor magentaColor], NSForegroundColorAttributeName), SCKTextTypeMacroInstantiation,
+			D([NSColor magentaColor], NSForegroundColorAttributeName), SCKTextTypeMacroDefinition,
+			D([NSColor orangeColor], NSForegroundColorAttributeName), SCKTextTypePreprocessorDirective,
+			D([NSColor purpleColor], NSForegroundColorAttributeName), SCKTextTypeReference);
 
 	do
 	{
@@ -232,21 +232,21 @@ NSRange NSRangeFromCXSourceRange(CXSourceRange sr)
 		                          longestEffectiveRange: &r
 		                                        inRange: NSMakeRange(i, end-i)];
 		i = r.location + r.length;
-		NSString *token = [attrs objectForKey: kIDETextTokenType];
-		NSString *semantic = [attrs objectForKey: kIDETextSemanticType];
+		NSString *token = [attrs objectForKey: kSCKTextTokenType];
+		NSString *semantic = [attrs objectForKey: kSCKTextSemanticType];
 		// Skip ranges that have attributes other than semantic markup
 		if ((nil == semantic) && (nil == token)) continue;
-		if (semantic == IDETextTypePreprocessorDirective)
+		if (semantic == SCKTextTypePreprocessorDirective)
 		{
 			attrs = [semanticAttributes objectForKey: semantic];
 		}
-		else if (token == nil || token != IDETextTokenTypeIdentifier)
+		else if (token == nil || token != SCKTextTokenTypeIdentifier)
 		{
 			attrs = [tokenAttributes objectForKey: token];
 		}
 		else 
 		{
-			NSString *semantic = [attrs objectForKey: kIDETextSemanticType];
+			NSString *semantic = [attrs objectForKey: kSCKTextSemanticType];
 			attrs = [semanticAttributes objectForKey: semantic];
 			//NSLog(@"Applying semantic attributes: %@", semantic);
 		}
