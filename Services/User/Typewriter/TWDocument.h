@@ -4,6 +4,7 @@
 
 @class TWTextView;
 @class OgreTextFinder;
+@class IDESyntaxHighlighter;
 
 @interface TWDocument : NSDocument
 {
@@ -11,6 +12,7 @@
   NSScrollView *scrollView;
   TWTextView *textView;
   OgreTextFinder *textFinder;
+  IDESyntaxHighlighter *highlighter;
 }
 
 - (void) showFindPanel: (id) sender;

@@ -11,6 +11,14 @@
    URL = "";
    NSTypes = (
       {
+         NSName = "TWSourceCode";
+         NSHumanReadableName = "Source Code Document";
+         NSUnixExtensions = ("m", "c", "cc", "cpp");
+         NSRole = Editor;
+	 NSIcon = Document-Text.tiff;
+         NSDocumentClass = TWDocument;
+      },
+      {
          NSName = "TWPlainTextType";
          NSHumanReadableName = "Plain Text Document";
          NSUnixExtensions = ("txt");
