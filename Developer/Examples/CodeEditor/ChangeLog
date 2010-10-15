@@ -1,0 +1,60 @@
+2006-04-12 Yen-Ju Chen <yjchenx at gmail>
+
+	* Add service: open selected file.
+
+2006-04-11 Yen-Ju Chen <yjchenx at gmail>
+
+	* Add service: new document of selection.
+
+2006-02-28  Yen-Ju Chen <yjchenx at gmail>
+
+	* Fix encoding in TypewriterInfo.plist.
+	* Change "Spell checking..." to "Spell checking" in main menu.
+          Fix bug #8592.
+	* Move "Spelling" submenu under "Edit".
+          Fix bug #8591.
+	* Draw color background for selected cell.
+          Fix bug #8587.
+
+2007-02-28  Quentin Mathe <qmathe@club-internet.fr>
+
+	* TWDocument.m: Fixed repository compilation by removing spurious extra 
+	curly bracket. 
+
+2007-02-20  Guenther Noack <guenther@unix-ag.uni-kl.de>
+
+	* Made the text layout automatically break when a
+	  line is too long for the text view.
+
+2006-02-19  Yen-Ju Chen <yjchenx at gmail>
+	* Use monospace for plain text.
+	* Fix encoding in TypewriterInfo.plist
+
+2007-02-17  Guenther Noack <guenther@unix-ag.uni-kl.de>
+	
+	* Replaced document icons with better versions
+	  (Thanks, Jesse!)
+
+2007-02-16  Guenther Noack <guenther@unix-ag.uni-kl.de>
+	
+	* Let documents be marked 'dirty'
+	* Added spellchecking and printing capabilities
+	* Added placeholder icons (see TODO)
+	* Set main menu name
+
+2006-09-19  Yen-Ju Chen <yjchenx at gmail>
+
+	* Add character panel (need patch from GNUstep bug #17787).
+
+2006-09-16  Yen-Ju Chen <yjchenx at gmail>
+
+	* use OgreKit.
+
+2006-09-12  Yen-Ju Chen <yjchenx at gmail>
+
+	* Support save.
+
+2006-09-11  Yen-Ju Chen <yjchenx at gmail>
+
+	* Initial import.
+
