@@ -1,8 +1,7 @@
 #import <Cocoa/Cocoa.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 #include <time.h>
-#import <IDEKit/IDETextTypes.h>
-#import <IDEKit/IDESyntaxHighlighter.h>
+#import <SourceCodeKit/SourceCodeKit.h>
 
 int main(int argc, char **argv)
 {
@@ -12,24 +11,25 @@ int main(int argc, char **argv)
 	}
 	[NSAutoreleasePool new];
 	NSString *fileName = [NSString stringWithUTF8String: argv[1]];
-	IDESyntaxHighlighter *highlighter = [IDESyntaxHighlighter new];
+	SCKSourceCollection *collection = [SCKSourceCollection new];
+	SCKSourceFile *file = [collection sourceFileForPath: fileName];
 	NSString *sourceString = [NSString stringWithContentsOfFile: fileName];
 	NSMutableAttributedString *source = [[NSMutableAttributedString alloc] initWithString: sourceString];
-	highlighter.source = source;
-	highlighter.fileName = fileName;
-	[highlighter addIncludePath: @"."];
-	[highlighter addIncludePath: @"/usr/local/include"];
-	[highlighter addIncludePath: @"/usr/local/GNUstep/Local/Library/Headers"];
-	[highlighter addIncludePath: @"/usr/local/GNUstep/System/Library/Headers"];
+	SCKSyntaxHighlighter *highlighter = [SCKSyntaxHighlighter new];
+	file.source = source;
+	[file addIncludePath: @"."];
+	[file addIncludePath: @"/usr/local/include"];
+	[file addIncludePath: @"/usr/local/GNUstep/Local/Library/Headers"];
+	[file addIncludePath: @"/usr/local/GNUstep/System/Library/Headers"];
 
 	clock_t c1 = clock();
-	[highlighter reparse];
-	[highlighter syntaxHighlightFile];
+	[file reparse];
+	[file syntaxHighlightFile];
 	clock_t c2 = clock();
 	NSLog(@"Syntax highlighting took %f seconds.  .",
 			((double)c2 - (double)c1) / (double)CLOCKS_PER_SEC);
 	c1 = clock();
-	[highlighter convertSemanticToPresentationMarkup];
+	[highlighter transformString: source];
 	c2 = clock();
 	NSLog(@"Syntax highlighting took %f seconds.  .",
 			((double)c2 - (double)c1) / (double)CLOCKS_PER_SEC);
