@@ -5,11 +5,18 @@
 #include "TWTextView.h"
 #include "TWCharacterPanel.h"
 #include <OgreKit/OgreTextFinder.h>
-#import <IDEKit/IDETextTypes.h>
-#import <IDEKit/IDESyntaxHighlighter.h>
+#import <SourceCodeKit/SourceCodeKit.h>
 
+
+static SCKSourceCollection *allSources;
+static SCKSyntaxHighlighter *highlighter;
 
 @implementation TWDocument
++ (void)initialize
+{
+	allSources = [SCKSourceCollection new];
+	highlighter = [SCKSyntaxHighlighter new];
+}
 
 - (void) appendString: (NSString *) string
 {
@@ -43,16 +50,16 @@
 {
   NSFont *font = [textView font];
   [[textView textStorage] setAttributedString: aString];
-	highlighter.source = [textView textStorage];
+	sourceFile.source = [textView textStorage];
 
-	[highlighter addIncludePath: @"."];
-	[highlighter addIncludePath: @"/usr/local/include"];
-	[highlighter addIncludePath: @"/usr/local/GNUstep/Local/Library/Headers"];
-	[highlighter addIncludePath: @"/usr/local/GNUstep/System/Library/Headers"];
+	[sourceFile addIncludePath: @"."];
+	[sourceFile addIncludePath: @"/usr/local/include"];
+	[sourceFile addIncludePath: @"/usr/local/GNUstep/Local/Library/Headers"];
+	[sourceFile addIncludePath: @"/usr/local/GNUstep/System/Library/Headers"];
 
-	[highlighter reparse];
-	[highlighter syntaxHighlightFile];
-	[highlighter convertSemanticToPresentationMarkup];
+	[sourceFile reparse];
+	[sourceFile syntaxHighlightFile];
+	[highlighter transformString: [textView textStorage]];
   /* Make sure the font is monospace for plain text */
   /* FIXME: there are a couple issues I met:
    * 1. font may be nil from NSTextView at some point.
@@ -94,8 +101,7 @@
 		[s release];
 
 		[highlighter release];
-		highlighter = [IDESyntaxHighlighter new];
-		highlighter.fileName = @"Unnamed.m";
+		sourceFile = [[allSources sourceFileForPath: @"unnamed.m"] retain];
 	}
   if (aString) {
     return YES;
@@ -146,14 +152,13 @@
 		aString = [[NSAttributedString alloc] initWithString: s];
 		[s release];
 
-		[highlighter release];
-		highlighter = [IDESyntaxHighlighter new];
-		highlighter.fileName = [wrapper filename];
+		[sourceFile release];
+		sourceFile = [[allSources sourceFileForPath: [wrapper filename]] retain];
 		NSString *path = [[wrapper filename] stringByDeletingLastPathComponent];
-		[highlighter addIncludePath: path];
+		[sourceFile addIncludePath: path];
 		path = [path stringByAppendingPathComponent: @".."];
 		path = [path stringByAppendingPathComponent: @"Headers"];
-		[highlighter addIncludePath: path];
+		[sourceFile addIncludePath: path];
 		return YES;
 	}
 	else 
@@ -178,7 +183,7 @@
 - (void) textDidChange: (NSNotification*) textObject
 {
 	[self updateChangeCount: NSChangeDone];
-	[highlighter reparse];
+	[sourceFile reparse];
 	NSTextStorage *ts = [textView textStorage];
 	NSString *str = [ts string];
 	for (NSValue *selection in [textView selectedRanges])
@@ -189,9 +194,9 @@
 		      contentsEnd: NULL
 		         forRange: [selection rangeValue]];
 		NSRange r = {start, end-start};
-		[highlighter syntaxHighlightRange: r];
+		[sourceFile syntaxHighlightRange: r];
 	}
-	[highlighter convertSemanticToPresentationMarkup];
+	[highlighter transformString: [textView textStorage]];
 }
 
 /* Find panel */

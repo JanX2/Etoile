@@ -4,7 +4,7 @@
 
 @class TWTextView;
 @class OgreTextFinder;
-@class IDESyntaxHighlighter;
+@class SCKSourceFile;
 
 @interface TWDocument : NSDocument
 {
@@ -12,7 +12,7 @@
   NSScrollView *scrollView;
   TWTextView *textView;
   OgreTextFinder *textFinder;
-  IDESyntaxHighlighter *highlighter;
+  SCKSourceFile *sourceFile;
 }
 
 - (void) showFindPanel: (id) sender;
