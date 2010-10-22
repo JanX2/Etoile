@@ -59,6 +59,7 @@ static SCKSyntaxHighlighter *highlighter;
 
 	[sourceFile reparse];
 	[sourceFile syntaxHighlightFile];
+	[sourceFile collectDiagnostics];
 	[highlighter transformString: [textView textStorage]];
   /* Make sure the font is monospace for plain text */
   /* FIXME: there are a couple issues I met:
@@ -186,6 +187,7 @@ static SCKSyntaxHighlighter *highlighter;
 	[sourceFile reparse];
 	NSTextStorage *ts = [textView textStorage];
 	NSString *str = [ts string];
+	BOOL diagnostics = NO;
 	for (NSValue *selection in [textView selectedRanges])
 	{
 		NSUInteger start, end;
@@ -194,7 +196,18 @@ static SCKSyntaxHighlighter *highlighter;
 		      contentsEnd: NULL
 		         forRange: [selection rangeValue]];
 		NSRange r = {start, end-start};
+		[ts setAttributes: [NSDictionary dictionary] range: r];
 		[sourceFile syntaxHighlightRange: r];
+		if ([str rangeOfCharacterFromSet: [NSCharacterSet newlineCharacterSet]
+		                         options: 0 
+		                           range: r].location != NSNotFound)
+		{
+			diagnostics = YES;
+		}
+	}
+	if (diagnostics)
+	{
+		[sourceFile collectDiagnostics];
 	}
 	[highlighter transformString: [textView textStorage]];
 }
