@@ -101,7 +101,7 @@ static SCKSyntaxHighlighter *highlighter;
 		aString = [[NSAttributedString alloc] initWithString: s];
 		[s release];
 
-		[highlighter release];
+		[sourceFile release];
 		sourceFile = [[allSources sourceFileForPath: @"unnamed.m"] retain];
 	}
   if (aString) {
