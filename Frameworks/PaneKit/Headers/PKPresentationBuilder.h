@@ -34,8 +34,8 @@
 @class PKPane;
 @class PKPanesController;
 
-extern const NSString *PKNoPresentationMode;
-extern const NSString *PKOtherPresentationMode;
+extern NSString *PKNoPresentationMode;
+extern NSString *PKOtherPresentationMode;
 
 @interface PKPresentationBuilder : NSObject 
 {
@@ -59,7 +59,7 @@ extern const NSString *PKOtherPresentationMode;
 - (void) switchPaneView: (id)sender;
 
 /* Abstract accessors methods */
-- (const NSString *) presentationMode;
+- (NSString *) presentationMode;
 
 - (void) willSelectPaneWithIdentifier: (NSString *) identifier;
 - (void) didSelectPaneWithIdentifier: (NSString *)identifier;

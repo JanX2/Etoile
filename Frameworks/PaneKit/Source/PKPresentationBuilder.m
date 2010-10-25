@@ -40,8 +40,8 @@
 #import <PaneKit/PKPresentationBuilder.h>
 #import "GNUstep.h"
 
-const NSString *PKNoPresentationMode = @"PKNoPresentationMode";
-const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
+NSString *PKNoPresentationMode = @"PKNoPresentationMode";
+NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
 
 static NSMutableDictionary *injectedObjects = nil;
 
@@ -193,7 +193,7 @@ static NSMutableDictionary *injectedObjects = nil;
     <p>By default, this methods returns <code>PKNoPresentationMode</code>.</p>
     <p><strong>Overrides this abstract method to return the specific 
     <em>presentation identifier</em> related to your subclass.</strong></p> */
-- (const NSString *) presentationMode
+- (NSString *) presentationMode
 {
   return (NSString *)PKNoPresentationMode;
 }
