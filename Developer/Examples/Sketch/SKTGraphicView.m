@@ -1147,7 +1147,7 @@ static int SKT_orderGraphicsFrontToBack(id graphic1, id graphic2, void *gArray) 
     [self interpretKeyEvents:[NSArray arrayWithObject:event]];
 }
 
-- (void)insertText:(NSString *)str {
+- (void)insertText: str {
     NSBeep();
 }
 
