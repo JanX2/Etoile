@@ -208,7 +208,13 @@ static NSImage * filler = nil,
 
       // create the system bar menu (the menu shown when the user pushes
       // the Etoile logo on the menubar)
-      systemMenu = [[NSMenu alloc] initWithTitle: @"\x00C9toil\x00E9"];
+      systemMenu = [[NSMenu alloc] initWithTitle: 
+#ifdef __clang__
+		  @"Étoilé"
+#else
+		  @"\x00C9toil\x00E9"
+#endif
+		  ];
 
       [self loadSystemBarEntries];
 
