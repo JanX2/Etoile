@@ -259,20 +259,6 @@ NSDictionary * MESSAGE_TYPES;
 	[error release];
 	error = [anError retain];
 }
-//TODO:  Move this to a stanza class
-- (void) addChild:(id)aChild forKey:(NSString*)aKey
-{
-	NSString * childSelectorName = [NSString stringWithFormat:@"add%@:", aKey];
-	SEL childSelector = NSSelectorFromString(childSelectorName);
-	if([self respondsToSelector:childSelector])
-	{
-		[self performSelector:childSelector withObject:aChild];
-	}
-	else
-	{
-		[unknownAttributes setValue:aChild forKey:aKey];
-	}
-}
 
 - (void) setShouldDisplay:(BOOL)aFlag
 {

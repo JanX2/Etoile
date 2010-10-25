@@ -24,7 +24,7 @@
 	children = [[NSMutableDictionary alloc] init];
 	return self;
 }
-- (void) addChild:(id)aChild forKey:(NSString*)aKey
+- (void) addChild:(id)aChild forKey:(id)aKey
 {
 	NSString * childSelectorName = [NSString stringWithFormat:@"add%@:", aKey];
 	SEL childSelector = NSSelectorFromString(childSelectorName);
