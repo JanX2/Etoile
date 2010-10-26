@@ -71,6 +71,7 @@ static ESCORefTable *_sharedCORefTable;
 
 	// _refCount maintains the number of serializers using the table.
 	_refCount = 0;
+	_lock = [[NSLock alloc] init];
 	return self;
 }
 
@@ -96,6 +97,7 @@ static ESCORefTable *_sharedCORefTable;
 - (void) dealloc
 {
 	NSFreeMapTable(_pointerToCORefMap);
+	[_lock release];
 	[super dealloc];
 }
 
@@ -106,27 +108,29 @@ static ESCORefTable *_sharedCORefTable;
 
 - (void) done
 {
-	@synchronized(self)
+	if (0 == __sync_sub_and_fetch(&_refCount,1))
 	{
-		if (0 == --_refCount)
+		[_lock lock];
+		if (0 == _refCount)
 		{
 			NSResetMapTable(_pointerToCORefMap);
 		}
+		[_lock unlock];
 	}
 }
 
 - (CORef) CORefFromPointer: (void*)aPointer
 {
 	uintptr_t theRef;
-	@synchronized(self)
+	[_lock lock];
+	if (0 != (theRef = (uintptr_t)NSMapGet(_pointerToCORefMap, aPointer)))
 	{
-		if (0 != (theRef = (uintptr_t)NSMapGet(_pointerToCORefMap, aPointer)))
-		{
-			return theRef;
-		}
-		theRef = _nextCORef++;
-		NSMapInsert(_pointerToCORefMap, aPointer, (void *)(uintptr_t)theRef);
+		[_lock unlock];
+		return theRef;
 	}
+	theRef = _nextCORef++;
+	NSMapInsert(_pointerToCORefMap, aPointer, (void *)(uintptr_t)theRef);
+	[_lock unlock];
 	return theRef;
 }
 @end

@@ -19,6 +19,7 @@
 	NSMapTable *_pointerToCORefMap;
 	CORef _nextCORef;
 	NSUInteger _refCount;
+	NSLock *_lock;
 }
 /**
  * Returns the global pointer/CORef mapping object.
