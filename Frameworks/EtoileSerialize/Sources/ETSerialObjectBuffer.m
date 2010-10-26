@@ -3,7 +3,7 @@
 
 @implementation ETSerialObjectBuffer
 
-- (id) init 
+- (id) init
 {
 	SUPERINIT;
 	buffer = [[NSMutableData alloc] initWithCapacity: 1024];
@@ -54,7 +54,7 @@
 	return buffer;
 }
 
-- (unsigned int) version
+- (NSUInteger) version
 {
 	return version;
 }

@@ -92,7 +92,7 @@ static NSFileManager * filemanager;
 	fwrite(bytes, aRange.length, 1, file);
 }
 
-- (void) commit 
+- (void) commit
 {
 	if (file != 0)
 	{
@@ -101,7 +101,7 @@ static NSFileManager * filemanager;
 	file = 0;
 }
 
-- (void) createBranch: (NSString *)newBranch from: (NSString *)oldBranch 
+- (void) createBranch: (NSString *)newBranch from: (NSString *)oldBranch
 {
 	NSString *newPath = [bundlePath stringByAppendingPathComponent: newBranch];
 	// Create a directory for the branch, if there isn't one already
@@ -131,7 +131,7 @@ static NSFileManager * filemanager;
 	}
 }
 
-- (unsigned int) version
+- (NSUInteger) version
 {
 	return version;
 }

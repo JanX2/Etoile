@@ -36,7 +36,7 @@
  * Returns the version currently being written, or the last version to be
  * written if the version is finalised.
  */
-- (unsigned int) version;
+- (NSUInteger) version;
 /**
  * Returns the branch currently being written, or the last branch to be
  * written if the version is finalised.
@@ -59,9 +59,9 @@
 @end
 
 
-/** 
+/**
  * Object 'store' which keeps the data written to it in memory.
- * 
+ *
  * Doesn't support commit and branching operations.
  */
 @interface ETSerialObjectBuffer : NSObject <ETSeekableObjectStore> {
