@@ -24,6 +24,12 @@ static inline void __sync_fetch_and_add(unsigned long *ptr, unsigned int value)
 {
 	*ptr += value;
 }
+
+static inline unsigned long __sync_sub_and_fetch(unsigned long *ptr, unsigned int value)
+{
+	*ptr -= value;
+	return *ptr;
+}
 #endif
 
 
