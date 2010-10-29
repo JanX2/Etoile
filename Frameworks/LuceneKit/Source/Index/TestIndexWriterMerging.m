@@ -7,7 +7,7 @@
 #include "LCField.h"
 #include "LCIndexReader.h"
 #include "LCIndexWriter.h"
-#include "LCRamDirectory.h"
+#include "LCRAMDirectory.h"
 
 @interface TestIndexWriterMerging: NSObject <UKTest>
 @end
