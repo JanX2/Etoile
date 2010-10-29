@@ -3,7 +3,6 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME = LuceneKit_Document
 
 LuceneKit_Document_OBJC_FILES = \
-	LCNumberTools.m \
 	LCDateTools.m \
 	LCField.m \
 	LCDocument.m
@@ -12,7 +11,6 @@ ifeq ($(test), yes)
 LuceneKit_Document_OBJC_FILES += \
 	TestDocument.m \
 	TestDateTools.m \
-        TestNumberTools.m \
 	TestBinaryDocument.m
 endif
 

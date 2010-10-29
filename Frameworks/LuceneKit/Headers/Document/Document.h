@@ -4,6 +4,5 @@
 #include "LCDateTools.h"
 #include "LCDocument.h"
 #include "LCField.h"
-#include "LCNumberTools.h"
 
 #endif /* __LuceneKit_Document__ */

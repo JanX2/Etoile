@@ -41,8 +41,7 @@ LuceneKit_HEADER_FILES += \
 	Document.h \
 	LCDateTools.h \
 	LCDocument.h \
-	LCField.h \
-	LCNumberTools.h
+	LCField.h 
 
 # Headers/Analysis
 LuceneKit_HEADER_FILES += \
