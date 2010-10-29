@@ -1,6 +1,13 @@
-#include <LuceneKit/LuceneKit.h>
+#include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
-#include "GNUstep/GNUstep.h"
+#include "GNUstep.h"
+#include "LCSimpleAnalyzer.h"
+#include "LCDirectory.h"
+#include "LCDocument.h"
+#include "LCField.h"
+#include "LCIndexReader.h"
+#include "LCIndexWriter.h"
+#include "LCRamDirectory.h"
 
 @interface TestIndexWriterMerging: NSObject <UKTest>
 @end

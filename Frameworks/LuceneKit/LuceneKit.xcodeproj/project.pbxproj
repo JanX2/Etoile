@@ -341,6 +341,13 @@
 		60E79E381278B47800814548 /* QueryHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 609A9FC908D3A1190008B25B /* QueryHandler.m */; };
 		60E79E391278B4AC00814548 /* TokenHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 609A9FCC08D3A1210008B25B /* TokenHandler.m */; };
 		60E79EF01278B57C00814548 /* UnitKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64C922B908B78AF100ACE251 /* UnitKit.framework */; };
+		60E7A19E127B4DFD00814548 /* TestDocumentWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E7A19B127B4DFD00814548 /* TestDocumentWriter.m */; };
+		60E7A19F127B4DFD00814548 /* TestFieldInfos.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E7A19C127B4DFD00814548 /* TestFieldInfos.m */; };
+		60E7A1A0127B4DFD00814548 /* TestIndexWriterMerging.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E7A19D127B4DFD00814548 /* TestIndexWriterMerging.m */; };
+		60E7A1A2127B4E7800814548 /* LCRangeQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E7A1A1127B4E7800814548 /* LCRangeQuery.m */; };
+		60E7A1A3127B4E7800814548 /* LCRangeQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E7A1A1127B4E7800814548 /* LCRangeQuery.m */; };
+		60E7A1A5127B4E8600814548 /* TestRangeQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E7A1A4127B4E8600814548 /* TestRangeQuery.m */; };
+		60E7A1A7127B4E9B00814548 /* LCRangeQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 60E7A1A6127B4E9B00814548 /* LCRangeQuery.h */; };
 		64C925B008B78CCB00ACE251 /* LCAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245408B78CCA00ACE251 /* LCAnalyzer.m */; };
 		64C925B108B78CCB00ACE251 /* LCCharTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245508B78CCA00ACE251 /* LCCharTokenizer.m */; };
 		64C925B208B78CCB00ACE251 /* LCLetterTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245608B78CCA00ACE251 /* LCLetterTokenizer.m */; };
@@ -647,7 +654,13 @@
 		609A9FEA08D3A2810008B25B /* LCWildcardQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LCWildcardQuery.m; sourceTree = "<group>"; };
 		609A9FEB08D3A2810008B25B /* TestWildcard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestWildcard.m; sourceTree = "<group>"; };
 		609AA00508D3A4D60008B25B /* OgreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OgreKit.framework; path = /Library/Frameworks/OgreKit.framework; sourceTree = "<absolute>"; };
-		60E79CF61278B1BE00814548 /* LCMetadataAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LCMetadataAttribute.m; path = Source/LCMetadataAttribute.m; sourceTree = SOURCE_ROOT; };
+		60E79CF61278B1BE00814548 /* LCMetadataAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LCMetadataAttribute.m; sourceTree = "<group>"; };
+		60E7A19B127B4DFD00814548 /* TestDocumentWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDocumentWriter.m; sourceTree = "<group>"; };
+		60E7A19C127B4DFD00814548 /* TestFieldInfos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFieldInfos.m; sourceTree = "<group>"; };
+		60E7A19D127B4DFD00814548 /* TestIndexWriterMerging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestIndexWriterMerging.m; sourceTree = "<group>"; };
+		60E7A1A1127B4E7800814548 /* LCRangeQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LCRangeQuery.m; sourceTree = "<group>"; };
+		60E7A1A4127B4E8600814548 /* TestRangeQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestRangeQuery.m; sourceTree = "<group>"; };
+		60E7A1A6127B4E9B00814548 /* LCRangeQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LCRangeQuery.h; path = Search/LCRangeQuery.h; sourceTree = "<group>"; };
 		64C922B908B78AF100ACE251 /* UnitKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnitKit.framework; path = /Library/Frameworks/UnitKit.framework; sourceTree = "<absolute>"; };
 		64C9245408B78CCA00ACE251 /* LCAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LCAnalyzer.m; sourceTree = "<group>"; };
 		64C9245508B78CCA00ACE251 /* LCCharTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LCCharTokenizer.m; sourceTree = "<group>"; };
@@ -901,6 +914,7 @@
 		604A2E1D0998CC3A0082342D /* Search */ = {
 			isa = PBXGroup;
 			children = (
+				60E7A1A6127B4E9B00814548 /* LCRangeQuery.h */,
 				604A2E5E0998CC570082342D /* LCBooleanClause.h */,
 				604A2E5F0998CC570082342D /* LCBooleanQuery.h */,
 				604A2E600998CC570082342D /* LCBooleanScorer.h */,
@@ -1113,12 +1127,13 @@
 		64C9244F08B78CCA00ACE251 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				64C924AD08B78CCA00ACE251 /* LCIndexManager.m */,
+				60E79CF61278B1BE00814548 /* LCMetadataAttribute.m */,
 				64C9245108B78CCA00ACE251 /* Analysis */,
 				64C9246608B78CCA00ACE251 /* Document */,
 				64C9247008B78CCA00ACE251 /* Importer */,
 				64C9247308B78CCA00ACE251 /* Index */,
 				64C924A908B78CCA00ACE251 /* Java */,
-				64C924AD08B78CCA00ACE251 /* LCIndexManager.m */,
 				64C924AE08B78CCA00ACE251 /* QueryParser */,
 				64C924B108B78CCA00ACE251 /* Search */,
 				64C924EF08B78CCA00ACE251 /* Store */,
@@ -1181,6 +1196,9 @@
 		64C9247308B78CCA00ACE251 /* Index */ = {
 			isa = PBXGroup;
 			children = (
+				60E7A19B127B4DFD00814548 /* TestDocumentWriter.m */,
+				60E7A19C127B4DFD00814548 /* TestFieldInfos.m */,
+				60E7A19D127B4DFD00814548 /* TestIndexWriterMerging.m */,
 				64C9247608B78CCA00ACE251 /* LCCompoundFileReader.m */,
 				64C9247708B78CCA00ACE251 /* LCCompoundFileWriter.m */,
 				64C9247808B78CCA00ACE251 /* LCDocumentWriter.m */,
@@ -1264,6 +1282,8 @@
 		64C924B108B78CCA00ACE251 /* Search */ = {
 			isa = PBXGroup;
 			children = (
+				60E7A1A4127B4E8600814548 /* TestRangeQuery.m */,
+				60E7A1A1127B4E7800814548 /* LCRangeQuery.m */,
 				604A2C880998C2B00082342D /* TestBooleanMinShouldMatch.m */,
 				64C924B408B78CCA00ACE251 /* LCBooleanClause.m */,
 				64C924B508B78CCA00ACE251 /* LCBooleanQuery.m */,
@@ -1374,7 +1394,6 @@
 				60474FB508D19B5E000F2531 /* LuceneKit.h */,
 				60474FED08D19B5E000F2531 /* LCIndexManager.h */,
 				6047501408D19B5E000F2531 /* LCMetadataAttribute.h */,
-				60E79CF61278B1BE00814548 /* LCMetadataAttribute.m */,
 				604A2E1D0998CC3A0082342D /* Search */,
 				604A2F1C0998CC830082342D /* QueryParser */,
 				604A2F270998CCA00082342D /* Util */,
@@ -1555,6 +1574,7 @@
 				604A303C0998D6160082342D /* LCDateTools.h in Headers */,
 				604A303D0998D6160082342D /* LCDocument.h in Headers */,
 				604A303E0998D6160082342D /* LCField.h in Headers */,
+				60E7A1A7127B4E9B00814548 /* LCRangeQuery.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1834,6 +1854,11 @@
 				604A2CA50998C3A10082342D /* TestSmallFloat.m in Sources */,
 				604A2CA60998C3A10082342D /* TestString+Additions.m in Sources */,
 				60E79CF81278B1BE00814548 /* LCMetadataAttribute.m in Sources */,
+				60E7A19E127B4DFD00814548 /* TestDocumentWriter.m in Sources */,
+				60E7A19F127B4DFD00814548 /* TestFieldInfos.m in Sources */,
+				60E7A1A0127B4DFD00814548 /* TestIndexWriterMerging.m in Sources */,
+				60E7A1A2127B4E7800814548 /* LCRangeQuery.m in Sources */,
+				60E7A1A5127B4E8600814548 /* TestRangeQuery.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1964,6 +1989,7 @@
 				604A2C870998C2980082342D /* LCTopFieldDocCollector.m in Sources */,
 				604A2CA90998C3B70082342D /* LCSmallFloat.m in Sources */,
 				60E79CF71278B1BE00814548 /* LCMetadataAttribute.m in Sources */,
+				60E7A1A3127B4E7800814548 /* LCRangeQuery.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
