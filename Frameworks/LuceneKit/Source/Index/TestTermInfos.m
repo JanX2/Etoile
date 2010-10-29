@@ -51,11 +51,11 @@
     NSMutableArray *proxPointers = [[NSMutableArray alloc] init];
     count = [keys count];
     for (i = 0; i < count; i++) {
-		[docFreqs addObject: [NSNumber numberWithInt: ((int)random()) & 0xF + 1]];
+		[docFreqs addObject: [NSNumber numberWithInt: (((int)random()) & 0xF) + 1]];
 		[freqPointers addObject: [NSNumber numberWithLong: fp]];
 		[proxPointers addObject: [NSNumber numberWithLong: pp]];
-		fp += ((int)random() & 0xF) + 1;;
-		pp += ((int)random() & 0xF) + 1;;
+		fp += ((int)random() & 0xF) + 1;
+		pp += ((int)random() & 0xF) + 1;
     }
 	
     end = [NSDate date];
