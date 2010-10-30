@@ -37,6 +37,16 @@ enum
 	XCB_SHAPE_YXBANDED = 4
 };
 
+/**
+  * The shape bounding information, as returned from
+  * ShapeQueryExtents requests
+  */
+typedef struct _XCBShapeExtents
+{
+	BOOL boundingShaped, clipShaped;
+	XCBRect boundingRect, clipRect;
+} XCBShapeExtents;
+
 @interface XCBShape : NSObject
 + (void)initializeExtensionWithConnection: (XCBConnection*)connection;
 @end
@@ -62,6 +72,11 @@ enum
                       offset: (XCBPoint)offset
                       source: (XCBWindow*)sourceWindow
                   sourceKind: (xcb_shape_kind_t)sourceKind;
+/**
+  * Query the shape extents for the specified
+  * window. This method is synchronous.
+  */
+- (XCBShapeExtents)queryShapeExtents;
 @end
 
 @interface NSObject (XCBShape_Delegate)

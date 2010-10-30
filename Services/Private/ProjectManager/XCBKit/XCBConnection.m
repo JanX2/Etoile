@@ -25,11 +25,14 @@
  **/
 #import <XCBKit/XCBConnection.h>
 #import <XCBKit/XCBScreen.h>
+#import <XCBKit/XCBSelection.h>
 #import "XCBWindow+Package.h"
 #import <XCBKit/XCBAtomCache.h>
+#import <XCBKit/XCBException.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 #include <xcb/xcbext.h>
 #include <xcb/damage.h>
+#include <xcb/xcb_event.h>
 
 @interface XCBConnection (EventHandlers)
 - (void)handleMapNotify: (xcb_map_notify_event_t*)anEvent;
@@ -225,6 +228,8 @@ XCBConnection *XCBConn;
 	replyHandlers = [NSMutableArray new];
 	windows = NSCreateMapTable(NSIntMapKeyCallBacks,
 			NSObjectMapValueCallBacks, 100);
+	selections = NSCreateMapTable(NSIntMapKeyCallBacks,
+			NSObjectMapValueCallBacks, 10);
 	screens = [NSMutableArray new];
 
 	// Hack needed because creating XCBWindow instances requires XCBConn to be
@@ -283,7 +288,7 @@ XCBConnection *XCBConn;
 	xcb_generic_event_t *event;
 	while (NULL != (event = xcb_poll_for_event(connection)))
 	{
-		switch (event->response_type & ~0x80)
+		switch (event->response_type & XCB_EVENT_RESPONSE_TYPE_MASK)
 		{
 			HANDLE(KEY_PRESS, KeyPress)
 			HANDLE(KEY_RELEASE, KeyRelease)
@@ -449,8 +454,25 @@ XCBConnection *XCBConn;
 			[removeObjects addIndex:i];
 
 	}
-	[replyHandlers removeObjectsAtIndexes:removeObjects];
+	[replyHandlers removeObjectsAtIndexes: removeObjects];
 	[removeObjects release];
+}
+- (void)handleError: (xcb_generic_error_t*)error
+{
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithUnsignedShort: error->sequence], @"Sequence",
+		[NSNumber numberWithUnsignedChar: error->error_code], @"ErrorCode",
+		[NSNumber numberWithUnsignedInteger: error->response_type], @"ResponseType",
+		nil];
+	NSException *e =
+		[NSException exceptionWithName: XCBRequestErrorException
+		                        reason: [NSString stringWithFormat: @"%s error (%s) - sequence %d", 
+		                            xcb_event_get_error_label(error->error_code), 
+		                            xcb_event_get_label(error->response_type), 
+		                            error->sequence, nil]
+		                      userInfo: userInfo];
+	free(error);
+	[e raise];
 }
 - (void)unregisterWindow: (XCBWindow*)aWindow
 {
@@ -465,6 +487,20 @@ XCBConnection *XCBConn;
 - (XCBWindow*)windowForXCBId: (xcb_window_t)anId;
 {
 	return NSMapGet(windows, (void*)(intptr_t)anId);
+}
+- (void)registerSelection: (XCBSelection*)selection
+{
+	NSDebugLLog(@"XCBConnection", @"Registered selection: %@", selection);
+	NSMapInsert(selections, (void*)(intptr_t)[selection atom], selection);
+}
+- (void)unregisterSelection: (XCBSelection*)selection
+{
+	NSDebugLLog(@"XCBConnection", @"Unregistered selection: %@", selection);
+	NSMapRemove(selections, (void*)(intptr_t)[selection atom]);
+}
+- (XCBSelection*)selectionWithAtom: (xcb_atom_t)atom
+{
+	return NSMapGet(selections, (void*)(intptr_t)atom);
 }
 - (void)setDelegate:(id) aDelegate
 {
@@ -484,31 +520,20 @@ XCBConnection *XCBConn;
 }
 - (void)grab
 {
-	xcb_void_cookie_t c = xcb_grab_server_checked(connection);
-	xcb_generic_error_t *e = xcb_request_check(connection, c);
-	if (e) 
-	{
-		NSLog(@"Error grabbing server");
-		free(e);
-	}
+	xcb_grab_server(connection);
 	[self setNeedsFlush: YES];
 }
 
 - (void)ungrab
 {
-	xcb_void_cookie_t c = xcb_ungrab_server_checked(connection);
-	xcb_generic_error_t *e = xcb_request_check(connection, c);
-	if (e) 
-	{
-		NSLog(@"Error un-grabbing server");
-		free(e);
-	}
+	xcb_ungrab_server(connection);
 	[self setNeedsFlush: YES];
 }
 - (void)allowEvents: (xcb_allow_t)allow timestamp: (xcb_timestamp_t)time
 {
 	xcb_allow_events(connection, allow, time);
-	[self setNeedsFlush: YES];
+	// FIXME: Is flushing immediately too soon?
+	[self flush];
 }
 - (uint8_t)grabPointerWithWindow: (XCBWindow*)grabWindow
                      ownerEvents: (BOOL)ownerEvents
@@ -566,6 +591,7 @@ XCBConnection *XCBConn;
 - (void)flush
 {
 	xcb_flush(connection);
+	needsFlush = NO;
 }
 
 @end
@@ -575,9 +601,9 @@ XCBConnection *XCBConn;
 {
 	// Poll while there is data left in the buffer
 	while ([self handleEvents] || [self handleReplies]) {}
-	// NSDebugLLog(@"XCBConnection",@"Finished handling events");
-	if ([delegate respondsToSelector:@selector(finishedProcessingEvents:)])
-		[delegate finishedProcessingEvents:self];
+	// NSDebugLLog(@"XCBConnection", @"Finished handling events");
+	if ([delegate respondsToSelector: @selector(finishedProcessingEvents:)])
+		[delegate finishedProcessingEvents: self];
 	if (needsFlush)
 	{
 		[self flush];

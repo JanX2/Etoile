@@ -31,6 +31,7 @@ $(FRAMEWORK_NAME)_OBJC_FILES = \
 	 XCBSelection.m \
 	 XCBShape.m \
 	 XCBPropertyHelpers.m \
+	 XCBException.m \
 	 ICCCM.m \
 	 EWMH.m 
 
@@ -53,12 +54,13 @@ $(FRAMEWORK_NAME)_HEADER_FILES = \
 	 XCBScreen.h \
 	 XCBPropertyHelpers.h \
 	 XCBDrawable.h \
+	 XCBException.h \
 	 ICCCM.h \
 	 EWMH.h 
 
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Wno-unused  -Werror -Wall
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
-ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lxcb \
+ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lxcb -lxcb-event \
 	-lxcb-composite -lxcb-damage \
 	-lxcb-render-util -lxcb-xfixes \
 	-lxcb-shape

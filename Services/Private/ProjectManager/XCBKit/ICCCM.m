@@ -209,14 +209,12 @@ NSArray *ICCCMAtomsList(void)
 // 	newReferenceFrame->origin = rfp;
 // 	newReferenceFrame->size = rfs;
 // }
-XCBRect ICCCMDecorationFrameWithReferencePoint(ICCCMWindowGravity gravity, XCBPoint rp, XCBSize cs, const uint32_t bws[4])
+XCBRect ICCCMDecorationFrameWithReferencePoint(ICCCMWindowGravity gravity, XCBPoint rp, XCBSize cs, const ICCCMBorderExtents be)
 {
-	int16_t w = cs.width + bws[ICCCMBorderWest] + bws[ICCCMBorderEast];
-	int16_t h = cs.height + bws[ICCCMBorderNorth] + bws[ICCCMBorderSouth];
+	int16_t w = cs.width + be.left + be.right;
+	int16_t h = cs.height + be.top + be.bottom;
 	switch (gravity)
 	{
-	case ICCCMNorthWestGravity:
-		return XCBMakeRect(rp.x, rp.y, w, h);
 	case ICCCMNorthGravity:
 		return XCBMakeRect(rp.x - w / 2, rp.y, w, h);
 	case ICCCMNorthEastGravity:
@@ -233,11 +231,13 @@ XCBRect ICCCMDecorationFrameWithReferencePoint(ICCCMWindowGravity gravity, XCBPo
 		return XCBMakeRect(rp.x - w/2, rp.y - h, w, h);
 	case ICCCMSouthEastGravity:
 		return XCBMakeRect(rp.x - w, rp.y - h, w, h);
-	default:
-		NSLog(@"ICCCMCalculateWindowFrame called with unknown gravity %d; using Static gravity instead",
-				gravity);
 	case ICCCMStaticGravity:
-		return XCBMakeRect(rp.x - bws[ICCCMBorderWest], rp.y - bws[ICCCMBorderNorth], w, h);
+		return XCBMakeRect(rp.x - be.left, rp.y - be.top, w, h);
+	default:
+		NSLog(@"ICCCMDecorationFrameWithReferencePoint called with unknown gravity %d; using NorthWest gravity instead",
+				gravity);
+	case ICCCMNorthWestGravity:
+		return XCBMakeRect(rp.x, rp.y, w, h);
 	}
 }
 XCBPoint ICCCMCalculateRefPointForClientFrame(ICCCMWindowGravity gravity, XCBRect initialRect, uint32_t bw)

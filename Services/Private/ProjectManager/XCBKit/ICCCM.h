@@ -148,6 +148,10 @@ NSArray *ICCCMAtomsList(void);
 - (icccm_wm_state_t)asWMState;
 @end
 
+typedef struct _ICCCMBorderExtents
+{
+	uint16_t left, right, top, bottom;
+} ICCCMBorderExtents;
 /**
   * These have been deliberately arranged
   * so that they are in the same order as
@@ -160,6 +164,6 @@ enum _BorderWidthDirection {
 	ICCCMBorderNorth = 2,
 	ICCCMBorderSouth = 3
 };
-XCBRect ICCCMDecorationFrameWithReferencePoint(ICCCMWindowGravity gravity, XCBPoint rp, XCBSize cs, const uint32_t bws[4]);
+XCBRect ICCCMDecorationFrameWithReferencePoint(ICCCMWindowGravity gravity, XCBPoint rp, XCBSize cs, const ICCCMBorderExtents border);
 XCBPoint ICCCMCalculateRefPointForClientFrame(ICCCMWindowGravity gravity, XCBRect initialRect, uint32_t bw);
 void ICCCMSetSupportedProtocols(XCBWindow* rootWindow, NSArray* protocols);

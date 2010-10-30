@@ -102,8 +102,8 @@
 - (BOOL)manageScreen
 {
 	XCBWindow *rootWindow = [screen rootWindow];
-	manager_selection = [[XCBSelection alloc]
-		initWithAtomNamed: [NSString stringWithFormat: @"WM_S%d", screen_id]];
+	manager_selection = [[XCBSelection selectionWithAtomNamed: [NSString stringWithFormat: @"WM_S%d", screen_id]]
+		retain];
 	const uint32_t window_values[1] = {
 		XCB_EVENT_MASK_STRUCTURE_NOTIFY
 	};

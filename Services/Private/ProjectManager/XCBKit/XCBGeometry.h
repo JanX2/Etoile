@@ -36,8 +36,8 @@ typedef struct _XCBPoint
 
 typedef struct _XCBSize
 {
-	int16_t width;
-	int16_t height;
+	uint16_t width;
+	uint16_t height;
 } XCBSize;
 
 typedef struct _XCBRect 
@@ -55,14 +55,14 @@ static inline XCBPoint XCBMakePoint(int16_t x, int16_t y)
 }
 static inline XCBRect XCBMakeRect(int16_t x,
                                   int16_t y,
-                                  int16_t width,
-                                  int16_t height)
+                                  uint16_t width,
+                                  uint16_t height)
 {
 	XCBRect rect = { {x, y}, {width, height} };
 	return rect;
 }
 
-static inline XCBSize XCBMakeSize(int16_t width, int16_t height)
+static inline XCBSize XCBMakeSize(uint16_t width, uint16_t height)
 {
 	XCBSize s = { width, height};
 	return s;
@@ -86,7 +86,7 @@ static inline XCBRect XCBRectFromRectangle(xcb_rectangle_t rect)
 	return r;
 }
 
-static inline XCBRect XCBCalculateBorderAdjustedFrame(XCBRect specifiedFrame, int16_t border_width)
+static inline XCBRect XCBCalculateBorderAdjustedFrame(XCBRect specifiedFrame, uint16_t border_width)
 {
 	XCBRect r = {{ specifiedFrame.origin.x + border_width, specifiedFrame.origin.y + border_width},
 		{ specifiedFrame.size.width, specifiedFrame.size.height } };

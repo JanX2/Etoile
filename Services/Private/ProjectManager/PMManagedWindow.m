@@ -45,7 +45,7 @@ const uint16_t PM_XCB_MOD_MASK_ANY = 32768;
   * some space between the outer child border and
   * the resize handles
   */
-static const uint32_t BORDER_WIDTHS[4] = { 8, 8, 8, 8};
+static const ICCCMBorderExtents BORDER_WIDTHS = { 8, 8, 8, 8};
 
 static const uint32_t CHILD_BORDER_WIDTH = 1;
 
@@ -284,10 +284,10 @@ static const float RH_QUOTIENT = 0.15;
 - (XCBRect)calculateDecorationFrame: (XCBRect)clientFrame
 {
 	XCBRect frame = clientFrame;
-	frame.origin.x -= BORDER_WIDTHS[ICCCMBorderWest];
-	frame.origin.y -= BORDER_WIDTHS[ICCCMBorderNorth];
-	frame.size.height += BORDER_WIDTHS[ICCCMBorderNorth] + BORDER_WIDTHS[ICCCMBorderSouth] ;
-	frame.size.width += BORDER_WIDTHS[ICCCMBorderWest] + BORDER_WIDTHS[ICCCMBorderEast];
+	frame.origin.x -= BORDER_WIDTHS.left;
+	frame.origin.y -= BORDER_WIDTHS.top;
+	frame.size.height += BORDER_WIDTHS.top + BORDER_WIDTHS.bottom ;
+	frame.size.width += BORDER_WIDTHS.left + BORDER_WIDTHS.right;
 	return frame;
 }
 - (void)xcbWindowPropertyDidRefresh: (NSNotification*)notification
@@ -616,17 +616,17 @@ static const float RH_QUOTIENT = 0.15;
 		XCBRect decorationFrame = ICCCMDecorationFrameWithReferencePoint(
 				gravity, refPoint, newRect.size, BORDER_WIDTHS);
 		XCBRect childFrame = XCBMakeRect(
-				BORDER_WIDTHS[ICCCMBorderWest] - CHILD_BORDER_WIDTH, BORDER_WIDTHS[ICCCMBorderNorth] - CHILD_BORDER_WIDTH, 
+				BORDER_WIDTHS.left - CHILD_BORDER_WIDTH, BORDER_WIDTHS.top - CHILD_BORDER_WIDTH, 
 				newRect.size.width, newRect.size.height);
 		[child setFrame: childFrame
 		         border: CHILD_BORDER_WIDTH];
 		[decorationWindow setFrame: decorationFrame border: 0];
 		
-
+		uint32_t border_widths[4] = { BORDER_WIDTHS.left, BORDER_WIDTHS.right, BORDER_WIDTHS.top, BORDER_WIDTHS.bottom};
 		[child replaceProperty: EWMH_WMFrameExtents
 		                  type: @"CARDINAL"
 		                format: 32
-		                  data: BORDER_WIDTHS
+		                  data: border_widths
 		                 count: 4];
 		[self updateShapeWithDecorationFrame: decorationFrame childFrame: childFrame];
 		[self sendSyntheticConfigureNotify: newRect];
@@ -635,7 +635,7 @@ static const float RH_QUOTIENT = 0.15;
 	{
 		// 2. Align decoration frame's ref point (in this case just a 1px border) with the
 		//    child's reference point.
-		uint32_t bws[4] = { 1, 1, 1, 1 };
+		ICCCMBorderExtents bws = { 1, 1, 1, 1 };
 		XCBRect decorationFrame = ICCCMDecorationFrameWithReferencePoint(gravity, refPoint, newRect.size, bws);
 		// Okay, the width and size in decorationFrame is wrong, because the X server
 		// automatically takes into account the border_width when specified. We really
@@ -729,7 +729,7 @@ static const float RH_QUOTIENT = 0.15;
 		}
 		if (!(wm_size_hints.flags & ICCCMPWinGravity))
 		{
-			NSLog(@"Window gravity for %@ not specified, assuming NorthWest", wmNormalHintsProperty);
+			NSLog(@"Window gravity for %@ not specified, assuming NorthWest", self);
 			wm_size_hints.win_gravity = ICCCMNorthWestGravity;
 		}
 
@@ -806,8 +806,8 @@ static const float RH_QUOTIENT = 0.15;
 	[[self decorationWindow] map];
 	[child 
 		reparentToWindow: decorationWindow
-		              dX: BORDER_WIDTHS[ICCCMBorderWest] - CHILD_BORDER_WIDTH
-		              dY: BORDER_WIDTHS[ICCCMBorderEast] - CHILD_BORDER_WIDTH];
+		              dX: BORDER_WIDTHS.left - CHILD_BORDER_WIDTH
+		              dY: BORDER_WIDTHS.right - CHILD_BORDER_WIDTH];
 
 	[XCBConn setNeedsFlush: YES];
 }
@@ -935,15 +935,29 @@ static const float RH_QUOTIENT = 0.15;
 {
 	XCBRect decorationFrame = [decorationWindow frame];
 	XCBRect childFrame =  [child frame];
+	ICCCMBorderExtents border = BORDER_WIDTHS;
 	if (nil == decorationWindow)
 	{
 		return childFrame;
 	}
 	else
-		return XCBMakeRect(decorationFrame.origin.x,
-			decorationFrame.origin.y,
-			childFrame.size.width,
-			childFrame.size.height);
+	{
+		switch (wm_size_hints.win_gravity)
+		{
+		case ICCCMStaticGravity:
+			return XCBMakeRect(decorationFrame.origin.x + border.left,
+				decorationFrame.origin.y + border.top,
+				childFrame.size.width,
+				childFrame.size.height);
+		default:
+			NSLog(@"PMManagedWindow: using NorthWest for clientFrame calculation.");
+		case ICCCMNorthWestGravity:
+			return XCBMakeRect(decorationFrame.origin.x,
+				decorationFrame.origin.y,
+				childFrame.size.width,
+				childFrame.size.height);
+		}
+	}
 }
 - (void)sendSyntheticConfigureNotify: (XCBRect)clientFrame
 {
@@ -1019,7 +1033,7 @@ static const float RH_QUOTIENT = 0.15;
 			[decorationWindow 
 				shapeCombineWithKind: XCB_SHAPE_SK_BOUNDING
 				           operation: XCB_SHAPE_SO_UNION
-				              offset: XCBMakePoint(BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth])
+				              offset: XCBMakePoint(BORDER_WIDTHS.left, BORDER_WIDTHS.top)
 				              source: child
 				          sourceKind: XCB_SHAPE_SK_BOUNDING];
 		}
@@ -1028,7 +1042,7 @@ static const float RH_QUOTIENT = 0.15;
 			[decorationWindow 
 				shapeCombineWithKind: XCB_SHAPE_SK_BOUNDING
 				           operation: XCB_SHAPE_SO_SET
-				              offset: XCBMakePoint(BORDER_WIDTHS[ICCCMBorderWest], BORDER_WIDTHS[ICCCMBorderNorth])
+				              offset: XCBMakePoint(BORDER_WIDTHS.left, BORDER_WIDTHS.top)
 				              source: child
 				          sourceKind: XCB_SHAPE_SK_BOUNDING];
 			// xcb_rectangle_t rect = { cp.x, cp.y, cs.width + cbw * 2, cs.height + cbw*2};

@@ -119,12 +119,43 @@ NSString* XCBWindowShapeNotifyNotification = @"XCBWindowShapeNotifyNotification"
 		[sourceWindow xcbWindowId]
 		);
 }
+- (XCBShapeExtents)queryShapeExtents
+{
+	xcb_shape_query_extents_cookie_t cookie = 
+		xcb_shape_query_extents([XCBConn connection], [self xcbWindowId]);
+	xcb_generic_error_t *error;
+	xcb_shape_query_extents_reply_t *reply =
+		xcb_shape_query_extents_reply([XCBConn connection], cookie, &error);
+	XCBShapeExtents extents = {};
+	if (reply != NULL)
+	{
+		extents.boundingShaped = reply->bounding_shaped ? YES : NO;
+		extents.clipShaped = reply->clip_shaped ? YES : NO;
+		extents.boundingRect.origin.x = reply->bounding_shape_extents_x;
+		extents.boundingRect.origin.y = reply->bounding_shape_extents_y;
+		extents.boundingRect.size.width = reply->bounding_shape_extents_width;
+		extents.boundingRect.size.height = reply->bounding_shape_extents_height;
+		extents.clipRect.origin.x = reply->clip_shape_extents_x;
+		extents.clipRect.origin.y = reply->clip_shape_extents_y;
+		extents.clipRect.size.width = reply->clip_shape_extents_width;
+		extents.clipRect.size.height = reply->clip_shape_extents_height;
+		free(reply);
+		return extents;
+	}
+	else
+	{
+		[XCBConn handleError: error];
+		return extents;
+	}
+}
 @end
 
 @implementation XCBConnection (XCBShape)
 - (void)shapeNotify: (xcb_shape_notify_event_t*)event
 {
 	XCBWindow *window = [XCBWindow windowWithXCBWindow: event->affected_window];
+	// FIXME: Should the timestamp update our last server time
+	// on XCBConnnection?
 	[window handleShapeNotify: event];
 }
 @end
@@ -132,8 +163,13 @@ NSString* XCBWindowShapeNotifyNotification = @"XCBWindowShapeNotifyNotification"
 @implementation XCBWindow (XCBShape_Event)
 - (void)handleShapeNotify: (xcb_shape_notify_event_t*)event
 {
-	// FIXME: Add event parameters to notification
-	XCBDELEGATE(WindowShapeNotify);
-	XCBNOTIFY(WindowShapeNotify);
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithInteger: event->shape_kind], @"Kind",
+		[NSNumber numberWithBool: event->shaped], @"Shaped",
+		[NSValue valueWithXCBRect: XCBMakeRect(event->extents_x, event->extents_y, event->extents_width, event->extents_height)], @"Region",
+		[NSNumber numberWithUnsignedInteger: event->server_time], @"Timestamp",
+		nil];
+	XCBDELEGATE_U(WindowShapeNotify, userInfo);
+	XCBNOTIFY_U(WindowShapeNotify, userInfo);
 }
 @end

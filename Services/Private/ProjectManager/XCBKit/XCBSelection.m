@@ -23,20 +23,31 @@
  *
  **/
 #import <XCBKit/XCBSelection.h>
+#import <XCBKit/XCBConnection.h>
 #import <XCBKit/XCBAtomCache.h>
 #import <XCBKit/XCBWindow.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
 @interface XCBSelection (Private)
 - (void)setOwner: (XCBWindow*)managerWindow;
+- (id)initWithAtom: (xcb_atom_t)a;
 @end
 
 @implementation XCBSelection
-- (id)initWithAtomNamed: (NSString*)atomName
++ (XCBSelection*)selectionWithAtom: (xcb_atom_t)atom
 {
-	SELFINIT;
-	atom = [[XCBAtomCache sharedInstance] atomNamed: atomName];
-	return self;
+	XCBSelection *sel = [XCBConn selectionWithAtom: atom];
+	if (nil == sel)
+	{
+		sel = [[[self alloc] initWithAtom: atom] autorelease];
+		[XCBConn registerSelection: sel];
+	}
+	return sel;
+}
++ (XCBSelection*)selectionWithAtomNamed: (NSString*)atomName
+{
+	xcb_atom_t atom = [[XCBAtomCache sharedInstance] atomNamed: atomName];
+	return [self selectionWithAtom: atom];
 }
 - (id)initWithAtom: (xcb_atom_t)a
 {

@@ -32,6 +32,7 @@ extern NSString* XCBConnectionEstablishmentException;
 
 @class XCBWindow;
 @class XCBVisual;
+@class XCBSelection;
 
 @interface XCBConnection : NSObject {
 	xcb_connection_t *connection;
@@ -39,6 +40,7 @@ extern NSString* XCBConnectionEstablishmentException;
 	NSMutableArray *screens;
 	NSMutableArray *replyHandlers;
 	NSMapTable *windows;
+	NSMapTable *selections;
 	id delegate;
 	BOOL needsFlush;
 	SEL extensionSelectors[256];
@@ -53,6 +55,9 @@ extern NSString* XCBConnectionEstablishmentException;
 - (XCBWindow*)windowForXCBId: (xcb_window_t)anId;
 - (void)registerWindow: (XCBWindow*)aWindow;
 - (void)unregisterWindow: (XCBWindow*)aWindow;
+- (void)registerSelection: (XCBSelection*)selection;
+- (void)unregisterSelection: (XCBSelection*)selection;
+- (XCBSelection*)selectionWithAtom: (xcb_atom_t)atom;
 - (void)setHandler: (id)anObject 
           forReply: (unsigned int)sequence
           selector: (SEL)aSelector;
@@ -66,13 +71,20 @@ extern NSString* XCBConnectionEstablishmentException;
             object: (id)context
      errorSelector: (SEL)errorSelector;
 - (void)cancelHandlersForObject: (id)anObject;
+/**
+  * Call any internal error handlers and 
+  * throw an exception for the specified
+  * error.
+  */
+- (void)handleError: (xcb_generic_error_t*)error;
 - (void)grab;
 - (void)ungrab;
 - (void)setNeedsFlush: (BOOL)shouldFlush;
 - (BOOL)needsFlush;
 /**
   * Forcibly flush the connection. Only use
-  * in limited circumstances (such as when grabbing)
+  * in limited circumstances (such as when ungrabbing
+  * or re-enabling events)
   */
 - (void)flush;
 - (void)startMessageLoop;
