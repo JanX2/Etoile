@@ -29,7 +29,7 @@
 #import <PaneKit/PKPlainPresentation.h>
 #import "GNUstep.h"
 
-const NSString *PKPlainPresentationMode = @"PKPlainPresentationMode";
+NSString *PKPlainPresentationMode = @"PKPlainPresentationMode";
 
 @implementation PKPlainPresentation
 

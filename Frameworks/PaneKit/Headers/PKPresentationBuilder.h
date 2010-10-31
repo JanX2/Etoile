@@ -27,15 +27,11 @@
  */
 
 #import <Foundation/Foundation.h>
-
-@protocol UKTest;
+#import <PaneKit/PKPanesController.h>
 
 @protocol PKPaneOwner;
 @class PKPane;
-@class PKPanesController;
 
-extern NSString *PKNoPresentationMode;
-extern NSString *PKOtherPresentationMode;
 
 @interface PKPresentationBuilder : NSObject 
 {
@@ -44,7 +40,7 @@ extern NSString *PKOtherPresentationMode;
   NSArray *allLoadedPlugins;
 }
 
-+ (id) builderForPresentationMode: (const NSString *)presentationMode;
++ (id) builderForPresentationMode: (NSString *)presentationMode;
 
 /* Method to inject custom Presentation */
 + (BOOL) inject: (id)obj forKey: (id)key;

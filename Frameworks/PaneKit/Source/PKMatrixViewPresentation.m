@@ -31,7 +31,7 @@
 #import "PKMatrixView.h"
 #import "GNUstep.h"
 
-const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
+NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 
 
 @implementation PKMatrixViewPresentation

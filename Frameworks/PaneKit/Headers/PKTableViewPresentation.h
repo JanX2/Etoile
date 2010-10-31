@@ -25,7 +25,7 @@
 
 #import <PaneKit/PKPresentationBuilder.h>
 
-extern const NSString *PKTablePresentationMode;
+extern NSString *PKTablePresentationMode;
 
 
 @interface PKTableViewPresentation : PKPresentationBuilder

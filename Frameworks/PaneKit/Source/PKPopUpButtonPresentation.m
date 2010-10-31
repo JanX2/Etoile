@@ -31,7 +31,7 @@
 #import <PaneKit/PKPopUpButtonPresentation.h>
 #import "GNUstep.h"
 
-const NSString *PKPopUpPresentationMode = @"PKPopUpPresentationMode";
+NSString *PKPopUpPresentationMode = @"PKPopUpPresentationMode";
 
 #define BUTTON_HEIGHT 25 
 #define PAD 5

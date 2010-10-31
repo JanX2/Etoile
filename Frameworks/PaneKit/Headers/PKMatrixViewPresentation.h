@@ -27,7 +27,7 @@
 
 @class PKMatrixView;
 
-extern const NSString *PKMatrixPresentationMode;
+extern NSString *PKMatrixPresentationMode;
 
 
 @interface PKMatrixViewPresentation : PKPresentationBuilder

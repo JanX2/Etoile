@@ -40,9 +40,6 @@
 #import <PaneKit/PKPresentationBuilder.h>
 #import "GNUstep.h"
 
-NSString *PKNoPresentationMode = @"PKNoPresentationMode";
-NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
-
 static NSMutableDictionary *injectedObjects = nil;
 
 /** PKPresentationBuilder Description */
@@ -66,7 +63,7 @@ static NSMutableDictionary *injectedObjects = nil;
     possible.</p>
     <p>It returns nil when no presentation subclass registered against 
     <var>presentationMode</var> could be found.</p> */
-+ (id) builderForPresentationMode: (const NSString *)presentationMode
++ (id) builderForPresentationMode: (NSString *)presentationMode
 {
   id presentationUnit = [injectedObjects objectForKey: presentationMode];
     

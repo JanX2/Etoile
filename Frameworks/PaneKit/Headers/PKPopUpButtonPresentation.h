@@ -26,7 +26,7 @@
 #import <PaneKit/PKPresentationBuilder.h>
 #import <AppKit/NSPopUpButton.h>
 
-extern const NSString *PKPopUpPresentationMode;
+extern NSString *PKPopUpPresentationMode;
 
 @interface PKPopUpButtonPresentation : PKPresentationBuilder
 {

@@ -30,7 +30,7 @@
 #import <PaneKit/PKTableViewPresentation.h>
 #import "GNUstep.h"
 
-const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
+NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
 
 @implementation PKTableViewPresentation

@@ -64,7 +64,7 @@
 /* This is usually called programmingly.
    So we call awakeFromNib explicitly */
 - (id) initWithRegistry: (PKPaneRegistry *) r
-       presentationMode: (const NSString *) mode
+       presentationMode: (NSString *) mode
        owner: (id) o
 {
   self = [super init];
@@ -381,7 +381,7 @@
 
 /** <p>Sets the <em>presentation</em> style used to display the 
     preferences pane list and identified by <var>presentationMode</var>.</p> */
-- (void) setPresentationMode: (const NSString *) presentationMode
+- (void) setPresentationMode: (NSString *) presentationMode
 {
   if ([presentationMode isEqual: [presentation presentationMode]])
     return;

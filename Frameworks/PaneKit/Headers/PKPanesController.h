@@ -30,16 +30,15 @@
 #import <Foundation/Foundation.h>
 #import <PaneKit/PKPane.h>
 
-@class PKPresentationBuilder;
-@class PKPaneRegistry;
+@class PKPresentationBuilder, PKPaneRegistry;
 
-extern const NSString *PKNoPresentationMode;
-extern const NSString *PKToolbarPresentationMode;
-extern const NSString *PKTablePresentationMode;
-extern const NSString *PKMatrixPresentationMode;
-extern const NSString *PKPlainPresentationMode;
-extern const NSString *PKPopUpPresentationMode;
-extern const NSString *PKOtherPresentationMode;
+extern NSString *PKNoPresentationMode;
+extern NSString *PKToolbarPresentationMode;
+extern NSString *PKTablePresentationMode;
+extern NSString *PKMatrixPresentationMode;
+extern NSString *PKPlainPresentationMode;
+extern NSString *PKPopUpPresentationMode;
+extern NSString *PKOtherPresentationMode;
 
 @interface PKPanesController: NSObject <PKPaneOwner>
 {
@@ -55,7 +54,7 @@ extern const NSString *PKOtherPresentationMode;
  * If it is load with Nib or Gorm, owner and registry must be connected.
  * The mode will be PKToolbarPresentationMode by default. */
 - (id) initWithRegistry: (PKPaneRegistry *) registry
-       presentationMode: (const NSString *) presentationMode
+       presentationMode: (NSString *) presentationMode
                   owner: (id) owner;
 
 /* Preferences UI related stuff */
@@ -74,7 +73,7 @@ extern const NSString *PKOtherPresentationMode;
 - (NSString *) selectedPaneIdentifier;
 - (PKPane *) selectedPane;
 
-- (const NSString *) presentationMode;
-- (void) setPresentationMode: (const NSString *)presentationMode;
+- (NSString *) presentationMode;
+- (void) setPresentationMode: (NSString *)presentationMode;
 
 @end

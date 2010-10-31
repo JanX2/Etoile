@@ -25,7 +25,7 @@
 
 #import <PaneKit/PKPresentationBuilder.h>
 
-extern const NSString *PKPlainPresentationMode;
+extern NSString *PKPlainPresentationMode;
 
 @interface PKPlainPresentation : PKPresentationBuilder
 {

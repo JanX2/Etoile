@@ -33,7 +33,7 @@
 #import <PaneKit/PKToolbarPresentation.h>
 #import "GNUstep.h"
 
-const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
+NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 
 
 // NOTE: Hack needed for -resizePreferencesViewForView: with GNUstep

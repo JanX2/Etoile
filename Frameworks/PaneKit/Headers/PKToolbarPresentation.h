@@ -25,7 +25,7 @@
 
 #import <PaneKit/PKPresentationBuilder.h>
 
-extern const NSString *PKToolbarPresentationMode;
+extern NSString *PKToolbarPresentationMode;
 
 
 @interface PKToolbarPresentation : PKPresentationBuilder
