@@ -40,6 +40,9 @@
 #import <PaneKit/PKPresentationBuilder.h>
 #import "GNUstep.h"
 
+NSString *PKNoPresentationMode = @"PKNoPresentationMode";
+NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
+
 static NSMutableDictionary *injectedObjects = nil;
 
 /** PKPresentationBuilder Description */

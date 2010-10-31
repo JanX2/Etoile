@@ -27,10 +27,12 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <PaneKit/PKPanesController.h>
 
 @protocol PKPaneOwner;
-@class PKPane;
+@class PKPane, PKPanesController;
+
+extern NSString *PKNoPresentationMode;
+extern NSString *PKOtherPresentationMode;
 
 
 @interface PKPresentationBuilder : NSObject 
