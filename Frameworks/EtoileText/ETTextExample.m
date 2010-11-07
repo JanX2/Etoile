@@ -122,7 +122,7 @@ int main(void)
 	ETTextFragment *text = [[ETTextFragment alloc] initWithString: @"This is a test"];
 	text.textType = D(@"p", kETTextStyleName);
 	NSLog(@"%@", text);
-	ETTextFragment *part1 = [text splitAtIndex: 5];
+	id<ETText> part1 = [text splitAtIndex: 5];
 	NSLog(@"%@", part1);
 	NSLog(@"%@", text);
 	ETTextTree *tree = [ETTextTree textTreeWithChildren: A(part1, text)];

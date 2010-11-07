@@ -46,7 +46,7 @@
 	else
 	{
 		ETTextTree *newParent = [ETTextTree new];
-		ETTextTree *parent = insertNode.parent;
+		ETTextTree *parent = (ETTextTree*)insertNode.parent;
 		newParent.textType = insertNode.textType;
 		insertNode.textType = nil;
 		[newParent appendTextFragment: insertNode];

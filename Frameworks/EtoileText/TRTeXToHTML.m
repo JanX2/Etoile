@@ -2,6 +2,7 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "ETTeXHandlers.h"
 #import <EtoileUI/NSObject+EtoileUI.h>
+#import <SourceCodeKit/SourceCodeKit.h>
 
 /**
  * Handle listings of the form:
@@ -288,8 +289,16 @@
 @property (nonatomic, copy) NSDictionary *includePaths;
 @property (nonatomic, copy) NSDictionary *captionFormats;
 @end
+
+static SCKSourceCollection *allSources;
+
 @implementation TRXHTMLImportBuilder
 @synthesize rootPath, includePaths, captionFormats;
++ (void)initialize
+{
+	allSources = [SCKSourceCollection new];
+}
+
 - (void)dealloc
 {
 	[rootPath release];
@@ -299,6 +308,7 @@
 }
 - (void)writer: (ETXHTMLWriter*)aWriter startTextNode: (id<ETText>)aNode;
 {
+	LOCAL_AUTORELEASE_POOL();
 	ETXMLWriter *writer = aWriter.writer;
 	// Resolve the absolute path.
 	NSString *includeType = [aNode.textType valueForKey: @"TRImportType"];
@@ -328,20 +338,86 @@
 				@"class");
 		[writer startElement: @"pre"
 		          attributes: class];
-		NSArray *lines = [file componentsSeparatedByString: @"\n"];
-		NSInteger start = 
+		// Do the syntax highlighting
+		NSMutableAttributedString *source = 
+			[[NSMutableAttributedString alloc] initWithString: file];
+		SCKSourceFile *sourceFile = [allSources sourceFileForPath: fileName];
+		sourceFile.source = source;
+		[sourceFile addIncludePath: @"."];
+		[sourceFile addIncludePath: @"/usr/local/include"];
+		[sourceFile addIncludePath: @"/usr/local/GNUstep/Local/Library/Headers"];
+		[sourceFile addIncludePath: @"/usr/local/GNUstep/System/Library/Headers"];
+		[sourceFile reparse];
+		[sourceFile syntaxHighlightFile];
+
+		NSInteger startLine = 
 			[[aNode.textType valueForKey: kETTextFirstLine] integerValue];
-		NSInteger end = 
+		NSInteger endLine = 
 			[[aNode.textType valueForKey: kETTextLastLine] integerValue];
-		// If start is specified, then make it to 0-indexed 
-		if (start > 0) { start -= 1; }
-		if (end == 0) { end = [lines count] - 1; }
-		for (NSInteger i=start ; i<end ; i++)
+		if (0 != endLine)
 		{
-			NSString *line = [lines objectAtIndex: i];
-			[writer characters: line];
-			[writer characters: @"\n"];
+			endLine -= startLine;
+			endLine += 1;
 		}
+
+		NSInteger start=0;
+		NSInteger length = [file length];
+		NSInteger end= [file length];
+
+		NSRange searchRange = {start, end};
+		// If start is specified, then make it to 0-indexed 
+		while (startLine > 1)
+		{
+			// Find the next line break
+			NSRange found = [file rangeOfCharacterFromSet: [NSCharacterSet newlineCharacterSet]
+			                                      options: 0
+			                                        range: searchRange];
+			if (NSNotFound == found.location) { break; }
+			start = found.location + found.length;
+			searchRange.location = found.location + found.length;
+			searchRange.length = length - searchRange.location;
+			startLine--;
+		}
+		while (endLine > 0)
+		{
+			// Find the next line break
+			NSRange found = [file rangeOfCharacterFromSet: [NSCharacterSet newlineCharacterSet]
+			                                      options: 0
+			                                        range: searchRange];
+			if (NSNotFound == found.location) { break; }
+			end = found.location + found.length;
+			searchRange.location = found.location + found.length;
+			searchRange.length = length - searchRange.location;
+			endLine--;
+		}
+		NSUInteger i = start;
+		do
+		{
+			NSRange r;
+			NSDictionary *attrs = [source attributesAtIndex: i
+			                          longestEffectiveRange: &r
+			                                        inRange: NSMakeRange(i, end-i)];
+			i = r.location + r.length;
+			NSString *token = [attrs objectForKey: kSCKTextTokenType];
+			NSString *semantic = [attrs objectForKey: kSCKTextSemanticType];
+			NSDictionary *attributes = nil;
+			// Skip ranges that have attributes other than semantic markup
+			if (semantic == SCKTextTypePreprocessorDirective)
+			{
+				attributes = D(semantic, @"class");
+			}
+			else if (token != SCKTextTokenTypeIdentifier)
+			{
+				attributes = D(token, @"class");
+			}
+			else 
+			{
+				attributes = D(semantic, @"class");
+			}
+			[writer startAndEndElement: @"span"
+			                attributes: attributes
+			                     cdata: [file substringWithRange: r]];
+		} while (i < end);
 		[writer endElement: @"pre"];
 	}
 	[writer startElement: @"p"
@@ -393,13 +469,8 @@ int main(int argc, char **argv)
 		[s parseString: tex];
 	}
 	//NSLog(@"Parsed TeX: \n%@", d2.document.text);
-	ETReferenceBuilder *r = [ETReferenceBuilder new];
-	[d2.document.text visitWithVisitor: r];
-	[r finishVisiting];
 	ETXHTMLWriter *w = [ETXHTMLWriter new];
-	ETXHTMLFootnoteBuilder *footnotes = [ETXHTMLFootnoteBuilder new];
-	[w setDelegate: footnotes forTextType: ETTextFootnoteType];
-	[footnotes release];
+	w.writeChaptersToFiles = YES;
 	TRXHTMLImportBuilder *importer = [TRXHTMLImportBuilder new];
 	importer.rootPath = projectRoot;
 	importer.includePaths = [project objectForKey: @"includeDirectories"];
@@ -420,13 +491,12 @@ int main(int argc, char **argv)
 		[w setAttributes: [types objectForKey: type]
 		     forTextType: type];
 	}
-	[r writeTableOfContentsWithXMLWriter: w.writer];
-	[d2.document.text visitWithVisitor: w];
-	[footnotes writeCollectedFootnotesForXHTMLWriter: w];
-	[r writeIndexWithXMLWriter: w.writer];
+	[w generateHTMLForDocument: d2.document.text];
+	/*
 	NSString *html = [w endDocument];
 	//NSLog(@"Parsed TeX: \n%@", html);
 	[html writeToFile: @"tex.html" atomically: NO];
+	*/
 	/*
 	[d2 retain];
 	[NSApplication sharedApplication];

@@ -21,6 +21,8 @@
 - (void)writer: (ETXHTMLWriter*)aWriter endTextNode: (id<ETText>)aNode;
 @end
 
+@class ETXHTMLFootnoteBuilder;
+@class ETReferenceBuilder;
 /**
  * ETXHTMLWriter is a visitor class that walks an EtoileText tree and generates
  * an XHTML document from it.  
@@ -38,6 +40,12 @@
 	NSMutableDictionary *customHandlers;
 	/** Flag indicating that the writer is current outputting footnotes. */
 	BOOL isWritingFootnotes;
+	/** Footnote builder. */
+	ETXHTMLFootnoteBuilder *footnotes;
+	/** Cross-reference builder. */
+	ETReferenceBuilder *referenceBuilder;
+	/** Title of the current chapter. */
+	NSString *chapterTitle;
 }
 /** The XML writer object used for output. */
 @property (nonatomic, retain) ETXMLWriter *writer;
@@ -47,6 +55,10 @@
  * then emit a body of the footnote node later.
  */
 @property (nonatomic, assign) id skipToEndOfNode;
+/**
+ * Flag set if each chapter should be written to a separate file.
+ */
+@property (nonatomic) BOOL writeChaptersToFiles;
 /**
  * Sets the HTML tag name to use for a specified EtoileText type.  Ignored if a
  * delegate is set for this type.  If no tag name is specified for a type, span
@@ -64,6 +76,7 @@
  */
 - (void)setDelegate: (id<ETXHTMLWriterDelegate>)aDelegate
         forTextType: (NSString*)aType;
+- (NSString*)generateHTMLForDocument: (id<ETText>)aDocument;
 /**
  * Ends the document and returns a string containing the XHTML rendition of it.
  */
@@ -108,6 +121,7 @@
 {
 	/** Text nodes referring to other elements. */
 	NSMutableArray *referenceNodes;
+	NSString *chapter;
 	/** Link targets. */
 	NSMutableDictionary *linkTargets;
 	NSMutableDictionary *linkNames;
@@ -117,6 +131,7 @@
 	NSMutableDictionary *indexEntries;
 	int sectionCounter[10];
 	int sectionCounterDepth;
+	int headingCounter;
 }
 - (void)finishVisiting;
 @property (readonly) NSArray *referenceNodes;
@@ -124,6 +139,7 @@
 @property (readonly) NSDictionary *linkTargets;
 @property (readonly) NSDictionary *linkNames;
 @property (readonly) NSDictionary *crossReferences;
+- (NSString*)linkTitleForTarget: (NSString*)linkTarget inChapter: (NSString*)currentChapter;
 - (void)writeTableOfContentsWithXMLWriter: (ETXMLWriter*)writer;
 - (void)writeIndexWithXMLWriter: (ETXMLWriter*)writer;
 @end

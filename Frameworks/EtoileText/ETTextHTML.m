@@ -22,6 +22,8 @@
 	NSInteger footnoteNumber = [footnotes count];
 	NSString *linkText = 
 		[NSString stringWithFormat: @"%d", footnoteNumber];
+	// Footnote labels are always internal, so we don't need to do anything
+	// clever here.
 	NSString *footnoteLabel = 
 		[NSString stringWithFormat: @"#footnote%d", footnoteNumber];
 
@@ -43,6 +45,7 @@
 	// through as-is
 	[aWriter setDelegate: nil forTextType: ETTextFootnoteType];
 	ETXMLWriter *writer = aWriter.writer;
+	[writer startAndEndElement: @"hr"];
 	NSInteger footnoteNumber = 1;
 	for (id<ETText> footnote in footnotes)
 	{
@@ -104,10 +107,8 @@
 
 @implementation ETXHTMLWriter
 @synthesize writer, skipToEndOfNode;
-- (id)init
+- (void)writePreamble
 {
-	SUPERINIT;
-	writer = [ETXMLWriter new];
 	[writer writeXMLHeader];
 	//[writer setAutoindent: YES];
 	[writer startElement: @"html"]; 
@@ -120,6 +121,12 @@
 	}
 	[writer endElement];
 	[writer startElement: @"body"]; 
+}
+- (id)init
+{
+	SUPERINIT;
+	writer = [ETXMLWriter new];
+	[self writePreamble];
 	types = [D(@"ul", ETTextListType,
 		@"ol", ETTextNumberedListType,
 		@"dl", ETTextDescriptionListType,
@@ -128,7 +135,10 @@
 		@"li", ETTextListItemType) mutableCopy];
 	defaultAttributes = [NSMutableDictionary new];
 	STACK_SCOPED ETXHTMLHeadingBuilder *headings = [ETXHTMLHeadingBuilder new];
-	customHandlers = [D(headings, ETTextHeadingType) mutableCopy];
+	footnotes = [ETXHTMLFootnoteBuilder new];
+	customHandlers = [D(headings, ETTextHeadingType,
+	                    footnotes, ETTextFootnoteType) mutableCopy];
+	referenceBuilder = [ETReferenceBuilder new];
 	return self;
 }
 - (void)dealloc
@@ -137,7 +147,32 @@
 	[types release];
 	[customHandlers release];
 	[writer release];
+	[footnotes release];
+	[referenceBuilder release];
+	[chapterTitle release];
 	[super dealloc];
+}
+- (NSString*)generateHTMLForDocument: (id<ETText>)aDocument
+{
+	[aDocument visitWithVisitor: referenceBuilder];
+	[referenceBuilder finishVisiting];
+	[referenceBuilder writeTableOfContentsWithXMLWriter: writer];
+	chapterTitle = @"Table of Contents";
+	[aDocument visitWithVisitor: self];
+
+	if (nil != chapterTitle)
+	{
+		NSString *html = [self endDocument];
+		[html writeToFile: [chapterTitle stringByAppendingPathExtension: @"html"]
+			   atomically: NO];
+		NSLog(@"Writing %@", [chapterTitle stringByAppendingPathExtension: @"html"]);
+		[writer release];
+		writer = [ETXMLWriter new];
+		[self writePreamble];
+	}
+	chapterTitle = @"Index";
+	[referenceBuilder writeIndexWithXMLWriter: writer];
+	return [self endDocument];
 }
 - (void)setTagName: (NSString*)aString forTextType: (NSString*)aType
 {
@@ -156,6 +191,19 @@
 	if (nil != skipToEndOfNode) { return; }
 
 	NSString *typeName = [aNode.textType valueForKey: kETTextStyleName];
+	if (writeChaptersToFiles &&
+	    [ETTextHeadingType isEqualToString: typeName] &&
+	    [[aNode.textType valueForKey: kETTextHeadingLevel] intValue] == 1)
+	{
+		if (nil != chapterTitle)
+		{
+			[self endDocument];
+			[writer release];
+			writer = [ETXMLWriter new];
+			[self writePreamble];
+		}
+		chapterTitle = [aNode stringValue];
+	}
 	id<ETXHTMLWriterDelegate> delegate = [customHandlers objectForKey: typeName];
 	if (nil != delegate)
 	{
@@ -170,11 +218,19 @@
 			typeName = @"p";
 			if ([aNode length] == 0) { return; }
 		}
+		else if ([ETTextLinkType isEqualToString: typeName])
+		{
+			NSString *linkTarget = [aNode.textType valueForKey: kETTextLinkName];
+			NSString *label = [referenceBuilder linkTitleForTarget: linkTarget 
+			                                             inChapter: chapterTitle];
+			typeName = @"a";
+			attributes = D(label, @"href");
+		}
 		else if ([ETTextLinkTargetType isEqualToString: typeName])
 		{
-			NSString *linkName = [aNode.textType valueForKey: kETTextLinkName];
+			NSString *linkTarget = [aNode.textType valueForKey: kETTextLinkName];
 			typeName = @"a";
-			attributes = D([linkName stringValue], @"name");
+			attributes = D([linkTarget stringValue], @"name");
 		}
 		else
 		{
@@ -235,8 +291,14 @@
 }
 - (NSString*)endDocument
 {
-	[writer endElement];
-	[writer endElement];
+	[footnotes writeCollectedFootnotesForXHTMLWriter: self];
+	NSString *html = [writer endDocument];
+	if (nil != chapterTitle)
+	{
+		[html writeToFile: [chapterTitle stringByAppendingPathExtension: @"html"]
+			   atomically: NO];
+		NSLog(@"Writing %@", [chapterTitle stringByAppendingPathExtension: @"html"]);
+	}
 	return [writer endDocument];
 }
 @end
@@ -262,7 +324,24 @@
 	[linkNames release];
 	[indexEntries release];
 	[crossReferences release];
+	[chapter release];
 	[super dealloc];
+}
+- (NSString*)linkTitleForTarget: (NSString*)linkTarget inChapter: (NSString*)currentChapter
+{
+	NSString *chapterTitle = [linkTargets objectForKey: linkTarget];
+	NSString *label;
+	if (nil != chapterTitle && ![currentChapter isEqualToString: chapterTitle])
+	{
+		chapterTitle = 
+			[chapterTitle stringByAddingPercentEscapesUsingEncoding: NSASCIIStringEncoding];
+		label = [NSString stringWithFormat: @"%@.html#%@", chapterTitle, linkTarget];
+	}
+	else
+	{
+		label = [@"#" stringByAppendingString: [linkTarget stringValue]];
+	}
+	return label;
 }
 - (void)startTextNode: (id<ETText>)aNode 
 {
@@ -275,6 +354,12 @@
 		
 		}
 		int level = [[type valueForKey: kETTextHeadingLevel] intValue];
+		if (1 == level)
+		{
+			ASSIGN(chapter, [aNode stringValue]);
+		}
+		[linkTargets setObject: chapter
+		                forKey: [NSString stringWithFormat: @"heading_%d", headingCounter++]];
 		NSAssert(level < 10, @"Indexer can only handle 10 levels of headings.");
 		sectionCounter[level]++;
 		sectionCounterDepth = level;
@@ -302,8 +387,11 @@
 		}
 		[linkNames setObject: sectionNumber
 		              forKey: linkName];
-		[linkTargets setObject: aNode
-		                forKey: linkName];
+		if (nil != chapter)
+		{
+			[linkTargets setObject: chapter
+			                forKey: linkName];
+		}
 		NSString *indexName = [type valueForKey: kETTextLinkIndexText];
 		if (nil != indexName)
 		{
@@ -354,8 +442,10 @@
 			headingDepth--;
 		}
 		[writer startElement: @"li"];
+		NSString *linkTarget = [NSString stringWithFormat: @"heading_%d", headingNumber++];
+		NSString *ref = [self linkTitleForTarget: linkTarget inChapter: nil];
 		[writer startAndEndElement: @"a"
-		                attributes: D([NSString stringWithFormat: @"#heading_%d", headingNumber++], @"href")
+		                attributes: D(ref, @"href")
 		                     cdata: [heading stringValue]];
 		[writer endElement];
 	}
@@ -424,7 +514,7 @@
 				[writer characters: @", "];
 				for (id t in targets)
 				{
-					NSString *ref = [NSString stringWithFormat: @"#%@", t];
+					NSString *ref = [self linkTitleForTarget: t inChapter: nil];
 					NSString *section = [linkNames objectForKey: t];
 					[writer startAndEndElement: @"a"
 					                attributes: D(ref, @"href")
@@ -434,8 +524,9 @@
 			}
 			else
 			{
+				NSString *ref = [self linkTitleForTarget: targets inChapter: nil];
 				[writer startAndEndElement: @"a"
-				                attributes: D([NSString stringWithFormat: @"#%@", targets], @"href")
+				                attributes: D(ref, @"href")
 				                     cdata: displayEntry];
 			}
 		}

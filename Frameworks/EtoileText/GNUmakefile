@@ -48,6 +48,8 @@ EtoileTextExample_OBJC_FILES = $(EtoileText_OBJC_FILES)\
 TeXtoHTML_OBJC_FILES = $(EtoileText_OBJC_FILES)\
 							   TRTeXToHTML.m
 
+TeXtoHTML_LDFLAGS += -lSourceCodeKit
+
 include $(GNUSTEP_MAKEFILES)/framework.make
 -include ../../etoile.make
 include $(GNUSTEP_MAKEFILES)/tool.make

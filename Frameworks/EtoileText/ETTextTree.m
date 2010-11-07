@@ -126,7 +126,6 @@ typedef struct
 	}
 	ETTextTreeChild startChild = 
 		[self childNodeForIndex: aRange.location];
-	NSLog(@"idx: %d, start %d", startChild.index, startChild.start);
 	id<ETText> child = [children objectAtIndex: startChild.index];
 	NSUInteger end = [child length];
 
