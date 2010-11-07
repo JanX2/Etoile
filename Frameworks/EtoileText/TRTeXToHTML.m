@@ -36,6 +36,11 @@
 @end
 
 /**
+ * Handle URLs of the form: \url{http://whatever}
+ */
+@interface TRTeXURLHandler : ETTeXHandler @end
+
+/**
  * Handle keywords.  These are written in keyword style and also added to the
  * index.
  */
@@ -203,6 +208,24 @@
 	[builder endNode];
 
 	[indexText release];
+}
+- (void)endArgument
+{
+	self.scanner.delegate = self.parent;
+}
+@end
+@implementation TRTeXURLHandler
+- (void)beginCommand: (NSString*)aString {}
+- (void)handleText: (NSString*)aString
+{
+	ETTextTreeBuilder *builder = self.builder;
+	NSURL *url = [NSURL URLWithString: aString];
+	[builder startNodeWithStyle: 
+		[self.document typeFromDictionary: D(
+			ETTextLinkType, kETTextStyleName,
+			url, kETTextLinkName)]];
+	[builder appendString: aString];
+	[builder endNode];
 }
 - (void)endArgument
 {

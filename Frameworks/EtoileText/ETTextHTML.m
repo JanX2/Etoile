@@ -217,9 +217,17 @@
 		}
 		else if ([ETTextLinkType isEqualToString: typeName])
 		{
-			NSString *linkTarget = [aNode.textType valueForKey: kETTextLinkName];
-			NSString *label = [referenceBuilder linkTitleForTarget: linkTarget 
-			                                             inChapter: chapterTitle];
+			id linkTarget = [aNode.textType valueForKey: kETTextLinkName];
+			NSString *label;
+			if ([linkTarget isKindOfClass: [NSURL class]])
+			{
+				label = [linkTarget stringValue];
+			}
+			else
+			{
+				label = [referenceBuilder linkTitleForTarget: linkTarget 
+				                                   inChapter: chapterTitle];
+			}
 			typeName = @"a";
 			attributes = D(label, @"href");
 		}
@@ -417,8 +425,11 @@
 	for (id<ETText> link in referenceNodes)
 	{
 		NSUInteger length = [link length];
-		NSString *target = 
-			[linkNames objectForKey: [link.textType valueForKey: kETTextLinkName]];
+		id targetName = [link.textType valueForKey: kETTextLinkName];
+
+		if ([targetName isKindOfClass: [NSURL class]]) { continue; }
+
+		NSString *target = [linkNames objectForKey: targetName];
 		if (nil == target) { target = @"??"; }
 		[link replaceCharactersInRange: NSMakeRange(0, length)
 		                    withString: target];

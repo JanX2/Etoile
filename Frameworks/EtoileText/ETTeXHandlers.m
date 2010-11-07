@@ -222,7 +222,14 @@ static NSDictionary *HeadingTypes;
 				[NSNumber numberWithInt: 3], @"subsection",
 				[NSNumber numberWithInt: 4], @"subsubsection",
 				[NSNumber numberWithInt: 5], @"subsubsubsection",
-				[NSNumber numberWithInt: 6], @"paragraph"
+				[NSNumber numberWithInt: 6], @"paragraph",
+				[NSNumber numberWithInt: 0], @"part*",
+				[NSNumber numberWithInt: 1], @"chapter*",
+				[NSNumber numberWithInt: 2], @"section*",
+				[NSNumber numberWithInt: 3], @"subsection*",
+				[NSNumber numberWithInt: 4], @"subsubsection*",
+				[NSNumber numberWithInt: 5], @"subsubsubsection*",
+				[NSNumber numberWithInt: 6], @"paragraph*"
 		) retain];
 	}
 }

@@ -201,6 +201,12 @@ static NSDictionary *DefaultCommandHandlers;
 
 	// Some standard command handlers.
 	DefaultCommandHandlers = [D(
+		[ETTeXSectionHandler class], @"part*",
+		[ETTeXSectionHandler class], @"chapter*",
+		[ETTeXSectionHandler class], @"section*",
+		[ETTeXSectionHandler class], @"subsection*",
+		[ETTeXSectionHandler class], @"subsubsection*",
+		[ETTeXSectionHandler class], @"paragraph*",
 		[ETTeXSectionHandler class], @"part",
 		[ETTeXSectionHandler class], @"chapter",
 		[ETTeXSectionHandler class], @"section",
