@@ -1,5 +1,17 @@
 #import "EtoileText.h"
 
+@implementation ETTeXIgnoreHandler
+- (void)handleText: (NSString*)aString {}
+- (void)beginOptArg {}
+- (void)endOptArg {}
+- (void)beginArgument {}
+- (void)beginCommand: (NSString*)aCommand {}
+- (void)endArgument
+{
+	self.scanner.delegate = self.parent;
+}
+@end
+
 @implementation ETTeXSimpleHandler
 static NSMutableDictionary *CommandTypes;
 + (void)initialize

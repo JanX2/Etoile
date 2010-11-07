@@ -10,6 +10,7 @@
 	int depth;
 }
 @end
+@interface ETTeXIgnoreHandler : ETTeXHandler @end
 
 
 @interface ETTeXNestableHandler : ETTeXSimpleHandler @end

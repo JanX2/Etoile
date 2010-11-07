@@ -38,6 +38,7 @@
 - (void)writer: (ETXHTMLWriter*)writer endTextNode: (id<ETText>)aNode {}
 - (void)writeCollectedFootnotesForXHTMLWriter: (ETXHTMLWriter*)aWriter
 {
+	if ([footnotes count] == 0) { return; }
 	// If the builder has the only reference to this object, we don't want it
 	// to be deleted while in use!
 	[self retain];
@@ -152,24 +153,26 @@
 	[chapterTitle release];
 	[super dealloc];
 }
+- (void)endChapter
+{
+	if (writeChaptersToFiles)
+	{
+		[self endDocument];
+		[writer release];
+		writer = [ETXMLWriter new];
+		[self writePreamble];
+		chapterTitle = nil;
+	}
+}
 - (NSString*)generateHTMLForDocument: (id<ETText>)aDocument
 {
 	[aDocument visitWithVisitor: referenceBuilder];
 	[referenceBuilder finishVisiting];
 	[referenceBuilder writeTableOfContentsWithXMLWriter: writer];
 	chapterTitle = @"Table of Contents";
+	[self endChapter];
 	[aDocument visitWithVisitor: self];
-
-	if (nil != chapterTitle)
-	{
-		NSString *html = [self endDocument];
-		[html writeToFile: [chapterTitle stringByAppendingPathExtension: @"html"]
-			   atomically: NO];
-		NSLog(@"Writing %@", [chapterTitle stringByAppendingPathExtension: @"html"]);
-		[writer release];
-		writer = [ETXMLWriter new];
-		[self writePreamble];
-	}
+	[self endChapter];
 	chapterTitle = @"Index";
 	[referenceBuilder writeIndexWithXMLWriter: writer];
 	return [self endDocument];
@@ -195,13 +198,7 @@
 	    [ETTextHeadingType isEqualToString: typeName] &&
 	    [[aNode.textType valueForKey: kETTextHeadingLevel] intValue] == 1)
 	{
-		if (nil != chapterTitle)
-		{
-			[self endDocument];
-			[writer release];
-			writer = [ETXMLWriter new];
-			[self writePreamble];
-		}
+		[self endChapter];
 		chapterTitle = [aNode stringValue];
 	}
 	id<ETXHTMLWriterDelegate> delegate = [customHandlers objectForKey: typeName];
@@ -293,7 +290,11 @@
 {
 	[footnotes writeCollectedFootnotesForXHTMLWriter: self];
 	NSString *html = [writer endDocument];
-	if (nil != chapterTitle)
+	if (nil == chapterTitle)
+	{
+		chapterTitle = @"Preface";
+	}
+	if (writeChaptersToFiles)
 	{
 		[html writeToFile: [chapterTitle stringByAppendingPathExtension: @"html"]
 			   atomically: NO];
@@ -357,6 +358,10 @@
 		if (1 == level)
 		{
 			ASSIGN(chapter, [aNode stringValue]);
+		}
+		if (nil == chapter)
+		{
+			chapter = @"Preface";
 		}
 		[linkTargets setObject: chapter
 		                forKey: [NSString stringWithFormat: @"heading_%d", headingCounter++]];
