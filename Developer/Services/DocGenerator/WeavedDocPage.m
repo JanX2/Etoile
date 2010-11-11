@@ -7,6 +7,9 @@
 //
 
 #import "WeavedDocPage.h"
+#import "DocHeader.h"
+#import "DocFunction.h"
+#import "DocMethod.h"
 #import "GSDocParser.h"
 #import "HtmlElement.h"
 
@@ -66,6 +69,10 @@
 	ASSIGN(classMapping, [NSDictionary dictionaryWithContentsOfFile: aMappingPath]);
 	ASSIGN(projectClassMapping, [NSDictionary dictionaryWithContentsOfFile: aProjectMappingPath]);
 
+	classMethods = [NSMutableDictionary new];
+	instanceMethods = [NSMutableDictionary new];
+	functions = [NSMutableDictionary new];
+
 	return self;
 }
 
@@ -84,6 +91,10 @@
 	[classMapping release];
 	[projectClassMapping release];
 	[weavedContent release];
+	[header release];
+	[classMethods release];
+	[instanceMethods release];
+	[functions release];
 	[super dealloc];
 }
 
@@ -103,16 +114,8 @@
 
 - (void) insertGSDocDocument
 {
-	GSDocParser *parser = [[GSDocParser alloc] initWithString: documentContent];
-
-	//[delegate setGSDocDirectory: [gsdocFile stringByDeletingLastPathComponent]];
-	//[delegate setGSDocFile: gsdocFile];	
-	[parser parseAndWeave];
-	
-	[self insert: [parser getMethods] forTag: @"<!-- etoile-methods -->"];
-	[self insert: [parser getHeader] forTag:  @"<!-- etoile-header -->"];
-	
-	[parser release];  
+	[self insert: [self getMethods] forTag: @"<!-- etoile-methods -->"];
+	[self insert: [[header HTMLDescription] content] forTag:  @"<!-- etoile-header -->"];
 }
 
 - (void) insertDocument
@@ -201,6 +204,98 @@
 - (void) writeToURL: (NSURL *)outputURL
 {
 	[[self HTMLString] writeToURL: outputURL atomically: YES];
+}
+
+- (void) setHeader: (DocHeader *)aHeader
+{
+	ASSIGN(header, aHeader);
+}
+
+- (DocHeader *) header
+{
+	return header;
+}
+
+- (void) addClassMethod: (DocMethod *)aMethod
+{
+	NSMutableArray *array = [classMethods objectForKey: [aMethod task]];
+	if (array == nil)
+	{
+		array = [NSMutableArray new];
+		[classMethods setObject: array forKey: [aMethod task]];
+		[array release];
+	}
+	[array addObject: aMethod];
+}
+
+- (void) addInstanceMethod: (DocMethod *)aMethod
+{
+	NSMutableArray *array = [instanceMethods objectForKey: [aMethod task]];
+	if (array == nil)
+	{
+		array = [NSMutableArray new];
+		[instanceMethods setObject: array forKey: [aMethod task]];
+		[array release];
+	}
+	[array addObject: aMethod];
+}
+
+- (void) addFunction: (DocFunction *)aFunction
+{
+	NSMutableArray* array = [functions objectForKey: [aFunction task]];
+	if (array == nil)
+	{
+		array = [NSMutableArray new];
+		[functions setObject: array forKey: [aFunction task]];
+		[array release];
+	}
+	[array addObject: aFunction];
+}
+
+- (void) outputMethods: (NSDictionary*) methods withTitle: (NSString*) aTitle on: (NSMutableString*) html
+{
+  NSArray* unsortedTasks = [methods allKeys];
+  NSArray* tasks = [unsortedTasks sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+  if ([tasks count] > 0)
+  {
+    [html appendFormat: @"<h3>%@</h3>", aTitle];
+  }
+  for (int i=0; i<[tasks count]; i++)
+  {
+    NSString* key = [tasks objectAtIndex: i];
+    [html appendFormat: @"<h4>%@</h4>", key];
+    NSArray* unsortedArray = [methods objectForKey: key];
+    NSArray* array = [unsortedArray sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+    for (int j=0; j<[array count]; j++)
+    {
+      DocMethod* m = [array objectAtIndex: j];
+      [html appendString: [[m HTMLDescription] content]];
+    }
+  }
+}
+
+- (void) outputClassMethodsOn: (NSMutableString *) html  
+{
+  [self outputMethods: classMethods withTitle: @"Class Methods" on: html];
+}
+
+- (void) outputInstanceMethodsOn: (NSMutableString *) html  
+{
+  [self outputMethods: instanceMethods withTitle: @"Instance Methods" on: html];
+}
+
+- (void) outputFunctionsOn: (NSMutableString*) html
+{
+  [self outputMethods: functions withTitle: @"Functions" on: html];
+}
+
+- (NSString*) getMethods
+{
+  NSMutableString* methods = [NSMutableString new];
+  [self outputFunctionsOn: methods];
+  [self outputClassMethodsOn: methods];
+  [self outputInstanceMethodsOn: methods];
+  return [methods autorelease];
 }
 
 @end

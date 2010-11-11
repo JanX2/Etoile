@@ -7,6 +7,7 @@
  */
 
 #import "DocPageWeaver.h"
+#import "DocHeader.h"
 #import "GSDocParser.h"
 #import "WeavedDocPage.h"
 
@@ -90,12 +91,13 @@
 	[weavedPages removeAllObjects];
 	[currentParser release];
 
-	/*NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
+	NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
                                                         encoding: NSUTF8StringEncoding 
                                                            error: NULL];
 	currentParser = [[GSDocParser alloc] initWithString: sourceContent];
-    [currentParser parseAndWeave];*/
-    [self weaveNewPage];
+    [currentParser setWeaver: self];
+    [currentParser parseAndWeave];
+
     return [NSArray arrayWithArray: weavedPages];
 }
 
@@ -127,25 +129,64 @@
 	return ([sourcePathQueue isEmpty] == NO);
 }
 
-- (void) weaveClassNamed: (NSString *)aClassName
-{
-	ASSIGN(currentClassName, aClassName);
-    [self weaveNewPage];
-}
-
 - (void) weaveHeader: (DocHeader *)aHeader
 {
+    [self weaveNewPage];
 	[[self currentPage] setHeader: aHeader];
+    [self weaveOverviewFile];
+}
+
+- (void) weaveOverviewFile
+{
+	ETAssert([self currentHeader] != nil);
+
+    // Check if there's an overview file, if so use it
+    NSString* overviewFile = [NSString stringWithFormat: @"%@-overview.html",
+		[[self currentSourceFile] stringByDeletingPathExtension]];
+
+    if ([[NSFileManager defaultManager] fileExistsAtPath: overviewFile])
+    {
+    	[[self currentHeader] setFileOverview: overviewFile];
+        return;
+    }
+
+	overviewFile = [NSString stringWithFormat: @"%@-overview.html", [self currentClassName]];
+
+    if ([[NSFileManager defaultManager] fileExistsAtPath: overviewFile])
+    {
+    	[[self currentHeader] setFileOverview: overviewFile];
+        return;
+    }
+}
+
+- (void) weaveClassNamed: (NSString *)aClassName 
+          superclassName: (NSString *)aSuperclassName
+{
+	ASSIGN(currentClassName, aClassName);
+    [[self currentHeader] setClassName: aClassName];
+    [[self currentHeader] setSuperClassName: aSuperclassName];
 }
 
 - (void) weaveMethod: (DocMethod *)aMethod
 {
-	[[self currentPage] addMethod: aMethod];
+    if ([aMethod isClassMethod])
+    {
+        [[self currentPage] addClassMethod: aMethod];
+    }
+    else
+    {
+        [[self currentPage] addInstanceMethod: aMethod];
+    }
 }
 
 - (void) weaveFunction: (DocFunction *)aFunction
 {
 	[[self currentPage] addFunction: aFunction];
+}
+
+- (DocHeader *) currentHeader
+{
+	return [[self currentPage] header];
 }
 
 @end

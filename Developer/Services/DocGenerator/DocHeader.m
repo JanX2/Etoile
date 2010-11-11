@@ -157,7 +157,7 @@
 	}
 	else if ([elementName isEqualToString: @"head"]) /* Closing tag */
 	{
-		[parser setHeader: self];
+		[[parser weaver] weaveHeader: self];
 
 		ENDLOG2(title, className);
 	}

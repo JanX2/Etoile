@@ -152,14 +152,8 @@
 		[descParser parse: [self rawDescription]];
 		[self addInformationFrom: descParser];
 
-		if ([self isClassMethod])
-		{
-			[parser addClassMethod: self];
-		}
-		else
-		{
-			[parser addInstanceMethod: self];
-		}
+        [[parser weaver] weaveMethod: self];
+
 		/* Cache the signature as our name and allows inherited methods that use 
 		   -name to work transparently */
 		[self setName: [self signature]];

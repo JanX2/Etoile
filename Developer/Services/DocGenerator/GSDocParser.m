@@ -7,11 +7,11 @@
 //
 
 #import "GSDocParser.h"
-#import "DocHeader.h";
-#import "DocMethod.h";
-#import "DocFunction.h";
-#import "HtmlElement.h";
-#import "DescriptionParser.h";
+#import "DocHeader.h"
+#import "DocMethod.h"
+#import "DocFunction.h"
+#import "HtmlElement.h"
+#import "DescriptionParser.h"
 
 @implementation GSDocParser
 
@@ -33,15 +33,12 @@
 	indentSpaceUnit = @"  ";
 	elementClasses = [[NSMutableDictionary alloc] initWithObjectsAndKeys: 
 		[DocHeader class], @"head", 
-		[DocMethod class], @"method", 
+		[DocMethod class], @"method",
 		[DocFunction class], @"function", nil];
 	// TODO: Handle them in a better way. Probably apply a style.
 	transparentElements = [[NSSet alloc] initWithObjects: @"var", @"code", @"em", nil];
 
 	content = [NSMutableString new];
-	classMethods = [NSMutableDictionary new];
-	instanceMethods = [NSMutableDictionary new];
-	functions = [NSMutableDictionary new];
 	
 	return self;
 }
@@ -51,12 +48,20 @@
 	[xmlParser release];
 	[parserDelegateStack release];
 	[elementClasses release];
-	[header release];
+    [transparentElements release];
 	[content release];
-	[classMethods release];
-	[instanceMethods release];
-	[sourcePath release];
 	[super dealloc];
+}
+
+- (void) setWeaver: (id <CodeDocWeaving>)aDocWeaver
+{
+	/* The weaver retains the parser */
+	weaver = aDocWeaver;
+}
+
+- (id <CodeDocWeaving>) weaver
+{
+	return weaver;
 }
 
 - (void) parseAndWeave
@@ -188,9 +193,8 @@ didStartElement:(NSString *)elementName
 	/* The main parser is responsible to parse the class attributes */
 	if ([elementName isEqualToString: @"class"]) 
 	{
-		ETAssert(nil != header);
-		[header setClassName: [attributeDict objectForKey: @"name"]];
-		[header setSuperClassName: [attributeDict objectForKey: @"super"]];
+        [weaver weaveClassNamed: [attributeDict objectForKey: @"name"]
+		         superclassName: [attributeDict objectForKey: @"super"]];
 	}
 }
 
@@ -201,8 +205,8 @@ didStartElement:(NSString *)elementName
 	/* When we parse a class, we parse the declared child element too */
 	if ([elementName isEqualToString: @"declared"])
 	{
-		ETAssert(nil != header);
-		[header setDeclaredIn: trimmed];
+		ETAssert(nil != [weaver currentHeader]);
+		[[weaver currentHeader] setDeclaredIn: trimmed];
 	}
 }
 
@@ -218,120 +222,6 @@ didStartElement:(NSString *)elementName
 	ETAssert(nil != argType);
 	return [argType stringByTrimmingCharactersInSet: 
 		[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-}
-
-- (void) setGSDocDirectory: (NSString*) aPath
-{
-  [aPath retain];
-  [sourcePath release];
-  sourcePath = aPath;
-}
-
-- (void) setGSDocFile: (NSString*) aName
-{
-  [aName retain];
-  [classFile release];
-  classFile = aName;
-}
-
-- (void) outputMethods: (NSDictionary*) methods withTitle: (NSString*) aTitle on: (NSMutableString*) html
-{
-  NSArray* unsortedTasks = [methods allKeys];
-  NSArray* tasks = [unsortedTasks sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
-  if ([tasks count] > 0)
-  {
-    [html appendFormat: @"<h3>%@</h3>", aTitle];
-  }
-  for (int i=0; i<[tasks count]; i++)
-  {
-    NSString* key = [tasks objectAtIndex: i];
-    [html appendFormat: @"<h4>%@</h4>", key];
-    NSArray* unsortedArray = [methods objectForKey: key];
-    NSArray* array = [unsortedArray sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
-    for (int j=0; j<[array count]; j++)
-    {
-      DocMethod* m = [array objectAtIndex: j];
-      [html appendString: [[m HTMLDescription] content]];
-    }
-  }
-}
-
-- (void) outputClassMethodsOn: (NSMutableString *) html  
-{
-  [self outputMethods: classMethods withTitle: @"Class Methods" on: html];
-}
-
-- (void) outputInstanceMethodsOn: (NSMutableString *) html  
-{
-  [self outputMethods: instanceMethods withTitle: @"Instance Methods" on: html];
-}
-
-- (void) outputFunctionsOn: (NSMutableString*) html
-{
-  [self outputMethods: functions withTitle: @"Functions" on: html];
-}
-
-- (NSString*) getMethods
-{
-  NSMutableString* methods = [NSMutableString new];
-  [self outputFunctionsOn: methods];
-  [self outputClassMethodsOn: methods];
-  [self outputInstanceMethodsOn: methods];
-  return [methods autorelease];
-}
-
-- (NSString*) getHeader
-{
-  // Check if there's an overview file, if so use it
-  NSFileManager* fm = [NSFileManager defaultManager];
-  NSString* overviewFile = [NSString stringWithFormat: @"%@-overview.html",
-                            [classFile stringByDeletingPathExtension]];
-  if ([fm fileExistsAtPath: overviewFile])
-  {
-    [header setFileOverview: overviewFile];
-  }
-  return [[header HTMLDescription] content];
-}
-
-- (void) addClassMethod: (DocMethod *)aMethod
-{
-	NSMutableArray *array = [classMethods objectForKey: [aMethod task]];
-	if (array == nil)
-	{
-		array = [NSMutableArray new];
-		[classMethods setObject: array forKey: [aMethod task]];
-		[array release];
-	}
-	[array addObject: aMethod];
-}
-
-- (void) addInstanceMethod: (DocMethod *)aMethod
-{
-	NSMutableArray *array = [instanceMethods objectForKey: [aMethod task]];
-	if (array == nil)
-	{
-		array = [NSMutableArray new];
-		[instanceMethods setObject: array forKey: [aMethod task]];
-		[array release];
-	}
-	[array addObject: aMethod];
-}
-
-- (void) addFunction: (DocFunction *)aFunction
-{
-	NSMutableArray* array = [functions objectForKey: [aFunction task]];
-	if (array == nil)
-	{
-		array = [NSMutableArray new];
-		[functions setObject: array forKey: [aFunction task]];
-		[array release];
-	}
-	[array addObject: aFunction];
-}
-
-- (void) setHeader: (DocHeader *)aHeader
-{
-	ASSIGN(header, aHeader);
 }
 
 @end

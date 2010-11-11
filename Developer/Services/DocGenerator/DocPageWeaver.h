@@ -16,10 +16,12 @@
 @class DocHeader, DocMethod, DocFunction, WeavedDocPage;
 
 @protocol CodeDocWeaving
-- (void) weaveClassNamed: (NSString *)aClassName;
+- (void) weaveClassNamed: (NSString *)aClassName 
+          superclassName: (NSString *)aSuperclassName;
 - (void) weaveHeader: (DocHeader *)aHeader;
 - (void) weaveMethod: (DocMethod *)aMethod;
 - (void) weaveFunction: (DocFunction *)aFunction;
+- (DocHeader *) currentHeader;
 @end
 
 @protocol CodeDocParser
@@ -61,17 +63,21 @@
 - (void) setMenuFile: (NSString *)aMenuPath;
 - (void) setExternalMappingFile: (NSString *)aMappingPath;
 - (void) setProjectMappingFile: (NSString *)aMappingPath;
-              
+
 /** @task Weaving Pages */
 
 - (NSArray *) weaveAllPages;
 - (NSArray *) weaveCurrentSourcePages;
+
+- (void) weaveNewPage;
+- (void) weaveOverviewFile;
 
 /** @task Progress and Status */
 
 - (NSString *) currentSourceFile;
 - (WeavedDocPage *) currentPage;
 - (NSString *) currentClassName;
+- (DocHeader *) currentHeader;
 
 @end
 

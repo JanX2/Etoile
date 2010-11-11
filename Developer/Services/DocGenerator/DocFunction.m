@@ -137,7 +137,7 @@
 		[self addInformationFrom: descParser];
 		[descParser release];
 		
-		[parser addFunction: self];
+		[[parser weaver] weaveFunction: self];
 		
 		ENDLOG2(name, [self task]);
 	}
