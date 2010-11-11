@@ -31,6 +31,7 @@
 
 @interface GSDocParser : NSObject <GSDocParserDelegate>
 {
+	NSXMLParser *xmlParser;
 	NSMutableArray *parserDelegateStack;
 	NSString *indentSpaces;
 	NSString *indentSpaceUnit;
@@ -48,6 +49,10 @@
 	NSString *sourcePath;
 	NSString *classFile;
 }
+
+- (id) initWithString: (NSString *)aContent;
+
+- (void) parseAndWeave;
 
 /**
  * Set the path of the directory containing the gsdoc sources;

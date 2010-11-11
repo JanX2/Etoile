@@ -103,21 +103,16 @@
 
 - (void) insertGSDocDocument
 {
-	NSXMLParser* parser = [[NSXMLParser alloc] initWithData: 
-						   [documentContent dataUsingEncoding: NSUTF8StringEncoding]];
-	
-	GSDocParser* delegate = [GSDocParser new];
+	GSDocParser *parser = [[GSDocParser alloc] initWithString: documentContent];
 
 	//[delegate setGSDocDirectory: [gsdocFile stringByDeletingLastPathComponent]];
 	//[delegate setGSDocFile: gsdocFile];	
-	[parser setDelegate: delegate];
-	[parser parse];
+	[parser parseAndWeave];
 	
-	[self insert: [delegate getMethods] forTag: @"<!-- etoile-methods -->"];
-	[self insert: [delegate getHeader] forTag:  @"<!-- etoile-header -->"];
+	[self insert: [parser getMethods] forTag: @"<!-- etoile-methods -->"];
+	[self insert: [parser getHeader] forTag:  @"<!-- etoile-header -->"];
 	
-	[delegate release];  
-	[parser release];
+	[parser release];  
 }
 
 - (void) insertDocument

@@ -16,6 +16,7 @@
 		03FF77480DFB1D21007D79D3 /* GSDocParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF77470DFB1D21007D79D3 /* GSDocParser.m */; };
 		03FF78E50DFB75C9007D79D3 /* DocFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF78E40DFB75C9007D79D3 /* DocFunction.m */; };
 		03FF79AF0DFCA7B4007D79D3 /* WeavedDocPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF79AE0DFCA7B4007D79D3 /* WeavedDocPage.m */; };
+		602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */ = {isa = PBXBuildFile; fileRef = 602363D5128B3E6600C9EC82 /* DocPageWeaver.m */; };
 		60B289FB11DA0C4000FC8C20 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */; };
 		8DD76F9A0486AA7600D96B5E /* ETDocGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
@@ -88,6 +89,8 @@
 		08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETDocGenerator.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* ETDocGenerator_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETDocGenerator_Prefix.pch; sourceTree = "<group>"; };
+		602363D4128B3E6600C9EC82 /* DocPageWeaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocPageWeaver.h; sourceTree = "<group>"; };
+		602363D5128B3E6600C9EC82 /* DocPageWeaver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocPageWeaver.m; sourceTree = "<group>"; };
 		60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		8DD76FA10486AA7600D96B5E /* ETDocGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ETDocGenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* ETDocGenerator.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = ETDocGenerator.1; sourceTree = "<group>"; };
@@ -123,6 +126,8 @@
 			children = (
 				32A70AAB03705E1F00C91783 /* ETDocGenerator_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */,
+				602363D4128B3E6600C9EC82 /* DocPageWeaver.h */,
+				602363D5128B3E6600C9EC82 /* DocPageWeaver.m */,
 				03FF79AD0DFCA7B4007D79D3 /* WeavedDocPage.h */,
 				03FF79AE0DFCA7B4007D79D3 /* WeavedDocPage.m */,
 				0362732B0E048FD3005D79FE /* DocElement.h */,
@@ -208,7 +213,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "ETDocGenerator" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 08FB7794FE84155DC02AAC07 /* ETDocGenerator */;
 			projectDirPath = "";
 			projectReferences = (
@@ -263,6 +275,7 @@
 				0362712C0E00919B005D79FE /* DescriptionParser.m in Sources */,
 				036271930E00B263005D79FE /* Parameter.m in Sources */,
 				0362732D0E048FD3005D79FE /* DocElement.m in Sources */,
+				602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

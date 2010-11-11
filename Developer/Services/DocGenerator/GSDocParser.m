@@ -17,8 +17,17 @@
 
 - (id) init
 {
+	return [self initWithString: nil];
+}
+
+- (id) initWithString: (NSString *)aContent
+{
+	NSParameterAssert(aContent != nil);
 	SUPERINIT;
 
+	xmlParser = [[NSXMLParser alloc] initWithData: 
+    	[aContent dataUsingEncoding: NSUTF8StringEncoding]];
+	[xmlParser setDelegate: self];
 	parserDelegateStack = [[NSMutableArray alloc] initWithObjects: self, nil];
 	indentSpaces = @"";
 	indentSpaceUnit = @"  ";
@@ -39,6 +48,7 @@
 
 - (void) dealloc
 {
+	[xmlParser release];
 	[parserDelegateStack release];
 	[elementClasses release];
 	[header release];
@@ -47,6 +57,11 @@
 	[instanceMethods release];
 	[sourcePath release];
 	[super dealloc];
+}
+
+- (void) parseAndWeave
+{
+	[xmlParser parse];
 }
 
 - (void) newContent
