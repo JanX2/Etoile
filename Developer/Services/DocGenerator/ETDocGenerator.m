@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "DocPageWeaver.h"
 #import "WeavedDocPage.h"
 
 /**
@@ -152,13 +153,16 @@ int main (int argc, const char * argv[])
 	// TODO: Argument checking by reusing printError(); when not handled by 
 	// WeavedDocument
 
-	WeavedDocPage *document = [[WeavedDocPage alloc] initWithDocumentFile: inputFile 
-	                                                           templateFile: templateFile 
-	                                                               menuFile: menuFile
-	                                                       classMappingFile: classFile
-	                                                projectClassMappingFile: projectClassFile];
+	DocPageWeaver *weaver = [[DocPageWeaver alloc] initWithSourceFiles: A(inputFile)
+		templateFile: templateFile];
+	
+	[weaver setMenuFile: menuFile];
+	[weaver setExternalMappingFile: classFile];
+	[weaver setProjectMappingFile: projectClassFile];
 
-	[document writeToURL: [NSURL fileURLWithPath: outputFile]];
+	NSArray *pages = [weaver weaveCurrentSourcePages];
+
+	[[pages firstObject] writeToURL: [NSURL fileURLWithPath: outputFile]];
 
 	[pool drain];
 	return 0;

@@ -35,6 +35,9 @@
 	NSArray *sourcePaths;
     NSMutableArray *sourcePathQueue;
     NSString *templatePath;
+    NSString *menuPath;
+    NSString *externalMappingPath;
+    NSString *projectMappingPath;
     id currentParser;
     NSString *currentClassName;
     NSMutableArray *allWeavedPages;
@@ -52,6 +55,12 @@
                   templateFile: (NSString *)aTemplatePath;
 - (id) initWithSourceFiles: (NSArray *)paths
               templateFile: (NSString *)aTemplatePath;
+              
+/** @task Additional Sources */
+
+- (void) setMenuFile: (NSString *)aMenuPath;
+- (void) setExternalMappingFile: (NSString *)aMappingPath;
+- (void) setProjectMappingFile: (NSString *)aMappingPath;
               
 /** @task Weaving Pages */
 

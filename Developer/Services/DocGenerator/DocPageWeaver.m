@@ -34,18 +34,41 @@
 {
 	SUPERINIT;
     ASSIGN(sourcePaths, [NSArray arrayWithArray: paths]);
+    sourcePathQueue = [paths mutableCopy];
     ASSIGN(templatePath, aTemplatePath);
+    allWeavedPages = [[NSMutableArray alloc] init];
+    weavedPages = [[NSMutableArray alloc] init];
     return self;
 }
 
 - (void) dealloc
 {
 	DESTROY(sourcePaths);
+    DESTROY(sourcePathQueue);
     DESTROY(templatePath);
+    DESTROY(menuPath);
+    DESTROY(externalMappingPath);
+    DESTROY(projectMappingPath);
     DESTROY(currentParser);
 	DESTROY(currentClassName);
+    DESTROY(allWeavedPages);
     DESTROY(weavedPages);
 	[super dealloc];
+}
+
+- (void) setMenuFile: (NSString *)aMenuPath
+{
+	ASSIGN(menuPath, aMenuPath);
+}
+
+- (void) setExternalMappingFile: (NSString *)aMappingPath
+{
+	ASSIGN(externalMappingPath, aMappingPath);
+}
+
+- (void) setProjectMappingFile: (NSString *)aMappingPath
+{
+	ASSIGN(projectMappingPath, aMappingPath);
 }
 
 - (NSArray *) weaveAllPages
@@ -67,11 +90,12 @@
 	[weavedPages removeAllObjects];
 	[currentParser release];
 
-	NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
+	/*NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
                                                         encoding: NSUTF8StringEncoding 
                                                            error: NULL];
 	currentParser = [[GSDocParser alloc] initWithString: sourceContent];
-    [currentParser parseAndWeave];
+    [currentParser parseAndWeave];*/
+    [self weaveNewPage];
     return [NSArray arrayWithArray: weavedPages];
 }
 
@@ -92,9 +116,9 @@
 
 - (void) weaveNewPage
 {
-	WeavedDocPage *page = [[WeavedDocPage alloc] initWithDocumentFile: nil
+	WeavedDocPage *page = [[WeavedDocPage alloc] initWithDocumentFile: [self currentSourceFile]
 	                                templateFile: templatePath
-	                                    menuFile: nil classMappingFile: nil projectClassMappingFile: nil];
+	                                    menuFile: menuPath classMappingFile: externalMappingPath projectClassMappingFile: projectMappingPath];
     [weavedPages addObject: AUTORELEASE(page)];
 }
 
