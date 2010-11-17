@@ -28,7 +28,7 @@
 	xmlParser = [[NSXMLParser alloc] initWithData: 
     	[aContent dataUsingEncoding: NSUTF8StringEncoding]];
 	[xmlParser setDelegate: self];
-	parserDelegateStack = [[NSMutableArray alloc] initWithObjects: self, nil];
+	parserDelegateStack = [[NSMutableArray alloc] initWithObjects: [NSValue valueWithNonretainedObject: self], nil];
 	indentSpaces = @"";
 	indentSpaceUnit = @"  ";
 	elementClasses = [[NSMutableDictionary alloc] initWithObjectsAndKeys: 
@@ -82,7 +82,9 @@
 
 - (id <GSDocParserDelegate>) parserDelegate
 {
-	return [parserDelegateStack lastObject];
+	id parserDelegate = [parserDelegateStack lastObject];
+    BOOL isWeakRef = [parserDelegate isKindOfClass: [NSValue class]];
+    return (isWeakRef ? [parserDelegate nonretainedObjectValue] : parserDelegate);
 }
 
 - (void) increaseIndentSpaces
@@ -146,7 +148,7 @@ didStartElement:(NSString *)elementName
 	   we switch this delegate, otherwise we continue with the current one. */
 	if ([self elementClassForName: elementName] != nil)
 	{
-		parserDelegate = [[self elementClassForName: elementName] new];
+		parserDelegate = AUTORELEASE([[self elementClassForName: elementName] new]);
 	}
 	[self pushParserDelegate: parserDelegate];
 

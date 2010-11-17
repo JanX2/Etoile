@@ -104,22 +104,26 @@
 - (NSArray *) weaveCurrentSourcePages
 {
 	[weavedPages removeAllObjects];
-	[currentParser release];
+	DESTROY(currentParser);
 
 	Class parserClass = [[self class] parserClassForFileType: 
     	[[self currentSourceFile] pathExtension]];
 
+    NSLog(@" --- Weaving %@ ---- ", [self currentSourceFile]);
+
 	if (parserClass == Nil)
-    	return [NSArray array];
-
-	NSLog(@" --- Weaving %@ ---- ", [self currentSourceFile]);
-
-	NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
-                                                        encoding: NSUTF8StringEncoding 
-                                                           error: NULL];
-	currentParser = [[parserClass alloc] initWithString: sourceContent];
-    [currentParser setWeaver: self];
-    [currentParser parseAndWeave];
+    {
+    	[self weaveNewPage];
+    }
+    else
+    {
+        NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
+                                                            encoding: NSUTF8StringEncoding 
+                                                               error: NULL];
+        currentParser = [[parserClass alloc] initWithString: sourceContent];
+        [currentParser setWeaver: self];
+        [currentParser parseAndWeave];
+    }
 
     return [NSArray arrayWithArray: weavedPages];
 }
