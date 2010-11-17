@@ -21,12 +21,18 @@
 	return Nil;
 }
 
-- (id) initWithSourceDirectory: (NSString *)aSourceDirPath
-                     fileTypes: (NSArray *)fileExtensions
-                  templateFile: (NSString *)aTemplatePath
+- (id) initWithParserSourceDirectory: (NSString *)aParserDirPath
+                           fileTypes: (NSArray *)fileExtensions
+                  rawSourceDirectory: (NSString *)otherDirPath
+                        templateFile: (NSString *)aTemplatePath
 {
-	NSArray *paths = [[NSFileManager defaultManager] directoryContentsAtPath: aSourceDirPath];
-	return [self initWithSourceFiles: [paths pathsMatchingExtensions: fileExtensions]
+	NSArray *parserPaths = [[NSFileManager defaultManager] directoryContentsAtPath: aParserDirPath];
+    NSArray *otherPaths = [[NSFileManager defaultManager] directoryContentsAtPath: otherDirPath];
+    
+    parserPaths = [parserPaths pathsMatchingExtensions: fileExtensions];
+    otherPaths = [otherPaths pathsMatchingExtensions: A(@"html", @"text")];
+    
+	return [self initWithSourceFiles: [parserPaths arrayByAddingObjectsFromArray: otherPaths]
                         templateFile: aTemplatePath];
 }
 
@@ -72,9 +78,18 @@
 	ASSIGN(projectMappingPath, aMappingPath);
 }
 
+- (NSString *) pathForRawSourceFileNamed: (NSString *)aName
+{
+	NSMutableArray *paths = [NSMutableArray arrayWithArray: sourcePaths];
+	[[paths filter] hasSuffix: aName];
+    ETAssert([paths count] <= 1);
+    return [paths firstObject];
+}
+
 - (NSArray *) weaveAllPages
 {
 	[allWeavedPages removeAllObjects];
+    [sourcePathQueue setArray: sourcePaths];
 
 	while ([sourcePathQueue isEmpty] == NO)
     {
@@ -91,10 +106,16 @@
 	[weavedPages removeAllObjects];
 	[currentParser release];
 
+	Class parserClass = [[self class] parserClassForFileType: 
+    	[[self currentSourceFile] pathExtension]];
+
+	if (parserClass == Nil)
+    	return [NSArray array];
+
 	NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
                                                         encoding: NSUTF8StringEncoding 
                                                            error: NULL];
-	currentParser = [[GSDocParser alloc] initWithString: sourceContent];
+	currentParser = [[parserClass alloc] initWithString: sourceContent];
     [currentParser setWeaver: self];
     [currentParser parseAndWeave];
 
@@ -141,18 +162,20 @@
 	ETAssert([self currentHeader] != nil);
 
     // Check if there's an overview file, if so use it
-    NSString* overviewFile = [NSString stringWithFormat: @"%@-overview.html",
-		[[self currentSourceFile] stringByDeletingPathExtension]];
+    NSString* overviewName = [NSString stringWithFormat: @"%@-overview.html",
+		[[[self currentSourceFile] lastPathComponent] stringByDeletingPathExtension]];
+	NSString *overviewFile = [self pathForRawSourceFileNamed: overviewName];
 
-    if ([[NSFileManager defaultManager] fileExistsAtPath: overviewFile])
+    if (overviewFile != nil)
     {
     	[[self currentHeader] setFileOverview: overviewFile];
         return;
     }
 
-	overviewFile = [NSString stringWithFormat: @"%@-overview.html", [self currentClassName]];
+	overviewName = [NSString stringWithFormat: @"%@-overview.html", [self currentClassName]];
+	overviewFile = [self pathForRawSourceFileNamed: overviewName];
 
-    if ([[NSFileManager defaultManager] fileExistsAtPath: overviewFile])
+    if (overviewFile != nil)
     {
     	[[self currentHeader] setFileOverview: overviewFile];
         return;

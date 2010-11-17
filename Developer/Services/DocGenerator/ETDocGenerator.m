@@ -7,33 +7,6 @@
  */
 
 /**
- * Nouvelle classe
- */
-
-@interface Nouvelle : NSObject
-
-/**
- * pilou
- */
-- (void) pilou;
-
-/**
- * redou
- * @return redou
- */
-+ (int) redou;
-
-@end
-
-@interface lala : Nouvelle
-{
-  /** a name */
-  NSString* name;
-}
-- (void) lili;
-@end
-
-/**
  * Display the help
  *
  * @task Display
@@ -46,25 +19,33 @@ void printHelp ()
   "ETDocGenerator Help\n"
   "-------------------\n"
   "\n"
-  "ETDocGenerator generates a final html page from an \n"
-  "original document (an html formatted file or a gsdoc file)\n"
-  "and a template.\n"
+  "ETDocGenerator generates html pages from a template and one or multiple \n"
+  "original documents (html files, markdown files, gsdoc files, or any \n"
+  "combination of the three).\n"
+  "\n"
+  "The generated html files are output in the current directory.\n"
   "\n"
   "Document generation\n"
   "-------------------\n"
   "\n"
-  "ETDocGenerator -i <input file> -t <template> -o <output>\n"
-  "\t\t[-m <menu file>] [-c <class mapping file>]\n\n"
-  "\t -i : the input file, which needs to be an html or a gsdoc file\n"
-  "\t -o : the output file\n"
+  "ETDocGenerator [-c <code source directory>] [-r <raw source directory>] \n"
+  "\t\t[-m <menu file>] -t <template> [-e <external mapping file>] \n"
+  "\t\t[-p <project mapping file>] [<source file 1, source file 2, ...>]\n"
+  "\n"
+  "\t -c : the directory which contains the .gsdoc files (incompatible with \n"
+  "\t      explicit source files)\n"
+  "\t -r : the Markdown and HTML directory which contains the .text and .html \n"
+  "\t      files (incompatible with explicit source files)\n"
   "\t -t : the html template file\n"
-  "\t -m : the menu file, if not indicated ETDocGenerator will look for a menu.html\n"
-  "\t\t in the same directory as the input file\n"
-  "\t -c : a file containing an xml plist with a mapping from class names to URL.\n"
-  "\t\t If indicated, will add links to the mentioned types in the class methods.\n"
+  "\t -m : the menu file, if not indicated ETDocGenerator will look for a \n"
+  "\t      menu.html in the raw source directory\n"
+  "\t -e : a file containing an xml plist with a mapping from class names to URL.\n"
+  "\t      If indicated, will add links to the mentioned types in the class methods.\n"
   "\t -p : a file containing an xml plist with a mapping from class names to URL.\n"
-  "\t\t (used for the project classes). If indicated, will add links to the\n"
-  "\t\t mentioned types in the class methods.\n"
+  "\t      (used for the project classes). If indicated, will add links to the\n"
+  "\t      mentioned types in the class methods.\n\n"
+  "\t  - : the source file paths (.gsdoc, .text and .html). If indicated, will \n"
+  "\t      cause both -c and -r to be ignored.\n"
   "\n"
   "Template tags\n"
   "-------------\n"
@@ -126,8 +107,9 @@ void printError()
 /**
  * Main function. 
  *
- * First, check the passed arguments using ETGetOptionsDictionary, then
- * constructs the DocumentWeaver object and generates the output file.
+ * First, checks the passed arguments using ETGetOptionsDictionary, then
+ * constructs the DocPageWeaver object, makes it generate the documentation 
+ * pages and write the returned pages as HTML files in the current directory.
  *
  * @param argc numbers of arguments
  * @param argv array of char* with the arguments
@@ -136,13 +118,14 @@ void printError()
 int main (int argc, const char * argv[]) 
 {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	NSDictionary* options = ETGetOptionsDictionary("i:o:t:m:hc:p:", argc, argv);
-	NSString* inputFile = [options objectForKey: @"i"];
-	NSString* outputFile = [options objectForKey: @"o"];
+	NSDictionary* options = ETGetOptionsDictionary("hc:r:t:m:e:p:", argc, argv);
+    NSArray *explicitSourceFiles = [options objectForKey: @""];
+    NSString *parserSourceDir = [options objectForKey: @"c"];
+    NSString *rawSourceDir = [options objectForKey: @"r"];
 	NSString* templateFile = [options objectForKey: @"t"];
 	NSString* menuFile = [options objectForKey: @"m"];
-	NSString* classFile = [options objectForKey: @"c"];
-	NSString* projectClassFile = [options objectForKey: @"p"];
+	NSString* externalClassFile = [options objectForKey: @"e"];
+	NSString* projectClassFile = [options objectForKey: @"p"];;
 	NSNumber* help = [options objectForKey: @"h"];
 
 	if (VALID(help))
@@ -153,16 +136,35 @@ int main (int argc, const char * argv[])
 	// TODO: Argument checking by reusing printError(); when not handled by 
 	// WeavedDocument
 
-	DocPageWeaver *weaver = [[DocPageWeaver alloc] initWithSourceFiles: A(inputFile)
-		templateFile: templateFile];
+	DocPageWeaver *weaver = [DocPageWeaver alloc];
+    
+    if (explicitSourceFiles != nil)
+    {
+    	weaver = [weaver initWithSourceFiles: explicitSourceFiles
+		                        templateFile: templateFile];
+    }
+    else
+    {
+    	weaver = [weaver initWithParserSourceDirectory: parserSourceDir
+                                             fileTypes: A(@"gsdoc")
+                                    rawSourceDirectory: rawSourceDir
+		                                  templateFile: templateFile];    
+    }
 	
 	[weaver setMenuFile: menuFile];
-	[weaver setExternalMappingFile: classFile];
+	[weaver setExternalMappingFile: externalClassFile];
 	[weaver setProjectMappingFile: projectClassFile];
 
 	NSArray *pages = [weaver weaveCurrentSourcePages];
+	NSString *outputDir = [[NSFileManager defaultManager] currentDirectoryPath];
 
-	[[pages firstObject] writeToURL: [NSURL fileURLWithPath: outputFile]];
+	FOREACH(pages, page, WeavedDocPage *)
+    {
+		WeavedDocPage *page = [pages firstObject];
+		NSString *outputPath = [outputDir stringByAppendingPathComponent: [[page header] title]];
+
+		[page writeToURL: [NSURL fileURLWithPath: [outputPath stringByAppendingPathExtension: @"html"]]];
+	}
 
 	[pool drain];
 	return 0;

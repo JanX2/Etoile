@@ -32,6 +32,7 @@
 - (void) setFileOverview: (NSString*) aFile;
 - (void) addAuthor: (NSString*) aName;
 - (void) setTitle: (NSString*) aTitle;
+- (NSString *) title;
 
 - (HtmlElement *) HTMLDescription;
 

@@ -90,6 +90,11 @@
   title = aTitle;
 }
 
+- (NSString *) title
+{
+	return title;
+}
+
 - (HtmlElement *) HTMLDescription
 {
   H h_title = [DIV id: @"classname"];

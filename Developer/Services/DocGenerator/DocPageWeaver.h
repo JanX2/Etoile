@@ -52,9 +52,10 @@
 
 /** @task Initialization */
 
-- (id) initWithSourceDirectory: (NSString *)aSourceDirPath
-                     fileTypes: (NSArray *)fileExtensions
-                  templateFile: (NSString *)aTemplatePath;
+- (id) initWithParserSourceDirectory: (NSString *)aSourceDirPath
+                           fileTypes: (NSArray *)fileExtensions
+                  rawSourceDirectory: (NSString *)otherDirPath
+                        templateFile: (NSString *)aTemplatePath;
 - (id) initWithSourceFiles: (NSArray *)paths
               templateFile: (NSString *)aTemplatePath;
               
@@ -63,6 +64,8 @@
 - (void) setMenuFile: (NSString *)aMenuPath;
 - (void) setExternalMappingFile: (NSString *)aMappingPath;
 - (void) setProjectMappingFile: (NSString *)aMappingPath;
+
+- (NSString *) pathForRawSourceFileNamed: (NSString *)aName;
 
 /** @task Weaving Pages */
 
