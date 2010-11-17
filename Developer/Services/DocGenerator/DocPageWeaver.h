@@ -37,6 +37,7 @@
 	NSArray *sourcePaths;
     NSMutableArray *sourcePathQueue;
     NSString *templatePath;
+    NSString *templateDirPath;
     NSString *menuPath;
     NSString *externalMappingPath;
     NSString *projectMappingPath;
@@ -66,6 +67,7 @@
 - (void) setProjectMappingFile: (NSString *)aMappingPath;
 
 - (NSString *) pathForRawSourceFileNamed: (NSString *)aName;
+- (NSString *) templateFileForSourceFile: (NSString *)aSourceFile;
 
 /** @task Weaving Pages */
 

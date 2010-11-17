@@ -43,6 +43,7 @@
     ASSIGN(sourcePaths, [NSArray arrayWithArray: paths]);
     sourcePathQueue = [paths mutableCopy];
     ASSIGN(templatePath, aTemplatePath);
+    ASSIGN(templateDirPath, [aTemplatePath stringByDeletingLastPathComponent]);
     allWeavedPages = [[NSMutableArray alloc] init];
     weavedPages = [[NSMutableArray alloc] init];
     return self;
@@ -53,6 +54,7 @@
 	DESTROY(sourcePaths);
     DESTROY(sourcePathQueue);
     DESTROY(templatePath);
+    DESTROY(templateDirPath);
     DESTROY(menuPath);
     DESTROY(externalMappingPath);
     DESTROY(projectMappingPath);
@@ -61,6 +63,11 @@
     DESTROY(allWeavedPages);
     DESTROY(weavedPages);
 	[super dealloc];
+}
+
+- (NSString *) templateDirectory
+{
+	return templateDirPath;
 }
 
 - (void) setMenuFile: (NSString *)aMenuPath
@@ -84,6 +91,22 @@
 	[[paths filter] hasSuffix: aName];
     ETAssert([paths count] <= 1);
     return [paths firstObject];
+}
+
+- (NSString *) templateFileForSourceFile: (NSString *)aSourceFile
+{
+	NSParameterAssert(aSourceFile != nil);
+
+	if ([[aSourceFile pathExtension] isEqual: @"gsdoc"])
+    {
+    	return [[self templateDirectory] 
+        	stringByAppendingPathComponent: @"etoile-documentation-template.html"];
+    }
+    else
+    {
+  	  return [[self templateDirectory] 
+        	stringByAppendingPathComponent: @"etoile-documentation-markdown-template.html"];
+    }
 }
 
 - (NSArray *) weaveAllPages
@@ -146,7 +169,7 @@
 - (void) weaveNewPage
 {
 	WeavedDocPage *page = [[WeavedDocPage alloc] initWithDocumentFile: [self currentSourceFile]
-	                                templateFile: templatePath
+	                                templateFile: [self templateFileForSourceFile: [self currentSourceFile]]
 	                                    menuFile: menuPath classMappingFile: externalMappingPath projectClassMappingFile: projectMappingPath];
     [weavedPages addObject: AUTORELEASE(page)];
 }
