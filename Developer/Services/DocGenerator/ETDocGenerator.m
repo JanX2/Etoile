@@ -138,31 +138,31 @@ int main (int argc, const char * argv[])
 
 	DocPageWeaver *weaver = [DocPageWeaver alloc];
     
-    if (explicitSourceFiles != nil)
-    {
-    	weaver = [weaver initWithSourceFiles: explicitSourceFiles
-		                        templateFile: templateFile];
-    }
-    else
+    if ([explicitSourceFiles isEmpty])
     {
     	weaver = [weaver initWithParserSourceDirectory: parserSourceDir
                                              fileTypes: A(@"gsdoc")
                                     rawSourceDirectory: rawSourceDir
 		                                  templateFile: templateFile];    
     }
+    else
+    {
+    	weaver = [weaver initWithSourceFiles: explicitSourceFiles
+		                        templateFile: templateFile];
+    }
 	
 	[weaver setMenuFile: menuFile];
 	[weaver setExternalMappingFile: externalClassFile];
 	[weaver setProjectMappingFile: projectClassFile];
 
-	NSArray *pages = [weaver weaveCurrentSourcePages];
+	NSArray *pages = [weaver weaveAllPages];
 	NSString *outputDir = [[NSFileManager defaultManager] currentDirectoryPath];
 
 	FOREACH(pages, page, WeavedDocPage *)
     {
-		WeavedDocPage *page = [pages firstObject];
-		NSString *outputPath = [outputDir stringByAppendingPathComponent: [[page header] title]];
+		NSString *outputPath = [outputDir stringByAppendingPathComponent: [page name]];
 
+		NSLog(@"Write %@ to %@", page, [outputPath stringByAppendingPathExtension: @"html"]);
 		[page writeToURL: [NSURL fileURLWithPath: [outputPath stringByAppendingPathExtension: @"html"]]];
 	}
 

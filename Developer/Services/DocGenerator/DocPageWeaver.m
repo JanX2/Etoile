@@ -29,8 +29,8 @@
 	NSArray *parserPaths = [[NSFileManager defaultManager] directoryContentsAtPath: aParserDirPath];
     NSArray *otherPaths = [[NSFileManager defaultManager] directoryContentsAtPath: otherDirPath];
     
-    parserPaths = [parserPaths pathsMatchingExtensions: fileExtensions];
-    otherPaths = [otherPaths pathsMatchingExtensions: A(@"html", @"text")];
+    parserPaths = [[aParserDirPath stringsByAppendingPaths: parserPaths] pathsMatchingExtensions: fileExtensions];
+    otherPaths = [[otherDirPath stringsByAppendingPaths: otherPaths] pathsMatchingExtensions: A(@"html", @"text")];
     
 	return [self initWithSourceFiles: [parserPaths arrayByAddingObjectsFromArray: otherPaths]
                         templateFile: aTemplatePath];
@@ -111,6 +111,8 @@
 
 	if (parserClass == Nil)
     	return [NSArray array];
+
+	NSLog(@" --- Weaving %@ ---- ", [self currentSourceFile]);
 
 	NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
                                                         encoding: NSUTF8StringEncoding 

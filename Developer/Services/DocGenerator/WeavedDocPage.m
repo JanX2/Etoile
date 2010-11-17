@@ -98,6 +98,14 @@
 	[super dealloc];
 }
 
+- (NSString *) name
+{
+	if ([header className] != nil)
+    	return [header className];
+
+	return [[documentPath lastPathComponent] stringByDeletingPathExtension];
+}
+
 - (void) insert: (NSString *)content forTag: (NSString *)aTag
 {
 	NSParameterAssert(nil != content);

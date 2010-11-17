@@ -44,6 +44,8 @@ input files. */
            classMappingFile: (NSString *)aMappingPath
     projectClassMappingFile: (NSString *)aProjectMappingPath;
 
+- (NSString *) name;
+
 /** Returns a string representation of the documentation page by weaving the 
 input files. */
 - (NSString *) HTMLString;

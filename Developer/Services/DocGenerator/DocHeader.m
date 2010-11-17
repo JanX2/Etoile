@@ -49,6 +49,11 @@
   className = aName;
 }
 
+- (NSString *) className
+{
+	return className;
+}
+
 - (void) setSuperClassName: (NSString*) aName 
 {
   [aName retain];

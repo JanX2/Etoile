@@ -26,6 +26,7 @@
 
 - (void) setDeclaredIn: (NSString*) aFile;
 - (void) setClassName: (NSString*) aName;
+- (NSString *) className;
 - (void) setSuperClassName: (NSString*) aName;
 - (void) setAbstract: (NSString*) aDescription;
 - (void) setOverview: (NSString*) aDescription;
