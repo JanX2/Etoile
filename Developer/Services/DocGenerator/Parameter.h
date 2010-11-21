@@ -14,6 +14,10 @@
   NSString* name;
   NSString* type;
   NSString* description;
+  	NSString *typePrefix;
+	NSString *className;
+    NSString *protocolName;
+    NSString *typeSuffix;
 }
 
 + (id) newWithName: (NSString*) aName andType: (NSString*) aType;
@@ -24,5 +28,10 @@
 - (NSString*) name;
 - (NSString*) type;
 - (NSString*) description;
+
+@property (readonly, nonatomic) NSString *typePrefix;
+@property (readonly, nonatomic) NSString *className;
+@property (readonly, nonatomic) NSString *protocolName;
+@property (readonly, nonatomic) NSString *typeSuffix;
 
 @end
