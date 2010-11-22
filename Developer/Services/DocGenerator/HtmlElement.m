@@ -89,7 +89,7 @@
     }
   }
 //  NSLog (@"generated sig <%@> for sel<%@>", signature, sig);
-  return [NSMethodSignature signatureWithObjCTypes: [signature cString]];
+  return [NSMethodSignature signatureWithObjCTypes: [signature UTF8String]];
 }
 
 #define CALLM(assig,asig)\
