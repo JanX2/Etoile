@@ -9,6 +9,7 @@
 #import "WeavedDocPage.h"
 #import "DocHeader.h"
 #import "DocFunction.h"
+#import "DocIndex.h"
 #import "DocMethod.h"
 #import "GSDocParser.h"
 #import "HtmlElement.h"
@@ -37,8 +38,6 @@
 - (id) initWithDocumentFile: (NSString *)aDocumentPath
                templateFile: (NSString *)aTemplatePath 
                    menuFile: (NSString *)aMenuPath
-           classMappingFile: (NSString *)aMappingPath
-    projectClassMappingFile: (NSString *)aProjectMappingPath;
 {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSString *finalMenuPath = aMenuPath;
@@ -51,23 +50,19 @@
 	INVALIDARG_EXCEPTION_TEST(aDocumentPath, [fileManager fileExistsAtPath: aDocumentPath]);
 	INVALIDARG_EXCEPTION_TEST(aTemplatePath, [fileManager fileExistsAtPath: aTemplatePath]);
 	INVALIDARG_EXCEPTION_TEST(finalMenuPath, [fileManager fileExistsAtPath: finalMenuPath]);
-	INVALIDARG_EXCEPTION_TEST(aProjectMappingPath, [fileManager fileExistsAtPath: aProjectMappingPath]);
 	if (NO == [[self validDocumentTypes] containsObject: [aDocumentPath pathExtension]])
 	{
 		[NSException raise: NSInvalidArgumentException
 		            format: @"The input document type must be .html or .gsdoc"];
 	}
-	
 
 	SUPERINIT;
 
 	ASSIGN(documentPath, aDocumentPath);
 	ASSIGN(documentType, [aDocumentPath pathExtension]);
-	ASSIGN(documentContent, [NSString stringWithContentsOfFile: aDocumentPath]);
-	ASSIGN(templateContent, [NSString stringWithContentsOfFile: aTemplatePath]);
-	ASSIGN(menuContent, [NSString stringWithContentsOfFile: finalMenuPath]);
-	ASSIGN(classMapping, [NSDictionary dictionaryWithContentsOfFile: aMappingPath]);
-	ASSIGN(projectClassMapping, [NSDictionary dictionaryWithContentsOfFile: aProjectMappingPath]);
+	ASSIGN(documentContent, [NSString stringWithContentsOfFile: aDocumentPath encoding: NSUTF8StringEncoding error: NULL]);
+	ASSIGN(templateContent, [NSString stringWithContentsOfFile: aTemplatePath encoding: NSUTF8StringEncoding error: NULL]);
+	ASSIGN(menuContent, [NSString stringWithContentsOfFile: finalMenuPath encoding: NSUTF8StringEncoding error: NULL]);
 
 	classMethods = [NSMutableDictionary new];
 	instanceMethods = [NSMutableDictionary new];
@@ -88,8 +83,6 @@
 	[documentContent release];
 	[templateContent release];
 	[menuContent release];
-	[classMapping release];
-	[projectClassMapping release];
 	[weavedContent release];
 	[header release];
 	[classMethods release];
@@ -149,19 +142,14 @@
 
 - (void) insertProjectClassesList
 {
-	if (nil == projectClassMapping)
-  		return;
-	
-    NSArray *classNames = [[projectClassMapping allKeys] 
+	DocIndex *docIndex = [DocIndex currentIndex];
+    NSArray *classNames = [[docIndex projectSymbolNamesOfKind: @"classes"]
 		sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
     H list = UL;
 	
     FOREACH(classNames, className, NSString *)
     {
-		NSString *url = [projectClassMapping objectForKey: className]; 
-		NSString *link = [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, className];
-	
-		[list and: [LI with: link]];
+		[list and: [LI with: [docIndex linkForClassName: className]]];
     }
 
     [self insert: [[DIV id: @"project-classes-list" with: list] content] 

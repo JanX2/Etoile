@@ -25,8 +25,6 @@ to a file with -writeToURL:. */
   NSString *templateContent;
   NSString *sourcePath;
   NSString *menuContent;
-  NSMutableDictionary *classMapping;
-  NSDictionary *projectClassMapping;
   NSString *weavedContent;
 
     DocHeader *header;
@@ -40,9 +38,7 @@ to a file with -writeToURL:. */
 input files. */
 - (id) initWithDocumentFile: (NSString *)aDocumentPath
                templateFile: (NSString *)aTemplatePath 
-                   menuFile: (NSString *)aMenuPath
-           classMappingFile: (NSString *)aMappingPath
-    projectClassMappingFile: (NSString *)aProjectMappingPath;
+                   menuFile: (NSString *)aMenuPath;
 
 - (NSString *) name;
 

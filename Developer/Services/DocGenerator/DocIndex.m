@@ -81,8 +81,7 @@ withDictionaryName: (NSString *)mergedDictName
 
 - (void) regenerate
 {
-	NSArray *refKinds = A(@"classes", @"protocols", @"categories", @"methods", 
-		@"functions", @"macros", @"constants");
+	NSArray *refKinds = [self symbolKinds];
 	NSArray *refIVarNames = A(@"externalRefs", @"projectRefs");
 	
 	FOREACH(refKinds, kind, NSString *)
@@ -112,6 +111,17 @@ withDictionaryName: (NSString *)mergedDictName
 
 	NSString *finalRef = [aRef stringByAppendingPathExtension: [self refFileExtension]];
 	[[projectRefs objectForKey: aKind] setObject: finalRef forKey: aSymbol];
+}
+
+- (NSArray *) projectSymbolNamesOfKind: (NSString *)aKind
+{
+	return [[projectRefs objectForKey: aKind] allKeys];
+}
+
+- (NSArray *) symbolKinds
+{
+	return A(@"classes", @"protocols", @"categories", @"methods", 
+		@"functions", @"macros", @"constants");
 }
 
 - (NSString *) linkWithName: (NSString *)aName ref: (NSString *)aRef

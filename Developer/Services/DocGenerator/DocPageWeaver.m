@@ -182,7 +182,7 @@
 {
 	WeavedDocPage *page = [[WeavedDocPage alloc] initWithDocumentFile: [self currentSourceFile]
 	                                templateFile: [self templateFileForSourceFile: [self currentSourceFile]]
-	                                    menuFile: menuPath classMappingFile: externalMappingPath projectClassMappingFile: projectMappingPath];
+	                                    menuFile: menuPath];
     [weavedPages addObject: AUTORELEASE(page)];
 }
 

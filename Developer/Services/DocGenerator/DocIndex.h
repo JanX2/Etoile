@@ -42,6 +42,28 @@ symbol name in a HTML link. */
          forSymbolName: (NSString *)aSymbol
                 ofKind: (NSString *)aKind;
 
+/** Returns all the symbol names present in the project that match the given 
+kind.
+
+Valid kinds are the ones returned by -symbolKinds.
+
+For example, 'classes' would return 'DocIndex', 'DocElement', 'DocMethod' etc. */
+- (NSArray *) projectSymbolNamesOfKind: (NSString *)aKind;
+
+/* Returns the supported symbol kinds in the index.
+
+Will return:
+<list>
+<item>'classes'</item>
+<item>'protocols'</item>
+<item>'categories'</item>
+<item>'methods'</item>
+<item>'functions'</item>
+<item>'macros'</item>
+<item>'constants'</item>
+<list> */
+- (NSArray *) symbolKinds;
+
 /** Regenerates the index refs by merging external refs, project refs and custom 
 refs. 
 
