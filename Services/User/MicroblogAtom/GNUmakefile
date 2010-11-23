@@ -15,7 +15,6 @@ StatusAtom_OBJC_FILES = \
 	main.m
 
 StatusAtom_OBJCFLAGS = -std=c99
-# FIXME: Remove once gnustep-gui once EtoileXML doesn't depend on it
 StatusAtom_TOOL_LIBS = -lEtoileFoundation -lgnustep-gui
 
 include $(GNUSTEP_MAKEFILES)/tool.make
