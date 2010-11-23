@@ -17,6 +17,7 @@
 		03FF78E50DFB75C9007D79D3 /* DocFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF78E40DFB75C9007D79D3 /* DocFunction.m */; };
 		03FF79AF0DFCA7B4007D79D3 /* WeavedDocPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF79AE0DFCA7B4007D79D3 /* WeavedDocPage.m */; };
 		602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */ = {isa = PBXBuildFile; fileRef = 602363D5128B3E6600C9EC82 /* DocPageWeaver.m */; };
+		606D338D12946F1500AA7554 /* DocIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 606D338C12946F1500AA7554 /* DocIndex.m */; };
 		60B289FB11DA0C4000FC8C20 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */; };
 		8DD76F9A0486AA7600D96B5E /* ETDocGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
@@ -91,6 +92,8 @@
 		32A70AAB03705E1F00C91783 /* ETDocGenerator_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETDocGenerator_Prefix.pch; sourceTree = "<group>"; };
 		602363D4128B3E6600C9EC82 /* DocPageWeaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocPageWeaver.h; sourceTree = "<group>"; };
 		602363D5128B3E6600C9EC82 /* DocPageWeaver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocPageWeaver.m; sourceTree = "<group>"; };
+		606D338B12946F1500AA7554 /* DocIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocIndex.h; sourceTree = "<group>"; };
+		606D338C12946F1500AA7554 /* DocIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocIndex.m; sourceTree = "<group>"; };
 		60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		8DD76FA10486AA7600D96B5E /* ETDocGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ETDocGenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* ETDocGenerator.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = ETDocGenerator.1; sourceTree = "<group>"; };
@@ -146,6 +149,8 @@
 				0362712B0E00919B005D79FE /* DescriptionParser.m */,
 				03FF75340DF9F159007D79D3 /* HtmlElement.h */,
 				03FF75350DF9F159007D79D3 /* HtmlElement.m */,
+				606D338B12946F1500AA7554 /* DocIndex.h */,
+				606D338C12946F1500AA7554 /* DocIndex.m */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -276,6 +281,7 @@
 				036271930E00B263005D79FE /* Parameter.m in Sources */,
 				0362732D0E048FD3005D79FE /* DocElement.m in Sources */,
 				602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */,
+				606D338D12946F1500AA7554 /* DocIndex.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "DocPageWeaver.h"
+#import "DocIndex.h"
 #import "WeavedDocPage.h"
 
 /**
@@ -141,7 +142,7 @@ int main (int argc, const char * argv[])
     if ([explicitSourceFiles isEmpty])
     {
     	weaver = [weaver initWithParserSourceDirectory: parserSourceDir
-                                             fileTypes: A(@"gsdoc")
+                                             fileTypes: A(@"gsdoc", @"igsdoc")
                                     rawSourceDirectory: rawSourceDir
 		                                  templateFile: templateFile];    
     }
@@ -157,6 +158,8 @@ int main (int argc, const char * argv[])
 
 	NSArray *pages = [weaver weaveAllPages];
 	NSString *outputDir = [[NSFileManager defaultManager] currentDirectoryPath];
+
+	[[DocIndex currentIndex] regenerate];
 
 	FOREACH(pages, page, WeavedDocPage *)
     {

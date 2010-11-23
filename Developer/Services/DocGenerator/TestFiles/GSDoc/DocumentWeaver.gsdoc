@@ -45,19 +45,19 @@
           <sel>createDocumentUsingFile:</sel>
           <arg type="NSString*">aFile</arg>
           <desc>
-            <em>Description forthcoming.</em>
+            (With, GSDocParserDelegate), GSDocParserDelegate and HtmlElement.
           </desc>
         </method>
         <method type="void">
           <sel>createDocumentUsingGSDocFile:</sel>
-          <arg type="NSString*">gsdocFile</arg>
+          <arg type="id&lt;NSString&gt;*">gsdocFile</arg>
           <desc>
             <em>Description forthcoming.</em>
           </desc>
         </method>
         <method type="void">
           <sel>createDocumentUsingHTMLFile:</sel>
-          <arg type="NSString*">htmlFile</arg>
+          <arg type="NSString**">htmlFile</arg>
           <desc>
             <em>Description forthcoming.</em>
           </desc>
@@ -66,7 +66,7 @@
           <sel>insert:</sel>
           <arg type="NSString*">content</arg>
           <sel>forTag:</sel>
-          <arg type="NSString*">aTag</arg>
+          <arg type="NSString&lt;NSObject&gt;*">aTag</arg>
           <desc>
             <em>Description forthcoming.</em>
           </desc>

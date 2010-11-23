@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class HtmlElement, DescriptionParser;
+@class HtmlElement, DescriptionParser, DocIndex;
 
 @interface DocElement : NSObject 
 {
@@ -27,6 +27,7 @@
 - (NSString *) filteredDescription;
 - (void) addInformationFrom: (DescriptionParser *)aParser;
 
+- (NSString *) formattedDescriptionWithDocIndex: (DocIndex *)aDocIndex;
 - (HtmlElement *) HTMLDescription;
 
 @end

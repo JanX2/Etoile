@@ -7,6 +7,7 @@
 //
 
 #import "DocMethod.h"
+#import "DocIndex.h"
 #import "HtmlElement.h"
 #import "DescriptionParser.h"
 #import "Parameter.h"
@@ -59,6 +60,12 @@
 	ASSIGN(category, aCategory);
 }
 
+- (NSString *) refMarkupWithClassName: (NSString *)aClassName
+{
+	char sign = (isClassMethod ? '+' : '-');
+	return [NSString stringWithFormat: @"%c[%@ %@]", sign, aClassName, [self name]];
+}
+
 /*
  <dl>
  <dt>+ (void) <strong>willVerify:</strong> (Class)aClass;</dt>
@@ -72,6 +79,7 @@
 */ 
 - (HtmlElement *) HTMLDescription
 {
+	DocIndex *docIndex = [DocIndex currentIndex];
 	H h_signature = [DIV class: @"methodSignature"];
 	
 	[h_signature with: [DIV class: @"methodScope" 
@@ -84,30 +92,22 @@
 	
 	[h_signature and: h_returnType];
 
-	for (int i = 0; i < [selectorKeywords count]; i++)
+	for (int i = 0; i < [parameters count]; i++)
 	{
 		NSString *selKeyword = [selectorKeywords objectAtIndex: i];
 		H h_selector = [DIV class: @"selector" with: selKeyword];
 
 		[h_signature and: h_selector];
-		
-		if (i > 0) /* When the method is not an unary message */
-		{
-			Parameter *p = [parameters objectAtIndex: i];
 
-			// NOTE: Should we use... and: [DIV class: @"type" with: [p type] and: @") "
-			H h_parameter = [DIV class: @"parameter" 
-			                      with: [NSString stringWithFormat: @"(%@) ", [p type]]
-			                       and: [DIV class: @"arg" with: [p name]]];
-		
-			[h_signature and: h_parameter];
-		}
+        Parameter *p = [parameters objectAtIndex: i];
+    
+        [h_signature and: [p HTMLDescription]];
 	}
 	
 	H methodFull = [DIV class: @"method" 
 	                     with: [DL with: [DT with: h_signature]
                                     and: [DD with: [DIV class: @"methodDescription" 
-	                                                     with: filteredDescription]]]];
+	                                                     with: [self formattedDescriptionWithDocIndex: docIndex]]]]];
 	return methodFull;
 }
 
@@ -152,11 +152,11 @@
 		[descParser parse: [self rawDescription]];
 		[self addInformationFrom: descParser];
 
-        [[parser weaver] weaveMethod: self];
-
 		/* Cache the signature as our name and allows inherited methods that use 
 		   -name to work transparently */
 		[self setName: [self signature]];
+
+        [[parser weaver] weaveMethod: self];
 
 		ENDLOG2([self name], [self task]);
 	}

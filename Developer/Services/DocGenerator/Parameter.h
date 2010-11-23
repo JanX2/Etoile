@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
+@class HtmlElement;
 
 @interface Parameter : NSObject {
   NSString* name;
@@ -28,6 +29,7 @@
 - (NSString*) name;
 - (NSString*) type;
 - (NSString*) description;
+- (HtmlElement *) HTMLDescription;
 
 @property (readonly, nonatomic) NSString *typePrefix;
 @property (readonly, nonatomic) NSString *className;

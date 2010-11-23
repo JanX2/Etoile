@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>classes</key>
+	<dict>
 	<key>NSATSTypesetter</key>
 	<string>http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/NSATSTypesetter_Class/Reference/Reference.html</string>
 	<key>NSActionCell</key>
@@ -664,5 +666,6 @@
 	<string>http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSXMLNode_Class/Reference/Reference.html</string>
 	<key>NSXMLParser</key>
 	<string>http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSXMLParser_Class/Reference/Reference.html</string>
+	</dict>
 </dict>
 </plist>

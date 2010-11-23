@@ -7,6 +7,8 @@
 //
 
 #import "Parameter.h"
+#import "DocIndex.h"
+#import "HtmlElement.h"
 
 
 @implementation Parameter
@@ -206,6 +208,56 @@ camel case). */
 - (NSString*) description
 {
   return description;
+}
+
+- (HtmlElement *) HTMLDescription
+{
+	DocIndex *docIndex = [DocIndex currentIndex];
+	// NOTE: Should we use... and: [DIV class: @"type" with: [p type] and: @") "
+	H hParam = [DIV class: @"parameter" with: @"("];
+	BOOL hasContent = NO;
+
+	if (typePrefix != nil)
+	{
+		[hParam with: typePrefix];
+		hasContent = YES;
+	}
+	if (className != nil)
+	{
+		if (hasContent)
+		{
+			[hParam addText: @" "];
+		}
+		[hParam with: [docIndex linkForClassName: className]];
+		hasContent = YES;
+	}
+	if (protocolName != nil)
+	{
+		if (hasContent)
+		{
+			[hParam addText: @" "];
+		}
+		[hParam with: @"<" and: [docIndex linkForProtocolName: protocolName] and: @">"];
+		hasContent = YES;
+	}
+	if (typeSuffix != nil)
+	{
+		if (hasContent)
+		{
+			[hParam addText: @" "];
+		}
+		[hParam addText: typeSuffix];
+	}
+
+	/* No protocol or class in the type, we insert the raw type */
+	if (hasContent == NO)
+	{
+		[hParam addText: type];
+	}
+	
+	[hParam with: @")" and: [DIV class: @"arg" with: [self name]]];
+
+	return hParam;
 }
 
 @end

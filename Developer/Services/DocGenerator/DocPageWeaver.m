@@ -8,6 +8,8 @@
 
 #import "DocPageWeaver.h"
 #import "DocHeader.h"
+#import "DocIndex.h"
+#import "DocMethod.h"
 #import "GSDocParser.h"
 #import "WeavedDocPage.h"
 
@@ -40,12 +42,19 @@
               templateFile: (NSString *)aTemplatePath
 {
 	SUPERINIT;
-    ASSIGN(sourcePaths, [NSArray arrayWithArray: paths]);
+    
+    ETAssert([[paths pathsMatchingExtensions: (A(@"igsdoc"))] count] <= 1);
+    docIndex = [[HTMLDocIndex alloc] initWithGSDocIndexFile: 
+    	[[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject]];
+
+    /* Don't include igsdoc, we don't want to turn it into a page */
+    ASSIGN(sourcePaths, [NSArray arrayWithArray: [paths pathsMatchingExtensions: A(@"gsdoc", @"html", @"text")]]);
     sourcePathQueue = [paths mutableCopy];
     ASSIGN(templatePath, aTemplatePath);
     ASSIGN(templateDirPath, [aTemplatePath stringByDeletingLastPathComponent]);
     allWeavedPages = [[NSMutableArray alloc] init];
     weavedPages = [[NSMutableArray alloc] init];
+
     return self;
 }
 
@@ -58,6 +67,7 @@
     DESTROY(menuPath);
     DESTROY(externalMappingPath);
     DESTROY(projectMappingPath);
+    DESTROY(docIndex);
     DESTROY(currentParser);
 	DESTROY(currentClassName);
     DESTROY(allWeavedPages);
@@ -78,6 +88,7 @@
 - (void) setExternalMappingFile: (NSString *)aMappingPath
 {
 	ASSIGN(externalMappingPath, aMappingPath);
+    [docIndex setExternalRefs: [NSDictionary dictionaryWithContentsOfFile: aMappingPath]];
 }
 
 - (void) setProjectMappingFile: (NSString *)aMappingPath
@@ -126,6 +137,7 @@
 
 - (NSArray *) weaveCurrentSourcePages
 {
+    [DocIndex setCurrentIndex: docIndex];
 	[weavedPages removeAllObjects];
 	DESTROY(currentParser);
 
@@ -217,6 +229,9 @@
 	ASSIGN(currentClassName, aClassName);
     [[self currentHeader] setClassName: aClassName];
     [[self currentHeader] setSuperClassName: aSuperclassName];
+	[docIndex setProjectRef: [[self currentPage] name] 
+	          forSymbolName: aClassName 
+	                 ofKind: @"classes"];
 }
 
 - (void) weaveMethod: (DocMethod *)aMethod
@@ -229,11 +244,17 @@
     {
         [[self currentPage] addInstanceMethod: aMethod];
     }
+	[docIndex setProjectRef: [[self currentPage] name] 
+	          forSymbolName: [aMethod refMarkupWithClassName: [self currentClassName]] 
+	                 ofKind: @"methods"];
 }
 
 - (void) weaveFunction: (DocFunction *)aFunction
 {
 	[[self currentPage] addFunction: aFunction];
+	[docIndex setProjectRef: [[self currentPage] name] 
+	          forSymbolName: [aFunction name] 
+	                 ofKind: @"functions"];
 }
 
 - (DocHeader *) currentHeader

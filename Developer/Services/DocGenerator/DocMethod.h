@@ -20,4 +20,7 @@
 	NSString *description;
 }
 
+- (BOOL) isClassMethod;
+- (NSString *) refMarkupWithClassName: (NSString *)aClassName;
+
 @end

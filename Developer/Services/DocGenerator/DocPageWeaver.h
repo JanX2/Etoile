@@ -13,7 +13,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class DocHeader, DocMethod, DocFunction, WeavedDocPage;
+@class DocHeader, DocMethod, DocFunction, WeavedDocPage, DocIndex;
 
 @protocol CodeDocWeaving
 - (void) weaveClassNamed: (NSString *)aClassName 
@@ -41,6 +41,7 @@
     NSString *menuPath;
     NSString *externalMappingPath;
     NSString *projectMappingPath;
+    DocIndex *docIndex;
     id currentParser;
     NSString *currentClassName;
     NSMutableArray *allWeavedPages;

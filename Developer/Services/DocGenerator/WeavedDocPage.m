@@ -168,38 +168,12 @@
 	      forTag: @"<!-- etoile-list-classes -->"];
 }
 
-- (void) insertClassesLinks
-{
-	if (nil == classMapping)
-		return;
-	
-    // Add the list of our project classes
-    [classMapping addEntriesFromDictionary: projectClassMapping];
-	
-    NSArray *classNames = [[classMapping allKeys] 
-		sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
-    
-    // FIXME: This is the _wrong_ way to insert those links -- as we'll miss for example
-    // NSConditionLock vs NSCondition (both will point to NSCondition). What should be done
-    // is to insert the links in the gsdoc generator directly, and for the html document
-    // do correct replacing, not this crude one. But well, that'll be for next version.
-    // (Plus this loop is not exactly an efficient way to do this)
-    FOREACH(classNames, className, NSString *)
-    {
-		NSString *url = [classMapping objectForKey: className];
-		NSString *link = [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, className];
-		
-		[self insert: link forTag: className];
-    }
-}
-
 - (void) weave
 {
 	ASSIGN(weavedContent, templateContent);
 
 	[self insertDocument];
 	[self insertMenu];
-	[self insertClassesLinks];
 	[self insertProjectClassesList];
 }
 
