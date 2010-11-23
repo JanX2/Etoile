@@ -116,8 +116,12 @@
 
 - (void) insertGSDocDocument
 {
-	[self insert: [self getMethods] forTag: @"<!-- etoile-methods -->"];
-	[self insert: [[header HTMLDescription] content] forTag:  @"<!-- etoile-header -->"];
+	// FIXME: HOM broken on NSString *mainContentStrings = [[[self mainContentHTMLRepresentation] mappedCollection] content];
+	// [[mainContentStrings rightFold] stringByAppendingString: @""];
+	[self insert: [[self mainContentHTMLRepresentations] componentsJoinedByString: @""]
+	      forTag: @"<!-- etoile-methods -->"];
+	[self insert: [[header HTMLDescription] content] 
+	      forTag:  @"<!-- etoile-header -->"];
 }
 
 - (void) insertDocument
@@ -141,7 +145,7 @@
 	[self insert: menuContent forTag: @"<!-- etoile-menu -->"];
 }
 
-- (void) insertProjectClassesList
+- (void) insertProjectClassList
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
 	NSArray *classNames = [[docIndex projectSymbolNamesOfKind: @"classes"]
@@ -163,13 +167,7 @@
 
 	[self insertDocument];
 	[self insertMenu];
-	[self insertProjectClassesList];
-}
-
-- (NSString *) HTMLString
-{
-	[self weave];
-	return weavedContent;
+	[self insertProjectClassList];
 }
 
 - (void) writeToURL: (NSURL *)outputURL
@@ -213,7 +211,7 @@
 
 - (void) addFunction: (DocFunction *)aFunction
 {
-	NSMutableArray* array = [functions objectForKey: [aFunction task]];
+	NSMutableArray *array = [functions objectForKey: [aFunction task]];
 	if (array == nil)
 	{
 		array = [NSMutableArray new];
@@ -223,50 +221,48 @@
 	[array addObject: aFunction];
 }
 
-- (void) outputMethods: (NSDictionary*) methods withTitle: (NSString*) aTitle on: (NSMutableString*) html
+- (NSString *) HTMLString
 {
-  NSArray* unsortedTasks = [methods allKeys];
-  NSArray* tasks = [unsortedTasks sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
-  if ([tasks count] > 0)
-  {
-    [html appendFormat: @"<h3>%@</h3>", aTitle];
-  }
-  for (int i=0; i<[tasks count]; i++)
-  {
-    NSString* key = [tasks objectAtIndex: i];
-    [html appendFormat: @"<h4>%@</h4>", key];
-    NSArray* unsortedArray = [methods objectForKey: key];
-    NSArray* array = [unsortedArray sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
-    for (int j=0; j<[array count]; j++)
-    {
-      DocMethod* m = [array objectAtIndex: j];
-      [html appendString: [[m HTMLDescription] content]];
-    }
-  }
+	[self weave];
+	return weavedContent;
 }
 
-- (void) outputClassMethodsOn: (NSMutableString *) html  
+- (NSArray *) mainContentHTMLRepresentations
 {
-  [self outputMethods: classMethods withTitle: @"Class Methods" on: html];
+	return [NSArray arrayWithObjects: 
+		[self HTMLRepresentationWithTitle: @"Functions" subroutines: functions],
+		[self HTMLRepresentationWithTitle: @"Class Methods" subroutines: classMethods],
+		[self HTMLRepresentationWithTitle: @"Instance Methods" subroutines: instanceMethods], nil];
 }
 
-- (void) outputInstanceMethodsOn: (NSMutableString *) html  
+- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
+                                  subroutines: (NSDictionary *)subroutinesByTask
 {
-  [self outputMethods: instanceMethods withTitle: @"Instance Methods" on: html];
-}
+	if ([subroutinesByTask isEmpty])
+		return [HtmlElement blankElement];
 
-- (void) outputFunctionsOn: (NSMutableString*) html
-{
-  [self outputMethods: functions withTitle: @"Functions" on: html];
-}
+	NSArray *unsortedTasks = [subroutinesByTask allKeys];
+	NSArray *tasks = [unsortedTasks sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+	NSString *titleWithoutSpaces = [[aTitle componentsSeparatedByCharactersInSet: 
+		[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString: @"-"];
+	HtmlElement *html = [DIV class: [titleWithoutSpaces lowercaseString]];
 
-- (NSString*) getMethods
-{
-  NSMutableString* methods = [NSMutableString new];
-  [self outputFunctionsOn: methods];
-  [self outputClassMethodsOn: methods];
-  [self outputInstanceMethodsOn: methods];
-  return [methods autorelease];
+	[html add: [H3 with: aTitle]];
+	
+	for (NSString *task in tasks)
+	{
+		[html add: [H4 with: task]];
+
+		NSArray *subroutinesInTask = [[subroutinesByTask objectForKey: task] 
+			sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+
+		for (DocSubroutine *subroutine in subroutinesInTask)
+		{
+			[html add: [subroutine HTMLDescription]];
+		}
+	}
+
+	return html;
 }
 
 @end

@@ -11,7 +11,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class DocHeader, DocMethod, DocFunction;
+@class DocHeader, DocMethod, DocFunction, HtmlElement;
 
 /** A documentation page that weaves various HTML, GSDoc, Markdown and plist 
 files (usually provided on the command-line), into a new HTML representation  
@@ -42,6 +42,8 @@ experimental and untested. */
     //NSMutableDictionary *macros;
 }
 
+/** @task Initialization and Identity */
+
 /** Initialises and returns a new documentation page that combines the given 
 input files. */
 - (id) initWithDocumentFile: (NSString *)aDocumentPath
@@ -53,11 +55,12 @@ input files. */
 Can be used as a file name when saving the page, as <em>etdocgen</em> does. */
 - (NSString *) name;
 
-/** Returns a string representation of the page by weaving the input files. */
-- (NSString *) HTMLString;
+/** @task Writing to File */
 
 /** Writes the page to the given URL atomically. */
 - (void) writeToURL: (NSURL *)outputURL;
+
+/** @task Page Building */
 
 /** Sets the page header. */
 - (void) setHeader: (DocHeader *)aHeader;
@@ -70,36 +73,24 @@ Can be used as a file name when saving the page, as <em>etdocgen</em> does. */
 /** Adds a function documentation to the page. */
 - (void) addFunction: (DocFunction *)aFunction;
 
-/**
- * This method takes one of the dictionary populated
- * by the gsdoc parsing containing the methods, sort
- * them alphabetically by Tasks, and output the result
- * formated in HTML in the string passed in argument.
- * A title is also added, which uses a <h3> header.
- * @task Writing HTML
- */
-- (void) outputMethods: (NSDictionary*) methods
-             withTitle: (NSString*) aTitle
-                    on: (NSMutableString*) html;
+/** @task HTML Generation */
 
-/**
- * Convenience method to generate the class methods output
- * @task Writing HTML
- */
-- (void) outputClassMethodsOn: (NSMutableString *) html;
+/** Returns a string representation of the whole page by weaving the input files. */
+- (NSString *) HTMLString;
+/** Returns the main page content rendered as an HtmlElement array, including 
+elements such as <em>Instance Methods</em>,<em>Macros</em> etc.
 
-/**
- * Convenience method to generate the instance methods output
- * @task Writing HTML
- */
-- (void) outputInstanceMethodsOn: (NSMutableString *) html;
+Menu, navigation bar etc. are not present in the returned HTML representation 
+unlike -HTMLString which does include them in its ouput. */
+- (NSArray *) mainContentHTMLRepresentations;
+/** Returns the given methods or functions rendered as a HTML element tree.
 
-/**
- * Convenience method to generate the list of functions output
- * @task Writing HTML
- */
-- (void) outputFunctionsOn: (NSMutableString*) html;
+Both methods and functions are sorted by tasks before being rendered to HTML.
 
-- (NSString*) getMethods;
+Task names are output with a &lt;h4&gt; header.<br />
+A title is also added, which uses a &lt;h3;&gt; header.
 
+See also DocSubroutine, DocMethod and DocFunction. */
+- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *) aTitle 
+                                  subroutines: (NSDictionary *)subroutinesByTask;
 @end

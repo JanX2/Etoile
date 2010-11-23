@@ -19,6 +19,10 @@
   NSMutableDictionary* attributes;
   NSMutableArray* children;
 }
+/** Returns a new immutable HTML element whose content is always an empty string.
+
+The name is set to 'Blank'. */
++ (HtmlElement *) blankElement;
 + (HtmlElement*) elementWithName: (NSString*) aName;
 - (HtmlElement*) iniWithName: (NSString*) aName;
 - (HtmlElement*) addText: (NSString*) aText;
@@ -29,6 +33,8 @@
 - (HtmlElement*) with: (id) something;
 - (HtmlElement*) and: (id) something;
 - (NSString*) content;
+/** Returns -content. */
+- (NSString *) description;
 
 @end
 

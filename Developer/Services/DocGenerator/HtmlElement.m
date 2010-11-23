@@ -8,8 +8,25 @@
 
 #import "HtmlElement.h"
 
+@interface BlankHTMLElement : HtmlElement 
+@end
+
+@implementation BlankHTMLElement
+
+- (NSString *) content
+{
+	return @"";
+}
+
+@end
+
 
 @implementation HtmlElement
+
++ (HtmlElement *) blankElement
+{
+	return AUTORELEASE([[BlankHTMLElement alloc] initWithName: @"Blank"]);
+}
 
 + (HtmlElement*) elementWithName: (NSString*) aName
 {
@@ -172,6 +189,11 @@
   }
   [buf appendFormat: @"</%@>\n", elementName];
   return [buf autorelease];
+}
+
+- (NSString *) description
+{
+	return [self content];
 }
 
 @end
