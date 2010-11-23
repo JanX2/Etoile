@@ -1,10 +1,11 @@
-//
-//  DocumentWeaver.m
-//  ETDocGenerator
-//
-//  Created by Nicolas Roard (Home) on 6/9/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
+/*
+	Copyright (C) 2008 Nicolas Roard
+
+	Authors:  Nicolas Roard, 
+	          Quentin Mathe <quentin.mathe@gmail.com>
+	Date:  June 2008
+	License:  Modified BSD (see COPYING)
+ */
 
 #import "WeavedDocPage.h"
 #import "DocHeader.h"
@@ -73,7 +74,7 @@
 
 - (id) init
 {
-  return nil;
+	return nil;
 }
 
 - (void) dealloc
@@ -94,7 +95,7 @@
 - (NSString *) name
 {
 	if ([header className] != nil)
-    	return [header className];
+		return [header className];
 
 	return [[documentPath lastPathComponent] stringByDeletingPathExtension];
 }
@@ -143,16 +144,16 @@
 - (void) insertProjectClassesList
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
-    NSArray *classNames = [[docIndex projectSymbolNamesOfKind: @"classes"]
+	NSArray *classNames = [[docIndex projectSymbolNamesOfKind: @"classes"]
 		sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
-    H list = UL;
+	H list = UL;
 	
-    FOREACH(classNames, className, NSString *)
-    {
+	FOREACH(classNames, className, NSString *)
+	{
 		[list and: [LI with: [docIndex linkForClassName: className]]];
-    }
+	}
 
-    [self insert: [[DIV id: @"project-classes-list" with: list] content] 
+	[self insert: [[DIV id: @"project-classes-list" with: list] content] 
 	      forTag: @"<!-- etoile-list-classes -->"];
 }
 
@@ -173,7 +174,7 @@
 
 - (void) writeToURL: (NSURL *)outputURL
 {
-	[[self HTMLString] writeToURL: outputURL atomically: YES];
+	[[self HTMLString] writeToURL: outputURL atomically: YES encoding: NSUTF8StringEncoding error: NULL];
 }
 
 - (void) setHeader: (DocHeader *)aHeader
