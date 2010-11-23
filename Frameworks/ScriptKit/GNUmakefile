@@ -13,7 +13,7 @@ ScriptKit_HEADER_FILES = \
 
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Werror 
 
-ADDITIONAL_LDFLAGS += -lgnustep-gui
+ADDITIONAL_LDFLAGS += -lgnustep-gui -lLanguageKitRuntime
 
 include $(GNUSTEP_MAKEFILES)/framework.make
 -include ../../etoile.make
