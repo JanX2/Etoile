@@ -92,12 +92,17 @@
 	
 	[h_signature and: h_returnType];
 
-	for (int i = 0; i < [parameters count]; i++)
+	BOOL isUnaryMessage = [parameters isEmpty];
+
+	for (int i = 0; i < [selectorKeywords count]; i++)
 	{
 		NSString *selKeyword = [selectorKeywords objectAtIndex: i];
 		H h_selector = [DIV class: @"selector" with: selKeyword];
 
 		[h_signature and: h_selector];
+
+		if (isUnaryMessage)
+			break;
 
         Parameter *p = [parameters objectAtIndex: i];
     
