@@ -82,13 +82,11 @@
 	DocIndex *docIndex = [DocIndex currentIndex];
 	H h_signature = [DIV class: @"methodSignature"];
 	
-	[h_signature with: [DIV class: @"methodScope" 
-	                         with: (isClassMethod ? @"+" : @"-")]];
+	[h_signature with: [SPAN class: @"methodScope" 
+	                         with: (isClassMethod ? @"+ " : @"- ")]];
 	
-	H h_returnType = [DIV class: @"returnType" 
-	                       with: @"("
-	                        and: [DIV class: @"type" with: returnType] 
-	                        and: @")"];
+	H h_returnType = [SPAN class: @"returnType" 
+	                       with: [SPAN class: @"type" with: [[self returnParameter] HTMLDescription]]];
 	
 	[h_signature and: h_returnType];
 
@@ -97,7 +95,7 @@
 	for (int i = 0; i < [selectorKeywords count]; i++)
 	{
 		NSString *selKeyword = [selectorKeywords objectAtIndex: i];
-		H h_selector = [DIV class: @"selector" with: selKeyword];
+		H h_selector = [SPAN class: @"selector" with: @" " and: selKeyword and: @" "];
 
 		[h_signature and: h_selector];
 
@@ -113,6 +111,7 @@
 	                     with: [DL with: [DT with: h_signature]
                                     and: [DD with: [DIV class: @"methodDescription" 
 	                                                     with: [self formattedDescriptionWithDocIndex: docIndex]]]]];
+	NSLog(@"Method %@", methodFull);
 	return methodFull;
 }
 

@@ -70,7 +70,7 @@
 {
 	H h_signature = [DIV class: @"methodSignature"];
 	H h_returnType = [DIV class: @"returnType" 
-	                       with: [DIV class: @"type" with: returnType]];
+	                       with: [DIV class: @"type" with: [[self returnParameter] HTMLDescription]]];
 	
 	[h_signature and: h_returnType];
 	[h_signature and: [DIV class: @"selector" with: name]];

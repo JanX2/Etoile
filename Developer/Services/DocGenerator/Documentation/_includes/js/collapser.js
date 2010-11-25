@@ -52,12 +52,12 @@ function hide(obj) {
 	sibling.style.display = 'none';
 	//obj.style.color = '#000';
 	
-	var returnTypes = getElementsByClass('returnType', obj, 'div');
+	var returnTypes = getElementsByClass('returnType', obj, 'span');
 	for(var i = 0; i < returnTypes.length; i++) {
 		returnTypes[i].style.display = 'none';
 	}
 	
-	var parameters = getElementsByClass('parameter', obj, 'div');
+	var parameters = getElementsByClass('parameter', obj, 'span');
 	for(var i = 0; i < parameters.length; i++) {
 		parameters[i].style.display = 'none';
 	}
@@ -68,12 +68,12 @@ function show(obj) {
 	sibling.style.display = 'block';
 	//obj.style.color = '#375dc7';
 	
-	var returnTypes = getElementsByClass('returnType', obj, 'div');
+	var returnTypes = getElementsByClass('returnType', obj, 'span');
 	for(var i = 0; i < returnTypes.length; i++) {
 		returnTypes[i].style.display = 'inline';
 	}
 	
-	var parameters = getElementsByClass('parameter', obj, 'div');
+	var parameters = getElementsByClass('parameter', obj, 'span');
 	for(var i = 0; i < parameters.length; i++) {
 		parameters[i].style.display = 'inline';
 	}
@@ -95,12 +95,12 @@ function showAll() {
 		oDT = null;
 	}
 	
-	var returnTypes = document.getElementsByClass('returnType', document, 'div');
+	var returnTypes = document.getElementsByClass('returnType', document, 'span');
 	for(var i = 0; i < returnTypes.length; i++) {
 		returnTypes[i].style.display = 'inline';
 	}
 	
-	var parameters = document.getElementsByClass('parameter', document, 'div');
+	var parameters = document.getElementsByClass('parameter', document, 'span');
 	for(var i = 0; i < parameters.length; i++) {
 		parameters[i].style.display = 'inline';
 	}
@@ -122,12 +122,12 @@ function hideAll() {
 		oDT = null;
 	}
 	
-	var returnTypes = document.getElementsByClass('returnType', document, 'div');
+	var returnTypes = document.getElementsByClass('returnType', document, 'span');
 	for(var i = 0; i < returnTypes.length; i++) {
 		returnTypes[i].style.display = 'none';
 	}
 	
-	var parameters = document.getElementsByClass('parameter', document, 'div');
+	var parameters = document.getElementsByClass('parameter', document, 'span');
 	for(var i = 0; i < parameters.length; i++) {
 		parameters[i].style.display = 'none';
 	}

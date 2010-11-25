@@ -33,6 +33,8 @@
 @end
 
 
+@class Parameter;
+
 @interface DocSubroutine : DocElement
 {
 	NSMutableArray *parameters;
@@ -43,7 +45,14 @@
 - (NSString *) task;
 - (void) setTask: (NSString *)aTask;
 - (void) setReturnType: (NSString *)aReturnType;
-- (void) addParameter: (NSString *)aName ofType: (NSString* )aType;
+/** Returns the return type as an anonymous parameter object to which a HTML 
+representation of the type can be asked. 
+
+When generating the HTML representation for the return type, the parameter 
+object will insert symbol links and apply standard formatting (e.g. class name 
++ space + star) as expected. */ 
+- (Parameter *) returnParameter;
+- (void) addParameter: (NSString *)aName ofType: (NSString *)aType;
 
 @end
 

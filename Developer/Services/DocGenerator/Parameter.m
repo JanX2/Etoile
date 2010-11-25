@@ -213,8 +213,8 @@ camel case). */
 - (HtmlElement *) HTMLDescription
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
-	// NOTE: Should we use... and: [DIV class: @"type" with: [p type] and: @") "
-	H hParam = [DIV class: @"parameter" with: @"("];
+	// NOTE: Should we use... and: [SPAN class: @"type" with: [p type] and: @") "
+	H hParam = [SPAN class: @"parameter" with: @"("];
 	BOOL hasContent = NO;
 
 	if (typePrefix != nil)
@@ -255,7 +255,7 @@ camel case). */
 		[hParam addText: type];
 	}
 	
-	[hParam with: @")" and: [DIV class: @"arg" with: [self name]]];
+	[hParam with: @")" and: [SPAN class: @"arg" with: [self name]]];
 
 	return hParam;
 }

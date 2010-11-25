@@ -584,7 +584,7 @@ pre
 
 #documentation .arg
 {
-	display: inline;	
+	
 }
 
 #documentation .method 
@@ -602,31 +602,30 @@ pre
 
 #documentation .methodScope
 {
-	display: inline;	
+	
 }
 
 #documentation .methodSignature
 {
-	display: inline;	
+	
 }
 
 #documentation .parameter
 {
-	display: none;	
+
 }
 
 #documentation .returnType
 {
-	display: none;	
+
 }
 
 #documentation .selector
 {
-	display: inline;
 	font-weight: bold;
 }
 
 #documentation .type
 {
-	display: inline;	
+	
 }

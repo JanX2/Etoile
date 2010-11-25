@@ -209,6 +209,11 @@
 	ASSIGN(returnType, aReturnType);
 }
 
+- (Parameter *) returnParameter
+{
+	return [Parameter newWithName: nil andType: returnType];
+}
+
 - (void) addParameter: (NSString *)aName ofType: (NSString *)aType
 {
 	//  [parameters addObject: [NSDictionary dictionaryWithObjectsAndKeys: aName, @"name", aType, @"type", nil]];

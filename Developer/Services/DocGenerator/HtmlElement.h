@@ -18,6 +18,7 @@
   NSString* elementName;
   NSMutableDictionary* attributes;
   NSMutableArray* children;
+	NSSet *blockElementNames;
 }
 /** Returns a new immutable HTML element whose content is always an empty string.
 
@@ -41,6 +42,7 @@ The name is set to 'Blank'. */
 #define H HtmlElement*
 #define HTML [HtmlElement elementWithName: @"html"]
 #define DIV [HtmlElement elementWithName: @"div"]
+#define SPAN [HtmlElement elementWithName: @"span"]
 #define H1 [HtmlElement elementWithName: @"h1"]
 #define H2 [HtmlElement elementWithName: @"h2"]
 #define H3 [HtmlElement elementWithName: @"h3"]

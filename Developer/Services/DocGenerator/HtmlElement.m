@@ -36,10 +36,11 @@
 
 - (HtmlElement*) iniWithName: (NSString*) aName
 {
-  self = [super init];
+  SUPERINIT;
   children = [NSMutableArray new];
   attributes = [NSMutableDictionary new];
   elementName = [[NSString alloc] initWithString: aName];
+  blockElementNames = S(@"div", @"dt", @"dl");
   return self;
 }
 
@@ -48,6 +49,7 @@
   [children release];
   [attributes release];
   [elementName release];
+  [blockElementNames release];
   [super dealloc];
 }
 
@@ -159,36 +161,40 @@
   return [self with: something];
 }
 
-- (NSString*) content
+- (NSString *) content
 {
-  NSMutableString* buf = [NSMutableString new];
-  [buf appendFormat: @"<%@", elementName];
-  NSArray* keys = [attributes allKeys];
-  for (int i=0; i<[keys count]; i++)
-  {
-    NSString* key = [keys objectAtIndex: i];
-    [buf appendFormat: @" %@=\"%@\"", key, [attributes objectForKey: key]];
-  }
-  [buf appendString: @">"];
-  
-  for (int i=0; i<[children count]; i++)
-  {
-    id elem = [children objectAtIndex: i];
-    if ([elem isKindOfClass: [HtmlElement class]])
-    {
-      [buf appendString: [elem content]];
-    }
-    else if ([elem isKindOfClass: [NSString class]]) 
-    {
-      [buf appendString: elem];
-    }
-    else 
-    {
-      [buf appendString: [elem description]];
-    }
-  }
-  [buf appendFormat: @"</%@>\n", elementName];
-  return [buf autorelease];
+	NSMutableString* buf = AUTORELEASE([NSMutableString new]);
+	BOOL insertNewLine = [blockElementNames containsObject: elementName];
+
+	[buf appendFormat: @"<%@", elementName];
+	for (NSString *key in attributes)
+	{
+		[buf appendFormat: @" %@=\"%@\"", key, [attributes objectForKey: key]];
+	}
+	[buf appendString: @">"];
+	if (insertNewLine)
+		[buf appendString: @"\n"];
+	
+	for (id elem in children)
+	{
+		if ([elem isKindOfClass: [HtmlElement class]])
+		{
+			[buf appendString: [elem content]];
+		}
+		else if ([elem isKindOfClass: [NSString class]]) 
+		{
+			[buf appendString: elem];
+		}
+		else 
+		{
+			[buf appendString: [elem description]];
+		}
+	}
+	[buf appendFormat: @"</%@>", elementName];
+	if (insertNewLine)
+		[buf appendString: @"\n"];
+
+	return buf;
 }
 
 - (NSString *) description
