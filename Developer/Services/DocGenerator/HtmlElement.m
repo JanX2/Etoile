@@ -40,7 +40,7 @@
   children = [NSMutableArray new];
   attributes = [NSMutableDictionary new];
   elementName = [[NSString alloc] initWithString: aName];
-  blockElementNames = S(@"div", @"dt", @"dl");
+  blockElementNames = [[NSSet alloc] initWithObjects: @"div", @"dt", @"dl", nil];
   return self;
 }
 
