@@ -1,0 +1,104 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    ETController = {
+	Actions = (
+	    "setNibMainContent:",
+	    "add:",
+	    "addNewGroup:",
+	    "insert:",
+	    "insertNewGroup:",
+	    "remove:"
+	);
+	Outlets = (
+	    content,
+	    nibMainContent
+	);
+	Super = ETNibOwner;
+    };
+    ETDocumentController = {
+	Actions = (
+	    "newDocument:",
+	    "openDocument:"
+	);
+	Outlets = (
+	);
+	Super = ETController;
+    };
+    ETNibOwner = {
+	Actions = (
+	    "rebuildTopLevelObjectsWithBuilder:"
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "add:",
+	    "addNewEntityDescription:",
+	    "addNewGroup:",
+	    "addNewInstance:",
+	    "addNewOperation:",
+	    "addNewPropertyDescription:",
+	    "browseMainRepository:",
+	    "browseRepository:",
+	    "checkPackageDescriptionValidity:",
+	    "checkPackageValidity:",
+	    "checkRepositoryValidity:",
+	    "insert:",
+	    "insertNewGroup:",
+	    "openAndBrowseRepository:",
+	    "rebuildTopLevelObjectsWithBuilder:",
+	    "remove:",
+	    "setNibMainContent:",
+	    "showAllDescriptions:",
+	    "showAnonymousPackageDescription:",
+	    "showEntityDescriptions:",
+	    "showPackageDescriptions:",
+	    "showPropertyDescriptions:"
+	);
+	Super = NSObject;
+    };
+    MBAppController = {
+	Actions = (
+	    "openAndBrowseRepository:",
+	    "browseMainRepository:"
+	);
+	Outlets = (
+	);
+	Super = ETDocumentController;
+    };
+    MBEntityViewController = {
+	Actions = (
+	    "addNewPropertyDescription:",
+	    "addNewOperation:",
+	    "addNewInstance:"
+	);
+	Outlets = (
+	);
+	Super = ETController;
+    };
+    MBPackageEditorController = {
+	Actions = (
+	    "browseRepository:",
+	    "addNewEntityDescription:",
+	    "checkPackageDescriptionValidity:"
+	);
+	Outlets = (
+	);
+	Super = ETController;
+    };
+    MBRepositoryController = {
+	Actions = (
+	    "checkRepositoryValidity:",
+	    "showAnonymousPackageDescription:",
+	    "showPackageDescriptions:",
+	    "showEntityDescriptions:",
+	    "showPropertyDescriptions:",
+	    "showAllDescriptions:"
+	);
+	Outlets = (
+	);
+	Super = ETController;
+    };
+}
