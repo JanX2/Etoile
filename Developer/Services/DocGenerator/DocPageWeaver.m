@@ -234,6 +234,14 @@
 	                 ofKind: @"classes"];
 }
 
+- (void) weaveProtocolNamed: (NSString *)aProtocolName 
+{
+    [[self currentHeader] setProtocolName: aProtocolName];
+	[docIndex setProjectRef: [[self currentPage] name] 
+	          forSymbolName: aProtocolName 
+	                 ofKind: @"protocols"];
+}
+
 - (void) weaveMethod: (DocMethod *)aMethod
 {
     if ([aMethod isClassMethod])

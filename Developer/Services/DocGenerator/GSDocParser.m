@@ -210,6 +210,11 @@ didStartElement:(NSString *)elementName
 		ETAssert(nil != [weaver currentHeader]);
 		[[weaver currentHeader] setDeclaredIn: trimmed];
 	}
+	else if ([elementName isEqualToString: @"conform"])
+	{
+		ETAssert(nil != [weaver currentHeader]);
+		[[weaver currentHeader] addAdoptedProtocolName: trimmed];
+	}
 }
 
 - (NSDictionary *) currentAttributes

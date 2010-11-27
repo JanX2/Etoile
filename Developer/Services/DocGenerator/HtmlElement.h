@@ -69,6 +69,7 @@ The name is set to 'Blank'. */
 - (HtmlElement *) class: (NSString *)aClass with: (id)something and: (id) something and: (id)something;
 - (HtmlElement *) with: (id)something and: (id) something;
 - (HtmlElement *) with: (id)something and: (id) something and: (id)something;
+- (HtmlElement *) with: (id)something and: (id) something and: (id)something and: (id)something;
 - (HtmlElement *) id: (NSString *)anID with: (id)something;
 - (HtmlElement *) id: (NSString *)anID with: (id)something and: (id)something;
 @end

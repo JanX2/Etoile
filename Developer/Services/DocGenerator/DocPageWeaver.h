@@ -18,6 +18,7 @@
 @protocol CodeDocWeaving
 - (void) weaveClassNamed: (NSString *)aClassName 
           superclassName: (NSString *)aSuperclassName;
+- (void) weaveProtocolNamed: (NSString *)aProtocolName;
 - (void) weaveHeader: (DocHeader *)aHeader;
 - (void) weaveMethod: (DocMethod *)aMethod;
 - (void) weaveFunction: (DocFunction *)aFunction;
