@@ -7,6 +7,7 @@
 //
 
 #import "DocElement.h"
+#import "DescriptionParser.h"
 #import "DocIndex.h"
 #import "HtmlElement.h"
 #import "Parameter.h"
@@ -148,7 +149,7 @@
 	return [descWords componentsJoinedByString: @" "];
 }
 
-- (HtmlElement *) htmlDescription
+- (HtmlElement *) HTMLRepresentation
 {
 	return [[HtmlElement new] autorelease];
 }

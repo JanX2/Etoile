@@ -1,28 +1,13 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-TOOL_NAME = ContractExample
+CC = clang
 
-ContractExample_HEADER_FILES = GSDocParserDelegate.h 
-xMARKDOWN_DOCUMENTATION_FILES = \
-	GSDocParserDelegate-overview.text \
- 	presentation.text \
-	todo.text \
-	writing-doc.text \
-	architecture.text 
+TOOL_NAME = etdocgen
 
-xOBJC_DOCUMENTATION_FILES = \
-	DocumentWeaver.h \
-	ETDocGenerator.m \
-	Function.h \
-	GSDocParserDelegate.h \
-	Header.h \
-	HtmlElement.h \
-	Method.h 
+$(TOOL_NAME)_OBJCFLAGS += -Wparentheses #-fblocks
+$(TOOL_NAME)_TOOL_LIBS = -lEtoileFoundation
 
-OBJC_DOCUMENTATION_FILES = \
-	ETDocGenerator.m \
-
-ETOILE_DOCUMENTATION_OUTPUT_DIRECTORY = doctest
+$(TOOL_NAME)_OBJC_FILES = $(wildcard *.m)
 
 include $(GNUSTEP_MAKEFILES)/tool.make
-include etoile-documentation.make
+-include ../../../etoile.make

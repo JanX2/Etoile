@@ -119,7 +119,7 @@ void printError()
 int main (int argc, const char * argv[]) 
 {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	NSDictionary* options = ETGetOptionsDictionary("hc:r:t:m:e:p:", argc, argv);
+	NSDictionary* options = ETGetOptionsDictionary("hc:r:t:m:e:p:", argc, (char **)argv);
     NSArray *explicitSourceFiles = [options objectForKey: @""];
     NSString *parserSourceDir = [options objectForKey: @"c"];
     NSString *rawSourceDir = [options objectForKey: @"r"];
