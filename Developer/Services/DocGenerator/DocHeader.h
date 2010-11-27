@@ -44,7 +44,7 @@
 - (void) setTitle: (NSString *)aTitle;
 - (NSString *) title;
 
-- (HtmlElement *) HTMLDescription;
+- (HtmlElement *) HTMLRepresentation;
 
 /** The category presented on the page the header belongs to. */
 @property (retain, nonatomic) NSString *categoryName;

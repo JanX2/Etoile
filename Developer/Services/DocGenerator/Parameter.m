@@ -210,7 +210,7 @@ camel case). */
   return description;
 }
 
-- (HtmlElement *) HTMLDescription
+- (HtmlElement *) HTMLRepresentation
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
 	// NOTE: Should we use... and: [SPAN class: @"type" with: [p type] and: @") "

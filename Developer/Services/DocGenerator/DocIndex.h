@@ -20,7 +20,7 @@ It must be initialized with the igsdoc file corresponding to the gsdoc sources
 passed to the DocPageWeaver instance in use.
 
 Concrete subclasses such DocHTMLIndex can be used to create links. For example, 
-DocHTMLIndex can be used in -[DocElement HTMLDescription] code to wrap every 
+DocHTMLIndex can be used in -[DocElement HTMLRepresentation] code to wrap every 
 symbol name in a HTML link. */
 @interface DocIndex : NSObject
 {
@@ -68,7 +68,7 @@ Will return:
 refs. 
 
 You must call this method before generating the document output e.g. invoking 
--HTMLDescription on any doc element. */
+-HTMLRepresentation on any doc element. */
 - (void) regenerate;
 
 - (NSString *) linkForSymbolName: (NSString *)aSymbol;

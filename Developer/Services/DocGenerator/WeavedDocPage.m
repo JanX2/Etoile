@@ -120,7 +120,7 @@
 	// [[mainContentStrings rightFold] stringByAppendingString: @""];
 	[self insert: [[self mainContentHTMLRepresentations] componentsJoinedByString: @""]
 	      forTag: @"<!-- etoile-methods -->"];
-	[self insert: [[header HTMLDescription] content] 
+	[self insert: [[header HTMLRepresentation] content] 
 	      forTag:  @"<!-- etoile-header -->"];
 }
 
@@ -258,7 +258,7 @@
 
 		for (DocSubroutine *subroutine in subroutinesInTask)
 		{
-			[html add: [subroutine HTMLDescription]];
+			[html add: [subroutine HTMLRepresentation]];
 		}
 	}
 

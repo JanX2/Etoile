@@ -29,7 +29,7 @@
 - (NSString*) name;
 - (NSString*) type;
 - (NSString*) description;
-- (HtmlElement *) HTMLDescription;
+- (HtmlElement *) HTMLRepresentation;
 
 @property (readonly, nonatomic) NSString *typePrefix;
 @property (readonly, nonatomic) NSString *className;

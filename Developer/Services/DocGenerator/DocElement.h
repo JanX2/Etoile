@@ -28,7 +28,7 @@
 - (void) addInformationFrom: (DescriptionParser *)aParser;
 
 - (NSString *) formattedDescriptionWithDocIndex: (DocIndex *)aDocIndex;
-- (HtmlElement *) HTMLDescription;
+- (HtmlElement *) HTMLRepresentation;
 
 @end
 

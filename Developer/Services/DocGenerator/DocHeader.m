@@ -102,7 +102,7 @@
 	return title;
 }
 
-- (HtmlElement *) HTMLDescription
+- (HtmlElement *) HTMLRepresentation
 {
 	H h_title = [DIV id: @"classname"];
 	if (title)

@@ -77,7 +77,7 @@
  </dd>
  </dl>
 */ 
-- (HtmlElement *) HTMLDescription
+- (HtmlElement *) HTMLRepresentation
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
 	H h_signature = [DIV class: @"methodSignature"];
@@ -86,7 +86,7 @@
 	                         with: (isClassMethod ? @"+ " : @"- ")]];
 	
 	H h_returnType = [SPAN class: @"returnType" 
-	                       with: [SPAN class: @"type" with: [[self returnParameter] HTMLDescription]]];
+	                       with: [SPAN class: @"type" with: [[self returnParameter] HTMLRepresentation]]];
 	
 	[h_signature and: h_returnType];
 
@@ -104,7 +104,7 @@
 
         Parameter *p = [parameters objectAtIndex: i];
     
-        [h_signature and: [p HTMLDescription]];
+        [h_signature and: [p HTMLRepresentation]];
 	}
 	
 	H methodFull = [DIV class: @"method" 
