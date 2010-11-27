@@ -11,10 +11,13 @@
 
 @implementation DocHeader
 
+@synthesize protocolName, categoryName, adoptedProtocolNames;
+
 - (id) init
 {
   self = [super init];
   authors = [NSMutableArray new];
+  adoptedProtocolNames = [NSMutableArray new];
   return self;
 }
 
@@ -22,7 +25,10 @@
 {
   [authors release];
   [className release];
+  [protocolName release];
+  [categoryName release];
   [superClassName release];
+  [adoptedProtocolNames release];
   [abstract release];
   [overview release];
   [title release];
@@ -59,6 +65,16 @@
   [aName retain];
   [superClassName release];
   superClassName = aName;
+}
+
+- (NSArray *) adoptedProtocolNames
+{
+	return AUTORELEASE([adoptedProtocolNames copy]);
+}
+
+- (void) addAdoptedProtocolName: (NSString *)aName
+{
+	[adoptedProtocolNames addObject: aName];
 }
 
 - (void) setAbstract: (NSString*) aDescription
@@ -107,10 +123,36 @@
   {
     [h_title with: [H2 with: title]];
   }
-  if (className)
-  {
-    [h_title with: className and: @" : " and: superClassName];
-  }
+	if (className != nil && categoryName == nil)
+	{
+		ETAssert(protocolName == nil);
+		[h_title with: className and: @" : " and: superClassName];
+	}
+	if (categoryName != nil)
+	{
+		ETAssert(protocolName == nil);
+		[h_title with: className and: @" (" and: categoryName and: @")"];
+	}
+	if (protocolName != nil)
+	{
+		[h_title with: protocolName];	
+	}
+	if ([adoptedProtocolNames isEmpty] == NO)
+	{
+		BOOL isFirstProtocol = YES;
+
+		[h_title addText: @" &lt;"];
+
+		for (NSString *adoptedProtocol in adoptedProtocolNames)
+		{
+			if (isFirstProtocol == NO)
+				[h_title addText: @", "];
+
+			[h_title addText: adoptedProtocol];
+			isFirstProtocol = NO;
+		}
+		[h_title addText: @"&gt;"];
+	}
   
   H tdAuthors = TD;
   for (int i=0; i<[authors count]; i++)
@@ -124,7 +166,7 @@
   BOOL setOverview = NO;
   if (fileOverview != nil)
   {
-    NSString* fo = [NSString stringWithContentsOfFile: fileOverview];
+    NSString* fo = [NSString stringWithContentsOfFile: fileOverview encoding: NSUTF8StringEncoding error: NULL];
     [h_overview and: fo];
     setOverview = YES;
   }
