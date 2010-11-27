@@ -12,36 +12,36 @@
 
 @class HtmlElement;
 
-@interface DocHeader : NSObject  <GSDocParserDelegate>
+@interface DocHeader : NSObject <GSDocParserDelegate>
 {
-  /* Main Symbol (optional) presented on the page */
-  NSString* className;
-  NSString *protocolName;
-  NSString *categoryName;
-
-  /* Main Symbol Inheritance (optional) */
-  NSString* superClassName;
-  NSMutableArray *adoptedProtocolNames;
-
-  NSString* abstract;
-  NSString* overview;
-  NSString* fileOverview;
-  NSMutableArray* authors;
-  NSString* declared;
-  NSString* title;
+	/* Main Symbol (optional) presented on the page */
+	NSString *className;
+	NSString *protocolName;
+	NSString *categoryName;
+	
+	/* Main Symbol Inheritance (optional) */
+	NSString *superClassName;
+	NSMutableArray *adoptedProtocolNames;
+	
+	NSString *abstract;
+	NSString *overview;
+	NSString *fileOverview;
+	NSMutableArray *authors;
+	NSString *declared;
+	NSString *title;
 }
 
-- (void) setDeclaredIn: (NSString*) aFile;
-- (void) setClassName: (NSString*) aName;
+- (void) setDeclaredIn: (NSString *)aFile;
+- (void) setClassName: (NSString *)aName;
 - (NSString *) className;
-- (void) setSuperClassName: (NSString*) aName;
+- (void) setSuperClassName: (NSString *)aName;
 /* Adds a protocol name to -adoptedProtocolNames. */
 - (void) addAdoptedProtocolName: (NSString *)aName;
-- (void) setAbstract: (NSString*) aDescription;
-- (void) setOverview: (NSString*) aDescription;
-- (void) setFileOverview: (NSString*) aFile;
-- (void) addAuthor: (NSString*) aName;
-- (void) setTitle: (NSString*) aTitle;
+- (void) setAbstract: (NSString *)aDescription;
+- (void) setOverview: (NSString *)aDescription;
+- (void) setFileOverview: (NSString *)aFile;
+- (void) addAuthor: (NSString *)aName;
+- (void) setTitle: (NSString *)aTitle;
 - (NSString *) title;
 
 - (HtmlElement *) HTMLDescription;

@@ -15,44 +15,40 @@
 
 - (id) init
 {
-  self = [super init];
-  authors = [NSMutableArray new];
-  adoptedProtocolNames = [NSMutableArray new];
-  return self;
+	SUPERINIT;
+	authors = [NSMutableArray new];
+	adoptedProtocolNames = [NSMutableArray new];
+	return self;
 }
 
 - (void) dealloc
 {
-  [authors release];
-  [className release];
-  [protocolName release];
-  [categoryName release];
-  [superClassName release];
-  [adoptedProtocolNames release];
-  [abstract release];
-  [overview release];
-  [title release];
-  [super dealloc];
+	[authors release];
+	[className release];
+	[protocolName release];
+	[categoryName release];
+	[superClassName release];
+	[adoptedProtocolNames release];
+	[abstract release];
+	[overview release];
+	[title release];
+	[super dealloc];
 }
 
-- (void) setDeclaredIn: (NSString*) aFile
+- (void) setDeclaredIn: (NSString *)aFile
 {
-  [aFile retain];
-  [declared release];
-  declared = aFile;
+	ASSIGN(declared, aFile);
 }
 
 - (NSString *) description
 {
 	return [NSString stringWithFormat: @"%@ - %@, %@", [super description], 
-	title, className];
+			title, className];
 }
 
-- (void) setClassName: (NSString*) aName
+- (void) setClassName: (NSString *)aName
 {
-  [aName retain];
-  [className release];
-  className = aName;
+	ASSIGN(className, aName);
 }
 
 - (NSString *) className
@@ -60,11 +56,9 @@
 	return className;
 }
 
-- (void) setSuperClassName: (NSString*) aName 
+- (void) setSuperClassName: (NSString *)aName 
 {
-  [aName retain];
-  [superClassName release];
-  superClassName = aName;
+	ASSIGN(superClassName, aName);
 }
 
 - (NSArray *) adoptedProtocolNames
@@ -77,38 +71,30 @@
 	[adoptedProtocolNames addObject: aName];
 }
 
-- (void) setAbstract: (NSString*) aDescription
+- (void) setAbstract: (NSString *)aDescription
 {
-  [aDescription retain];
-  [abstract release];
-  abstract = aDescription;
+	ASSIGN(abstract, aDescription);
 }
 
-- (void) setOverview: (NSString*) aDescription
+- (void) setOverview: (NSString *)aDescription
 {
-  [aDescription retain];
-  [overview release];
-  overview = aDescription;
+	ASSIGN(overview, aDescription);
 }
 
-- (void) setFileOverview: (NSString*) aFile
+- (void) setFileOverview: (NSString *)aFile
 {
-  [aFile retain];
-  [fileOverview release];
-  fileOverview = aFile;
+	ASSIGN(fileOverview, aFile);
 }
 
-- (void) addAuthor: (NSString*) aName
+- (void) addAuthor: (NSString *)aName
 {
-  if (aName != nil)
-    [authors addObject: aName];
+	if (aName != nil)
+		[authors addObject: aName];
 }
 
-- (void) setTitle: (NSString*) aTitle
+- (void) setTitle: (NSString *)aTitle
 {
-  [aTitle retain];
-  [title release];
-  title = aTitle;
+	ASSIGN(title, aTitle);
 }
 
 - (NSString *) title
@@ -118,11 +104,13 @@
 
 - (HtmlElement *) HTMLDescription
 {
-  H h_title = [DIV id: @"classname"];
-  if (title)
-  {
-    [h_title with: [H2 with: title]];
-  }
+	H h_title = [DIV id: @"classname"];
+	if (title)
+	{
+		[h_title with: [H2 with: title]];
+	}
+
+	/* Insert either class, category or protocol as main symbol */
 	if (className != nil && categoryName == nil)
 	{
 		ETAssert(protocolName == nil);
@@ -137,47 +125,57 @@
 	{
 		[h_title with: protocolName];	
 	}
+
+	/* Insert adopted protocols */
 	if ([adoptedProtocolNames isEmpty] == NO)
 	{
 		BOOL isFirstProtocol = YES;
-
+		
 		[h_title addText: @" &lt;"];
-
+		
 		for (NSString *adoptedProtocol in adoptedProtocolNames)
 		{
 			if (isFirstProtocol == NO)
 				[h_title addText: @", "];
-
+			
 			[h_title addText: adoptedProtocol];
 			isFirstProtocol = NO;
 		}
 		[h_title addText: @"&gt;"];
 	}
-  
-  H tdAuthors = TD;
-  for (int i=0; i<[authors count]; i++)
-  {
-    [tdAuthors with: [authors objectAtIndex: i] and: @" "];
-  }
-  H table = [TABLE with: [TR with: [TH with: @"Authors"] and: tdAuthors]
-                               and: [TR with: [TH with: @"Declared in:"] and: [TD with: declared]]];
-  H meta = [DIV id: @"meta" with: [P id: @"metadesc" with: abstract] and: table];
-  H h_overview = [DIV id: @"overview" with: [H3 with: @"Overview"]];
-  BOOL setOverview = NO;
-  if (fileOverview != nil)
-  {
-    NSString* fo = [NSString stringWithContentsOfFile: fileOverview encoding: NSUTF8StringEncoding error: NULL];
-    [h_overview and: fo];
-    setOverview = YES;
-  }
-  else if (overview != nil)
-  {
-    [h_overview and: [P with: overview]];
-    setOverview = YES;
-  }
-  H header = [DIV id: @"header" with: h_title and: meta];
-  if (setOverview) [header and: h_overview];
-  return header;
+	
+	H tdAuthors = TD;
+	for (NSString *author in authors)
+	{
+		[tdAuthors with: author and: @" "];
+	}
+	H table = [TABLE with: [TR with: [TH with: @"Authors"] and: tdAuthors]
+					  and: [TR with: [TH with: @"Declared in:"] and: [TD with: declared]]];
+	H meta = [DIV id: @"meta" with: [P id: @"metadesc" with: abstract] and: table];
+	H h_overview = [DIV id: @"overview" with: [H3 with: @"Overview"]];
+	BOOL setOverview = NO;
+
+	/* Insert Overview */
+	if (fileOverview != nil)
+	{
+		NSString *fo = [NSString stringWithContentsOfFile: fileOverview encoding: NSUTF8StringEncoding error: NULL];
+		[h_overview and: fo];
+		setOverview = YES;
+	}
+	else if (overview != nil)
+	{
+		[h_overview and: [P with: overview]];
+		setOverview = YES;
+	}
+
+	/* Pack title, meta and overview in a header html element */
+	H header = [DIV id: @"header" with: h_title and: meta];
+	if (setOverview) 
+	{
+		[header and: h_overview];
+	}
+
+	return header;
 }
 
 - (void) parser: (GSDocParser *)parser 
@@ -214,6 +212,5 @@
 		ENDLOG2(title, className);
 	}
 }
-
 
 @end
