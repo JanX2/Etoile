@@ -15,6 +15,8 @@
 
 @implementation DocPageWeaver
 
+@synthesize projectName;
+
 + (Class) parserClassForFileType: (NSString *)aFileExtension
 {
 	if ([aFileExtension isEqual: @"gsdoc"])
@@ -60,6 +62,7 @@
 
 - (void) dealloc
 {
+	DESTROY(projectName);
 	DESTROY(sourcePaths);
     DESTROY(sourcePathQueue);
     DESTROY(templatePath);
@@ -140,6 +143,15 @@
     [DocIndex setCurrentIndex: docIndex];
 	[weavedPages removeAllObjects];
 	DESTROY(currentParser);
+
+	NSSet *skippedFileNames = S(@"ClassesTOC.gsdoc", 
+		[[self projectName] stringByAppendingPathExtension: @"gsdoc"]);
+
+	if ([skippedFileNames containsObject: [[self currentSourceFile] lastPathComponent]])
+	{
+    		NSLog(@" --- Skipping %@ ---- ", [self currentSourceFile]);
+		return [NSArray array];
+	}
 
 	Class parserClass = [[self class] parserClassForFileType: 
     	[[self currentSourceFile] pathExtension]];

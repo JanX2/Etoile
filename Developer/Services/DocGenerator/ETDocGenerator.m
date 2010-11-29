@@ -33,6 +33,7 @@ void printHelp ()
   "\t\t[-m <menu file>] -t <template> [-e <external mapping file>] \n"
   "\t\t[-p <project mapping file>] [<source file 1, source file 2, ...>]\n"
   "\n"
+  "\t -n : the name of the documented project. \n"
   "\t -c : the directory which contains the .gsdoc files (incompatible with \n"
   "\t      explicit source files)\n"
   "\t -r : the Markdown and HTML directory which contains the .text and .html \n"
@@ -45,6 +46,8 @@ void printHelp ()
   "\t -p : a file containing an xml plist with a mapping from class names to URL.\n"
   "\t      (used for the project classes). If indicated, will add links to the\n"
   "\t      mentioned types in the class methods.\n\n"
+  "\t -o : the ouput directory where the generated html files are saved.\n"
+  "\t      If not indicated, etdocgen uses the current directory.\n"
   "\t  - : the source file paths (.gsdoc, .text and .html). If indicated, will \n"
   "\t      cause both -c and -r to be ignored.\n"
   "\n"
@@ -119,14 +122,16 @@ void printError()
 int main (int argc, const char * argv[]) 
 {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	NSDictionary* options = ETGetOptionsDictionary("hc:r:t:m:e:p:", argc, (char **)argv);
+	NSDictionary* options = ETGetOptionsDictionary("hn:c:r:t:m:e:p:o:", argc, (char **)argv);
+	NSString *projectName = [options objectForKey: @"n"];
     NSArray *explicitSourceFiles = [options objectForKey: @""];
     NSString *parserSourceDir = [options objectForKey: @"c"];
     NSString *rawSourceDir = [options objectForKey: @"r"];
 	NSString* templateFile = [options objectForKey: @"t"];
 	NSString* menuFile = [options objectForKey: @"m"];
 	NSString* externalClassFile = [options objectForKey: @"e"];
-	NSString* projectClassFile = [options objectForKey: @"p"];;
+	NSString* projectClassFile = [options objectForKey: @"p"];
+	NSString *outputDir = [options objectForKey: @"o"];;
 	NSNumber* help = [options objectForKey: @"h"];
 
 	if (VALID(help))
@@ -151,13 +156,18 @@ int main (int argc, const char * argv[])
     	weaver = [weaver initWithSourceFiles: explicitSourceFiles
 		                        templateFile: templateFile];
     }
-	
+
+	[weaver setProjectName: projectName];	
 	[weaver setMenuFile: menuFile];
 	[weaver setExternalMappingFile: externalClassFile];
 	[weaver setProjectMappingFile: projectClassFile];
 
 	NSArray *pages = [weaver weaveAllPages];
-	NSString *outputDir = [[NSFileManager defaultManager] currentDirectoryPath];
+
+	if (outputDir == nil)
+	{
+		outputDir = [[NSFileManager defaultManager] currentDirectoryPath];
+	}
 
 	[[DocIndex currentIndex] regenerate];
 

@@ -35,6 +35,7 @@
 @interface DocPageWeaver : NSObject <CodeDocWeaving>
 {
 	@private
+	NSString *projectName;
 	NSArray *sourcePaths;
     NSMutableArray *sourcePathQueue;
     NSString *templatePath;
@@ -61,7 +62,9 @@
                         templateFile: (NSString *)aTemplatePath;
 - (id) initWithSourceFiles: (NSArray *)paths
               templateFile: (NSString *)aTemplatePath;
-              
+
+@property (retain, nonatomic) NSString *projectName;
+
 /** @task Additional Sources */
 
 - (void) setMenuFile: (NSString *)aMenuPath;
