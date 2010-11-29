@@ -36,7 +36,7 @@
 		[DocMethod class], @"method",
 		[DocFunction class], @"function", nil];
 	// TODO: Handle them in a better way. Probably apply a style.
-	transparentElements = [[NSSet alloc] initWithObjects: @"var", @"code", @"em", nil];
+	transparentElements = [[NSSet alloc] initWithObjects: @"p", @"var", @"code", @"em", nil];
 
 	content = [NSMutableString new];
 	
@@ -152,7 +152,7 @@ didStartElement:(NSString *)elementName
 	}
 	[self pushParserDelegate: parserDelegate];
 
-	//NSLog(@"%@Begin <%@>, parser %@", indentSpaces, elementName, [[self parserDelegate] primitiveDescription]);
+	NSLog(@"%@Begin <%@>, parser %@", indentSpaces, elementName, [(id)[self parserDelegate] primitiveDescription]);
 	[[self parserDelegate] parser: self startElement: elementName withAttributes: attributeDict];
 }
 
@@ -180,7 +180,7 @@ didStartElement:(NSString *)elementName
 		return;
 
 	[[self parserDelegate] parser: self endElement: elementName withContent: trimmed];
-	//NSLog(@"%@ End <%@> --> %@", indentSpaces, elementName);
+	NSLog(@"%@ End <%@> --> %@", indentSpaces, elementName, trimmed);
 
 	[self popParserDelegate];
 	/* Discard the content accumulated to handle the element which ends. */
@@ -195,7 +195,7 @@ didStartElement:(NSString *)elementName
 	/* The main parser is responsible to parse the class attributes */
 	if ([elementName isEqualToString: @"class"]) 
 	{
-        [weaver weaveClassNamed: [attributeDict objectForKey: @"name"]
+        	[weaver weaveClassNamed: [attributeDict objectForKey: @"name"]
 		         superclassName: [attributeDict objectForKey: @"super"]];
 	}
 }
