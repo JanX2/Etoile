@@ -195,11 +195,11 @@ withDictionaryName: (NSString *)mergedDictName
 - (NSString *) linkWithName: (NSString *)aName ref: (NSString *)aRef anchor: (NSString *)anAnchor
 {
 	if (aRef == nil)
-    	return aName;
+    		return aName;
 
-	if (anAnchor != nil)
+	if (anAnchor != nil && [anAnchor isEqualToString: @""] == NO)
 	{
-		return [NSString stringWithFormat: @"<a href=\"%@%#%@\">%@</a>", aRef, anAnchor, aName];
+		return [NSString stringWithFormat: @"<a href=\"%@#%@\">%@</a>", aRef, anAnchor, aName];
 	}
 	else
 	{
