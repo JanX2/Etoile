@@ -215,6 +215,11 @@ didStartElement:(NSString *)elementName
 		ETAssert(nil != [weaver currentHeader]);
 		[[weaver currentHeader] addAdoptedProtocolName: trimmed];
 	}
+	else if ([elementName isEqualToString: @"desc"])
+	{
+		ETAssert(nil != [weaver currentHeader]);
+		[[weaver currentHeader] setOverview: trimmed];
+	}
 }
 
 - (NSDictionary *) currentAttributes
