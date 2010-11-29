@@ -152,7 +152,7 @@ didStartElement:(NSString *)elementName
 	}
 	[self pushParserDelegate: parserDelegate];
 
-	NSLog(@"%@Begin <%@>, parser %@", indentSpaces, elementName, [(id)[self parserDelegate] primitiveDescription]);
+	//NSLog(@"%@  Begin <%@>, parser %@", indentSpaces, elementName, [(id)[self parserDelegate] primitiveDescription]);
 	[[self parserDelegate] parser: self startElement: elementName withAttributes: attributeDict];
 }
 
@@ -180,7 +180,7 @@ didStartElement:(NSString *)elementName
 		return;
 
 	[[self parserDelegate] parser: self endElement: elementName withContent: trimmed];
-	NSLog(@"%@ End <%@> --> %@", indentSpaces, elementName, trimmed);
+	//NSLog(@"%@  End <%@> --> %@", indentSpaces, elementName, trimmed);
 
 	[self popParserDelegate];
 	/* Discard the content accumulated to handle the element which ends. */

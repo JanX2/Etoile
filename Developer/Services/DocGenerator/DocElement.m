@@ -114,13 +114,13 @@
            TODO: But we need to handle square bracket use specially. For square 
            brackets, we detect [Class], [(Protocol)], -[Class method], 
            +[Class method], -[(Protocol) method], +[(Protocol) method] */
-		if (length > 0 && [punctCharset characterIsMember: [word characterAtIndex: 0]])
+	if (length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: 0]])
         {
             r.location++;
             r.length--;
             usesSubword = YES;
         }
-        if (length > 0 && [punctCharset characterIsMember: [word characterAtIndex: length - 1]])
+        if (length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: length - 1]])
         {
         	r.length--;
             if ([punctCharset characterIsMember: [word characterAtIndex: length - 2]])
