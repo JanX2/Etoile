@@ -13,6 +13,10 @@
 #import "HtmlElement.h"
 #import "DescriptionParser.h"
 
+@interface NullParserDelegate : NSObject <GSDocParserDelegate>
+@end
+
+
 @implementation GSDocParser
 
 - (id) init
@@ -33,10 +37,12 @@
 	indentSpaceUnit = @"  ";
 	elementClasses = [[NSMutableDictionary alloc] initWithObjectsAndKeys: 
 		[DocHeader class], @"head", 
+		[NullParserDelegate class], @"ivariable",
 		[DocMethod class], @"method",
 		[DocFunction class], @"function", nil];
 	// TODO: Handle them in a better way. Probably apply a style.
-	transparentElements = [[NSSet alloc] initWithObjects: @"p", @"var", @"code", @"em", nil];
+	transparentElements = [[NSSet alloc] initWithObjects: @"var", @"code", nil];
+	etdocElements = [[NSSet alloc] initWithObjects: @"p", @"em", @"strong", nil]; 
 
 	content = [NSMutableString new];
 	
@@ -49,6 +55,7 @@
 	[parserDelegateStack release];
 	[elementClasses release];
     [transparentElements release];
+	[etdocElements release];
 	[content release];
 	[super dealloc];
 }
@@ -140,6 +147,12 @@ didStartElement:(NSString *)elementName
 	if ([transparentElements containsObject: elementName])
 		return;
 
+	if ([etdocElements containsObject: elementName])
+	{
+		[content appendString: [NSString stringWithFormat: @"<%@>", elementName]];
+		return;
+	}
+
 	ASSIGN(currentAttributes, attributeDict);
 
 	id parserDelegate = [self parserDelegate];
@@ -172,12 +185,24 @@ didStartElement:(NSString *)elementName
 	/* For some tags, we do nothing but we store their content in our content 
 	   accumulator. The next handled element can retrieve the accumulated 
 	   content. For example:
-	   <desc><i>A boat<i> on <j>the</j> river.</desc>
+	   <desc><i>A boat</i> on <j>the</j> river.</desc>
 	   if i and j are transparent elements, the parser behaves exactly as if we 
 	   parsed:
 	   <desc>A boat on the river.</desc> */
 	if ([transparentElements containsObject: elementName])
 		return;
+
+	/* For some tags, we do nothing but we insert them along with their content 
+	   in our content accumulator. The next handled element can retrieve the 
+	   accumulated content. For example:
+	   <desc><i>A boat<i> on <j>the</j> river.</desc>
+	   if i and j are etdoc elements, the accumulated content will be:
+	   <i>A boat</i>on <j>the</j> river. */
+	if ([etdocElements containsObject: elementName])
+	{
+		[content appendString: [NSString stringWithFormat: @"</%@>", elementName]];
+		return;
+	}
 
 	[[self parserDelegate] parser: self endElement: elementName withContent: trimmed];
 	//NSLog(@"%@  End <%@> --> %@", indentSpaces, elementName, trimmed);
@@ -238,3 +263,21 @@ didStartElement:(NSString *)elementName
 
 @end
 
+
+@implementation NullParserDelegate 
+
+- (void) parser: (GSDocParser *)parser 
+   startElement: (NSString *)elementName
+  withAttributes: (NSDictionary *)attributeDict
+{
+
+}
+
+- (void) parser: (GSDocParser *)parser
+     endElement: (NSString *)elementName
+    withContent: (NSString *)trimmed
+{
+
+}
+
+@end

@@ -39,6 +39,7 @@
 	NSString *indentSpaceUnit;
 	NSMutableDictionary *elementClasses;
 	NSSet *transparentElements;
+	NSSet *etdocElements;
 	NSMutableString *content;
 	NSDictionary *currentAttributes;
 }
