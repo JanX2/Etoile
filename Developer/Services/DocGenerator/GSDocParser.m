@@ -43,8 +43,10 @@
 		[DocFunction class], @"function",
 		[DocConstant class], @"constant", nil];
 	// NOTE: ref elements are pruned. DocIndex is used instead.
-	substitutionElements = [[NSDictionary alloc] initWithObjectsAndKeys: @"list", @"ul", 
-		@"item", @"li", @"enum", @"ol", @"deflist", @"dl", @"term", @"dt", @"desc", @"dd", @"", @"ref", nil];
+	// desc -> dd substitution is not added to the dictionary until we enter a 
+	// deflist, otherwise this would intercept <desc> inside <method>, <class> etc.
+	substitutionElements = [[NSMutableDictionary alloc] initWithObjectsAndKeys: @"ul", @"list", 
+		@"li", @"item", @"ol", @"enum", @"dl", @"deflist", @"dt", @"term", @"", @"ref", nil];
 	// NOTE: var corresponds to GSDoc var and not HTML var
 	etdocElements = [[NSSet alloc] initWithObjects: @"p", @"code", @"example", @"br", @"em", @"strong", @"var", @"ivar", nil]; 
 
@@ -143,7 +145,7 @@ didStartElement:(NSString *)elementName
 {
 	NSLog (@"%@  parse <%@>", indentSpaces, elementName);
 
-	NSString *substituedElement = [substitutionElements objectForKey: elementName];
+	NSString *substituedElement = [substitutionElements objectForKey: elementName]; 
 	BOOL removeMarkup = [substituedElement isEqualToString: @""];
 	BOOL substituteMarkup = (substituedElement != nil && removeMarkup == NO);
 	BOOL keepMarkup = [etdocElements containsObject: elementName];
@@ -168,6 +170,12 @@ didStartElement:(NSString *)elementName
 	else if (substituteMarkup)
 	{
 		[content appendString: [NSString stringWithFormat: @"<%@>", substituedElement]];
+
+		/* Replace <desc> with <dd> inside <deflist> but not elsewhere */
+		if ([elementName isEqualToString: @"deflist"])
+		{
+			[substitutionElements setObject: @"dd" forKey: @"desc"];
+		}
 		return;
 	}
 	else if (keepMarkup)
@@ -217,6 +225,11 @@ didStartElement:(NSString *)elementName
 	else if (substituteMarkup)
 	{
 		[content appendString: [NSString stringWithFormat: @"</%@>", substituedElement]];
+
+		if ([elementName isEqualToString: @"deflist"])
+		{
+			[substitutionElements removeObjectForKey: @"desc"];
+		}
 		return;
 	}
 	else if (keepMarkup)

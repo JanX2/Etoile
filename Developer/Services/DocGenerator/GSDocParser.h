@@ -38,7 +38,7 @@
 	NSString *indentSpaces;
 	NSString *indentSpaceUnit;
 	NSMutableDictionary *elementClasses;
-	NSDictionary *substitutionElements;
+	NSMutableDictionary *substitutionElements;
 	NSSet *etdocElements;
 	NSMutableString *content;
 	NSDictionary *currentAttributes;
