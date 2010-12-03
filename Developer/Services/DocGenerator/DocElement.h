@@ -27,7 +27,9 @@
 - (NSString *) filteredDescription;
 - (void) addInformationFrom: (DescriptionParser *)aParser;
 
-- (NSString *) formattedDescriptionWithDocIndex: (DocIndex *)aDocIndex;
+- (NSString *) insertLinksWithDocIndex: (DocIndex *)aDocIndex 
+                             forString: (NSString *)aDescription;
+- (NSString *) HTMLDescriptionWithDocIndex: (DocIndex *)aDocIndex;
 - (HtmlElement *) HTMLRepresentation;
 
 @end

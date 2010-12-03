@@ -38,7 +38,7 @@
 	NSString *indentSpaces;
 	NSString *indentSpaceUnit;
 	NSMutableDictionary *elementClasses;
-	NSSet *transparentElements;
+	NSDictionary *substitutionElements;
 	NSSet *etdocElements;
 	NSMutableString *content;
 	NSDictionary *currentAttributes;
@@ -61,7 +61,6 @@
 - (void) pushParserDelegate: (id <GSDocParserDelegate>)aDelegate;
 - (void) popParserDelegate;
 - (NSString *) indentSpaces;
-- (NSSet *) transparentElements;
 
 /**
  * NSXMLParse delegate method.

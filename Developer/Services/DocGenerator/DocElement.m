@@ -69,7 +69,7 @@
 	[self setFilteredDescription: [aParser description]];
 }
 
-- (NSMutableArray *) descriptionWords
+- (NSMutableArray *) wordsFromString: (NSString *)aDescription
 {
 	/*NSScanner *scanner = [NSScanner scannerWithString: [self filteredDescription]];
 	NSMutableCharacterSet *charset = [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
@@ -91,12 +91,13 @@
 
 	NSCharacterSet *charset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
 	return [NSMutableArray arrayWithArray: 
-    	[[self filteredDescription] componentsSeparatedByCharactersInSet: charset]];
+    	[aDescription componentsSeparatedByCharactersInSet: charset]];
 }
 
-- (NSString *) formattedDescriptionWithDocIndex: (DocIndex *)aDocIndex
+- (NSString *) insertLinksWithDocIndex: (DocIndex *)aDocIndex forString: (NSString *)aDescription 
 {
-	NSMutableArray *descWords = [self descriptionWords];
+	return aDescription;
+	NSMutableArray *descWords = [self wordsFromString: aDescription];
 	NSCharacterSet *punctCharset = [NSCharacterSet punctuationCharacterSet];
 
 	for (int i = 0; i < [descWords count]; i++)
@@ -114,13 +115,13 @@
            TODO: But we need to handle square bracket use specially. For square 
            brackets, we detect [Class], [(Protocol)], -[Class method], 
            +[Class method], -[(Protocol) method], +[(Protocol) method] */
-	if (length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: 0]])
+	if (r.length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: 0]])
         {
             r.location++;
             r.length--;
             usesSubword = YES;
         }
-        if (length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: length - 1]])
+        if (r.length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: length - 1]])
         {
         	r.length--;
             if ([punctCharset characterIsMember: [word characterAtIndex: length - 2]])
@@ -147,6 +148,23 @@
     }
 
 	return [descWords componentsJoinedByString: @" "];
+}
+
+- (NSString *) HTMLDescriptionWithDocIndex: (DocIndex *)aDocIndex
+{
+	NSMutableString *description = [NSMutableString stringWithString: [self filteredDescription]];
+ 	NSDictionary *htmlTagSubstitutions = D(@"example>", @"pre>", @"code>", @"var>"); 
+	NSUInteger length = [description length];
+
+	for (NSString *tag in htmlTagSubstitutions)
+	{
+		[description replaceOccurrencesOfString: tag 
+		                             withString: [htmlTagSubstitutions objectForKey: tag]
+		                                options: NSCaseInsensitiveSearch
+		                                  range: NSMakeRange(0, length)];
+	}
+
+	return [self insertLinksWithDocIndex: aDocIndex forString: description];
 }
 
 - (HtmlElement *) HTMLRepresentation

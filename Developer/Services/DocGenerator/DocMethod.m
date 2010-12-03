@@ -110,7 +110,7 @@
 	H methodFull = [DIV class: @"method" 
 	                     with: [DL with: [DT with: h_signature]
                                     and: [DD with: [DIV class: @"methodDescription" 
-	                                                     with: [self formattedDescriptionWithDocIndex: docIndex]]]]];
+	                                                     with: [self HTMLDescriptionWithDocIndex: docIndex]]]]];
 	//NSLog(@"Method %@", methodFull);
 	return methodFull;
 }

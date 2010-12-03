@@ -7,6 +7,7 @@
 //
 
 #import "GSDocParser.h"
+#import "DocConstant.h"
 #import "DocHeader.h"
 #import "DocMethod.h"
 #import "DocFunction.h"
@@ -39,10 +40,13 @@
 		[DocHeader class], @"head", 
 		[NullParserDelegate class], @"ivariable",
 		[DocMethod class], @"method",
-		[DocFunction class], @"function", nil];
-	// TODO: Handle them in a better way. Probably apply a style.
-	transparentElements = [[NSSet alloc] initWithObjects: @"var", @"code", nil];
-	etdocElements = [[NSSet alloc] initWithObjects: @"p", @"em", @"strong", nil]; 
+		[DocFunction class], @"function",
+		[DocConstant class], @"constant", nil];
+	// NOTE: ref elements are pruned. DocIndex is used instead.
+	substitutionElements = [[NSDictionary alloc] initWithObjectsAndKeys: @"list", @"ul", 
+		@"item", @"li", @"enum", @"ol", @"deflist", @"dl", @"term", @"dt", @"desc", @"dd", @"", @"ref", nil];
+	// NOTE: var corresponds to GSDoc var and not HTML var
+	etdocElements = [[NSSet alloc] initWithObjects: @"p", @"code", @"example", @"br", @"em", @"strong", @"var", @"ivar", nil]; 
 
 	content = [NSMutableString new];
 	
@@ -54,7 +58,7 @@
 	[xmlParser release];
 	[parserDelegateStack release];
 	[elementClasses release];
-    [transparentElements release];
+    [substitutionElements release];
 	[etdocElements release];
 	[content release];
 	[super dealloc];
@@ -131,23 +135,42 @@
 	return indentSpaces;
 }
 
-- (NSSet *) transparentElements
-{
-	return transparentElements;
-}
-
 - (void) parser:(NSXMLParser *)parser
 didStartElement:(NSString *)elementName
    namespaceURI:(NSString *)namespaceURI
   qualifiedName:(NSString *)qName
      attributes:(NSDictionary *)attributeDict
 {
-	//NSLog (@"begin elementName: <%@>", elementName, qName);
+	NSLog (@"%@  parse <%@>", indentSpaces, elementName);
 
-	if ([transparentElements containsObject: elementName])
+	NSString *substituedElement = [substitutionElements objectForKey: elementName];
+	BOOL removeMarkup = [substituedElement isEqualToString: @""];
+	BOOL substituteMarkup = (substituedElement != nil && removeMarkup == NO);
+	BOOL keepMarkup = [etdocElements containsObject: elementName];
+
+	/* (1) For GSDoc tags which have equivalent ETDoc tags, we insert their content 
+	   enclosed in equivalent ETDoc tags into our content accumulator. 
+	   The next handled element can retrieve the accumulated content. For example:
+	   <desc><i>A boat</i> on <j>the</j> river.</desc>
+	   if i and j are GSDoc elements equivalent to x and y in ETDoc, the 
+	   accumulated content will be:
+	   <desc><x>A boat</x> on <y>the</y> river.</desc>
+
+ 	   (2) For ETDoc tags, we insert them along with their content in our content accumulator. 
+	   The next handled element can retrieve the accumulated content. For example:
+	   <desc><i>A boat<i> on <j>the</j> river.</desc>
+	   if i and j are ETDoc elements, the accumulated content will be:
+	   <i>A boat</i>on <j>the</j> river. */
+	if (removeMarkup)
+	{
 		return;
-
-	if ([etdocElements containsObject: elementName])
+	}
+	else if (substituteMarkup)
+	{
+		[content appendString: [NSString stringWithFormat: @"<%@>", substituedElement]];
+		return;
+	}
+	else if (keepMarkup)
 	{
 		[content appendString: [NSString stringWithFormat: @"<%@>", elementName]];
 		return;
@@ -165,7 +188,7 @@ didStartElement:(NSString *)elementName
 	}
 	[self pushParserDelegate: parserDelegate];
 
-	//NSLog(@"%@  Begin <%@>, parser %@", indentSpaces, elementName, [(id)[self parserDelegate] primitiveDescription]);
+	NSLog(@"%@  Begin <%@>, parser %@", indentSpaces, elementName, [(id)[self parserDelegate] primitiveDescription]);
 	[[self parserDelegate] parser: self startElement: elementName withAttributes: attributeDict];
 }
 
@@ -181,31 +204,29 @@ didStartElement:(NSString *)elementName
 {
 	NSString* trimmed = [content stringByTrimmingCharactersInSet: 
 		[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	NSString *substituedElement = [substitutionElements objectForKey: elementName];
+	BOOL removeMarkup = [substituedElement isEqualToString: @""];
+	BOOL substituteMarkup = (substituedElement != nil && removeMarkup == NO);
+	BOOL keepMarkup = [etdocElements containsObject: elementName];
 
-	/* For some tags, we do nothing but we store their content in our content 
-	   accumulator. The next handled element can retrieve the accumulated 
-	   content. For example:
-	   <desc><i>A boat</i> on <j>the</j> river.</desc>
-	   if i and j are transparent elements, the parser behaves exactly as if we 
-	   parsed:
-	   <desc>A boat on the river.</desc> */
-	if ([transparentElements containsObject: elementName])
+	/* See comment in -parser:didStartElement:namespaceURI:qualifiedName: */
+	if (removeMarkup)
+	{
 		return;
-
-	/* For some tags, we do nothing but we insert them along with their content 
-	   in our content accumulator. The next handled element can retrieve the 
-	   accumulated content. For example:
-	   <desc><i>A boat<i> on <j>the</j> river.</desc>
-	   if i and j are etdoc elements, the accumulated content will be:
-	   <i>A boat</i>on <j>the</j> river. */
-	if ([etdocElements containsObject: elementName])
+	}
+	else if (substituteMarkup)
+	{
+		[content appendString: [NSString stringWithFormat: @"</%@>", substituedElement]];
+		return;
+	}
+	else if (keepMarkup)
 	{
 		[content appendString: [NSString stringWithFormat: @"</%@>", elementName]];
 		return;
 	}
 
 	[[self parserDelegate] parser: self endElement: elementName withContent: trimmed];
-	//NSLog(@"%@  End <%@> --> %@", indentSpaces, elementName, trimmed);
+	NSLog(@"%@  End <%@> --> %@", indentSpaces, elementName, trimmed);
 
 	[self popParserDelegate];
 	/* Discard the content accumulated to handle the element which ends. */
