@@ -29,6 +29,17 @@
 	[super dealloc];
 }
 
+- (id) copyWithZone: (NSZone *)aZone
+{
+	DocElement *copy = [[self class] allocWithZone: aZone];
+
+	copy->rawDescription = [rawDescription mutableCopyWithZone: aZone];
+	ASSIGN(copy->filteredDescription, filteredDescription);
+	ASSIGN(copy->name, name);
+
+	return copy;
+}
+
 - (NSComparisonResult) caseInsensitiveCompare: (NSString *)aString
 {
 	return [aString caseInsensitiveCompare: name];
@@ -136,7 +147,7 @@
         }
 
 		/* In most cases, no link is created and link is the same than symbol */
-		NSString *link = [aDocIndex linkForSymbolName: symbol];
+		NSString *link = [aDocIndex linkForSymbolName: symbol ofKind: nil];
 		NSString *finalWord = link;
 
 		if (usesSubword)

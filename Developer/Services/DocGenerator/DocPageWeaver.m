@@ -73,6 +73,8 @@
     DESTROY(docIndex);
     DESTROY(currentParser);
 	DESTROY(currentClassName);
+	DESTROY(currentProtocolName);
+	DESTROY(currentHeader);
     DESTROY(allWeavedPages);
     DESTROY(weavedPages);
 	[super dealloc];
@@ -190,8 +192,20 @@
 	return currentClassName;
 }
 
+- (NSString *) currentProtocolName
+{
+	return currentProtocolName;
+}
+
 - (void) weaveNewPage
 {
+	/* Don't release the current header because the header precedes class, 
+	   protocol and category declarations in GSDoc format.
+	   The header can be valid for multiple pages too. e.g. When a gsdoc file 
+	   contains multiple class documentations. */
+	DESTROY(currentClassName);
+	DESTROY(currentProtocolName);
+
 	WeavedDocPage *page = [[WeavedDocPage alloc] initWithDocumentFile: [self currentSourceFile]
 	                                templateFile: [self templateFileForSourceFile: [self currentSourceFile]]
 	                                    menuFile: menuPath];
@@ -205,9 +219,9 @@
 
 - (void) weaveHeader: (DocHeader *)aHeader
 {
-    [self weaveNewPage];
-	[[self currentPage] setHeader: aHeader];
-    [self weaveOverviewFile];
+	/* We set the header on the current page in methods such as -weaveClassNamed:superclassName: */
+	ASSIGN(currentHeader, aHeader);
+ 	[self weaveOverviewFile];
 }
 
 - (void) weaveOverviewFile
@@ -238,9 +252,16 @@
 - (void) weaveClassNamed: (NSString *)aClassName 
           superclassName: (NSString *)aSuperclassName
 {
+	[self weaveNewPage];
+
 	ASSIGN(currentClassName, aClassName);
-    [[self currentHeader] setClassName: aClassName];
-    [[self currentHeader] setSuperClassName: aSuperclassName];
+	ASSIGNCOPY(currentHeader, currentHeader);
+
+	[[self currentPage] setHeader: currentHeader];
+
+	[[self currentHeader] setClassName: aClassName];
+	[[self currentHeader] setSuperClassName: aSuperclassName];
+
 	[docIndex setProjectRef: [[self currentPage] name] 
 	          forSymbolName: aClassName 
 	                 ofKind: @"classes"];
@@ -248,10 +269,36 @@
 
 - (void) weaveProtocolNamed: (NSString *)aProtocolName 
 {
-    [[self currentHeader] setProtocolName: aProtocolName];
+	[self weaveNewPage];
+
+	ASSIGN(currentProtocolName, aProtocolName);
+	ASSIGNCOPY(currentHeader, currentHeader);
+
+	[[self currentPage] setHeader: currentHeader];
+
+	[[self currentHeader] setProtocolName: aProtocolName];
+
 	[docIndex setProjectRef: [[self currentPage] name] 
 	          forSymbolName: aProtocolName 
 	                 ofKind: @"protocols"];
+}
+
+- (void) weaveCategoryNamed: (NSString *)aCategoryName
+                  className: (NSString *)aClassName
+{
+	[self weaveNewPage];
+
+	ASSIGN(currentClassName, aClassName);
+	ASSIGNCOPY(currentHeader, currentHeader);
+
+	[[self currentPage] setHeader: currentHeader];
+
+	[[self currentHeader] setCategoryName: aCategoryName];
+	[[self currentHeader] setClassName: aClassName];
+
+	[docIndex setProjectRef: [[self currentPage] name] 
+	          forSymbolName: [NSString stringWithFormat: @"%@(%@)", aClassName, aCategoryName]
+	                 ofKind: @"categories"];
 }
 
 - (void) weaveMethod: (DocMethod *)aMethod
@@ -264,13 +311,35 @@
     {
         [[self currentPage] addInstanceMethod: aMethod];
     }
+
+	NSString *refMarkup = nil;
+
+	if ([self currentClassName] != nil)
+	{
+		refMarkup = [aMethod refMarkupWithClassName: [self currentClassName]]; 
+	}
+	else
+	{
+		ETAssert([self currentProtocolName] != nil);
+		refMarkup = [aMethod refMarkupWithProtocolName: [self currentProtocolName]];
+	}
 	[docIndex setProjectRef: [[self currentPage] name] 
-	          forSymbolName: [aMethod refMarkupWithClassName: [self currentClassName]] 
+	          forSymbolName: refMarkup
 	                 ofKind: @"methods"];
 }
 
 - (void) weaveFunction: (DocFunction *)aFunction
 {
+	if ([self currentPage] == nil)
+	{
+		[self weaveNewPage];
+
+		ASSIGN(currentClassName, nil);
+		ASSIGNCOPY(currentHeader, currentHeader);
+
+		[[self currentPage] setHeader: currentHeader];
+	}
+
 	[[self currentPage] addFunction: aFunction];
 	[docIndex setProjectRef: [[self currentPage] name] 
 	          forSymbolName: [aFunction name] 
@@ -279,7 +348,7 @@
 
 - (DocHeader *) currentHeader
 {
-	return [[self currentPage] header];
+	return currentHeader;
 }
 
 @end

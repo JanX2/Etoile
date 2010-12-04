@@ -94,10 +94,12 @@
 
 - (NSString *) name
 {
-	if ([header className] != nil)
-		return [header className];
+	if ([header name] != nil)
+		return [header name];
 
-	return [[documentPath lastPathComponent] stringByDeletingPathExtension];
+	NSString *pageName = [[documentPath lastPathComponent] stringByDeletingPathExtension];
+	ETLog(@"WARNING: Found no header page, will use %@ as page name", pageName);
+	return pageName;
 }
 
 - (void) insert: (NSString *)content forTag: (NSString *)aTag
@@ -145,20 +147,23 @@
 	[self insert: menuContent forTag: @"<!-- etoile-menu -->"];
 }
 
-- (void) insertProjectClassList
+- (void) insertProjectSymbolListOfKind: (NSString *)aKind
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
-	NSArray *classNames = [[docIndex projectSymbolNamesOfKind: @"classes"]
+	NSArray *symbolNames = [[docIndex projectSymbolNamesOfKind: aKind]
 		sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
 	H list = UL;
-	
-	FOREACH(classNames, className, NSString *)
+
+	FOREACH(symbolNames, name, NSString *)
 	{
-		[list and: [LI with: [docIndex linkForClassName: className]]];
+		[list and: [LI with: [docIndex linkForSymbolName: name ofKind: aKind]]];
 	}
 
-	[self insert: [[DIV id: @"project-classes-list" with: list] content] 
-	      forTag: @"<!-- etoile-list-classes -->"];
+	NSString *blockId = [NSString stringWithFormat: @"project-%@-list", aKind];
+ 	NSString *templateTag  = [NSString stringWithFormat: @"<!-- etoile-list-%@ -->", aKind];
+
+	[self insert: [[DIV id: blockId with: list] content] 
+	      forTag: templateTag];
 }
 
 - (void) weave
@@ -167,7 +172,10 @@
 
 	[self insertDocument];
 	[self insertMenu];
-	[self insertProjectClassList];
+	for (NSString *kind in [NSArray arrayWithObjects: @"classes", @"protocols", @"categories", nil]) //[docIndex symbolKinds])
+	{
+		[self insertProjectSymbolListOfKind: kind];
+	}
 }
 
 - (void) writeToURL: (NSURL *)outputURL

@@ -8,11 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
+#import "DocElement.h"
 #import "GSDocParser.h"
 
 @class HtmlElement;
 
-@interface DocHeader : NSObject <GSDocParserDelegate>
+@interface DocHeader : DocElement <GSDocParserDelegate>
 {
 	/* Main Symbol (optional) presented on the page */
 	NSString *className;

@@ -251,12 +251,22 @@ didStartElement:(NSString *)elementName
    startElement: (NSString *)elementName
   withAttributes: (NSDictionary *)attributeDict
 {
-	/* The main parser is responsible to parse the class attributes */
+	/* The main parser is responsible to parse the class, category and protocol attributes */
 	if ([elementName isEqualToString: @"class"]) 
 	{
         	[weaver weaveClassNamed: [attributeDict objectForKey: @"name"]
 		         superclassName: [attributeDict objectForKey: @"super"]];
 	}
+	else if ([elementName isEqualToString: @"category"]) 
+	{
+        	[weaver weaveCategoryNamed: [attributeDict objectForKey: @"name"]
+		                     className: [attributeDict objectForKey: @"class"]];
+	}
+	if ([elementName isEqualToString: @"protocol"]) 
+	{
+        	[weaver weaveProtocolNamed: [attributeDict objectForKey: @"name"]];
+	}
+
 }
 
 - (void) parser: (GSDocParser *)parser

@@ -71,8 +71,8 @@ You must call this method before generating the document output e.g. invoking
 -HTMLRepresentation on any doc element. */
 - (void) regenerate;
 
-- (NSString *) linkForSymbolName: (NSString *)aSymbol;
-- (NSString *) linkWithName: (NSString *)aName forSymbolName: (NSString *)aSymbol;
+- (NSString *) linkForSymbolName: (NSString *)aSymbol ofKind: (NSString *)aKind;
+- (NSString *) linkWithName: (NSString *)aName forSymbolName: (NSString *)aSymbol ofKind: (NSString *)aKind;
 - (NSString *) linkForClassName: (NSString *)aClassName;
 - (NSString *) linkWithName: (NSString *)aName forClassName: (NSString *)aClassName;
 - (NSString *) linkForProtocolName: (NSString *)aProtocolName;

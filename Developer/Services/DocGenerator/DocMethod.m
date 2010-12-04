@@ -66,6 +66,12 @@
 	return [NSString stringWithFormat: @"%c[%@ %@]", sign, aClassName, [self name]];
 }
 
+- (NSString *) refMarkupWithProtocolName: (NSString *)aProtocolName
+{
+	char sign = (isClassMethod ? '+' : '-');
+	return [NSString stringWithFormat: @"%c[(%@) %@]", sign, aProtocolName, [self name]];
+}
+
 /*
  <dl>
  <dt>+ (void) <strong>willVerify:</strong> (Class)aClass;</dt>

@@ -19,6 +19,8 @@
 - (void) weaveClassNamed: (NSString *)aClassName 
           superclassName: (NSString *)aSuperclassName;
 - (void) weaveProtocolNamed: (NSString *)aProtocolName;
+- (void) weaveCategoryNamed: (NSString *)aCategoryName
+                  className: (NSString *)aClassName;
 - (void) weaveHeader: (DocHeader *)aHeader;
 - (void) weaveMethod: (DocMethod *)aMethod;
 - (void) weaveFunction: (DocFunction *)aFunction;
@@ -46,6 +48,8 @@
     DocIndex *docIndex;
     id currentParser;
     NSString *currentClassName;
+	NSString *currentProtocolName;
+	DocHeader *currentHeader;
     NSMutableArray *allWeavedPages;
     NSMutableArray *weavedPages;
 }

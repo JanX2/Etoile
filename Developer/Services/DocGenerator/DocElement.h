@@ -11,7 +11,7 @@
 
 @class HtmlElement, DescriptionParser, DocIndex;
 
-@interface DocElement : NSObject 
+@interface DocElement : NSObject <NSCopying> 
 {
 	NSString *name;
 	NSMutableString *rawDescription;

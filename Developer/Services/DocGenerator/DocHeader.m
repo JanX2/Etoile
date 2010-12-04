@@ -35,6 +35,54 @@
 	[super dealloc];
 }
 
+- (id) copyWithZone: (NSZone *)aZone
+{
+	DocHeader *copy = [super copyWithZone: aZone];
+
+	copy->authors = [authors mutableCopyWithZone: aZone];
+
+	/* We are not interested in copying the properties that would need to be  
+	   reset to nil. e.g. when weaving a new page per class and the classes 
+	   belongs to a single gsdoc file.
+
+	ASSIGN(copy->className, className);
+	ASSIGN(copy->protocolName, protocolName);
+	ASSIGN(copy->categoryName, categoryName);
+	ASSIGN(copy->superClassName, superClassName);
+	copy->adoptedProtocolNames = [adoptedProtocolNames mutableCopyWithZone: aZone];*/
+
+	copy->adoptedProtocolNames = [[NSMutableArray alloc] init];
+	ASSIGN(copy->abstract, abstract);
+	ASSIGN(copy->overview, overview);
+	ASSIGN(copy->title, title);
+
+	return copy;
+}
+
+- (NSString *) name
+{
+	if (name != nil)
+		return name;
+
+	/* Insert either class, category or protocol as main symbol */
+	if (className != nil && categoryName == nil)
+	{
+		ETAssert(protocolName == nil);
+		return className;
+	}
+	if (categoryName != nil)
+	{
+		ETAssert(protocolName == nil);
+		return [NSString stringWithFormat: @"%@+%@", className, categoryName];
+	}
+	if (protocolName != nil)
+	{
+		return [NSString stringWithFormat: @"_%@", protocolName];	
+	}
+
+	return nil;
+}
+
 - (void) setDeclaredIn: (NSString *)aFile
 {
 	ASSIGN(declared, aFile);

@@ -129,14 +129,17 @@ withDictionaryName: (NSString *)mergedDictName
 	return aName;
 }
 
-- (NSString *) linkForSymbolName: (NSString *)aSymbol
+- (NSString *) linkForSymbolName: (NSString *)aSymbol ofKind: (NSString *)aKind
 {
-	return [self linkWithName: aSymbol forSymbolName: aSymbol];
+	return [self linkWithName: aSymbol forSymbolName: aSymbol ofKind: aKind];
 }
 
-- (NSString *) linkWithName: (NSString *)aName forSymbolName: (NSString *)aSymbol
+- (NSString *) linkWithName: (NSString *)aName forSymbolName: (NSString *)aSymbol ofKind: (NSString *)aKind
 {
-	return [self linkWithName: aName forClassName: aSymbol];
+	NSString *kind = (aKind != nil ? aKind : @"classes"); // FIXME: Should be @"symbols");
+	return [self linkWithName: aName
+                              ref: [[mergedRefs objectForKey: kind] objectForKey: aSymbol]
+	                   anchor: aSymbol];
 }
 
 - (NSString *) linkForClassName: (NSString *)aClassName
