@@ -164,15 +164,14 @@
 - (NSString *) HTMLDescriptionWithDocIndex: (DocIndex *)aDocIndex
 {
 	NSMutableString *description = [NSMutableString stringWithString: [self filteredDescription]];
- 	NSDictionary *htmlTagSubstitutions = D(@"example>", @"pre>", @"code>", @"var>"); 
-	NSUInteger length = [description length];
+ 	NSDictionary *htmlTagSubstitutions = D(@"pre>", @"example>", @"var>", @"code>"); 
 
 	for (NSString *tag in htmlTagSubstitutions)
 	{
 		[description replaceOccurrencesOfString: tag 
 		                             withString: [htmlTagSubstitutions objectForKey: tag]
 		                                options: NSCaseInsensitiveSearch
-		                                  range: NSMakeRange(0, length)];
+		                                  range: NSMakeRange(0, [description length])];
 	}
 
 	return [self insertLinksWithDocIndex: aDocIndex forString: description];
