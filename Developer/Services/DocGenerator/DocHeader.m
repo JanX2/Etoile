@@ -7,6 +7,7 @@
 //
 
 #import "DocHeader.h"
+#import "DocIndex.h"
 #import "HtmlElement.h"
 
 @implementation DocHeader
@@ -127,6 +128,8 @@
 - (void) setOverview: (NSString *)aDescription
 {
 	ASSIGN(overview, aDescription);
+	// FIXME: redundancy
+	[self setFilteredDescription: aDescription];
 }
 
 - (void) setFileOverview: (NSString *)aFile
@@ -212,7 +215,7 @@
 	}
 	else if (overview != nil)
 	{
-		[h_overview and: [P with: overview]];
+		[h_overview and: [P with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]]];
 		setOverview = YES;
 	}
 

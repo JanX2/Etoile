@@ -161,6 +161,16 @@
 	return [descWords componentsJoinedByString: @" "];
 }
 
+/*- (void) insertHTMLSectionIntoString: (NSMutableString *)aString
+{
+	NSMutableArray *descWords = [self wordsFromString: aDescription];
+	NSCharacterSet *punctCharset = [NSCharacterSet punctuationCharacterSet];
+
+	for (int i = 0; i < [descWords count]; i++)
+    {
+	
+}*/
+
 - (NSString *) HTMLDescriptionWithDocIndex: (DocIndex *)aDocIndex
 {
 	NSMutableString *description = [NSMutableString stringWithString: [self filteredDescription]];
@@ -173,6 +183,50 @@
 		                                options: NSCaseInsensitiveSearch
 		                                  range: NSMakeRange(0, [description length])];
 	}
+
+	NSRange searchRange = NSMakeRange(0, [description length]);
+	NSRange sectionTagRange = [description rangeOfString: @"@section" options: 0 range: searchRange];
+
+	while (sectionTagRange.location != NSNotFound)	
+	{
+		ETAssert(sectionTagRange.length == 8);
+
+		NSRange openingTagRange = [description rangeOfString: @"<p>" options: NSBackwardsSearch range: NSMakeRange(0, sectionTagRange.location)];
+		NSRange closingTagRange = [description rangeOfString: @"</p>" options: 0 range: NSMakeRange(sectionTagRange.location, [description length] - sectionTagRange.location)];
+
+		/* We don't replace the opening tag first, otherwise the closing tag range must be adjusted */
+		[description replaceCharactersInRange: closingTagRange withString: @"</h4>"];
+		[description replaceCharactersInRange: NSUnionRange(openingTagRange, sectionTagRange) withString: @"<h4>"];
+
+		/* We don't start right after </h3> to avoid any complex range computation */
+		searchRange = NSMakeRange(openingTagRange.location, [description length] - openingTagRange.location);
+		sectionTagRange = [description rangeOfString: @"@section" options: 0 range: searchRange];
+	}
+
+#if 0
+	NSRange searchRange = NSMakeRange(0, [description length]);
+	NSRange openingTagRange = [description rangeOfString: @"@section" options: 0 range: searchRange];
+	NSUInteger openingH3Length = 4; /* <h3> */
+	NSUInteger closingH3Length = 5; /* </h3> */
+	NSUInteger sectionLength = 8; /* @section */
+
+	while (openingTagRange.location != NSNotFound)	
+	{
+		ETAssert(openingTagRange.length == 8);
+
+		NSRange elementRange = [description lineRangeForRange: openingTagRange];
+		NSUInteger closingTagLoc = elementRange.location + elementRange.length;
+
+		[description replaceCharactersInRange: openingTagRange withString: @"<h3>"];
+		closingTagLoc = closingTagLoc - sectionLength + openingH3Length;
+		[description insertString: @"</h3>" atIndex: closingTagLoc];
+
+		NSUInteger closingH3End = closingTagLoc + closingH3Length;
+
+		searchRange = NSMakeRange(closingH3End, [description length] - closingH3End);
+		openingTagRange = [description rangeOfString: @"@section" options: 0 range: searchRange];
+	}
+#endif
 
 	return [self insertLinksWithDocIndex: aDocIndex forString: description];
 }
@@ -187,6 +241,8 @@
 
 @implementation DocSubroutine
 
+@synthesize taskUnit;
+
 - (id) init
 {
 	SUPERINIT;
@@ -199,7 +255,7 @@
 {
 	[parameters release];
 	[task release];
-	[task release];
+	[taskUnit release];
 	[returnType release];
 	[super dealloc];
 }
@@ -221,6 +277,7 @@
 	//NSLog (@"Parser return description <%@>", [aParser returnDescription]);
 
 	[self setTask: [aParser task]];
+	[self setTaskUnit: [aParser taskUnit]];
 }
 
 - (NSString *) task

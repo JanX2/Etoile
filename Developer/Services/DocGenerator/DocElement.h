@@ -42,6 +42,7 @@
 	NSMutableArray *parameters;
 	NSString *returnType;
 	NSString *task;
+	NSString *taskUnit;
 }
 
 - (NSString *) task;
@@ -55,6 +56,8 @@ object will insert symbol links and apply standard formatting (e.g. class name
 + space + star) as expected. */ 
 - (Parameter *) returnParameter;
 - (void) addParameter: (NSString *)aName ofType: (NSString *)aType;
+
+@property (retain, nonatomic) NSString *taskUnit;
 
 @end
 

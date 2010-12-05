@@ -49,7 +49,7 @@
 {
   /*
    grammar:
-   
+  <TASKUNIT> <DESC> <p>  
   <DESC>
   <PARAM> <PARAMNAME> <DESC>
   <TASK> <DESC>
@@ -59,7 +59,7 @@
   
   BOOL param = NO;
   BOOL paramNameSet = NO;
-  
+  BOOL hasParsedMainDescription = NO;  
   NSMutableString* current = [self getStringFor: @"description"];  
 
   NSArray* words = [corpus componentsSeparatedByString: @" "];
@@ -69,8 +69,16 @@
                          stringByTrimmingCharactersInSet:
                          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-    
-    if ([word isEqualToString: @"@task"])
+	/*if ([word isEqualToString: @"<p>@taskunit"])
+	{
+		current = [self getStringFor: @"taskunit"];
+	}
+	else if (hasParsedMainDescription == NO && [word hasSuffix: @"</p>"])
+	{
+		current = [self getStringFor: @"description"];
+		hasParsedMainDescription = YES;
+	}
+    else*/ if ([word isEqualToString: @"@task"])
     {
       current = [self getStringFor: @"task"];
     }
@@ -108,6 +116,11 @@
 - (NSString*) task
 {
   return [self getStringFor: @"task"];
+}
+
+- (NSString *) taskUnit
+{
+	return [self getStringFor: @"taskUnit"];
 }
 
 - (NSString*) returnDescription

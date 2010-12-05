@@ -21,6 +21,7 @@
 
 - (NSString*) description;
 - (NSString*) task;
+- (NSString *) taskUnit;
 - (NSString*) returnDescription;
 - (NSString*) descriptionForParameter: (NSString*) aName;
 
