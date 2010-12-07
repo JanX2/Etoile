@@ -82,24 +82,6 @@
 
 - (NSMutableArray *) wordsFromString: (NSString *)aDescription
 {
-	/*NSScanner *scanner = [NSScanner scannerWithString: [self filteredDescription]];
-	NSMutableCharacterSet *charset = [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
-    	[charset formUnionWithCharacterSet: [NSCharacterSet punctuationCharacterSet]];
-	NSString *word = nil;
-	NSMutableArray *descWords = [NSMutableArray array];
-
-	while ([scanner isAtEnd] == NO)
-    {
-    	BOOL foundPunctuation = [scanner scanCharactersFromSet: [NSCharacterSet punctuationCharacterSet] 
-                                                    intoString: &word];
-    	if (foundPunctuation == NO)
-        {
-    		[scanner scanUpToCharactersFromSet: charset intoString: &word];
-        }
-        [descWords addObject: word];
-    }
-	return descWords;*/
-
 	NSCharacterSet *charset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
 	return [NSMutableArray arrayWithArray: 
     	[aDescription componentsSeparatedByCharactersInSet: charset]];
@@ -161,29 +143,8 @@
 	return [descWords componentsJoinedByString: @" "];
 }
 
-/*- (void) insertHTMLSectionIntoString: (NSMutableString *)aString
+- (void) replaceDocSectionsWithHTMLInString: (NSMutableString *)description
 {
-	NSMutableArray *descWords = [self wordsFromString: aDescription];
-	NSCharacterSet *punctCharset = [NSCharacterSet punctuationCharacterSet];
-
-	for (int i = 0; i < [descWords count]; i++)
-    {
-	
-}*/
-
-- (NSString *) HTMLDescriptionWithDocIndex: (DocIndex *)aDocIndex
-{
-	NSMutableString *description = [NSMutableString stringWithString: [self filteredDescription]];
- 	NSDictionary *htmlTagSubstitutions = D(@"pre>", @"example>", @"var>", @"code>"); 
-
-	for (NSString *tag in htmlTagSubstitutions)
-	{
-		[description replaceOccurrencesOfString: tag 
-		                             withString: [htmlTagSubstitutions objectForKey: tag]
-		                                options: NSCaseInsensitiveSearch
-		                                  range: NSMakeRange(0, [description length])];
-	}
-
 	NSRange searchRange = NSMakeRange(0, [description length]);
 	NSRange sectionTagRange = [description rangeOfString: @"@section" options: 0 range: searchRange];
 
@@ -202,31 +163,27 @@
 		searchRange = NSMakeRange(openingTagRange.location, [description length] - openingTagRange.location);
 		sectionTagRange = [description rangeOfString: @"@section" options: 0 range: searchRange];
 	}
+}
 
-#if 0
-	NSRange searchRange = NSMakeRange(0, [description length]);
-	NSRange openingTagRange = [description rangeOfString: @"@section" options: 0 range: searchRange];
-	NSUInteger openingH3Length = 4; /* <h3> */
-	NSUInteger closingH3Length = 5; /* </h3> */
-	NSUInteger sectionLength = 8; /* @section */
+- (void) replaceBasicDocMarkupWithHTMLInString: (NSMutableString *)description
+{
+ 	NSDictionary *htmlTagSubstitutions = D(@"pre>", @"example>", @"var>", @"code>"); 
 
-	while (openingTagRange.location != NSNotFound)	
+	for (NSString *tag in htmlTagSubstitutions)
 	{
-		ETAssert(openingTagRange.length == 8);
-
-		NSRange elementRange = [description lineRangeForRange: openingTagRange];
-		NSUInteger closingTagLoc = elementRange.location + elementRange.length;
-
-		[description replaceCharactersInRange: openingTagRange withString: @"<h3>"];
-		closingTagLoc = closingTagLoc - sectionLength + openingH3Length;
-		[description insertString: @"</h3>" atIndex: closingTagLoc];
-
-		NSUInteger closingH3End = closingTagLoc + closingH3Length;
-
-		searchRange = NSMakeRange(closingH3End, [description length] - closingH3End);
-		openingTagRange = [description rangeOfString: @"@section" options: 0 range: searchRange];
+		[description replaceOccurrencesOfString: tag 
+		                             withString: [htmlTagSubstitutions objectForKey: tag]
+		                                options: NSCaseInsensitiveSearch
+		                                  range: NSMakeRange(0, [description length])];
 	}
-#endif
+}
+
+- (NSString *) HTMLDescriptionWithDocIndex: (DocIndex *)aDocIndex
+{
+	NSMutableString *description = [NSMutableString stringWithString: [self filteredDescription]];
+
+	[self replaceBasicDocMarkupWithHTMLInString: description];
+	[self replaceDocSectionsWithHTMLInString: description];
 
 	return [self insertLinksWithDocIndex: aDocIndex forString: description];
 }
