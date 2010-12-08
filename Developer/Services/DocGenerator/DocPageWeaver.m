@@ -77,6 +77,9 @@
 	DESTROY(currentHeader);
     DESTROY(allWeavedPages);
     DESTROY(weavedPages);
+	DESTROY(functionPage);
+	DESTROY(constantPage);
+	DESTROY(macroPage);
 	[super dealloc];
 }
 
@@ -125,20 +128,49 @@
     }
 }
 
-- (NSArray *) weaveAllPages
+- (WeavedDocPage *) weaveMainPageWithName: (NSString *)aName documentFile: (NSString *)aDocumentFile
 {
-	[allWeavedPages removeAllObjects];
-    [sourcePathQueue setArray: sourcePaths];
+	NSString *templateFile = [[self templateDirectory] stringByAppendingPathComponent: @"etoile-documentation-template.html"];	
+	WeavedDocPage *page = [[WeavedDocPage alloc] initWithDocumentFile: aDocumentFile
+	                                                     templateFile: templateFile                                       
+	                                                         menuFile: menuPath];
 
+	[page setHeader: AUTORELEASE([[DocHeader alloc] init])];
+	[[page header] setName: aName];
+
+    [allWeavedPages addObject: AUTORELEASE(page)];
+	return page;
+}
+
+- (void) weaveMainPages
+{
+	// TODO: Perhaps pass an overview to insert in the header... or use the document file?
+	ASSIGN(functionPage, [self weaveMainPageWithName: @"Functions" documentFile: nil]);
+	ASSIGN(constantPage, [self weaveMainPageWithName: @"Constants" documentFile: nil]);
+	ASSIGN(macroPage, [self weaveMainPageWithName: @"Macros" documentFile: nil]);
+}
+
+- (void) weavePagesFromSourceFiles
+{
 	while ([sourcePathQueue isEmpty] == NO)
     {
     	[allWeavedPages addObjectsFromArray: [self weaveCurrentSourcePages]];
         [sourcePathQueue removeObjectAtIndex: 0];
     }
+}
+
+- (NSArray *) weaveAllPages
+{
+	/* Prepare the receiver to use -weaveCurrentSourcePages as many times as needed 
+	   to get all the source paths processed */
+	[allWeavedPages removeAllObjects];
+    [sourcePathQueue setArray: sourcePaths];
+
+	[self weaveMainPages];
+	[self weavePagesFromSourceFiles];
 
     return [NSArray arrayWithArray: allWeavedPages];
 }
-
 
 - (NSArray *) weaveCurrentSourcePages
 {
@@ -296,9 +328,16 @@
 	[[self currentHeader] setCategoryName: aCategoryName];
 	[[self currentHeader] setClassName: aClassName];
 
+	NSString *categorySymbol = [NSString stringWithFormat: @"%@(%@)", aClassName, aCategoryName];
+	NSString *kind = @"categories";
+
+	if ([docIndex isInformalProtocolSymbolName: categorySymbol])
+	{
+		kind = @"protocols";
+	}
 	[docIndex setProjectRef: [[self currentPage] name] 
-	          forSymbolName: [NSString stringWithFormat: @"%@(%@)", aClassName, aCategoryName]
-	                 ofKind: @"categories"];
+	          forSymbolName: categorySymbol
+	                 ofKind: kind];
 }
 
 - (void) weaveMethod: (DocMethod *)aMethod
@@ -330,18 +369,9 @@
 
 - (void) weaveFunction: (DocFunction *)aFunction
 {
-	if ([self currentPage] == nil)
-	{
-		[self weaveNewPage];
+	[functionPage addFunction: aFunction];
 
-		ASSIGN(currentClassName, nil);
-		ASSIGNCOPY(currentHeader, currentHeader);
-
-		[[self currentPage] setHeader: currentHeader];
-	}
-
-	[[self currentPage] addFunction: aFunction];
-	[docIndex setProjectRef: [[self currentPage] name] 
+	[docIndex setProjectRef: [functionPage name] 
 	          forSymbolName: [aFunction name] 
 	                 ofKind: @"functions"];
 }

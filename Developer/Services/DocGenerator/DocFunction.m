@@ -9,6 +9,7 @@
 #import "DocFunction.h"
 #import "HtmlElement.h"
 #import "DescriptionParser.h"
+#import "DocIndex.h"
 #import "Parameter.h"
 
 @implementation DocFunction
@@ -68,24 +69,22 @@
 
 - (HtmlElement *) HTMLRepresentation
 {
-	H h_signature = [DIV class: @"methodSignature"];
-	H h_returnType = [DIV class: @"returnType" 
-	                       with: [DIV class: @"type" with: [[self returnParameter] HTMLRepresentation]]];
+	H h_signature = [SPAN class: @"methodSignature"];
+	H h_returnType = [SPAN class: @"returnType" 
+	                       with: [SPAN class: @"type" with: [[self returnParameter] HTMLRepresentationWithParentheses: NO]]];
 	
 	[h_signature and: h_returnType];
-	[h_signature and: [DIV class: @"selector" with: name]];
+	[h_signature and: [SPAN class: @"selector" with: @" " and: name]];
 	[h_signature with: @"("];
 
 	BOOL isFirst = YES;
 	FOREACH(parameters, p, Parameter *)
 	{
-		H h_parameter = [DIV class: @"parameter" 
-		                      with: [DIV class: @"type" with: [p type]] 
-		                       and: @" "
-		                       and: [DIV class: @"arg" with: [p name]]];
+		H h_parameter = [p HTMLRepresentationWithParentheses: NO];
+
 		if (NO == isFirst)
 		{
-			[h_signature and: @","];
+			[h_signature and: @", "];
 		}
 		[h_signature and: h_parameter];
 
@@ -96,7 +95,8 @@
 	H methodFull = [DIV class: @"method" 
 	                     with: [DL with: [DT with: h_signature]
                                     and: [DD with: [DIV class: @"methodDescription" 
-	                                                     with: [self richDescription]]]]];
+	                                                     with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]]]]];
+
 	return methodFull;
 }
 

@@ -52,6 +52,11 @@
 	DocHeader *currentHeader;
     NSMutableArray *allWeavedPages;
     NSMutableArray *weavedPages;
+
+	/* Main Pages to collect C constructs */
+	WeavedDocPage *functionPage;
+	WeavedDocPage *constantPage;
+	WeavedDocPage *macroPage;
 }
 
 /** @task Parser Choice */
@@ -81,6 +86,11 @@
 /** @task Weaving Pages */
 
 - (NSArray *) weaveAllPages;
+/** Weaves one or more pages for the current source file.
+
+You should usually call -weaveAllPages rather than this method directly.
+
+See also -currentSourceFile. */
 - (NSArray *) weaveCurrentSourcePages;
 
 - (void) weaveNewPage;

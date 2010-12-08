@@ -86,13 +86,13 @@
 - (HtmlElement *) HTMLRepresentation
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
-	H h_signature = [DIV class: @"methodSignature"];
+	H h_signature = [SPAN class: @"methodSignature"];
 	
 	[h_signature with: [SPAN class: @"methodScope" 
 	                         with: (isClassMethod ? @"+ " : @"- ")]];
 	
 	H h_returnType = [SPAN class: @"returnType" 
-	                       with: [SPAN class: @"type" with: [[self returnParameter] HTMLRepresentation]]];
+	                       with: [SPAN class: @"type" with: [[self returnParameter] HTMLRepresentationWithParentheses: YES]]];
 	
 	[h_signature and: h_returnType];
 
@@ -110,7 +110,7 @@
 
         Parameter *p = [parameters objectAtIndex: i];
     
-        [h_signature and: [p HTMLRepresentation]];
+        [h_signature and: [p HTMLRepresentationWithParentheses: YES]];
 	}
 	
 	H methodFull = [DIV class: @"method" 

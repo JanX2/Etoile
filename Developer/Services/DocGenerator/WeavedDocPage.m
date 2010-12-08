@@ -48,10 +48,10 @@
 		finalMenuPath = [self defaultMenuFile];
 	}
 
-	INVALIDARG_EXCEPTION_TEST(aDocumentPath, [fileManager fileExistsAtPath: aDocumentPath]);
+	//INVALIDARG_EXCEPTION_TEST(aDocumentPath, [fileManager fileExistsAtPath: aDocumentPath]);
 	INVALIDARG_EXCEPTION_TEST(aTemplatePath, [fileManager fileExistsAtPath: aTemplatePath]);
 	INVALIDARG_EXCEPTION_TEST(finalMenuPath, [fileManager fileExistsAtPath: finalMenuPath]);
-	if (NO == [[self validDocumentTypes] containsObject: [aDocumentPath pathExtension]])
+	if (documentPath != nil && NO == [[self validDocumentTypes] containsObject: [aDocumentPath pathExtension]])
 	{
 		[NSException raise: NSInvalidArgumentException
 		            format: @"The input document type must be .html or .gsdoc"];
@@ -113,33 +113,24 @@
 
 - (void) insertHTMLDocument
 {
+	if ([documentType isEqual: @"html"] == NO)
+		return;
+
 	[self insert: documentContent forTag: @"<!-- etoile-document -->"];
 }
 
-- (void) insertGSDocDocument
+- (void) insertHeader
+{
+	[self insert: [[header HTMLRepresentation] content] 
+	      forTag:  @"<!-- etoile-header -->"];
+}
+
+- (void) insertSymbolDocumentation
 {
 	// FIXME: HOM broken on NSString *mainContentStrings = [[[self mainContentHTMLRepresentation] mappedCollection] content];
 	// [[mainContentStrings rightFold] stringByAppendingString: @""];
 	[self insert: [[self mainContentHTMLRepresentations] componentsJoinedByString: @""]
 	      forTag: @"<!-- etoile-methods -->"];
-	[self insert: [[header HTMLRepresentation] content] 
-	      forTag:  @"<!-- etoile-header -->"];
-}
-
-- (void) insertDocument
-{
-	if ([documentType isEqual: @"gsdoc"])
-	{
-		[self insertGSDocDocument];
-	}
-	else if ([documentType isEqual: @"html"])
-	{
-		[self insertHTMLDocument];
-	}
-	else
-	{
-		ETAssertUnreachable();
-	}
 }
 
 - (void) insertMenu
@@ -170,7 +161,9 @@
 {
 	ASSIGN(weavedContent, templateContent);
 
-	[self insertDocument];
+	[self insertHeader];
+	[self insertHTMLDocument]; /* Additional HTML content */
+	[self insertSymbolDocumentation]; /* Classes, methods etc. */
 	[self insertMenu];
 	for (NSString *kind in [NSArray arrayWithObjects: @"classes", @"protocols", @"categories", nil]) //[docIndex symbolKinds])
 	{

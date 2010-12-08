@@ -25,7 +25,7 @@ symbol name in a HTML link. */
 @interface DocIndex : NSObject
 {
 	@private
-	NSString *indexContent;
+	NSDictionary *indexContent;
     NSDictionary *externalRefs;
 	NSDictionary *projectRefs;
 	NSMutableDictionary *mergedRefs;
@@ -35,6 +35,10 @@ symbol name in a HTML link. */
 + (void) setCurrentIndex: (DocIndex *)anIndex;
 
 - (id) initWithGSDocIndexFile: (NSString *)anIndexFile;
+
+/** Returns whether the given symbol name is declared as an an informal 
+protocol in the GSDoc index. */
+- (BOOL) isInformalProtocolSymbolName: (NSString *)aSymbolName;
 
 @property (retain, nonatomic) NSDictionary *externalRefs;
 

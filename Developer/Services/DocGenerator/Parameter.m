@@ -212,10 +212,21 @@ camel case). */
 
 - (HtmlElement *) HTMLRepresentation
 {
+	ETAssertUnreachable();
+	return nil;
+}
+
+- (HtmlElement *) HTMLRepresentationWithParentheses: (BOOL)usesParentheses
+{
 	DocIndex *docIndex = [DocIndex currentIndex];
-	// NOTE: Should we use... and: [SPAN class: @"type" with: [p type] and: @") "
-	H hParam = [SPAN class: @"parameter" with: @"("];
+	// NOTE: Should we use a span of class 'type inside the 'parameter' span...
+	H hParam = [SPAN class: @"parameter"];
 	BOOL hasContent = NO;
+
+	if (usesParentheses)
+	{
+		[hParam with: @"("];
+	}
 
 	if (typePrefix != nil)
 	{
@@ -254,8 +265,16 @@ camel case). */
 	{
 		[hParam addText: type];
 	}
-	
-	[hParam with: @")" and: [SPAN class: @"arg" with: [self name]]];
+
+	if (usesParentheses)
+	{
+		[hParam with: @")"];
+	}
+	else
+	{
+		[hParam with: @" "];
+	}
+	[hParam with: [SPAN class: @"arg" with: [self name]]];
 
 	return hParam;
 }
