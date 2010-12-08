@@ -42,6 +42,8 @@
 		[DocMethod class], @"method",
 		[DocFunction class], @"function",
 		[DocConstant class], @"constant", nil];
+	symbolElements = [[NSSet alloc] initWithObjects: @"head", @"class", @"protocol", @"category", 
+		@"ivariable", @"method", @"function", @"constant", @"macro", nil];
 	// NOTE: ref elements are pruned. DocIndex is used instead.
 	// desc -> dd substitution is not added to the dictionary until we enter a 
 	// deflist, otherwise this would intercept <desc> inside <method>, <class> etc.
@@ -60,7 +62,8 @@
 	[xmlParser release];
 	[parserDelegateStack release];
 	[elementClasses release];
-    [substitutionElements release];
+	[symbolElements release];
+    	[substitutionElements release];
 	[etdocElements release];
 	[content release];
 	[super dealloc];
@@ -193,8 +196,23 @@ didStartElement:(NSString *)elementName
 	if ([self elementClassForName: elementName] != nil)
 	{
 		parserDelegate = AUTORELEASE([[self elementClassForName: elementName] new]);
+
 	}
 	[self pushParserDelegate: parserDelegate];
+
+	/* Discard previously parsed but unused content that belongs to a topmost element.
+
+	   For example, we want to discard <p></p> below otherwise it gets inserted 
+	   at the end of the first arg content.
+	    <chapter>
+	      <heading>ETGetOptionsDictionary functions</heading>
+	      <p></p>
+	      <function type="NSDictionary*" name="ETGetOptionsDictionary">
+	        <arg type="char*">optString</arg> */
+	if ([symbolElements containsObject: elementName])
+	{
+		[content setString: @""];
+	}
 
 	NSLog(@"%@  Begin <%@>, parser %@", indentSpaces, elementName, [(id)[self parserDelegate] primitiveDescription]);
 	[[self parserDelegate] parser: self startElement: elementName withAttributes: attributeDict];
