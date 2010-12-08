@@ -80,6 +80,7 @@
 	DESTROY(functionPage);
 	DESTROY(constantPage);
 	DESTROY(macroPage);
+	DESTROY(otherDataTypePage);
 	[super dealloc];
 }
 
@@ -148,6 +149,7 @@
 	ASSIGN(functionPage, [self weaveMainPageWithName: @"Functions" documentFile: nil]);
 	ASSIGN(constantPage, [self weaveMainPageWithName: @"Constants" documentFile: nil]);
 	ASSIGN(macroPage, [self weaveMainPageWithName: @"Macros" documentFile: nil]);
+	ASSIGN(otherDataTypePage, [self weaveMainPageWithName: @"Other Data Types" documentFile: nil]);
 }
 
 - (void) weavePagesFromSourceFiles
@@ -374,6 +376,23 @@
 	[docIndex setProjectRef: [functionPage name] 
 	          forSymbolName: [aFunction name] 
 	                 ofKind: @"functions"];
+}
+
+- (void) weaveConstant: (DocConstant *)aConstant
+{
+	[constantPage addConstant: aConstant];
+	[docIndex setProjectRef: [constantPage name] 
+	          forSymbolName: [aConstant name] 
+	                 ofKind: @"constants"];
+}
+
+- (void) weaveOtherDataType: (DocCDataType *)aDataType
+{
+	[otherDataTypePage addOtherDataType: aDataType];
+	// TODO: Would be nice to put these in the doc index too
+	/*[docIndex setProjectRef: [otherDataTypePage name] 
+	          forSymbolName: [aDataType name] 
+	                 ofKind: @"constants"];*/
 }
 
 - (DocHeader *) currentHeader

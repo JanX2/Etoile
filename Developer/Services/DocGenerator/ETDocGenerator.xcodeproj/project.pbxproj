@@ -19,7 +19,7 @@
 		602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */ = {isa = PBXBuildFile; fileRef = 602363D5128B3E6600C9EC82 /* DocPageWeaver.m */; };
 		606D338D12946F1500AA7554 /* DocIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 606D338C12946F1500AA7554 /* DocIndex.m */; };
 		60B289FB11DA0C4000FC8C20 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */; };
-		60F7F14412AF91970031E9F1 /* DocConstant.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F7F14312AF91970031E9F1 /* DocConstant.m */; };
+		60F7F14412AF91970031E9F1 /* DocCDataType.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F7F14312AF91970031E9F1 /* DocCDataType.m */; };
 		8DD76F9A0486AA7600D96B5E /* ETDocGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* ETDocGenerator.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* ETDocGenerator.1 */; };
@@ -96,8 +96,8 @@
 		606D338B12946F1500AA7554 /* DocIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocIndex.h; sourceTree = "<group>"; };
 		606D338C12946F1500AA7554 /* DocIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocIndex.m; sourceTree = "<group>"; };
 		60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
-		60F7F14212AF91970031E9F1 /* DocConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocConstant.h; sourceTree = "<group>"; };
-		60F7F14312AF91970031E9F1 /* DocConstant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocConstant.m; sourceTree = "<group>"; };
+		60F7F14212AF91970031E9F1 /* DocCDataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocCDataType.h; sourceTree = "<group>"; };
+		60F7F14312AF91970031E9F1 /* DocCDataType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocCDataType.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* ETDocGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ETDocGenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* ETDocGenerator.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = ETDocGenerator.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -138,8 +138,8 @@
 				03FF79AE0DFCA7B4007D79D3 /* WeavedDocPage.m */,
 				0362732B0E048FD3005D79FE /* DocElement.h */,
 				0362732C0E048FD3005D79FE /* DocElement.m */,
-				60F7F14212AF91970031E9F1 /* DocConstant.h */,
-				60F7F14312AF91970031E9F1 /* DocConstant.m */,
+				60F7F14212AF91970031E9F1 /* DocCDataType.h */,
+				60F7F14312AF91970031E9F1 /* DocCDataType.m */,
 				03FF75310DF9EFED007D79D3 /* DocHeader.h */,
 				03FF75320DF9EFED007D79D3 /* DocHeader.m */,
 				03FF75DC0DFAAFEB007D79D3 /* DocMethod.h */,
@@ -287,7 +287,7 @@
 				0362732D0E048FD3005D79FE /* DocElement.m in Sources */,
 				602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */,
 				606D338D12946F1500AA7554 /* DocIndex.m in Sources */,
-				60F7F14412AF91970031E9F1 /* DocConstant.m in Sources */,
+				60F7F14412AF91970031E9F1 /* DocCDataType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

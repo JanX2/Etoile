@@ -11,7 +11,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class DocHeader, DocMethod, DocFunction, HtmlElement;
+@class DocHeader, DocMethod, DocFunction, DocConstant, DocCDataType, HtmlElement;
 
 /** A documentation page that weaves various HTML, GSDoc, Markdown and plist 
 files (usually provided on the command-line), into a new HTML representation  
@@ -39,10 +39,12 @@ experimental and untested. */
     NSMutableDictionary *classMethods;
     NSMutableDictionary *instanceMethods;
     NSMutableDictionary *functions;
-    //NSMutableDictionary *macros;
+    NSMutableDictionary *constants;
+    NSMutableDictionary *macros;
+    NSMutableDictionary *otherDataTypes;
 }
 
-/** @task Initialization and Identity */
+/** @taskunit Initialization and Identity */
 
 /** Initialises and returns a new documentation page that combines the given 
 input files. */
@@ -55,12 +57,12 @@ input files. */
 Can be used as a file name when saving the page, as <em>etdocgen</em> does. */
 - (NSString *) name;
 
-/** @task Writing to File */
+/** @taskunit Writing to File */
 
 /** Writes the page to the given URL atomically. */
 - (void) writeToURL: (NSURL *)outputURL;
 
-/** @task Page Building */
+/** @taskunit Page Building */
 
 /** Sets the page header. */
 - (void) setHeader: (DocHeader *)aHeader;
@@ -72,8 +74,14 @@ Can be used as a file name when saving the page, as <em>etdocgen</em> does. */
 - (void) addInstanceMethod: (DocMethod *)aMethod;
 /** Adds a function documentation to the page. */
 - (void) addFunction: (DocFunction *)aFunction;
+/** Adds a constant documentation to the page. */
+- (void) addConstant: (DocConstant *)aConstant;
+/** Adds a macro documentation to the page. */
+//- (void) addMacro: (DocMacro *)aMacro;
+/** Adds another data type documentation to the page. */
+- (void) addOtherDataType: (DocCDataType *)anotherDataType;
 
-/** @task HTML Generation */
+/** @taskunit HTML Generation */
 
 /** Returns a string representation of the whole page by weaving the input files. */
 - (NSString *) HTMLString;

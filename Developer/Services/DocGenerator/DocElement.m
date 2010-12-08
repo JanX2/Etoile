@@ -14,10 +14,13 @@
 
 @implementation DocElement
 
+@synthesize task, taskUnit;
+
 - (id) init
 {
 	SUPERINIT;
 	rawDescription = [NSMutableString new];
+	task = [[NSString alloc] initWithString: @"Default"];
 	return self;
 }
 
@@ -26,6 +29,8 @@
 	[rawDescription release];
 	[filteredDescription release];
 	[name release];
+	[task release];
+	[taskUnit release];
 	[super dealloc];
 }
 
@@ -43,6 +48,12 @@
 - (NSComparisonResult) caseInsensitiveCompare: (NSString *)aString
 {
 	return [aString caseInsensitiveCompare: name];
+}
+
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@ - %@, %@", [super description], 
+		[self name], [self task]];
 }
 
 - (NSString *) name
@@ -78,6 +89,8 @@
 - (void) addInformationFrom: (DescriptionParser *)aParser
 {
 	[self setFilteredDescription: [aParser description]];
+	[self setTask: [aParser task]];
+	[self setTaskUnit: [aParser taskUnit]];
 }
 
 - (NSMutableArray *) wordsFromString: (NSString *)aDescription
@@ -198,29 +211,18 @@
 
 @implementation DocSubroutine
 
-@synthesize taskUnit;
-
 - (id) init
 {
 	SUPERINIT;
 	parameters = [NSMutableArray new];
-	task = [[NSString alloc] initWithString: @"Default"];
 	return self;
 }
 
 - (void) dealloc
 {
 	[parameters release];
-	[task release];
-	[taskUnit release];
 	[returnType release];
 	[super dealloc];
-}
-
-- (NSString *) description
-{
-	return [NSString stringWithFormat: @"%@ - %@, %@", [super description], 
-			name, [self task]];
 }
 
 - (void) addInformationFrom: (DescriptionParser *)aParser
@@ -232,19 +234,6 @@
 		[p setDescription: [aParser descriptionForParameter: [p name]]];
 	}    
 	//NSLog (@"Parser return description <%@>", [aParser returnDescription]);
-
-	[self setTask: [aParser task]];
-	[self setTaskUnit: [aParser taskUnit]];
-}
-
-- (NSString *) task
-{
-	return task;
-}
-
-- (void) setTask: (NSString *)aTask
-{
-	ASSIGN(task, aTask);
 }
 
 - (void) setReturnType: (NSString *) aReturnType
@@ -259,7 +248,6 @@
 
 - (void) addParameter: (NSString *)aName ofType: (NSString *)aType
 {
-	//  [parameters addObject: [NSDictionary dictionaryWithObjectsAndKeys: aName, @"name", aType, @"type", nil]];
 	[parameters addObject: [Parameter newWithName: aName andType: aType]];
 }
 

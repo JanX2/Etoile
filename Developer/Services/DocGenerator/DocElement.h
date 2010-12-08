@@ -16,7 +16,12 @@
 	NSString *name;
 	NSMutableString *rawDescription;
 	NSString *filteredDescription;
+	NSString *task;
+	NSString *taskUnit;
 }
+
+@property (retain, nonatomic) NSString *task;
+@property (retain, nonatomic) NSString *taskUnit;
 
 - (NSString *) name;
 - (void) setName: (NSString *)aName;
@@ -41,12 +46,8 @@
 {
 	NSMutableArray *parameters;
 	NSString *returnType;
-	NSString *task;
-	NSString *taskUnit;
 }
 
-- (NSString *) task;
-- (void) setTask: (NSString *)aTask;
 - (void) setReturnType: (NSString *)aReturnType;
 /** Returns the return type as an anonymous parameter object to which a HTML 
 representation of the type can be asked. 
@@ -56,8 +57,6 @@ object will insert symbol links and apply standard formatting (e.g. class name
 + space + star) as expected. */ 
 - (Parameter *) returnParameter;
 - (void) addParameter: (NSString *)aName ofType: (NSString *)aType;
-
-@property (retain, nonatomic) NSString *taskUnit;
 
 @end
 

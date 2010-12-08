@@ -9,6 +9,7 @@
 
 #import "WeavedDocPage.h"
 #import "DocHeader.h"
+#import "DocCDataType.h"
 #import "DocFunction.h"
 #import "DocIndex.h"
 #import "DocMethod.h"
@@ -68,6 +69,9 @@
 	classMethods = [NSMutableDictionary new];
 	instanceMethods = [NSMutableDictionary new];
 	functions = [NSMutableDictionary new];
+	constants = [NSMutableDictionary new];
+	macros = [NSMutableDictionary new];
+	otherDataTypes = [NSMutableDictionary new];
 
 	return self;
 }
@@ -89,6 +93,9 @@
 	[classMethods release];
 	[instanceMethods release];
 	[functions release];
+	[constants release];
+	[macros release];
+	[otherDataTypes release];
 	[super dealloc];
 }
 
@@ -121,6 +128,9 @@
 
 - (void) insertHeader
 {
+	if (header == nil)
+		return;
+
 	[self insert: [[header HTMLRepresentation] content] 
 	      forTag:  @"<!-- etoile-header -->"];
 }
@@ -186,40 +196,42 @@
 	return header;
 }
 
-- (void) addClassMethod: (DocMethod *)aMethod
+- (void) addElement: (DocElement *)anElement toDictionaryNamed: (NSString *)anIvarName
 {
-	NSMutableArray *array = [classMethods objectForKey: [aMethod task]];
+	NSMutableDictionary *elements = [self valueForKey: anIvarName];
+	NSMutableArray *array = [elements objectForKey: [anElement task]];
+
 	if (array == nil)
 	{
-		array = [NSMutableArray new];
-		[classMethods setObject: array forKey: [aMethod task]];
-		[array release];
+		array = [NSMutableArray array];
+		[elements setObject: array forKey: [anElement task]];
 	}
-	[array addObject: aMethod];
+	[array addObject: anElement];
+}
+
+- (void) addClassMethod: (DocMethod *)aMethod
+{
+	[self addElement: aMethod toDictionaryNamed: @"classMethods"];
 }
 
 - (void) addInstanceMethod: (DocMethod *)aMethod
 {
-	NSMutableArray *array = [instanceMethods objectForKey: [aMethod task]];
-	if (array == nil)
-	{
-		array = [NSMutableArray new];
-		[instanceMethods setObject: array forKey: [aMethod task]];
-		[array release];
-	}
-	[array addObject: aMethod];
+	[self addElement: aMethod toDictionaryNamed: @"instanceMethods"];
 }
 
 - (void) addFunction: (DocFunction *)aFunction
 {
-	NSMutableArray *array = [functions objectForKey: [aFunction task]];
-	if (array == nil)
-	{
-		array = [NSMutableArray new];
-		[functions setObject: array forKey: [aFunction task]];
-		[array release];
-	}
-	[array addObject: aFunction];
+	[self addElement: aFunction toDictionaryNamed: @"functions"];
+}
+
+- (void) addConstant: (DocConstant *)aConstant
+{
+	[self addElement: aConstant toDictionaryNamed: @"constants"];
+}
+
+- (void) addOtherDataType: (DocCDataType *)anotherDataType
+{
+	[self addElement: anotherDataType toDictionaryNamed: @"otherDataTypes"];
 }
 
 - (NSString *) HTMLString
@@ -231,9 +243,11 @@
 - (NSArray *) mainContentHTMLRepresentations
 {
 	return [NSArray arrayWithObjects: 
-		[self HTMLRepresentationWithTitle: @"Functions" subroutines: functions],
 		[self HTMLRepresentationWithTitle: @"Class Methods" subroutines: classMethods],
-		[self HTMLRepresentationWithTitle: @"Instance Methods" subroutines: instanceMethods], nil];
+		[self HTMLRepresentationWithTitle: @"Instance Methods" subroutines: instanceMethods],
+		[self HTMLRepresentationWithTitle: @"Functions" subroutines: functions], 
+		[self HTMLRepresentationWithTitle: @"Constants" subroutines: constants], 
+		[self HTMLRepresentationWithTitle: @"Other Data Types" subroutines: otherDataTypes], nil];
 }
 
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 

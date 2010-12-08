@@ -7,7 +7,7 @@
 //
 
 #import "GSDocParser.h"
-#import "DocConstant.h"
+#import "DocCDataType.h"
 #import "DocHeader.h"
 #import "DocMethod.h"
 #import "DocFunction.h"
@@ -41,6 +41,7 @@
 		[NullParserDelegate class], @"ivariable",
 		[DocMethod class], @"method",
 		[DocFunction class], @"function",
+		[DocCDataType class], @"type",
 		[DocConstant class], @"constant", nil];
 	symbolElements = [[NSSet alloc] initWithObjects: @"head", @"class", @"protocol", @"category", 
 		@"ivariable", @"method", @"function", @"constant", @"macro", nil];
