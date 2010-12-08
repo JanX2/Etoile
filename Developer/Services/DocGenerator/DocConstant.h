@@ -1,4 +1,3 @@
-//
 /** <title>DocConstant</title>
 
 	<abstract>Represents documented constant in the doc element tree.</abstract>
