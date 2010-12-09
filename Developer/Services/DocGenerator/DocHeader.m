@@ -157,6 +157,7 @@
 
 - (HtmlElement *) HTMLRepresentation
 {
+	DocIndex *docIndex = [DocIndex currentIndex];
 	H h_title = [DIV id: @"classname"];
 	if (title)
 	{
@@ -167,12 +168,13 @@
 	if (className != nil && categoryName == nil)
 	{
 		ETAssert(protocolName == nil);
-		[h_title with: className and: @" : " and: superClassName];
+		[h_title with: className and: @" : " and: [docIndex linkForClassName: superClassName]];
 	}
 	if (categoryName != nil)
 	{
 		ETAssert(protocolName == nil);
-		[h_title with: className and: @" (" and: categoryName and: @")"];
+		[h_title with: [docIndex linkForClassName: className] 
+		          and: @" (" and: categoryName and: @")"];
 	}
 	if (protocolName != nil)
 	{
@@ -191,7 +193,7 @@
 			if (isFirstProtocol == NO)
 				[h_title addText: @", "];
 			
-			[h_title addText: adoptedProtocol];
+			[h_title addText: [docIndex linkForProtocolName: adoptedProtocol]];
 			isFirstProtocol = NO;
 		}
 		[h_title addText: @"&gt;"];
