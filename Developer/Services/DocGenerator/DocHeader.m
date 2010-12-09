@@ -63,8 +63,10 @@
 - (NSString *) name
 {
 	if (name != nil)
-		return name;
-
+	{
+		return [[name componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceCharacterSet]] 
+			componentsJoinedByString: @""];
+	}
 	/* Insert either class, category or protocol as main symbol */
 	if (className != nil && categoryName == nil)
 	{
