@@ -11,6 +11,7 @@
 #import "DescriptionParser.h"
 #import "DocIndex.h"
 #import "HtmlElement.h"
+#import "Parameter.h"
 
 @implementation DocCDataType
 
@@ -84,6 +85,46 @@
 - (SEL) weaveSelector
 {
 	return @selector(weaveOtherDataType:);
+}
+
+- (NSString *) formattedType
+{
+	return [self type];
+
+	// TODO: Fix or remove... This code wrongly truncates the types.
+	// TODO: Insert links in the returned type
+	Parameter *formatter = [Parameter newWithName: nil andType: [self type]];
+	NSString *formattedType = @"";
+
+	if ([formatter typePrefix] != nil)
+	{
+		formattedType = [formattedType stringByAppendingString: [formatter typePrefix]];	
+	}
+	if ([formatter typeSuffix] != nil)
+	{
+		if ([formattedType length] != 0)
+		{
+			formattedType = [formattedType stringByAppendingFormat: @"%@ %@", @"", [formatter typeSuffix]];
+		}
+		else
+		{
+			formattedType = [formattedType stringByAppendingString: [formatter typeSuffix]];
+		}
+	}
+
+	return formattedType;
+}
+
+- (HtmlElement *) HTMLRepresentation
+{
+	// TODO: Use more correct span class names
+	H hType = [SPAN class: @"returnType" with: [SPAN class: @"type" with: [self formattedType]]];
+	H hSymbolName = [SPAN class: @"selector" with: @" " and: [self name]];
+	H hDesc = [DIV class: @"methodDescription" with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]];
+	H hDataType = [DIV class: @"method" with: [DL with: [DT with: hType and: hSymbolName]
+	                                               and: [DD with: hDesc]]];
+
+	return hDataType;
 }
 
 @end
