@@ -10,7 +10,7 @@
 
 @implementation DocIndex
 
-@synthesize externalRefs;
+@synthesize projectName, externalRefs;
 
 static DocIndex *currentIndex = nil;
 
@@ -49,9 +49,10 @@ static DocIndex *currentIndex = nil;
 
 - (void) dealloc
 {
+	DESTROY(projectName);
 	DESTROY(indexContent);
-    DESTROY(externalRefs);
-    DESTROY(projectRefs);
+	DESTROY(externalRefs);
+	DESTROY(projectRefs);
 	DESTROY(mergedRefs);
 	[super dealloc];
 }

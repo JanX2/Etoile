@@ -140,6 +140,9 @@ observable benefit since ObjC tradition requires class and protocol names to use
 camel case). */
 - (void) parseType: (NSString *)aType
 {
+	if (aType == nil)
+		return;
+
 	const char *rawType = [aType UTF8String];
 	unsigned int i = 0;
 	BOOL isParsingProtocolName = NO;

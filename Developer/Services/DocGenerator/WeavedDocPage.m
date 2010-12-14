@@ -12,6 +12,7 @@
 #import "DocCDataType.h"
 #import "DocFunction.h"
 #import "DocIndex.h"
+#import "DocMacro.h"
 #import "DocMethod.h"
 #import "GSDocParser.h"
 #import "HtmlElement.h"
@@ -66,6 +67,7 @@
 	ASSIGN(templateContent, [NSString stringWithContentsOfFile: aTemplatePath encoding: NSUTF8StringEncoding error: NULL]);
 	ASSIGN(menuContent, [NSString stringWithContentsOfFile: finalMenuPath encoding: NSUTF8StringEncoding error: NULL]);
 
+	subheaders = [NSMutableDictionary new];
 	classMethods = [NSMutableDictionary new];
 	instanceMethods = [NSMutableDictionary new];
 	functions = [NSMutableDictionary new];
@@ -90,6 +92,7 @@
 	[menuContent release];
 	[weavedContent release];
 	[header release];
+	[subheaders release];
 	[classMethods release];
 	[instanceMethods release];
 	[functions release];
@@ -131,7 +134,7 @@
 	if (header == nil)
 		return;
 
-	[self insert: [[header HTMLRepresentation] content] 
+	[self insert: [[self HTMLRepresentationForHeader: header] content] 
 	      forTag:  @"<!-- etoile-header -->"];
 }
 
@@ -146,6 +149,11 @@
 - (void) insertMenu
 {
 	[self insert: menuContent forTag: @"<!-- etoile-menu -->"];
+}
+
+- (void) insertProjectName
+{
+	[self insert: [[DocIndex currentIndex] projectName] forTag: @"<!-- etoile-project-name -->"];
 }
 
 - (void) insertProjectSymbolListOfKind: (NSString *)aKind
@@ -174,7 +182,9 @@
 	[self insertHeader];
 	[self insertHTMLDocument]; /* Additional HTML content */
 	[self insertSymbolDocumentation]; /* Classes, methods etc. */
+
 	[self insertMenu];
+	[self insertProjectName];
 	for (NSString *kind in [NSArray arrayWithObjects: @"classes", @"protocols", @"categories", nil]) //[docIndex symbolKinds])
 	{
 		[self insertProjectSymbolListOfKind: kind];
@@ -196,17 +206,27 @@
 	return header;
 }
 
-- (void) addElement: (DocElement *)anElement toDictionaryNamed: (NSString *)anIvarName
+- (void) addElement: (DocElement *)anElement toDictionaryNamed: (NSString *)anIvarName forKey: (NSString *)aKey
 {
 	NSMutableDictionary *elements = [self valueForKey: anIvarName];
-	NSMutableArray *array = [elements objectForKey: [anElement task]];
+	NSMutableArray *array = [elements objectForKey: aKey];
 
 	if (array == nil)
 	{
 		array = [NSMutableArray array];
-		[elements setObject: array forKey: [anElement task]];
+		[elements setObject: array forKey: aKey];
 	}
 	[array addObject: anElement];
+}
+
+- (void) addElement: (DocElement *)anElement toDictionaryNamed: (NSString *)anIvarName
+{
+	[self addElement: anElement toDictionaryNamed: anIvarName forKey: [anElement task]];
+}
+
+- (void) addSubheader: (DocHeader *)aHeader
+{
+	[self addElement: aHeader toDictionaryNamed: @"subheaders" forKey: [aHeader group]];
 }
 
 - (void) addClassMethod: (DocMethod *)aMethod
@@ -222,6 +242,11 @@
 - (void) addFunction: (DocFunction *)aFunction
 {
 	[self addElement: aFunction toDictionaryNamed: @"functions"];
+}
+
+- (void) addMacro: (DocMacro *)aMacro
+{
+	[self addElement: aMacro toDictionaryNamed: @"macros"];
 }
 
 - (void) addConstant: (DocConstant *)aConstant
@@ -245,9 +270,15 @@
 	return [NSArray arrayWithObjects: 
 		[self HTMLRepresentationWithTitle: @"Class Methods" subroutines: classMethods],
 		[self HTMLRepresentationWithTitle: @"Instance Methods" subroutines: instanceMethods],
-		[self HTMLRepresentationWithTitle: @"Functions" subroutines: functions], 
+		[self HTMLRepresentationWithTitle: @"Functions" subroutines: functions],
+ 		[self HTMLRepresentationWithTitle: @"Macros" subroutines: macros], 
 		[self HTMLRepresentationWithTitle: @"Constants" subroutines: constants], 
 		[self HTMLRepresentationWithTitle: @"Other Data Types" subroutines: otherDataTypes], nil];
+}
+
+- (HtmlElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader
+{
+	return [aHeader HTMLRepresentation];
 }
 
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 

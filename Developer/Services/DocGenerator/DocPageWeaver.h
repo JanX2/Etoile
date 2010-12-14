@@ -13,7 +13,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class DocHeader, DocMethod, DocFunction, DocCDataType, DocConstant, WeavedDocPage, DocIndex;
+@class DocHeader, DocMethod, DocFunction, DocMacro, DocCDataType, DocConstant, WeavedDocPage, DocIndex;
 
 @protocol CodeDocWeaving
 - (void) weaveClassNamed: (NSString *)aClassName 
@@ -24,6 +24,7 @@
 - (void) weaveHeader: (DocHeader *)aHeader;
 - (void) weaveMethod: (DocMethod *)aMethod;
 - (void) weaveFunction: (DocFunction *)aFunction;
+- (void) weaveMacro: (DocMacro *)aMacro;
 - (void) weaveConstant: (DocConstant *)aConstant;
 - (void) weaveOtherDataType: (DocCDataType *)aDataType;
 - (DocHeader *) currentHeader;
@@ -39,7 +40,6 @@
 @interface DocPageWeaver : NSObject <CodeDocWeaving>
 {
 	@private
-	NSString *projectName;
 	NSArray *sourcePaths;
     NSMutableArray *sourcePathQueue;
     NSString *templatePath;
@@ -54,6 +54,9 @@
 	DocHeader *currentHeader;
     NSMutableArray *allWeavedPages;
     NSMutableArray *weavedPages;
+
+	/* Main Page to collect ObjC constructs */
+	WeavedDocPage *apiOverviewPage;
 
 	/* Main Pages to collect C constructs */
 	WeavedDocPage *functionPage;
@@ -74,8 +77,6 @@
                         templateFile: (NSString *)aTemplatePath;
 - (id) initWithSourceFiles: (NSArray *)paths
               templateFile: (NSString *)aTemplatePath;
-
-@property (retain, nonatomic) NSString *projectName;
 
 /** @task Additional Sources */
 

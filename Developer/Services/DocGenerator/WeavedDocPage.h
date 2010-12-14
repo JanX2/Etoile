@@ -11,7 +11,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class DocHeader, DocMethod, DocFunction, DocConstant, DocCDataType, HtmlElement;
+@class DocHeader, DocMethod, DocFunction, DocMacro, DocConstant, DocCDataType, HtmlElement;
 
 /** A documentation page that weaves various HTML, GSDoc, Markdown and plist 
 files (usually provided on the command-line), into a new HTML representation  
@@ -35,7 +35,8 @@ experimental and untested. */
 	NSString *menuContent;
 	NSString *weavedContent;
 
-    DocHeader *header;
+	DocHeader *header;
+	NSMutableDictionary *subheaders;
     NSMutableDictionary *classMethods;
     NSMutableDictionary *instanceMethods;
     NSMutableDictionary *functions;
@@ -68,6 +69,11 @@ Can be used as a file name when saving the page, as <em>etdocgen</em> does. */
 - (void) setHeader: (DocHeader *)aHeader;
 /** Returns the page header. */
 - (DocHeader *) header;
+/** Adds a subheader to the page.
+
+Subheaders are expected to be positioned under the main header.<br />
+A subheader can be used to regroup related documentation tree elements. */
+- (void) addSubheader: (DocHeader *)aHeader;
 /** Adds a class method documentation to the page. */
 - (void) addClassMethod: (DocMethod *)aMethod;
 /** Adds a instance method documentation to the page. */
@@ -77,7 +83,7 @@ Can be used as a file name when saving the page, as <em>etdocgen</em> does. */
 /** Adds a constant documentation to the page. */
 - (void) addConstant: (DocConstant *)aConstant;
 /** Adds a macro documentation to the page. */
-//- (void) addMacro: (DocMacro *)aMacro;
+- (void) addMacro: (DocMacro *)aMacro;
 /** Adds another data type documentation to the page. */
 - (void) addOtherDataType: (DocCDataType *)anotherDataType;
 
@@ -91,6 +97,13 @@ elements such as <em>Instance Methods</em>,<em>Macros</em> etc.
 Menu, navigation bar etc. are not present in the returned HTML representation 
 unlike -HTMLString which does include them in its ouput. */
 - (NSArray *) mainContentHTMLRepresentations;
+/** <override-dummy />
+Returns the HTML element tree into which the main header should be rendered.
+
+By default, returns the -[DocHeader HTMLRepresentation].
+
+Can be overriden to return a custom representation. */
+- (HtmlElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader;
 /** Returns the given methods or functions rendered as a HTML element tree.
 
 Both methods and functions are sorted by tasks before being rendered to HTML.

@@ -37,6 +37,37 @@
 - (NSString *) HTMLDescriptionWithDocIndex: (DocIndex *)aDocIndex;
 - (HtmlElement *) HTMLRepresentation;
 
+/** @taskunit GSDoc Parsing */
+
+/** <override-dummy />
+Returns the GSDoc element name to be parsed to initialize the instance.
+
+Can be overriden to return an element name, and then called in the 
+GSDocParserDelegate methods to reuse their implementation in a subclass 
+hierarchy.<br />
+For example, DocCDataType returns <em>type</em> and its subclass DocConstant 
+returns <em>constant</em>, this way DocConstant doesn't override 
+-parser:startElement:withAttributes: but inherits DocCDataType implementation:
+
+<example>
+	if ([elementName isEqualToString: [self GSDocElementName]])
+	{
+		[self setName: [attributeDict objectForKey: @"name"]];
+		// more code
+	}
+</example>
+
+By default, returns <em>type<em>. */
+- (NSString *) GSDocElementName;
+/** <override-dummy />
+Returns the selector matching a CodeDocWeaving method, that should be used to 
+weave the receiver into a page.
+
+The returned selector must take a single argument.
+
+e.g. -[(CodeDocWeaving) weaveOtherDataType:] or -[(CodeDocWeaving) weaveConstant:]. */
+- (SEL) weaveSelector;
+
 @end
 
 

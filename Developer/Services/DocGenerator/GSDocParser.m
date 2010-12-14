@@ -9,6 +9,7 @@
 #import "GSDocParser.h"
 #import "DocCDataType.h"
 #import "DocHeader.h"
+#import "DocMacro.h"
 #import "DocMethod.h"
 #import "DocFunction.h"
 #import "HtmlElement.h"
@@ -41,6 +42,7 @@
 		[NullParserDelegate class], @"ivariable",
 		[DocMethod class], @"method",
 		[DocFunction class], @"function",
+		[DocMacro class], @"macro",
 		[DocCDataType class], @"type",
 		[DocConstant class], @"constant", nil];
 	symbolElements = [[NSSet alloc] initWithObjects: @"head", @"class", @"protocol", @"category", 
@@ -319,7 +321,10 @@ didStartElement:(NSString *)elementName
 - (NSString *) argTypeFromArgsAttributes: (NSDictionary *)attributeDict
 {
 	NSString *argType = [attributeDict objectForKey: @"type"];
-	ETAssert(nil != argType);
+
+	if (argType == nil)
+		return @"";
+
 	return [argType stringByTrimmingCharactersInSet: 
 		[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }

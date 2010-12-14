@@ -206,6 +206,16 @@
 	return [[HtmlElement new] autorelease];
 }
 
+- (NSString *) GSDocElementName
+{
+	return nil;
+}
+
+- (SEL) weaveSelector
+{
+	return NULL;
+}
+
 @end
 
 

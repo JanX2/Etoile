@@ -532,6 +532,11 @@ pre
   margin: 10px;
 }
 
+#symbol dt
+{
+  margin: 10px;
+}
+
 #documentation ul 
 {
 	list-style: none;
@@ -581,18 +586,22 @@ pre
   margin: 20px 0;
 }
 
-
 #documentation .arg
 {
 	
 }
 
-#documentation .method 
+#documentation .symbol, .method 
 {
   margin: 10px 10px 10px 5px;
 }
 
-#documentation .methodDescription
+#documentation .symbolName
+{
+
+}
+
+#documentation .symbolDescription, .methodDescription
 {
   background-color: #f5f5f5;
   border-left: 1px solid #ccc;

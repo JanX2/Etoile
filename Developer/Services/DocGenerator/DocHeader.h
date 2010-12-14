@@ -30,6 +30,10 @@
 	NSMutableArray *authors;
 	NSString *declared;
 	NSString *title;
+
+	/* Parsed Markup */
+	NSString *group;
+
 }
 
 - (void) setDeclaredIn: (NSString *)aFile;
@@ -46,6 +50,7 @@
 - (NSString *) title;
 
 - (HtmlElement *) HTMLRepresentation;
+- (HtmlElement *) HTMLTOCRepresentation;
 
 /** The category presented on the page the header belongs to. */
 @property (retain, nonatomic) NSString *categoryName;
@@ -56,5 +61,9 @@
 The class, protocol or category refers to the symbol the header introduces.<br />
 See -className, -protocolName and -categoryName. */
 @property (readonly, nonatomic) NSArray *adoptedProtocolNames;
+/** Returns the group name parsed from <em>@group</em> markup.
+
+A header or the symbol it represents can belong to one or several groups (only one for now). */
+@property (retain, nonatomic) NSString *group;
 
 @end

@@ -20,4 +20,17 @@
 
 - (HtmlElement *) richDescription;
 
+/** @taskunit GSDoc Parsing */
+
+/** <override-dummy />
+Returns <em>function<em>.
+
+See -[DocElement GSDocElementName]. */
+- (NSString *) GSDocElementName;
+/** <override-dummy />
+Returns -weaveFunction:.
+
+See -[DocElement weaveSelector]. */
+- (SEL) weaveSelector;
+
 @end

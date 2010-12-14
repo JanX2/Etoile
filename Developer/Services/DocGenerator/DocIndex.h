@@ -25,8 +25,9 @@ symbol name in a HTML link. */
 @interface DocIndex : NSObject
 {
 	@private
+	NSString *projectName;
 	NSDictionary *indexContent;
-    NSDictionary *externalRefs;
+	NSDictionary *externalRefs;
 	NSDictionary *projectRefs;
 	NSMutableDictionary *mergedRefs;
 }
@@ -40,6 +41,7 @@ symbol name in a HTML link. */
 protocol in the GSDoc index. */
 - (BOOL) isInformalProtocolSymbolName: (NSString *)aSymbolName;
 
+@property (retain, nonatomic) NSString *projectName;
 @property (retain, nonatomic) NSDictionary *externalRefs;
 
 - (void) setProjectRef: (NSString *)aRef

@@ -25,7 +25,6 @@ Enum and union are represented with DocConstant. */
 @interface DocCDataType : DocElement <GSDocParserDelegate>
 {
 	NSString *type;
-	NSString *GSDocElementName;
 }
 
 /** The underlying type such as struct, enum, NSString const * etc. */
@@ -36,17 +35,14 @@ Enum and union are represented with DocConstant. */
 /** @taskunit GSDoc Parsing */
 
 /** <override-dummy />
-Returns the GSDoc element name to be parsed to initialize the instance.
+Returns <em>type<em>.
 
-By default, returns <em>type<em>. */
+See -[DocElement GSDocElementName]. */
 - (NSString *) GSDocElementName;
 /** <override-dummy />
-Returns the selector matching a CodeDocWeaving method, that should be used to 
-weave the receiver into a page.
+Returns -weaveOtherDataType:.
 
-The returned selector must take a single argument.
-
-e.g. -[(CodeDocWeaving) weaveOtherDataType:] or -[(CodeDocWeaving) weaveConstant:]. */
+See -[DocElement weaveSelector]. */
 - (SEL) weaveSelector;
 
 @end
@@ -63,5 +59,18 @@ e.g. -[(CodeDocWeaving) weaveOtherDataType:] or -[(CodeDocWeaving) weaveConstant
 {
 
 }
+
+/** @taskunit GSDoc Parsing */
+
+/** <override-dummy />
+Returns <em>constant<em>.
+
+See -[DocElement GSDocElementName]. */
+- (NSString *) GSDocElementName;
+/** <override-dummy />
+Returns -weaveConstant:.
+
+See -[DocElement weaveSelector]. */
+- (SEL) weaveSelector;
 
 @end

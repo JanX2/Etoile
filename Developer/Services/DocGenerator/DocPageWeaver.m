@@ -10,12 +10,11 @@
 #import "DocHeader.h"
 #import "DocIndex.h"
 #import "DocMethod.h"
+#import "DocTOCPage.h"
 #import "GSDocParser.h"
 #import "WeavedDocPage.h"
 
 @implementation DocPageWeaver
-
-@synthesize projectName;
 
 + (Class) parserClassForFileType: (NSString *)aFileExtension
 {
@@ -48,6 +47,7 @@
     ETAssert([[paths pathsMatchingExtensions: (A(@"igsdoc"))] count] <= 1);
     docIndex = [[HTMLDocIndex alloc] initWithGSDocIndexFile: 
     	[[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject]];
+	[DocIndex setCurrentIndex: docIndex]; /* Also reset in -weaveCurrentSourcePages */
 
     /* Don't include igsdoc, we don't want to turn it into a page */
     ASSIGN(sourcePaths, [NSArray arrayWithArray: [paths pathsMatchingExtensions: A(@"gsdoc", @"html", @"text")]]);
@@ -62,7 +62,6 @@
 
 - (void) dealloc
 {
-	DESTROY(projectName);
 	DESTROY(sourcePaths);
     DESTROY(sourcePathQueue);
     DESTROY(templatePath);
@@ -77,6 +76,7 @@
 	DESTROY(currentHeader);
     DESTROY(allWeavedPages);
     DESTROY(weavedPages);
+	DESTROY(apiOverviewPage);
 	DESTROY(functionPage);
 	DESTROY(constantPage);
 	DESTROY(macroPage);
@@ -129,23 +129,30 @@
     }
 }
 
-- (WeavedDocPage *) weaveMainPageWithName: (NSString *)aName documentFile: (NSString *)aDocumentFile
+- (WeavedDocPage *) weaveMainPageOfClass: (Class)aPageClass withName: (NSString *)aName documentFile: (NSString *)aDocumentFile
 {
 	NSString *templateFile = [[self templateDirectory] stringByAppendingPathComponent: @"etoile-documentation-template.html"];	
-	WeavedDocPage *page = [[WeavedDocPage alloc] initWithDocumentFile: aDocumentFile
+	WeavedDocPage *page = [[aPageClass alloc] initWithDocumentFile: aDocumentFile
 	                                                     templateFile: templateFile                                       
 	                                                         menuFile: menuPath];
 
 	[page setHeader: AUTORELEASE([[DocHeader alloc] init])];
 	[[page header] setName: aName];
+	[[page header] setTitle: aName];
 
-    [allWeavedPages addObject: AUTORELEASE(page)];
+	[allWeavedPages addObject: AUTORELEASE(page)];
 	return page;
+}
+
+- (WeavedDocPage *) weaveMainPageWithName: (NSString *)aName documentFile: (NSString *)aDocumentFile
+{
+	return [self weaveMainPageOfClass: [WeavedDocPage class] withName: aName documentFile: aDocumentFile];
 }
 
 - (void) weaveMainPages
 {
 	// TODO: Perhaps pass an overview to insert in the header... or use the document file?
+	ASSIGN(apiOverviewPage, [self weaveMainPageOfClass: [DocTOCPage class] withName: @"APIOverview" documentFile: nil]);
 	ASSIGN(functionPage, [self weaveMainPageWithName: @"Functions" documentFile: nil]);
 	ASSIGN(constantPage, [self weaveMainPageWithName: @"Constants" documentFile: nil]);
 	ASSIGN(macroPage, [self weaveMainPageWithName: @"Macros" documentFile: nil]);
@@ -181,7 +188,7 @@
 	DESTROY(currentParser);
 
 	NSSet *skippedFileNames = S(@"ClassesTOC.gsdoc", 
-		[[self projectName] stringByAppendingPathExtension: @"gsdoc"]);
+		[[docIndex projectName] stringByAppendingPathExtension: @"gsdoc"]);
 
 	if ([skippedFileNames containsObject: [[self currentSourceFile] lastPathComponent]])
 	{
@@ -296,6 +303,8 @@
 	[[self currentHeader] setClassName: aClassName];
 	[[self currentHeader] setSuperClassName: aSuperclassName];
 
+	[apiOverviewPage addSubheader: currentHeader];
+
 	[docIndex setProjectRef: [[self currentPage] name] 
 	          forSymbolName: aClassName 
 	                 ofKind: @"classes"];
@@ -311,6 +320,8 @@
 	[[self currentPage] setHeader: currentHeader];
 
 	[[self currentHeader] setProtocolName: aProtocolName];
+
+	[apiOverviewPage addSubheader: currentHeader];
 
 	[docIndex setProjectRef: [[self currentPage] name] 
 	          forSymbolName: aProtocolName 
@@ -329,6 +340,8 @@
 
 	[[self currentHeader] setCategoryName: aCategoryName];
 	[[self currentHeader] setClassName: aClassName];
+
+	[apiOverviewPage addSubheader: currentHeader];
 
 	NSString *categorySymbol = [NSString stringWithFormat: @"%@(%@)", aClassName, aCategoryName];
 	NSString *kind = @"categories";
@@ -378,6 +391,14 @@
 	                 ofKind: @"functions"];
 }
 
+- (void) weaveMacro: (DocMacro *)aMacro
+{
+	[macroPage addMacro: aMacro];
+
+	[docIndex setProjectRef: [macroPage name] 
+	          forSymbolName: [aMacro name] 
+	                 ofKind: @"macros"];
+}
 - (void) weaveConstant: (DocConstant *)aConstant
 {
 	[constantPage addConstant: aConstant];

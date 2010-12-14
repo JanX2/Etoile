@@ -100,11 +100,21 @@
 	return methodFull;
 }
 
+- (NSString *) GSDocElementName
+{
+	return @"function";
+}
+
+- (SEL) weaveSelector
+{
+	return @selector(weaveFunction:);
+}
+
 - (void) parser: (GSDocParser *)parser 
    startElement: (NSString *)elementName
  withAttributes: (NSDictionary *)attributeDict
 {
-	if ([elementName isEqualToString: @"function"]) /* Opening tag */
+	if ([elementName isEqualToString: [self GSDocElementName]]) /* Opening tag */
 	{
 		BEGINLOG();
 		[self setReturnType: [attributeDict objectForKey: @"type"]];
@@ -126,7 +136,7 @@
 		[self appendToRawDescription: trimmed];
 		CONTENTLOG();
 	}
-	else if ([elementName isEqualToString: @"function"]) /* Closing tag */
+	else if ([elementName isEqualToString: [self GSDocElementName]]) /* Closing tag */
 	{
 		DescriptionParser* descParser = [DescriptionParser new];
 		
@@ -137,10 +147,12 @@
 		[self addInformationFrom: descParser];
 		[descParser release];
 		
-		[[parser weaver] weaveFunction: self];
+		[(id)[parser weaver] performSelector: [self weaveSelector] withObject: self];
 		
 		ENDLOG2(name, [self task]);
 	}
 }
+
+
 
 @end

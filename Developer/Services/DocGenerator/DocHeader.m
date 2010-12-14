@@ -12,13 +12,14 @@
 
 @implementation DocHeader
 
-@synthesize protocolName, categoryName, adoptedProtocolNames;
+@synthesize protocolName, categoryName, adoptedProtocolNames, group;
 
 - (id) init
 {
 	SUPERINIT;
 	authors = [NSMutableArray new];
 	adoptedProtocolNames = [NSMutableArray new];
+	ASSIGN(group, @"Default");
 	return self;
 }
 
@@ -33,6 +34,7 @@
 	[abstract release];
 	[overview release];
 	[title release];
+	[group release];
 	[super dealloc];
 }
 
@@ -56,6 +58,7 @@
 	ASSIGN(copy->abstract, abstract);
 	ASSIGN(copy->overview, overview);
 	ASSIGN(copy->title, title);
+	ASSIGN(copy->group, group);
 
 	return copy;
 }
@@ -198,14 +201,25 @@
 		}
 		[h_title addText: @"&gt;"];
 	}
-	
+
+	/* Build authors and declared in table */
+	H table = TABLE;
 	H tdAuthors = TD;
+
 	for (NSString *author in authors)
 	{
 		[tdAuthors with: author and: @" "];
 	}
-	H table = [TABLE with: [TR with: [TH with: @"Authors"] and: tdAuthors]
-					  and: [TR with: [TH with: @"Declared in:"] and: [TD with: declared]]];
+	if ([authors isEmpty] == NO)
+	{
+		[table add: [TR with: [TH with: @"Authors"] and: tdAuthors]];
+	}
+	if (declared != nil)
+	{
+		[table add: [TR with: [TH with: @"Declared in:"] and: [TD with: declared]]];
+	}
+
+	// TODO: Could be better not to insert an empty table when authors is empty and declared is nil
 	H meta = [DIV id: @"meta" with: [P id: @"metadesc" with: abstract] and: table];
 	H h_overview = [DIV id: @"overview" with: [H3 with: @"Overview"]];
 	BOOL setOverview = NO;
@@ -231,6 +245,36 @@
 	}
 
 	return header;
+}
+
+// TODO: Use correct span class names...
+- (HtmlElement *) HTMLTOCRepresentation
+{
+	DocIndex *docIndex = [DocIndex currentIndex];
+	H hEntryName = [SPAN class: @"symbolName"];
+
+	/* Insert either class, category or protocol as main symbol */
+	if (className != nil && categoryName == nil)
+	{
+		ETAssert(protocolName == nil);
+		[hEntryName with: className and: @" : " and: [docIndex linkForClassName: superClassName]];
+	}
+	if (categoryName != nil)
+	{
+		ETAssert(protocolName == nil);
+		[hEntryName with: [docIndex linkForClassName: className] 
+		             and: @" (" and: categoryName and: @")"];
+	}
+	if (protocolName != nil)
+	{
+		[hEntryName with: protocolName];	
+	}
+
+	NSString *description = [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]];
+	H hEntryDesc = [DIV class: @"symbolDescription" with: [P with: description]];
+
+	return [DIV class: @"symbol" with: [DL with: [DT with: hEntryName]
+                                            and: [DD with: hEntryDesc]]];
 }
 
 - (void) parser: (GSDocParser *)parser 

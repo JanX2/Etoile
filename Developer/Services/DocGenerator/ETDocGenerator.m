@@ -157,10 +157,11 @@ int main (int argc, const char * argv[])
 		                        templateFile: templateFile];
     }
 
-	[weaver setProjectName: projectName];	
 	[weaver setMenuFile: menuFile];
 	[weaver setExternalMappingFile: externalClassFile];
 	[weaver setProjectMappingFile: projectClassFile];
+
+	[[DocIndex currentIndex] setProjectName: projectName];
 
 	NSArray *pages = [weaver weaveAllPages];
 
