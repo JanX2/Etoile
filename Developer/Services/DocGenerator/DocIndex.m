@@ -40,6 +40,7 @@ static DocIndex *currentIndex = nil;
 - (id) initWithGSDocIndexFile: (NSString *)anIndexFile
 {
 	SUPERINIT;
+	ASSIGN(projectName, @"Untitled");
 	indexContent = [[NSDictionary alloc] initWithContentsOfFile: anIndexFile];
 	externalRefs = [self createRefDictionaryWithMutability: NO];
 	projectRefs = [self createRefDictionaryWithMutability: YES];
@@ -55,6 +56,18 @@ static DocIndex *currentIndex = nil;
 	DESTROY(projectRefs);
 	DESTROY(mergedRefs);
 	[super dealloc];
+}
+
+- (void) setProjectName: (NSString *)aName
+{
+	if (aName == nil)
+	{
+		ASSIGN(projectName, @"Untitled");
+	}
+	else
+	{
+		ASSIGN(projectName, aName);
+	}
 }
 
 - (BOOL) isInformalProtocolSymbolName: (NSString *)aSymbolName

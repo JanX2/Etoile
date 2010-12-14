@@ -18,6 +18,8 @@
 		03FF79AF0DFCA7B4007D79D3 /* WeavedDocPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF79AE0DFCA7B4007D79D3 /* WeavedDocPage.m */; };
 		602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */ = {isa = PBXBuildFile; fileRef = 602363D5128B3E6600C9EC82 /* DocPageWeaver.m */; };
 		606D338D12946F1500AA7554 /* DocIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 606D338C12946F1500AA7554 /* DocIndex.m */; };
+		60AF049E12B788F800BAF537 /* DocMacro.m in Sources */ = {isa = PBXBuildFile; fileRef = 60AF049B12B788F800BAF537 /* DocMacro.m */; };
+		60AF049F12B788F800BAF537 /* DocTOCPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 60AF049D12B788F800BAF537 /* DocTOCPage.m */; };
 		60B289FB11DA0C4000FC8C20 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */; };
 		60F7F14412AF91970031E9F1 /* DocCDataType.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F7F14312AF91970031E9F1 /* DocCDataType.m */; };
 		8DD76F9A0486AA7600D96B5E /* ETDocGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */; settings = {ATTRIBUTES = (); }; };
@@ -95,6 +97,10 @@
 		602363D5128B3E6600C9EC82 /* DocPageWeaver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocPageWeaver.m; sourceTree = "<group>"; };
 		606D338B12946F1500AA7554 /* DocIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocIndex.h; sourceTree = "<group>"; };
 		606D338C12946F1500AA7554 /* DocIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocIndex.m; sourceTree = "<group>"; };
+		60AF049A12B788F800BAF537 /* DocMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocMacro.h; sourceTree = "<group>"; };
+		60AF049B12B788F800BAF537 /* DocMacro.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocMacro.m; sourceTree = "<group>"; };
+		60AF049C12B788F800BAF537 /* DocTOCPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocTOCPage.h; sourceTree = "<group>"; };
+		60AF049D12B788F800BAF537 /* DocTOCPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocTOCPage.m; sourceTree = "<group>"; };
 		60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		60F7F14212AF91970031E9F1 /* DocCDataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocCDataType.h; sourceTree = "<group>"; };
 		60F7F14312AF91970031E9F1 /* DocCDataType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocCDataType.m; sourceTree = "<group>"; };
@@ -136,6 +142,8 @@
 				602363D5128B3E6600C9EC82 /* DocPageWeaver.m */,
 				03FF79AD0DFCA7B4007D79D3 /* WeavedDocPage.h */,
 				03FF79AE0DFCA7B4007D79D3 /* WeavedDocPage.m */,
+				60AF049C12B788F800BAF537 /* DocTOCPage.h */,
+				60AF049D12B788F800BAF537 /* DocTOCPage.m */,
 				0362732B0E048FD3005D79FE /* DocElement.h */,
 				0362732C0E048FD3005D79FE /* DocElement.m */,
 				60F7F14212AF91970031E9F1 /* DocCDataType.h */,
@@ -146,6 +154,8 @@
 				03FF75DD0DFAAFEB007D79D3 /* DocMethod.m */,
 				03FF78E30DFB75C9007D79D3 /* DocFunction.h */,
 				03FF78E40DFB75C9007D79D3 /* DocFunction.m */,
+				60AF049A12B788F800BAF537 /* DocMacro.h */,
+				60AF049B12B788F800BAF537 /* DocMacro.m */,
 				036271910E00B263005D79FE /* Parameter.h */,
 				036271920E00B263005D79FE /* Parameter.m */,
 				03FF77460DFB1D21007D79D3 /* GSDocParser.h */,
@@ -288,6 +298,8 @@
 				602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */,
 				606D338D12946F1500AA7554 /* DocIndex.m in Sources */,
 				60F7F14412AF91970031E9F1 /* DocCDataType.m in Sources */,
+				60AF049E12B788F800BAF537 /* DocMacro.m in Sources */,
+				60AF049F12B788F800BAF537 /* DocTOCPage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
