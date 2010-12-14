@@ -99,7 +99,7 @@
 
 @end
 
-
+#if DEBUG_PARSING
 #define BEGINLOG() \
 	NSLog(@"%@BEGIN <%@>", [parser indentSpaces], elementName);
 #define CONTENTLOG() \
@@ -110,3 +110,10 @@
 	NSLog(@"%@END   <%@> %@\n\n", [parser indentSpaces], elementName, [NSString stringWithFormat: @"%@, %@", a, b]);
 #define ENDLOG3(a, b, c) \
 	NSLog(@"%@END   <%@> %@\n\n", [parser indentSpaces], elementName, [NSString stringWithFormat: @"%@, %@, %@", a, b, c]);
+#else
+#define BEGINLOG()
+#define CONTENTLOG()
+#define ENDLOG()
+#define ENDLOG2(a, b)
+#define ENDLOG3(a, b, c)
+#endif

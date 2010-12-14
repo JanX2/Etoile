@@ -320,7 +320,7 @@
 		HtmlElement *hTask = (hasH3 ? [H4 with: task] : [H3 with: task]);
 
 		[html add: hTask];
-
+		NSLog(@"HTML Task: %@", hTask);
 		NSArray *subroutinesInTask = [[subroutinesByTask objectForKey: task] 
 			sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
 

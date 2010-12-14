@@ -28,6 +28,7 @@ elements (methods, macros, menu etc.) are laid out. Subclassing support is
 experimental and untested. */
 @interface WeavedDocPage : NSObject 
 {
+	/* Source & Template */
 	NSString *documentType;
 	NSString *documentPath;
 	NSString *documentContent;
@@ -35,6 +36,9 @@ experimental and untested. */
 	NSString *menuContent;
 	NSString *weavedContent;
 
+	/* Doc Element Tree
+	   Each doc element dictionaries is organized as described:
+	   { taskOrGroupName = ( doc element 1, doc element 2 ...); ... } */
 	DocHeader *header;
 	NSMutableDictionary *subheaders;
 	NSMutableDictionary *classMethods;

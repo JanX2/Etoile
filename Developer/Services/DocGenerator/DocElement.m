@@ -20,7 +20,6 @@
 {
 	SUPERINIT;
 	rawDescription = [NSMutableString new];
-	task = [[NSString alloc] initWithString: @"Default"];
 	return self;
 }
 
@@ -34,6 +33,47 @@
 	[super dealloc];
 }
 
+- (NSString *) task
+{
+	if (task != nil)
+	{
+		return task;
+	}
+	else if (taskUnit != nil)
+	{
+		ETAssert(task == nil);
+		return taskUnit;
+	}
+	else
+	{
+		return @"Default";
+	}
+}
+
+- (void) setTask: (NSString *)aTask
+{
+	if ([aTask isEqualToString: @""])
+	{
+		ASSIGN(task, nil);
+	}
+	else
+	{
+		ASSIGN(task, aTask);
+	}
+}
+
+- (void) setTaskUnit: (NSString *)aTask
+{
+	if ([aTask isEqualToString: @""])
+	{
+		ASSIGN(taskUnit, nil);
+	}
+	else
+	{
+		ASSIGN(taskUnit, aTask);
+	}
+}
+
 - (id) copyWithZone: (NSZone *)aZone
 {
 	DocElement *copy = [[self class] allocWithZone: aZone];
@@ -41,6 +81,7 @@
 	copy->rawDescription = [rawDescription mutableCopyWithZone: aZone];
 	ASSIGN(copy->filteredDescription, filteredDescription);
 	ASSIGN(copy->name, name);
+	ASSIGN(copy->task, task);
 
 	return copy;
 }
