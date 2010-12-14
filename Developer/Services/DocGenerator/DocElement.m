@@ -107,51 +107,51 @@
 	NSCharacterSet *punctCharset = [NSCharacterSet punctuationCharacterSet];
 
 	for (int i = 0; i < [descWords count]; i++)
-    {
-    	NSString *word = [descWords objectAtIndex: i];
-        NSUInteger length = [word length];
+	{
+		NSString *word = [descWords objectAtIndex: i];
+		NSUInteger length = [word length];
 		NSRange r = NSMakeRange(0, length);
-        BOOL usesSubword = NO;
-        NSString *symbol = word;
-    
+		BOOL usesSubword = NO;
+		NSString *symbol = word;
+
 		/* We want to trim some common punctuation patterns e.g.
-           - word
-           - (word
-           - word),
-           TODO: But we need to handle square bracket use specially. For square 
-           brackets, we detect [Class], [(Protocol)], -[Class method], 
-           +[Class method], -[(Protocol) method], +[(Protocol) method] */
-	if (r.length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: 0]])
-        {
-            r.location++;
-            r.length--;
-            usesSubword = YES;
-        }
-        if (r.length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: length - 1]])
-        {
-        	r.length--;
-            if ([punctCharset characterIsMember: [word characterAtIndex: length - 2]])
-            {
-                r.length--;
-            }
-            usesSubword = YES;
-        }
-        if (usesSubword)
-        {
-        	symbol = [word substringWithRange: r];
-        }
+		   - word
+		   - (word
+		   - word),
+		   TODO: But we need to handle square bracket use specially. For square 
+		   brackets, we detect [Class], [(Protocol)], -[Class method], 
+		   +[Class method], -[(Protocol) method], +[(Protocol) method] */
+		if (r.length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: 0]])
+		{
+			r.location++;
+			r.length--;
+			usesSubword = YES;
+		}
+		if (r.length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: length - 1]])
+		{
+			r.length--;
+			if ([punctCharset characterIsMember: [word characterAtIndex: length - 2]])
+			{
+				r.length--;
+			}
+			usesSubword = YES;
+		}
+		if (usesSubword)
+		{
+			symbol = [word substringWithRange: r];
+		}
 
 		/* In most cases, no link is created and link is the same than symbol */
 		NSString *link = [aDocIndex linkForSymbolName: symbol ofKind: nil];
 		NSString *finalWord = link;
 
 		if (usesSubword)
-        {
-        	finalWord = [word stringByReplacingCharactersInRange: r withString: link];
-        }
-    
+		{
+			finalWord = [word stringByReplacingCharactersInRange: r withString: link];
+		}
+
 		[descWords replaceObjectAtIndex: i withObject: finalWord];
-    }
+	}
 
 	return [descWords componentsJoinedByString: @" "];
 }
@@ -242,7 +242,7 @@
 	FOREACH(parameters, p, Parameter *)
 	{
 		[p setDescription: [aParser descriptionForParameter: [p name]]];
-	}    
+	}
 	//NSLog (@"Parser return description <%@>", [aParser returnDescription]);
 }
 

@@ -32,7 +32,7 @@
 	SUPERINIT;
 
 	xmlParser = [[NSXMLParser alloc] initWithData: 
-    	[aContent dataUsingEncoding: NSUTF8StringEncoding]];
+		[aContent dataUsingEncoding: NSUTF8StringEncoding]];
 	[xmlParser setDelegate: self];
 	parserDelegateStack = [[NSMutableArray alloc] initWithObjects: [NSValue valueWithNonretainedObject: self], nil];
 	indentSpaces = @"";
@@ -66,7 +66,7 @@
 	[parserDelegateStack release];
 	[elementClasses release];
 	[symbolElements release];
-    	[substitutionElements release];
+	[substitutionElements release];
 	[etdocElements release];
 	[content release];
 	[super dealloc];
@@ -102,8 +102,8 @@
 - (id <GSDocParserDelegate>) parserDelegate
 {
 	id parserDelegate = [parserDelegateStack lastObject];
-    BOOL isWeakRef = [parserDelegate isKindOfClass: [NSValue class]];
-    return (isWeakRef ? [parserDelegate nonretainedObjectValue] : parserDelegate);
+	BOOL isWeakRef = [parserDelegate isKindOfClass: [NSValue class]];
+	return (isWeakRef ? [parserDelegate nonretainedObjectValue] : parserDelegate);
 }
 
 - (void) increaseIndentSpaces
@@ -164,7 +164,7 @@ didStartElement:(NSString *)elementName
 	   accumulated content will be:
 	   <desc><x>A boat</x> on <y>the</y> river.</desc>
 
- 	   (2) For ETDoc tags, we insert them along with their content in our content accumulator. 
+	   (2) For ETDoc tags, we insert them along with their content in our content accumulator. 
 	   The next handled element can retrieve the accumulated content. For example:
 	   <desc><i>A boat<i> on <j>the</j> river.</desc>
 	   if i and j are ETDoc elements, the accumulated content will be:
@@ -275,19 +275,18 @@ didStartElement:(NSString *)elementName
 	/* The main parser is responsible to parse the class, category and protocol attributes */
 	if ([elementName isEqualToString: @"class"]) 
 	{
-        	[weaver weaveClassNamed: [attributeDict objectForKey: @"name"]
-		         superclassName: [attributeDict objectForKey: @"super"]];
+			[weaver weaveClassNamed: [attributeDict objectForKey: @"name"]
+				 superclassName: [attributeDict objectForKey: @"super"]];
 	}
 	else if ([elementName isEqualToString: @"category"]) 
 	{
-        	[weaver weaveCategoryNamed: [attributeDict objectForKey: @"name"]
-		                     className: [attributeDict objectForKey: @"class"]];
+			[weaver weaveCategoryNamed: [attributeDict objectForKey: @"name"]
+							 className: [attributeDict objectForKey: @"class"]];
 	}
 	if ([elementName isEqualToString: @"protocol"]) 
 	{
-        	[weaver weaveProtocolNamed: [attributeDict objectForKey: @"name"]];
+			[weaver weaveProtocolNamed: [attributeDict objectForKey: @"name"]];
 	}
-
 }
 
 - (void) parser: (GSDocParser *)parser

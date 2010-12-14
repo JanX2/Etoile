@@ -15,7 +15,7 @@
 
 @synthesize typePrefix, className, protocolName, typeSuffix;
 
-- (id) initWithName: (NSString*) aName andType: (NSString*) aType
+- (id) initWithName: (NSString *) aName andType: (NSString *) aType
 {
 	SUPERINIT;
 	[self setName: aName];
@@ -25,27 +25,24 @@
 
 - (void) dealloc
 {
-  [name release];
-  [type release];
-  [description release];
+	[name release];
+	[type release];
+	[description release];
 	DESTROY(typePrefix);
-    DESTROY(className);
-    DESTROY(protocolName);
-    DESTROY(typeSuffix);
-  [super dealloc];
+	DESTROY(className);
+	DESTROY(protocolName);
+	DESTROY(typeSuffix);
+	[super dealloc];
 }
 
-+ (id) newWithName: (NSString*) aName andType: (NSString*) aType
++ (id) newWithName: (NSString *) aName andType: (NSString *) aType
 {
-  Parameter* p = [[Parameter alloc] initWithName: aName andType: aType];
-  return [p autorelease];  
+	return AUTORELEASE([[Parameter alloc] initWithName: aName andType: aType]);
 }
 
-- (void) setName: (NSString*) aName
+- (void) setName: (NSString *) aName
 {
-  [aName retain];
-  [name release];
-  name = aName;
+	ASSIGN(name, aName);
 }
 
 static inline BOOL isDelimiter(char c)
@@ -57,27 +54,27 @@ static inline unsigned int parseTypePrefix(char *rawType, unsigned int length, N
 {
 	char *symbol = calloc(sizeof(char), length);;
 	int i;
-    BOOL foundProtocolOrClassName = NO;
+	BOOL foundProtocolOrClassName = NO;
 
 	for (i = 0; i < length; i++)
-    {
-    	if (rawType[i] == '*')
-        	break;
-        
-        if (rawType[i] == '<' || isupper(rawType[i]))
-        {
-        	foundProtocolOrClassName = YES;
-        	break;
+	{
+		if (rawType[i] == '*')
+			break;
+		
+		if (rawType[i] == '<' || isupper(rawType[i]))
+		{
+			foundProtocolOrClassName = YES;
+			break;
 		}
-    	symbol[i] = rawType[i];
-    }
+		symbol[i] = rawType[i];
+	}
 
 	if (foundProtocolOrClassName)
-    {
-    	[*typePrefix release];
-    	*typePrefix = [[NSString alloc] initWithBytes: (const void *)symbol length: i encoding: NSUTF8StringEncoding];
+	{
+		[*typePrefix release];
+		*typePrefix = [[NSString alloc] initWithBytes: (const void *)symbol length: i encoding: NSUTF8StringEncoding];
 		return i;
-    }
+	}
 
 	free(symbol);
 
@@ -90,17 +87,17 @@ static inline unsigned int parseClassOrProtocolName(char *rawType, unsigned int 
 	int i;
 
 	for (i = 0; i < length; i++)
-    {
-    	if (isDelimiter(rawType[i]))
-        	break;
+	{
+		if (isDelimiter(rawType[i]))
+			break;
 
-    	symbol[i] = rawType[i];
-    }
+		symbol[i] = rawType[i];
+	}
 
-    [*classOrProtocolName release];
-    *classOrProtocolName = [[NSString alloc] initWithBytes: (const void *)symbol length: i encoding: NSUTF8StringEncoding];
+	[*classOrProtocolName release];
+	*classOrProtocolName = [[NSString alloc] initWithBytes: (const void *)symbol length: i encoding: NSUTF8StringEncoding];
 	free(symbol);
-    return i;
+	return i;
 }
 
 static inline unsigned int parseTypeSuffix(char *rawType, unsigned int length, NSString **typeSuffix)
@@ -109,12 +106,12 @@ static inline unsigned int parseTypeSuffix(char *rawType, unsigned int length, N
 	int i;
 
 	for (i = 0; i < length; i++)
-    {
-    	suffix[i] = rawType[i];
-    }
+	{
+		suffix[i] = rawType[i];
+	}
 
-    [*typeSuffix release];
-    *typeSuffix = [[NSString alloc] initWithBytes: (const void *)suffix length: i encoding: NSUTF8StringEncoding];
+	[*typeSuffix release];
+	*typeSuffix = [[NSString alloc] initWithBytes: (const void *)suffix length: i encoding: NSUTF8StringEncoding];
 	free(suffix);
 
 	return i;
@@ -148,69 +145,67 @@ camel case). */
 	BOOL isParsingProtocolName = NO;
 
 	while (rawType[i] != '\0')
-    {
-    	char character = rawType[i];
+	{
+		char character = rawType[i];
 		char *unparsedText = (char *)&(rawType[i]);
 
-    	if (character == '<' || character == '>')
-        {
-        	/* We skip < and >. typePrefix, classOrProtocolName or typeSuffix 
-               will never contain them.
+		if (character == '<' || character == '>')
+		{
+			/* We skip < and >. typePrefix, classOrProtocolName or typeSuffix 
+			   will never contain them.
 
-               For '<' let isupper() branch parses the protocol name on next iteration.
-               For '>' let else branch parses the suffix on next iteration. */
-        	i++;
-            isParsingProtocolName = YES;
-            continue;
-        }
-       	else if (isupper(character))
-        {
-        	NSString **classOrProtocolName = (isParsingProtocolName ? &protocolName : &className);
-            i += parseClassOrProtocolName(unparsedText, strlen(unparsedText), classOrProtocolName);
-            isParsingProtocolName = NO;
-        }
-        else if (i == 0)
-        {
-            int advancement = parseTypePrefix(unparsedText, strlen(unparsedText), &typePrefix);
-            if (advancement == 0)
-                return;
+			   For '<' let isupper() branch parses the protocol name on next iteration.
+			   For '>' let else branch parses the suffix on next iteration. */
+			i++;
+			isParsingProtocolName = YES;
+			continue;
+		}
+		else if (isupper(character))
+		{
+			NSString **classOrProtocolName = (isParsingProtocolName ? &protocolName : &className);
+			i += parseClassOrProtocolName(unparsedText, strlen(unparsedText), classOrProtocolName);
+			isParsingProtocolName = NO;
+		}
+		else if (i == 0)
+		{
+			int advancement = parseTypePrefix(unparsedText, strlen(unparsedText), &typePrefix);
+			if (advancement == 0)
+				return;
 
-            i += advancement;
-        }
-        else
-        {
-            i += parseTypeSuffix(unparsedText, strlen(unparsedText), &typeSuffix);
-        }
-    }
-    //NSLog(@"Parsed type as prefix %@ class %@ protocol %@ suffix %@", typePrefix, className, protocolName, typeSuffix);
+			i += advancement;
+		}
+		else
+		{
+			i += parseTypeSuffix(unparsedText, strlen(unparsedText), &typeSuffix);
+		}
+	}
+	//NSLog(@"Parsed type as prefix %@ class %@ protocol %@ suffix %@", typePrefix, className, protocolName, typeSuffix);
 }
 
-- (void) setType: (NSString*) aType
+- (void) setType: (NSString *) aType
 {
 	ASSIGN(type, aType);
-    [self parseType: aType];
+	[self parseType: aType];
 }
 
-- (void) setDescription: (NSString*) aDescription
+- (void) setDescription: (NSString *) aDescription
 {
-  [aDescription retain];
-  [description release];
-  description = aDescription;
+	ASSIGN(description, aDescription);
 }
 
-- (NSString*) name
+- (NSString *) name
 {
-  return name;
+	return name;
 }
 
-- (NSString*) type
+- (NSString *) type
 {
-  return type;
+	return type;
 }
 
-- (NSString*) description
+- (NSString *) description
 {
-  return description;
+	return description;
 }
 
 - (HtmlElement *) HTMLRepresentation

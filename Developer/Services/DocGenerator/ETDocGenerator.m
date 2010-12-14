@@ -4,10 +4,6 @@
 #import "WeavedDocPage.h"
 
 /**
- * Author: Nicolas Roard
- */
-
-/**
  * Display the help
  *
  * @task Display
@@ -69,25 +65,28 @@ void printHelp ()
  * @param classFile A plist file we can use as a base
  * @task Utility
  */
-void generateClassMapping(NSString* classFile)
+void generateClassMapping(NSString *classFile)
 {
-   NSString* content = [NSString stringWithContentsOfFile: classFile];
-   NSArray* lines = [content componentsSeparatedByString: @"\n"];
-   //  NSMutableDictionary* classMapping = [NSMutableDictionary new];
-   NSMutableDictionary* classMapping = [NSDictionary dictionaryWithContentsOfFile: @"class-mapping-foundation.plist"];
-   
-   for (int i=0; i<[lines count]; i++)
-   {
-   NSString* line = [lines objectAtIndex: i];
-   NSString* className = [line stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-   //    NSString* url = [NSString stringWithFormat: @"http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/%@_Class/Reference/Reference.html", className];
-   NSString* url = [NSString stringWithFormat: @"http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/%@_Class/Reference/Reference.html", className];
-   if ([className length] > 0)
-   [classMapping setObject: url forKey: className];
-   NSLog (@"done class %@", className);
-   }  
-   [classMapping writeToFile: @"class-mapping.plist" atomically: YES];
-   return;
+	NSString *content = [NSString stringWithContentsOfFile: classFile];
+	NSArray *lines = [content componentsSeparatedByString: @"\n"];
+	//NSMutableDictionary *classMapping = [NSMutableDictionary new];
+	NSMutableDictionary *classMapping = [NSDictionary dictionaryWithContentsOfFile: @"class-mapping-foundation.plist"];
+
+	for (int i=0; i<[lines count]; i++)
+	{
+		NSString *line = [lines objectAtIndex: i];
+		NSString *className = [line stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		//NSString *url = [NSString stringWithFormat: @"http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/%@_Class/Reference/Reference.html", className];
+		NSString *url = [NSString stringWithFormat: @"http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/%@_Class/Reference/Reference.html", className];
+
+		if ([className length] > 0)
+		{
+			[classMapping setObject: url forKey: className];
+		}
+		NSLog (@"done class %@", className);
+	}
+	[classMapping writeToFile: @"class-mapping.plist" atomically: YES];
+	return;
 }
 
 /**
@@ -121,18 +120,18 @@ void printError()
  */
 int main (int argc, const char * argv[]) 
 {
-	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	NSDictionary* options = ETGetOptionsDictionary("hn:c:r:t:m:e:p:o:", argc, (char **)argv);
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSDictionary *options = ETGetOptionsDictionary("hn:c:r:t:m:e:p:o:", argc, (char **)argv);
 	NSString *projectName = [options objectForKey: @"n"];
-    NSArray *explicitSourceFiles = [options objectForKey: @""];
-    NSString *parserSourceDir = [options objectForKey: @"c"];
-    NSString *rawSourceDir = [options objectForKey: @"r"];
-	NSString* templateFile = [options objectForKey: @"t"];
-	NSString* menuFile = [options objectForKey: @"m"];
-	NSString* externalClassFile = [options objectForKey: @"e"];
-	NSString* projectClassFile = [options objectForKey: @"p"];
+	NSArray *explicitSourceFiles = [options objectForKey: @""];
+	NSString *parserSourceDir = [options objectForKey: @"c"];
+	NSString *rawSourceDir = [options objectForKey: @"r"];
+	NSString *templateFile = [options objectForKey: @"t"];
+	NSString *menuFile = [options objectForKey: @"m"];
+	NSString *externalClassFile = [options objectForKey: @"e"];
+	NSString * projectClassFile = [options objectForKey: @"p"];
 	NSString *outputDir = [options objectForKey: @"o"];;
-	NSNumber* help = [options objectForKey: @"h"];
+	NSNumber *help = [options objectForKey: @"h"];
 
 	if (VALID(help))
 	{
@@ -143,19 +142,19 @@ int main (int argc, const char * argv[])
 	// WeavedDocument
 
 	DocPageWeaver *weaver = [DocPageWeaver alloc];
-    
-    if ([explicitSourceFiles isEmpty])
-    {
-    	weaver = [weaver initWithParserSourceDirectory: parserSourceDir
-                                             fileTypes: A(@"gsdoc", @"igsdoc")
-                                    rawSourceDirectory: rawSourceDir
+
+	if ([explicitSourceFiles isEmpty])
+	{
+		weaver = [weaver initWithParserSourceDirectory: parserSourceDir
+		                                     fileTypes: A(@"gsdoc", @"igsdoc")
+		                            rawSourceDirectory: rawSourceDir
 		                                  templateFile: templateFile];    
-    }
-    else
-    {
-    	weaver = [weaver initWithSourceFiles: explicitSourceFiles
+	}
+	else
+	{
+		weaver = [weaver initWithSourceFiles: explicitSourceFiles
 		                        templateFile: templateFile];
-    }
+	}
 
 	[weaver setMenuFile: menuFile];
 	[weaver setExternalMappingFile: externalClassFile];
@@ -173,7 +172,7 @@ int main (int argc, const char * argv[])
 	[[DocIndex currentIndex] regenerate];
 
 	FOREACH(pages, page, WeavedDocPage *)
-    {
+	{
 		NSString *outputPath = [outputDir stringByAppendingPathComponent: [page name]];
 
 		NSLog(@"Write %@ to %@", page, [outputPath stringByAppendingPathExtension: @"html"]);

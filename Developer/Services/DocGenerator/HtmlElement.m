@@ -28,137 +28,149 @@
 	return AUTORELEASE([[BlankHTMLElement alloc] initWithName: @"Blank"]);
 }
 
-+ (HtmlElement*) elementWithName: (NSString*) aName
++ (HtmlElement *) elementWithName: (NSString *) aName
 {
-  HtmlElement* elem = [[HtmlElement alloc] iniWithName: aName];
-  return [elem autorelease];
+	return AUTORELEASE([[HtmlElement alloc] iniWithName: aName]);
 }
 
-- (HtmlElement*) iniWithName: (NSString*) aName
+- (HtmlElement *) iniWithName: (NSString *) aName
 {
-  SUPERINIT;
-  children = [NSMutableArray new];
-  attributes = [NSMutableDictionary new];
-  elementName = [[NSString alloc] initWithString: aName];
-  blockElementNames = [[NSSet alloc] initWithObjects: @"div", @"dt", @"dl", nil];
-  return self;
+	SUPERINIT;
+	children = [NSMutableArray new];
+	attributes = [NSMutableDictionary new];
+	elementName = [[NSString alloc] initWithString: aName];
+	blockElementNames = [[NSSet alloc] initWithObjects: @"div", @"dt", @"dl", nil];
+	return self;
 }
 
 - (void) dealloc
 {
-  [children release];
-  [attributes release];
-  [elementName release];
-  [blockElementNames release];
-  [super dealloc];
+	[children release];
+	[attributes release];
+	[elementName release];
+	[blockElementNames release];
+	[super dealloc];
 }
 
-- (HtmlElement*) addText: (NSString*) aText
+- (HtmlElement *) addText: (NSString *) aText
 {
-  if (aText)
-    [children addObject: aText];
-  return self;
+	if (aText)
+	{
+		[children addObject: aText];
+	}
+	return self;
 }
 
-- (HtmlElement*) add: (HtmlElement*) anElem 
+- (HtmlElement *) add: (HtmlElement *) anElem 
 {
-  if (anElem)
-    [children addObject: anElem];
-  return self;
+	if (anElem)
+	{
+		[children addObject: anElem];
+	}
+	return self;
 }
 
-- (HtmlElement*) id: (NSString*) anID
+- (HtmlElement *) id: (NSString *) anID
 {
-  if (anID)
-    [attributes setObject: anID forKey: @"id"];
-  return self;
+	if (anID)
+	{
+		[attributes setObject: anID forKey: @"id"];
+	}
+	return self;
 }
 
-- (HtmlElement*) class: (NSString*) aClass
+- (HtmlElement *) class: (NSString *) aClass
 {
-  if (aClass)
-    [attributes setObject: aClass forKey: @"class"];
-  return self;
+	if (aClass)
+	{
+		[attributes setObject: aClass forKey: @"class"];
+	}
+	return self;
 }
 
-- (HtmlElement*) name: (NSString*) aName
+- (HtmlElement *) name: (NSString *) aName
 {
-  if (aName)
-    [attributes setObject: aName forKey: @"name"];
-  return self;
+	if (aName)
+	{
+		[attributes setObject: aName forKey: @"name"];
+	}
+	return self;
 }
 
 /*
  forwarding...
  */
 
-- (NSMethodSignature*) methodSignatureForSelector: (SEL) aSelector
+- (NSMethodSignature*) methodSignatureForSelector: (SEL)aSelector
 {
-  NSString* sig = NSStringFromSelector(aSelector);
-//  NSLog (@"methodSignature for selector <%@>", sig);
-  NSArray* components = [sig componentsSeparatedByString: @":"];
-  NSMutableString* signature = [NSMutableString stringWithString: @"@@:"];
-  for (int i=0; i<[components count]; i++)
-  {
-    NSString* component = [components objectAtIndex: i];
-    if ([component length] > 0) 
-    {
-//      NSLog (@"component <%@>", component);
-      [signature appendString: @"@"];
-    }
-  }
-//  NSLog (@"generated sig <%@> for sel<%@>", signature, sig);
-  return [NSMethodSignature signatureWithObjCTypes: [signature UTF8String]];
+	NSString *sig = NSStringFromSelector(aSelector);
+	//NSLog (@"methodSignature for selector <%@>", sig);
+	NSArray *components = [sig componentsSeparatedByString: @":"];
+	NSMutableString *signature = [NSMutableString stringWithString: @"@@:"];
+	NSUInteger nbOfComponents = [components count];
+
+	for (int i=0; i < nbOfComponents; i++)
+	{
+		NSString *component = [components objectAtIndex: i];
+
+		if ([component length] == 0)
+			continue;
+
+		//NSLog (@"component <%@>", component);
+		[signature appendString: @"@"];
+	}
+	//  NSLog (@"generated sig <%@> for sel<%@>", signature, sig);
+	return [NSMethodSignature signatureWithObjCTypes: [signature UTF8String]];
 }
 
 #define CALLM(assig,asig)\
-  if ([component isEqualToString: assig])\
-  {\
-    id arg;\
-    [invocation getArgument: &arg atIndex: i+2];\
-    [self asig: arg];\
-  }
+	if ([component isEqualToString: assig])\
+	{\
+		id arg;\
+		[invocation getArgument: &arg atIndex: i + 2];\
+		[self asig: arg];\
+	}
 
-- (void) forwardInvocation: (NSInvocation*) invocation
+- (void) forwardInvocation: (NSInvocation *) invocation
 {
-//  NSLog (@"invocation called <%@>", NSStringFromSelector([invocation selector]));
-  NSString* sig = NSStringFromSelector([invocation selector]);
-  NSArray* components = [sig componentsSeparatedByString: @":"];
-  for (int i=0; i<[components count]; i++)
-  {
-    NSString* component = [components objectAtIndex: i];
-    if ([component length] > 0) 
-    {
-//      NSLog (@"component <%@>", component);
-      CALLM(@"id",id)
-      CALLM(@"class",class)
-      CALLM(@"with",with)
-      CALLM(@"and",and)
-    }
-  }
-//  NSLog (@"after invocation of <%@>:\n%@", sig, [self content]);
-  [invocation setReturnValue: &self];
+	//NSLog (@"invocation called <%@>", NSStringFromSelector([invocation selector]));
+	NSString *sig = NSStringFromSelector([invocation selector]);
+	NSArray *components = [sig componentsSeparatedByString: @":"];
+	NSUInteger nbOfComponents = [components count];
+
+	for (int i = 0; i < nbOfComponents; i++)
+	{
+		NSString *component = [components objectAtIndex: i];
+
+		if ([component length] == 0)
+			continue;
+
+		//NSLog (@"component <%@>", component);
+		CALLM(@"id",id);
+		CALLM(@"class",class);
+		CALLM(@"with",with);
+		CALLM(@"and",and);
+	}
+
+	//NSLog (@"after invocation of <%@>:\n%@", sig, [self content]);
+	[invocation setReturnValue: &self];
 }
 
-/*
- convenient functions...
- */
-
-- (HtmlElement*) with: (id) something
+- (HtmlElement *) with: (id) something
 {
-  if ([something isKindOfClass: [NSString class]])
-  {
-    return [self addText: something];
-  } 
-  else
-  {
-    return [self add: something];
-  }
+	if ([something isKindOfClass: [NSString class]])
+	{
+	return [self addText: something];
+	} 
+	else
+	{
+	return [self add: something];
+	}
 }
 
-- (HtmlElement*) and: (id) something
+- (HtmlElement *) and: (id) something
 {
-  return [self with: something];
+	return [self with: something];
 }
 
 - (NSString *) content

@@ -35,7 +35,7 @@
 	
 	FOREACH(selectorKeywords, keyword, NSString *)
 	{
-    	[signature appendString: keyword];
+		[signature appendString: keyword];
 	}
 	return signature;
 }
@@ -89,10 +89,10 @@
 	H h_signature = [SPAN class: @"methodSignature"];
 	
 	[h_signature with: [SPAN class: @"methodScope" 
-	                         with: (isClassMethod ? @"+ " : @"- ")]];
+	                          with: (isClassMethod ? @"+ " : @"- ")]];
 	
 	H h_returnType = [SPAN class: @"returnType" 
-	                       with: [SPAN class: @"type" with: [[self returnParameter] HTMLRepresentationWithParentheses: YES]]];
+	                        with: [SPAN class: @"type" with: [[self returnParameter] HTMLRepresentationWithParentheses: YES]]];
 	
 	[h_signature and: h_returnType];
 
@@ -108,14 +108,14 @@
 		if (isUnaryMessage)
 			break;
 
-        Parameter *p = [parameters objectAtIndex: i];
-    
-        [h_signature and: [p HTMLRepresentationWithParentheses: YES]];
+		Parameter *p = [parameters objectAtIndex: i];
+	
+		[h_signature and: [p HTMLRepresentationWithParentheses: YES]];
 	}
 	
 	H methodFull = [DIV class: @"method" 
 	                     with: [DL with: [DT with: h_signature]
-                                    and: [DD with: [DIV class: @"methodDescription" 
+	                                and: [DD with: [DIV class: @"methodDescription" 
 	                                                     with: [self HTMLDescriptionWithDocIndex: docIndex]]]]];
 	//NSLog(@"Method %@", methodFull);
 	return methodFull;
@@ -166,7 +166,7 @@
 		   -name to work transparently */
 		[self setName: [self signature]];
 
-        [[parser weaver] weaveMethod: self];
+		[[parser weaver] weaveMethod: self];
 
 		ENDLOG2([self name], [self task]);
 	}

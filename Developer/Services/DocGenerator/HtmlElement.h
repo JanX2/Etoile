@@ -14,28 +14,29 @@
 #undef A
 #endif
 
-@interface HtmlElement : NSObject {
-  NSString* elementName;
-  NSMutableDictionary* attributes;
-  NSMutableArray* children;
+@interface HtmlElement : NSObject 
+{
+	NSString* elementName;
+	NSMutableDictionary* attributes;
+	NSMutableArray* children;
 	NSSet *blockElementNames;
 }
 /** Returns a new immutable HTML element whose content is always an empty string.
 
 The name is set to 'Blank'. */
 + (HtmlElement *) blankElement;
-+ (HtmlElement*) elementWithName: (NSString*) aName;
-- (HtmlElement*) iniWithName: (NSString*) aName;
-- (HtmlElement*) addText: (NSString*) aText;
-- (HtmlElement*) add: (HtmlElement*) anElem;
-- (HtmlElement*) id: (NSString*) anID;
-- (HtmlElement*) class: (NSString*) aClass;
-- (HtmlElement*) name: (NSString*) aName;
-- (HtmlElement*) with: (id) something;
-- (HtmlElement*) and: (id) something;
-- (NSString*) content;
++ (HtmlElement *) elementWithName: (NSString *) aName;
+- (HtmlElement *) iniWithName: (NSString *) aName;
+- (HtmlElement *) addText: (NSString *) aText;
+- (HtmlElement *) add: (HtmlElement *) anElem;
+- (HtmlElement *) id: (NSString *) anID;
+- (HtmlElement *) class: (NSString *) aClass;
+- (HtmlElement *) name: (NSString *) aName;
+- (HtmlElement *) with: (id) something;
+- (HtmlElement *) and: (id) something;
+- (NSString *) content;
 /** Returns -content. */
-- (NSString *) description;
+- (NSString  *) description;
 
 @end
 

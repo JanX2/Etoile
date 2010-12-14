@@ -158,7 +158,7 @@ withDictionaryName: (NSString *)mergedDictName
 {
 	NSString *kind = (aKind != nil ? aKind : @"classes"); // FIXME: Should be @"symbols");
 	return [self linkWithName: aName
-                              ref: [[mergedRefs objectForKey: kind] objectForKey: aSymbol]
+	                      ref: [[mergedRefs objectForKey: kind] objectForKey: aSymbol]
 	                   anchor: aSymbol];
 }
 
@@ -170,14 +170,14 @@ withDictionaryName: (NSString *)mergedDictName
 - (NSString *) linkWithName: (NSString *)aName forClassName: (NSString *)aClassName
 {
 	return [self linkWithName: aClassName
-                          ref: [[mergedRefs objectForKey: @"classes"] objectForKey: aClassName]
+	                      ref: [[mergedRefs objectForKey: @"classes"] objectForKey: aClassName]
 	                   anchor: aClassName];
 }
 
 - (NSString *) linkForProtocolName: (NSString *)aProtocolName
 {
 	return [self linkWithName: aProtocolName
-                          ref: [[mergedRefs objectForKey: @"protocols"] objectForKey: aProtocolName]
+	                      ref: [[mergedRefs objectForKey: @"protocols"] objectForKey: aProtocolName]
 	                   anchor: aProtocolName];
 }
 
@@ -218,7 +218,7 @@ withDictionaryName: (NSString *)mergedDictName
 - (NSString *) linkWithName: (NSString *)aName ref: (NSString *)aRef anchor: (NSString *)anAnchor
 {
 	if (aRef == nil)
-    		return aName;
+		return aName;
 
 	if (anAnchor != nil && [anAnchor isEqualToString: @""] == NO)
 	{

@@ -30,52 +30,52 @@
                         templateFile: (NSString *)aTemplatePath
 {
 	NSArray *parserPaths = [[NSFileManager defaultManager] directoryContentsAtPath: aParserDirPath];
-    NSArray *otherPaths = [[NSFileManager defaultManager] directoryContentsAtPath: otherDirPath];
-    
-    parserPaths = [[aParserDirPath stringsByAppendingPaths: parserPaths] pathsMatchingExtensions: fileExtensions];
-    otherPaths = [[otherDirPath stringsByAppendingPaths: otherPaths] pathsMatchingExtensions: A(@"html", @"text")];
-    
+	NSArray *otherPaths = [[NSFileManager defaultManager] directoryContentsAtPath: otherDirPath];
+
+	parserPaths = [[aParserDirPath stringsByAppendingPaths: parserPaths] pathsMatchingExtensions: fileExtensions];
+	otherPaths = [[otherDirPath stringsByAppendingPaths: otherPaths] pathsMatchingExtensions: A(@"html", @"text")];
+
 	return [self initWithSourceFiles: [parserPaths arrayByAddingObjectsFromArray: otherPaths]
-                        templateFile: aTemplatePath];
+						templateFile: aTemplatePath];
 }
 
 - (id) initWithSourceFiles: (NSArray *)paths
               templateFile: (NSString *)aTemplatePath
 {
 	SUPERINIT;
-    
-    ETAssert([[paths pathsMatchingExtensions: (A(@"igsdoc"))] count] <= 1);
-    docIndex = [[HTMLDocIndex alloc] initWithGSDocIndexFile: 
-    	[[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject]];
+
+	ETAssert([[paths pathsMatchingExtensions: (A(@"igsdoc"))] count] <= 1);
+	docIndex = [[HTMLDocIndex alloc] initWithGSDocIndexFile: 
+		[[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject]];
 	[DocIndex setCurrentIndex: docIndex]; /* Also reset in -weaveCurrentSourcePages */
 
-    /* Don't include igsdoc, we don't want to turn it into a page */
-    ASSIGN(sourcePaths, [NSArray arrayWithArray: [paths pathsMatchingExtensions: A(@"gsdoc", @"html", @"text")]]);
-    sourcePathQueue = [paths mutableCopy];
-    ASSIGN(templatePath, aTemplatePath);
-    ASSIGN(templateDirPath, [aTemplatePath stringByDeletingLastPathComponent]);
-    allWeavedPages = [[NSMutableArray alloc] init];
-    weavedPages = [[NSMutableArray alloc] init];
+	/* Don't include igsdoc, we don't want to turn it into a page */
+	ASSIGN(sourcePaths, [NSArray arrayWithArray: [paths pathsMatchingExtensions: A(@"gsdoc", @"html", @"text")]]);
+	sourcePathQueue = [paths mutableCopy];
+	ASSIGN(templatePath, aTemplatePath);
+	ASSIGN(templateDirPath, [aTemplatePath stringByDeletingLastPathComponent]);
+	allWeavedPages = [[NSMutableArray alloc] init];
+	weavedPages = [[NSMutableArray alloc] init];
 
-    return self;
+	return self;
 }
 
 - (void) dealloc
 {
 	DESTROY(sourcePaths);
-    DESTROY(sourcePathQueue);
-    DESTROY(templatePath);
-    DESTROY(templateDirPath);
-    DESTROY(menuPath);
-    DESTROY(externalMappingPath);
-    DESTROY(projectMappingPath);
-    DESTROY(docIndex);
-    DESTROY(currentParser);
+	DESTROY(sourcePathQueue);
+	DESTROY(templatePath);
+	DESTROY(templateDirPath);
+	DESTROY(menuPath);
+	DESTROY(externalMappingPath);
+	DESTROY(projectMappingPath);
+	DESTROY(docIndex);
+	DESTROY(currentParser);
 	DESTROY(currentClassName);
 	DESTROY(currentProtocolName);
 	DESTROY(currentHeader);
-    DESTROY(allWeavedPages);
-    DESTROY(weavedPages);
+	DESTROY(allWeavedPages);
+	DESTROY(weavedPages);
 	DESTROY(apiOverviewPage);
 	DESTROY(functionPage);
 	DESTROY(constantPage);
@@ -97,7 +97,7 @@
 - (void) setExternalMappingFile: (NSString *)aMappingPath
 {
 	ASSIGN(externalMappingPath, aMappingPath);
-    [docIndex setExternalRefs: [NSDictionary dictionaryWithContentsOfFile: aMappingPath]];
+	[docIndex setExternalRefs: [NSDictionary dictionaryWithContentsOfFile: aMappingPath]];
 }
 
 - (void) setProjectMappingFile: (NSString *)aMappingPath
@@ -109,8 +109,8 @@
 {
 	NSMutableArray *paths = [NSMutableArray arrayWithArray: sourcePaths];
 	[[paths filter] hasSuffix: aName];
-    ETAssert([paths count] <= 1);
-    return [paths firstObject];
+	ETAssert([paths count] <= 1);
+	return [paths firstObject];
 }
 
 - (NSString *) templateFileForSourceFile: (NSString *)aSourceFile
@@ -118,15 +118,15 @@
 	NSParameterAssert(aSourceFile != nil);
 
 	if ([[aSourceFile pathExtension] isEqual: @"gsdoc"])
-    {
-    	return [[self templateDirectory] 
-        	stringByAppendingPathComponent: @"etoile-documentation-template.html"];
-    }
-    else
-    {
-  	  return [[self templateDirectory] 
-        	stringByAppendingPathComponent: @"etoile-documentation-markdown-template.html"];
-    }
+	{
+		return [[self templateDirectory] 
+			stringByAppendingPathComponent: @"etoile-documentation-template.html"];
+	}
+	else
+	{
+		return [[self templateDirectory] 
+			stringByAppendingPathComponent: @"etoile-documentation-markdown-template.html"];
+	}
 }
 
 - (WeavedDocPage *) weaveMainPageOfClass: (Class)aPageClass withName: (NSString *)aName documentFile: (NSString *)aDocumentFile
@@ -162,10 +162,10 @@
 - (void) weavePagesFromSourceFiles
 {
 	while ([sourcePathQueue isEmpty] == NO)
-    {
-    	[allWeavedPages addObjectsFromArray: [self weaveCurrentSourcePages]];
-        [sourcePathQueue removeObjectAtIndex: 0];
-    }
+	{
+		[allWeavedPages addObjectsFromArray: [self weaveCurrentSourcePages]];
+		[sourcePathQueue removeObjectAtIndex: 0];
+	}
 }
 
 - (NSArray *) weaveAllPages
@@ -173,17 +173,17 @@
 	/* Prepare the receiver to use -weaveCurrentSourcePages as many times as needed 
 	   to get all the source paths processed */
 	[allWeavedPages removeAllObjects];
-    [sourcePathQueue setArray: sourcePaths];
+	[sourcePathQueue setArray: sourcePaths];
 
 	[self weaveMainPages];
 	[self weavePagesFromSourceFiles];
 
-    return [NSArray arrayWithArray: allWeavedPages];
+	return [NSArray arrayWithArray: allWeavedPages];
 }
 
 - (NSArray *) weaveCurrentSourcePages
 {
-    [DocIndex setCurrentIndex: docIndex];
+	[DocIndex setCurrentIndex: docIndex];
 	[weavedPages removeAllObjects];
 	DESTROY(currentParser);
 
@@ -192,30 +192,30 @@
 
 	if ([skippedFileNames containsObject: [[self currentSourceFile] lastPathComponent]])
 	{
-    		NSLog(@" --- Skipping %@ ---- ", [self currentSourceFile]);
+		NSLog(@" --- Skipping %@ ---- ", [self currentSourceFile]);
 		return [NSArray array];
 	}
 
 	Class parserClass = [[self class] parserClassForFileType: 
-    	[[self currentSourceFile] pathExtension]];
+		[[self currentSourceFile] pathExtension]];
 
-    NSLog(@" --- Weaving %@ ---- ", [self currentSourceFile]);
+	NSLog(@" --- Weaving %@ ---- ", [self currentSourceFile]);
 
 	if (parserClass == Nil)
-    {
-    	[self weaveNewPage];
-    }
-    else
-    {
-        NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
-                                                            encoding: NSUTF8StringEncoding 
-                                                               error: NULL];
-        currentParser = [[parserClass alloc] initWithString: sourceContent];
-        [currentParser setWeaver: self];
-        [currentParser parseAndWeave];
-    }
+	{
+		[self weaveNewPage];
+	}
+	else
+	{
+		NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
+		                                                    encoding: NSUTF8StringEncoding 
+		                                                       error: NULL];
+		currentParser = [[parserClass alloc] initWithString: sourceContent];
+		[currentParser setWeaver: self];
+		[currentParser parseAndWeave];
+	}
 
-    return [NSArray arrayWithArray: weavedPages];
+	return [NSArray arrayWithArray: weavedPages];
 }
 
 - (NSString *) currentSourceFile
@@ -269,25 +269,25 @@
 {
 	ETAssert([self currentHeader] != nil);
 
-    // Check if there's an overview file, if so use it
-    NSString* overviewName = [NSString stringWithFormat: @"%@-overview.html",
+	// Check if there's an overview file, if so use it
+	NSString* overviewName = [NSString stringWithFormat: @"%@-overview.html",
 		[[[self currentSourceFile] lastPathComponent] stringByDeletingPathExtension]];
 	NSString *overviewFile = [self pathForRawSourceFileNamed: overviewName];
 
-    if (overviewFile != nil)
-    {
-    	[[self currentHeader] setFileOverview: overviewFile];
-        return;
-    }
+	if (overviewFile != nil)
+	{
+		[[self currentHeader] setFileOverview: overviewFile];
+		return;
+	}
 
 	overviewName = [NSString stringWithFormat: @"%@-overview.html", [self currentClassName]];
 	overviewFile = [self pathForRawSourceFileNamed: overviewName];
 
-    if (overviewFile != nil)
-    {
-    	[[self currentHeader] setFileOverview: overviewFile];
-        return;
-    }
+	if (overviewFile != nil)
+	{
+		[[self currentHeader] setFileOverview: overviewFile];
+		return;
+	}
 }
 
 - (void) weaveClassNamed: (NSString *)aClassName 
@@ -357,14 +357,14 @@
 
 - (void) weaveMethod: (DocMethod *)aMethod
 {
-    if ([aMethod isClassMethod])
-    {
-        [[self currentPage] addClassMethod: aMethod];
-    }
-    else
-    {
-        [[self currentPage] addInstanceMethod: aMethod];
-    }
+	if ([aMethod isClassMethod])
+	{
+		[[self currentPage] addClassMethod: aMethod];
+	}
+	else
+	{
+		[[self currentPage] addInstanceMethod: aMethod];
+	}
 
 	NSString *refMarkup = nil;
 

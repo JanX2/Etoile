@@ -94,7 +94,7 @@
 	
 	H methodFull = [DIV class: @"method" 
 	                     with: [DL with: [DT with: h_signature]
-                                    and: [DD with: [DIV class: @"methodDescription" 
+	                                and: [DD with: [DIV class: @"methodDescription" 
 	                                                     with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]]]]];
 
 	return methodFull;

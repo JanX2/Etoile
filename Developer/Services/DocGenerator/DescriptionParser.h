@@ -11,18 +11,18 @@
 
 @interface DescriptionParser : NSObject 
 {
-  NSMutableDictionary* parsed;
+	NSMutableDictionary* parsed;
 }
-- (id) getContent: (Class) aClass for: (NSString*) tag;
-- (NSMutableString*) getStringFor: (NSString*) tag;
-- (NSMutableDictionary*) getDictionaryFor: (NSString*) tag;
+- (id) getContent: (Class) aClass for: (NSString *) tag;
+- (NSMutableString *) getStringFor: (NSString *) tag;
+- (NSMutableDictionary *) getDictionaryFor: (NSString *) tag;
 
 - (void) parse: (NSString*) corpus;
 
-- (NSString*) description;
-- (NSString*) task;
+- (NSString *) description;
+- (NSString *) task;
 - (NSString *) taskUnit;
-- (NSString*) returnDescription;
-- (NSString*) descriptionForParameter: (NSString*) aName;
+- (NSString *) returnDescription;
+- (NSString *) descriptionForParameter: (NSString *) aName;
 
 @end

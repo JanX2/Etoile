@@ -11,24 +11,25 @@
 
 @class HtmlElement;
 
-@interface Parameter : NSObject {
-  NSString* name;
-  NSString* type;
-  NSString* description;
-  	NSString *typePrefix;
+@interface Parameter : NSObject
+{
+	NSString* name;
+	NSString* type;
+	NSString* description;
+	NSString *typePrefix;
 	NSString *className;
-    NSString *protocolName;
-    NSString *typeSuffix;
+	NSString *protocolName;
+	NSString *typeSuffix;
 }
 
-+ (id) newWithName: (NSString*) aName andType: (NSString*) aType;
-- (id) initWithName: (NSString*) aName andType: (NSString*) aType;
-- (void) setName: (NSString*) aName;
-- (void) setType: (NSString*) aType;
-- (void) setDescription: (NSString*) aDescription;
-- (NSString*) name;
-- (NSString*) type;
-- (NSString*) description;
++ (id) newWithName: (NSString *) aName andType: (NSString *) aType;
+- (id) initWithName: (NSString *) aName andType: (NSString *) aType;
+- (void) setName: (NSString *) aName;
+- (void) setType: (NSString *) aType;
+- (void) setDescription: (NSString *) aDescription;
+- (NSString *) name;
+- (NSString *) type;
+- (NSString *) description;
 - (HtmlElement *) HTMLRepresentationWithParentheses: (BOOL)usesParentheses;
 
 @property (readonly, nonatomic) NSString *typePrefix;
