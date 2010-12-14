@@ -265,11 +265,25 @@
 	return weavedContent;
 }
 
+- (NSDictionary *) methods
+{
+	NSMutableDictionary *methods = [NSMutableDictionary dictionaryWithDictionary: instanceMethods];
+	[methods addEntriesFromDictionary: classMethods];
+	return methods;
+}
+
+- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
+                                  subroutines: (NSDictionary *)subroutinesByTask
+{
+	return [self HTMLRepresentationWithTitle: aTitle 
+	                             subroutines: subroutinesByTask 
+	              HTMLRepresentationSelector: @selector(HTMLRepresentation)];
+}
+
 - (NSArray *) mainContentHTMLRepresentations
 {
 	return [NSArray arrayWithObjects: 
-		[self HTMLRepresentationWithTitle: @"Class Methods" subroutines: classMethods],
-		[self HTMLRepresentationWithTitle: @"Instance Methods" subroutines: instanceMethods],
+		[self HTMLRepresentationWithTitle: nil subroutines: [self methods]],
 		[self HTMLRepresentationWithTitle: @"Functions" subroutines: functions],
  		[self HTMLRepresentationWithTitle: @"Macros" subroutines: macros], 
 		[self HTMLRepresentationWithTitle: @"Constants" subroutines: constants], 
@@ -283,6 +297,7 @@
 
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
                                   subroutines: (NSDictionary *)subroutinesByTask
+                   HTMLRepresentationSelector: (SEL)repSelector
 {
 	if ([subroutinesByTask isEmpty])
 		return [HtmlElement blankElement];
@@ -292,19 +307,26 @@
 	NSString *titleWithoutSpaces = [[aTitle componentsSeparatedByCharactersInSet: 
 		[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString: @"-"];
 	HtmlElement *html = [DIV class: [titleWithoutSpaces lowercaseString]];
+	BOOL hasH3 = NO;
 
-	[html add: [H3 with: aTitle]];
+	if (aTitle != nil)
+	{
+		[html add: [H3 with: aTitle]];
+		hasH3 = YES;
+	}
 	
 	for (NSString *task in tasks)
 	{
-		[html add: [H4 with: task]];
+		HtmlElement *hTask = (hasH3 ? [H4 with: task] : [H3 with: task]);
+
+		[html add: hTask];
 
 		NSArray *subroutinesInTask = [[subroutinesByTask objectForKey: task] 
 			sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
 
 		for (DocSubroutine *subroutine in subroutinesInTask)
 		{
-			[html add: [subroutine HTMLRepresentation]];
+			[html add: [subroutine performSelector: repSelector]];
 		}
 	}
 

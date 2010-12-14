@@ -37,12 +37,12 @@ experimental and untested. */
 
 	DocHeader *header;
 	NSMutableDictionary *subheaders;
-    NSMutableDictionary *classMethods;
-    NSMutableDictionary *instanceMethods;
-    NSMutableDictionary *functions;
-    NSMutableDictionary *constants;
-    NSMutableDictionary *macros;
-    NSMutableDictionary *otherDataTypes;
+	NSMutableDictionary *classMethods;
+	NSMutableDictionary *instanceMethods;
+	NSMutableDictionary *functions;
+	NSMutableDictionary *constants;
+	NSMutableDictionary *macros;
+	NSMutableDictionary *otherDataTypes;
 }
 
 /** @taskunit Initialization and Identity */
@@ -108,10 +108,16 @@ Can be overriden to return a custom representation. */
 
 Both methods and functions are sorted by tasks before being rendered to HTML.
 
-Task names are output with a &lt;h4&gt; header.<br />
+Task names are output with a &lt;h4&gt; header (&lt;h3&gt; when the title is nil).<br />
 A title is also added, which uses a &lt;h3;&gt; header.
+
+repSelector should usually be -HTMLRepresentation. Additional representations 
+can be added to the DocElement subclasses such as 
+-[DocHeader HTMLTOCRepresentation]. You can pass such a selector in argument to 
+use a custom representation in the output.
 
 See also DocSubroutine, DocMethod and DocFunction. */
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *) aTitle 
-                                  subroutines: (NSDictionary *)subroutinesByTask;
+                                  subroutines: (NSDictionary *)subroutinesByTask
+                   HTMLRepresentationSelector: (SEL)repSelector;
 @end

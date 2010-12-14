@@ -38,38 +38,6 @@
 	return hHeader;
 }
 
-- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
-                                  subroutines: (NSDictionary *)subroutinesByTask
-                   HTMLRepresentationSelector: (SEL)repSelector
-{
-	if ([subroutinesByTask isEmpty])
-		return [HtmlElement blankElement];
-
-	NSArray *unsortedTasks = [subroutinesByTask allKeys];
-	NSArray *tasks = [unsortedTasks sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
-	NSString *titleWithoutSpaces = [[aTitle componentsSeparatedByCharactersInSet: 
-		[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString: @"-"];
-	HtmlElement *html = [DIV class: [titleWithoutSpaces lowercaseString]];
-
-	[html add: [H2 with: aTitle]];
-	
-	for (NSString *task in tasks)
-	{
-		[html add: [H3 with: task]];
-
-		NSArray *subroutinesInTask = [[subroutinesByTask objectForKey: task] 
-			sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
-
-		for (DocSubroutine *subroutine in subroutinesInTask)
-		{
-			[html add: [subroutine performSelector: repSelector]];
-		}
-	}
-
-	return html;
-}
-
-
 - (NSArray *) mainContentHTMLRepresentations
 {
 	NSMutableArray *reps = [NSMutableArray array];
