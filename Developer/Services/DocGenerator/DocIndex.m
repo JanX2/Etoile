@@ -39,13 +39,14 @@ static DocIndex *currentIndex = nil;
 
 - (id) initWithGSDocIndexFile: (NSString *)anIndexFile
 {
+	NILARG_EXCEPTION_TEST(anIndexFile);
 	SUPERINIT;
 	ASSIGN(projectName, @"Untitled");
 	indexContent = [[NSDictionary alloc] initWithContentsOfFile: anIndexFile];
 	externalRefs = [self createRefDictionaryWithMutability: NO];
 	projectRefs = [self createRefDictionaryWithMutability: YES];
 	mergedRefs = [self createRefDictionaryWithMutability: YES];
-    return self;
+   	return self;
 }
 
 - (void) dealloc

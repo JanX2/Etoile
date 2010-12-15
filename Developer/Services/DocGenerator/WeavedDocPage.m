@@ -50,7 +50,6 @@
 		finalMenuPath = [self defaultMenuFile];
 	}
 
-	//INVALIDARG_EXCEPTION_TEST(aDocumentPath, [fileManager fileExistsAtPath: aDocumentPath]);
 	INVALIDARG_EXCEPTION_TEST(aTemplatePath, [fileManager fileExistsAtPath: aTemplatePath]);
 	INVALIDARG_EXCEPTION_TEST(finalMenuPath, [fileManager fileExistsAtPath: finalMenuPath]);
 	if (documentPath != nil && NO == [[self validDocumentTypes] containsObject: [aDocumentPath pathExtension]])
@@ -63,7 +62,10 @@
 
 	ASSIGN(documentPath, aDocumentPath);
 	ASSIGN(documentType, [aDocumentPath pathExtension]);
-	ASSIGN(documentContent, [NSString stringWithContentsOfFile: aDocumentPath encoding: NSUTF8StringEncoding error: NULL]);
+	if (documentPath != nil)
+	{
+		ASSIGN(documentContent, [NSString stringWithContentsOfFile: aDocumentPath encoding: NSUTF8StringEncoding error: NULL]);
+	}
 	ASSIGN(templateContent, [NSString stringWithContentsOfFile: aTemplatePath encoding: NSUTF8StringEncoding error: NULL]);
 	ASSIGN(menuContent, [NSString stringWithContentsOfFile: finalMenuPath encoding: NSUTF8StringEncoding error: NULL]);
 

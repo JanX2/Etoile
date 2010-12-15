@@ -177,9 +177,9 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 		}
 	}
 
-	NSLog(@"Parsed task unit: %@", [self taskUnit]);
-	NSLog(@"Parsed desc: %@", [self description]);
-	NSLog(@"Parsed task: %@", [self task]);
+	//NSLog(@"Parsed task unit: %@", [self taskUnit]);
+	//NSLog(@"Parsed desc: %@", [self description]);
+	//NSLog(@"Parsed task: %@", [self task]);
 
 #if 0
   BOOL param = NO;

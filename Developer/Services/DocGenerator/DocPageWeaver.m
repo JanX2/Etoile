@@ -45,11 +45,14 @@
 {
 	SUPERINIT;
 
-	ETAssert([[paths pathsMatchingExtensions: (A(@"igsdoc"))] count] <= 1);
+	ETAssert([[paths pathsMatchingExtensions: (A(@"igsdoc"))] count] == 1);
 	docIndex = [[HTMLDocIndex alloc] initWithGSDocIndexFile: 
 		[[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject]];
 	[DocIndex setCurrentIndex: docIndex]; /* Also reset in -weaveCurrentSourcePages */
 
+	// FIXME: Retrieve OrderedSymbolDeclarations.plist based on the entire file 
+	// name and not just the extension.
+	ETAssert([[paths pathsMatchingExtensions: (A(@"plist"))] count] == 1);
 	NSDictionary *orderedSymbolDeclarations = [NSDictionary dictionaryWithContentsOfFile: 
 		[[paths pathsMatchingExtensions: A(@"plist")] firstObject]];
 	reorderingWeaver = (id)[[DeclarationReorderer alloc] initWithWeaver: self 

@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import <EtoileFoundation/EtoileFoundation.h>
 #import "DocPageWeaver.h"
 #import "DocIndex.h"
 #import "WeavedDocPage.h"
@@ -107,6 +108,35 @@ void printError()
  */
 #define VALID(arg) (arg != nil && ![arg isEqual: [NSNumber numberWithBool: NO]])
 
+NSString *indexFileInDirectory(NSString *aDirectory)
+{
+	NSArray *paths = [[NSFileManager defaultManager] directoryContentsAtPath: aDirectory];
+	assert([[paths pathsMatchingExtensions: (A(@"igsdoc"))] count] == 1);
+	NSString *indexFilename = [[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject];
+
+	return [aDirectory stringByAppendingPathComponent: indexFilename];
+}
+
+NSString *orderedSymbolDeclarationsFileInDirectory(NSString *aDirectory)
+{
+	NSArray *paths = [[NSFileManager defaultManager] directoryContentsAtPath: aDirectory];
+	assert([paths containsObject: @"OrderedSymbolDeclarations.plist"]);
+	return [aDirectory stringByAppendingPathComponent: @"OrderedSymbolDeclarations.plist"];
+}
+
+NSArray *sourceFilesByAddingSupportFilesFromDirectory(NSArray *sourceFiles, NSString *parserSourceDir)
+{
+	if ([[sourceFiles pathsMatchingExtensions: A(@"igsdoc")] isEmpty])
+	{
+		sourceFiles = [sourceFiles arrayByAddingObject: indexFileInDirectory(parserSourceDir)];
+	}
+	if ([(id)[[sourceFiles mappedCollection] lastPathComponent] containsObject: @"OrderedSymbolDeclarations.plist"] == NO)
+	{
+		sourceFiles = [sourceFiles arrayByAddingObject: orderedSymbolDeclarationsFileInDirectory(parserSourceDir)];
+	}
+	return sourceFiles;
+}
+
 /**
  * Main function. 
  *
@@ -152,6 +182,7 @@ int main (int argc, const char * argv[])
 	}
 	else
 	{
+		explicitSourceFiles = sourceFilesByAddingSupportFilesFromDirectory(explicitSourceFiles, parserSourceDir);
 		weaver = [weaver initWithSourceFiles: explicitSourceFiles
 		                        templateFile: templateFile];
 	}
