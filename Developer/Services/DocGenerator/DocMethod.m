@@ -60,6 +60,12 @@
 	ASSIGN(category, aCategory);
 }
 
+- (NSString *) refMarkup
+{
+	char sign = (isClassMethod ? '+' : '-');
+	return [NSString stringWithFormat: @"%c%@", sign, [self name]];
+}
+
 - (NSString *) refMarkupWithClassName: (NSString *)aClassName
 {
 	char sign = (isClassMethod ? '+' : '-');

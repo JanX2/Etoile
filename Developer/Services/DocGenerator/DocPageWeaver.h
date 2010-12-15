@@ -15,7 +15,7 @@
 
 @class DocHeader, DocMethod, DocFunction, DocMacro, DocCDataType, DocConstant, WeavedDocPage, DocIndex;
 
-@protocol CodeDocWeaving
+@protocol CodeDocWeaving <NSObject>
 - (void) weaveClassNamed: (NSString *)aClassName 
           superclassName: (NSString *)aSuperclassName;
 - (void) weaveProtocolNamed: (NSString *)aProtocolName;
@@ -27,6 +27,7 @@
 - (void) weaveMacro: (DocMacro *)aMacro;
 - (void) weaveConstant: (DocConstant *)aConstant;
 - (void) weaveOtherDataType: (DocCDataType *)aDataType;
+- (void) finishWeaving;
 - (DocHeader *) currentHeader;
 @end
 
@@ -40,20 +41,31 @@
 @interface DocPageWeaver : NSObject <CodeDocWeaving>
 {
 	@private
+	/* Documentation Source & Templates */
 	NSArray *sourcePaths;
-    NSMutableArray *sourcePathQueue;
-    NSString *templatePath;
-    NSString *templateDirPath;
-    NSString *menuPath;
-    NSString *externalMappingPath;
-    NSString *projectMappingPath;
-    DocIndex *docIndex;
-    id currentParser;
-    NSString *currentClassName;
+	NSMutableArray *sourcePathQueue;
+	NSString *templatePath;
+	NSString *templateDirPath;
+	NSString *menuPath;
+	NSString *externalMappingPath;
+	NSString *projectMappingPath;
+
+	/* Documentation index built during the weaving/parsing */
+	DocIndex *docIndex;
+
+	/* Decorator to reorder GSDocParser parsing output */
+	id <CodeDocWeaving> reorderingWeaver;
+
+	/* Parser whose weaver is set to the receiver or reorderingWeaver */	
+	id currentParser;
+
+	/* Current Parsing/Weaving State */
+	NSString *currentClassName;
 	NSString *currentProtocolName;
 	DocHeader *currentHeader;
-    NSMutableArray *allWeavedPages;
-    NSMutableArray *weavedPages;
+	NSMutableArray *weavedPages;
+
+	NSMutableArray *allWeavedPages;
 
 	/* Main Page to collect ObjC constructs */
 	WeavedDocPage *apiOverviewPage;

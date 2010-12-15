@@ -321,8 +321,8 @@
 
 		[html add: hTask];
 		NSLog(@"HTML Task: %@", hTask);
-		NSArray *subroutinesInTask = [[subroutinesByTask objectForKey: task] 
-			sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+		NSArray *subroutinesInTask = [subroutinesByTask objectForKey: task];
+			//sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
 
 		for (DocSubroutine *subroutine in subroutinesInTask)
 		{

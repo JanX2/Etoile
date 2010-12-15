@@ -268,6 +268,11 @@ didStartElement:(NSString *)elementName
 	DESTROY(currentAttributes);
 }
 
+- (void) parserDidEndDocument: (NSXMLParser *)parser
+{
+	[weaver finishWeaving];
+}
+
 - (void) parser: (GSDocParser *)parser 
    startElement: (NSString *)elementName
   withAttributes: (NSDictionary *)attributeDict

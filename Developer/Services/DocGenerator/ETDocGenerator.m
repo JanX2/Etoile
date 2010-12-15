@@ -146,7 +146,7 @@ int main (int argc, const char * argv[])
 	if ([explicitSourceFiles isEmpty])
 	{
 		weaver = [weaver initWithParserSourceDirectory: parserSourceDir
-		                                     fileTypes: A(@"gsdoc", @"igsdoc")
+		                                     fileTypes: A(@"gsdoc", @"igsdoc", @"plist")
 		                            rawSourceDirectory: rawSourceDir
 		                                  templateFile: templateFile];    
 	}

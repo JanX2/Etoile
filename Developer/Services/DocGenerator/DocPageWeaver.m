@@ -7,6 +7,7 @@
  */
 
 #import "DocPageWeaver.h"
+#import "DeclarationReorderer.h"
 #import "DocHeader.h"
 #import "DocIndex.h"
 #import "DocMethod.h"
@@ -49,7 +50,12 @@
 		[[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject]];
 	[DocIndex setCurrentIndex: docIndex]; /* Also reset in -weaveCurrentSourcePages */
 
-	/* Don't include igsdoc, we don't want to turn it into a page */
+	NSDictionary *orderedSymbolDeclarations = [NSDictionary dictionaryWithContentsOfFile: 
+		[[paths pathsMatchingExtensions: A(@"plist")] firstObject]];
+	reorderingWeaver = (id)[[DeclarationReorderer alloc] initWithWeaver: self 
+	                                                     orderedSymbols: orderedSymbolDeclarations];
+	
+	/* Don't include igsdoc or plist, we don't want to turn them into a page */
 	ASSIGN(sourcePaths, [NSArray arrayWithArray: [paths pathsMatchingExtensions: A(@"gsdoc", @"html", @"text")]]);
 	sourcePathQueue = [paths mutableCopy];
 	ASSIGN(templatePath, aTemplatePath);
@@ -210,8 +216,9 @@
 		NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
 		                                                    encoding: NSUTF8StringEncoding 
 		                                                       error: NULL];
+
 		currentParser = [[parserClass alloc] initWithString: sourceContent];
-		[currentParser setWeaver: self];
+		[currentParser setWeaver: reorderingWeaver];
 		[currentParser parseAndWeave];
 	}
 
@@ -414,6 +421,11 @@
 	/*[docIndex setProjectRef: [otherDataTypePage name] 
 	          forSymbolName: [aDataType name] 
 	                 ofKind: @"constants"];*/
+}
+
+- (void) finishWeaving
+{
+
 }
 
 - (DocHeader *) currentHeader

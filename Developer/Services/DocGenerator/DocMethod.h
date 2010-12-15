@@ -21,6 +21,8 @@
 }
 
 - (BOOL) isClassMethod;
+
+- (NSString *) refMarkup;
 - (NSString *) refMarkupWithClassName: (NSString *)aClassName;
 - (NSString *) refMarkupWithProtocolName: (NSString *)aProtocolName;
 
