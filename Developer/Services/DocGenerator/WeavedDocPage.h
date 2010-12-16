@@ -41,8 +41,7 @@ experimental and untested. */
 	   { taskOrGroupName = ( doc element 1, doc element 2 ...); ... } */
 	DocHeader *header;
 	NSMutableDictionary *subheaders;
-	NSMutableDictionary *classMethods;
-	NSMutableDictionary *instanceMethods;
+	NSMutableDictionary *methods;
 	NSMutableDictionary *functions;
 	NSMutableDictionary *constants;
 	NSMutableDictionary *macros;
@@ -78,10 +77,8 @@ Can be used as a file name when saving the page, as <em>etdocgen</em> does. */
 Subheaders are expected to be positioned under the main header.<br />
 A subheader can be used to regroup related documentation tree elements. */
 - (void) addSubheader: (DocHeader *)aHeader;
-/** Adds a class method documentation to the page. */
-- (void) addClassMethod: (DocMethod *)aMethod;
-/** Adds a instance method documentation to the page. */
-- (void) addInstanceMethod: (DocMethod *)aMethod;
+/** Adds a method documentation to the page. */
+- (void) addMethod: (DocMethod *)aMethod;
 /** Adds a function documentation to the page. */
 - (void) addFunction: (DocFunction *)aFunction;
 /** Adds a constant documentation to the page. */

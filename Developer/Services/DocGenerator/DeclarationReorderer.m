@@ -61,13 +61,22 @@ static NSString *root = @"root";
 {
 	NSArray *docElements = [accumulatedDocElements objectForKey: aConstructName];
 	NSArray *docElementSymbols = [docElements valueForKey: @"refMarkup"];
+	NSString *currentTaskUnit = nil;
 
 	ETAssert([docElements count] == [[self orderedSymbolsWithinConstructNamed: aConstructName] count]);
 
 	for (NSString *symbol in [self orderedSymbolsWithinConstructNamed: aConstructName])
 	{
 		NSInteger symbolIndex = [docElementSymbols indexOfObject: symbol];
-		[weaver weaveMethod: [docElements objectAtIndex: symbolIndex]];
+		DocMethod *docElement = [docElements objectAtIndex: symbolIndex];
+
+		currentTaskUnit = ([docElement taskUnit] != nil ? [docElement taskUnit] : currentTaskUnit);
+
+		if (currentTaskUnit != nil)
+		{
+			[docElement setTask: currentTaskUnit];
+		}
+		[weaver weaveMethod: docElement];
 	}
 }
 

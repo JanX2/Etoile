@@ -70,8 +70,7 @@
 	ASSIGN(menuContent, [NSString stringWithContentsOfFile: finalMenuPath encoding: NSUTF8StringEncoding error: NULL]);
 
 	subheaders = [NSMutableDictionary new];
-	classMethods = [NSMutableDictionary new];
-	instanceMethods = [NSMutableDictionary new];
+	methods = [NSMutableDictionary new];
 	functions = [NSMutableDictionary new];
 	constants = [NSMutableDictionary new];
 	macros = [NSMutableDictionary new];
@@ -95,8 +94,7 @@
 	[weavedContent release];
 	[header release];
 	[subheaders release];
-	[classMethods release];
-	[instanceMethods release];
+	[methods release];
 	[functions release];
 	[constants release];
 	[macros release];
@@ -231,14 +229,9 @@
 	[self addElement: aHeader toDictionaryNamed: @"subheaders" forKey: [aHeader group]];
 }
 
-- (void) addClassMethod: (DocMethod *)aMethod
+- (void) addMethod: (DocMethod *)aMethod
 {
-	[self addElement: aMethod toDictionaryNamed: @"classMethods"];
-}
-
-- (void) addInstanceMethod: (DocMethod *)aMethod
-{
-	[self addElement: aMethod toDictionaryNamed: @"instanceMethods"];
+	[self addElement: aMethod toDictionaryNamed: @"methods"];
 }
 
 - (void) addFunction: (DocFunction *)aFunction
@@ -267,13 +260,6 @@
 	return weavedContent;
 }
 
-- (NSDictionary *) methods
-{
-	NSMutableDictionary *methods = [NSMutableDictionary dictionaryWithDictionary: instanceMethods];
-	[methods addEntriesFromDictionary: classMethods];
-	return methods;
-}
-
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
                                   subroutines: (NSDictionary *)subroutinesByTask
 {
@@ -285,7 +271,7 @@
 - (NSArray *) mainContentHTMLRepresentations
 {
 	return [NSArray arrayWithObjects: 
-		[self HTMLRepresentationWithTitle: nil subroutines: [self methods]],
+		[self HTMLRepresentationWithTitle: nil subroutines: methods],
 		[self HTMLRepresentationWithTitle: @"Functions" subroutines: functions],
  		[self HTMLRepresentationWithTitle: @"Macros" subroutines: macros], 
 		[self HTMLRepresentationWithTitle: @"Constants" subroutines: constants], 
@@ -305,7 +291,7 @@
 		return [HtmlElement blankElement];
 
 	NSArray *unsortedTasks = [subroutinesByTask allKeys];
-	NSArray *tasks = [unsortedTasks sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+	NSArray *tasks = unsortedTasks;//[unsortedTasks sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
 	NSString *titleWithoutSpaces = [[aTitle componentsSeparatedByCharactersInSet: 
 		[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString: @"-"];
 	HtmlElement *html = [DIV class: [titleWithoutSpaces lowercaseString]];

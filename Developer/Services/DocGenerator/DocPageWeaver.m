@@ -367,14 +367,7 @@
 
 - (void) weaveMethod: (DocMethod *)aMethod
 {
-	if ([aMethod isClassMethod])
-	{
-		[[self currentPage] addClassMethod: aMethod];
-	}
-	else
-	{
-		[[self currentPage] addInstanceMethod: aMethod];
-	}
+	[[self currentPage] addMethod: aMethod];
 
 	NSString *refMarkup = nil;
 
