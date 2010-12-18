@@ -132,6 +132,10 @@ typedef struct _icccm_wm_hints_t
 	xcb_pixmap_t icon_mask;
 	xcb_window_t window_group;
 } icccm_wm_hints_t;
+
+/**
+  * A list of all the ICCCM atoms (as strings)
+  */
 NSArray *ICCCMAtomsList(void);
 
 @interface XCBWindow (ICCCM)
@@ -140,6 +144,7 @@ NSArray *ICCCMAtomsList(void);
 // - (void)setWMClientMachine: (NSString*)newWMClientMachine;
 // - (void)setWMProtocols: (const xcb_atom_t*)newProtocols count: (uint32_t)len;
 - (void)setWMState: (uint32_t)newState iconWindow: (XCBWindow*)iconWindow;
+- (BOOL)hasWMProtocol: (NSString*)protocolName;
 @end
 
 @interface XCBCachedProperty (ICCCM)

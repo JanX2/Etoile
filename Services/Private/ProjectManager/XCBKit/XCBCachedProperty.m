@@ -131,4 +131,33 @@ const NSString *XCBInvalidTypeException = @"XCBInvalidTypeException";
 		     encoding: NSISOLatin1StringEncoding]
 		     autorelease];
 }
+
+- (NSString*)description
+{
+	if (type != 0)
+	{
+		NSString * typeName = [[XCBAtomCache sharedInstance] nameForAtom: type];
+
+		return [NSString stringWithFormat: @"XCBCachedProperty (%@ : %@ = %@)",
+			propertyName, typeName, propertyData];
+	}
+	else
+	{
+		return [NSString stringWithFormat: @"XCBCachedProperty (%@ empty)", propertyName];
+	}
+}
+
+/**
+  * Assuming that this property is an atom array and is
+  * specifed, this method searches the atom array value
+  * and attempts to find the specified atom value.
+  * 
+  * XCBInvalidTypeException is thrown when this atom
+  * is not specified or is another type.
+  */
+- (BOOL)hasAtomInAtomArray: (NSString*)searchAtom
+{
+	NSArray *atoms = [self asAtomArray];
+	return [atoms containsObject: searchAtom];
+}
 @end

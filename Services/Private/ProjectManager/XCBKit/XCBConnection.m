@@ -49,6 +49,7 @@
 - (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent;
 - (void)handleConfigureRequest: (xcb_configure_request_event_t*)anEvent;
 - (void)handleReparentNotify: (xcb_reparent_notify_event_t*)anEvent;
+- (void)handlePropertyNotify: (xcb_property_notify_event_t*)anEvent;
 @end
 
 @interface XCBConnection (Private)
@@ -183,6 +184,12 @@
 	NSAssert1(win, @"Reparent without window (%x)", anEvent->window);
 	[win handleReparentNotify: anEvent];
 }
+- (void)handlePropertyNotify: (xcb_property_notify_event_t*)anEvent
+{
+	XCBWindow *win = [self windowForXCBId: anEvent->window];
+	NSAssert1(win, @"Property notify without window (%x)", anEvent->window);
+	[win handlePropertyNotify: anEvent];
+}
 @end
 
 XCBConnection *XCBConn;
@@ -309,6 +316,7 @@ XCBConnection *XCBConn;
 			HANDLE(CONFIGURE_NOTIFY, ConfigureNotify)
 			HANDLE(CIRCULATE_NOTIFY, CirculateNotify)
 			HANDLE(REPARENT_NOTIFY, ReparentNotify)
+			HANDLE(PROPERTY_NOTIFY, PropertyNotify)
 
 			HANDLE(EXPOSE, Expose)
 			default:

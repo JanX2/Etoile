@@ -25,6 +25,7 @@
 #import <XCBKit/ICCCM.h>
 #import <XCBKit/XCBGeometry.h>
 #import <XCBKit/XCBPropertyHelpers.h>
+#import <XCBKit/XCBAtomCache.h>
 
 NSString* ICCCMWMName = @"WM_NAME";
 NSString* ICCCMWMIconName = @"WM_ICON_NAME";
@@ -80,6 +81,17 @@ NSArray *ICCCMAtomsList(void)
 	                format: XCB32PropertyFormat
 	                  data: &new_icccm_state
 	                 count: 2];
+}
+
+- (BOOL)hasWMProtocol: (NSString*)propertyName
+{
+	XCBCachedProperty *wmProtocols = [self cachedProperty: ICCCMWMProtocols];
+	if (![wmProtocols isEmpty])
+	{
+		NSArray *protocolAtoms = [wmProtocols asAtomArray];
+		return [protocolAtoms containsObject: propertyName];
+	}
+	return NO; // default for unspecified 
 }
 @end
 

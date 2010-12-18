@@ -70,4 +70,6 @@ extern const NSString* XCBInvalidTypeException;
   * a STRING type
   */
 - (NSString*)asString;
+
+- (BOOL)hasAtomInAtomArray: (NSString*)searchAtom;
 @end

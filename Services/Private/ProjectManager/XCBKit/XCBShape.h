@@ -77,6 +77,8 @@ typedef struct _XCBShapeExtents
   * window. This method is synchronous.
   */
 - (XCBShapeExtents)queryShapeExtents;
+
+- (void)queryShapeExtentsAsync; 
 @end
 
 @interface NSObject (XCBShape_Delegate)

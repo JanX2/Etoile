@@ -28,6 +28,7 @@
 #import <XCBKit/XCBVisual.h>
 
 #import <EtoileFoundation/EtoileFoundation.h>
+#import <Foundation/NSKeyValueObserving.h>
 
 @interface XCBScreen (Private)
 - (void)restackWindow: (XCBWindow*)xcbWindow
@@ -102,7 +103,9 @@
 	{
 		if (childWindows)
 			return;
+		[self willChangeValueForKey: @"childWindows"];
 		childWindows = [NSMutableArray new];
+		[self didChangeValueForKey: @"childWindows"];
 		[self discoverChildWindows];
 		[[NSNotificationCenter defaultCenter]
 			addObserver: self
@@ -131,8 +134,10 @@
 			return;
 		[[NSNotificationCenter defaultCenter]
 			removeObserver: self];
+		[self willChangeValueForKey: @"childWindows"];
 		[childWindows release];
 		childWindows = nil;
+		[self didChangeValueForKey: @"childWindows"];
 	}
 }
 @end
@@ -163,7 +168,7 @@
 		return;
 	XCBWindow *xcbWindow = [notification object];
 	if ([[xcbWindow parent] isEqual: root])
-		[childWindows removeObject: xcbWindow];
+		[self unregisterChildWindow: xcbWindow];
 }
 - (void)childWindowDidReparent: (NSNotification*)notification
 {
@@ -239,10 +244,16 @@
 		// Insert after the above window
 		NSUInteger aboveIndex;
 		[xcbWindow retain];
-		[childWindows removeObject: xcbWindow];
+		[self unregisterChildWindow: xcbWindow];
 		aboveIndex  = [childWindows indexOfObject: xcbAboveWindow];
+		[self willChange: NSKeyValueChangeInsertion
+		 valuesAtIndexes: [NSIndexSet indexSetWithIndex: aboveIndex + 1]
+		          forKey: @"childWindows"];
 		[childWindows insertObject: xcbWindow 
-				   atIndex: aboveIndex + 1];
+		                   atIndex: aboveIndex + 1];
+		[self didChange: NSKeyValueChangeInsertion
+		valuesAtIndexes: [NSIndexSet indexSetWithIndex: aboveIndex + 1]
+		         forKey: @"childWindows"];
 		[xcbWindow release];
 		[xcbWindow setAboveWindow: xcbAboveWindow];
 	}
@@ -250,9 +261,15 @@
 	{
 		// Insert at the bottom of the list
 		[xcbWindow retain];
-		[childWindows removeObject: xcbWindow];
+		[self unregisterChildWindow: xcbWindow];
+		[self willChange: NSKeyValueChangeInsertion
+		 valuesAtIndexes: [NSIndexSet indexSetWithIndex: 0]
+		          forKey: @"childWindows"];
 		[childWindows insertObject: xcbWindow 
 				   atIndex: 0];
+		[self didChange: NSKeyValueChangeInsertion
+		valuesAtIndexes: [NSIndexSet indexSetWithIndex: 0]
+		         forKey: @"childWindows"];
 		[xcbWindow release];
 		[xcbWindow setAboveWindow: nil];
 	}
@@ -268,11 +285,27 @@
 		  forReply: query_tree_cookie.sequence
 		  selector: @selector(handleQueryTree:)];
 }
++ (BOOL)automaticallyNotifiesObserversForKey: (NSString*)key
+{
+	if ([key isEqual: @"childWindows"])
+		return NO;
+	else
+		return [super automaticallyNotifiesObserversForKey: key];
+}
 - (void)registerChildWindow: (XCBWindow*)newWindow
 {
 	if (nil != childWindows &&
 		![childWindows containsObject: newWindow])
-		[childWindows addObject: newWindow];
+	{
+		int index = [childWindows count];
+		[self willChange: NSKeyValueChangeInsertion
+		 valuesAtIndexes: [NSIndexSet indexSetWithIndex: index]
+		          forKey: @"childWindows"];
+		[childWindows insertObject: newWindow atIndex: index];
+		[self didChange: NSKeyValueChangeInsertion
+		valuesAtIndexes: [NSIndexSet indexSetWithIndex: index]
+		         forKey: @"childWindows"];
+	}
 }
 /**
   * Remove a child window from the childWindows list. This
@@ -283,6 +316,16 @@
 {
 	if (nil != childWindows &&
 		[childWindows containsObject: deleteWindow])
-		[childWindows removeObject: deleteWindow];
+	{
+		int index = [childWindows indexOfObject: deleteWindow];
+		[self willChange: NSKeyValueChangeRemoval
+		 valuesAtIndexes: [NSIndexSet indexSetWithIndex: index]
+		          forKey: @"childWindows"];
+
+		[childWindows removeObjectAtIndex: index];
+		[self didChange: NSKeyValueChangeRemoval
+		valuesAtIndexes: [NSIndexSet indexSetWithIndex: index]
+		         forKey: @"childWindows"];
+	}
 }
 @end

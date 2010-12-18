@@ -144,9 +144,37 @@ NSString* XCBWindowShapeNotifyNotification = @"XCBWindowShapeNotifyNotification"
 	}
 	else
 	{
+		// FIXME: We should really throw an exception
 		[XCBConn handleError: error];
 		return extents;
 	}
+}
+- (void)queryShapeExtentsAsync
+{
+	xcb_shape_query_extents_cookie_t cookie = 
+		xcb_shape_query_extents([XCBConn connection], [self xcbWindowId]);
+	[XCBConn setHandler: self 
+	           forReply: cookie.sequence
+	           selector: @selector(queryShapeExtentsAsyncHandler:)];
+}
+- (void)queryShapeExtentsAsyncHandler: (xcb_shape_query_extents_reply_t*)reply
+{
+	// Send two separate notifications: one with bounding, the other with clip
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithInteger: XCB_SHAPE_SK_BOUNDING], @"Kind",
+		[NSNumber numberWithBool: reply->bounding_shaped], @"Shaped",
+		[NSValue valueWithXCBRect: XCBMakeRect(reply->bounding_shape_extents_x, reply->bounding_shape_extents_y, reply->bounding_shape_extents_width, reply->bounding_shape_extents_height)], @"Region",
+		nil];
+	XCBDELEGATE_U(WindowShapeNotify, userInfo);
+	XCBNOTIFY_U(WindowShapeNotify, userInfo);
+
+	userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithInteger: XCB_SHAPE_SK_CLIP], @"Kind",
+		[NSNumber numberWithBool: reply->clip_shaped], @"Shaped",
+		[NSValue valueWithXCBRect: XCBMakeRect(reply->clip_shape_extents_x, reply->clip_shape_extents_y, reply->clip_shape_extents_width, reply->clip_shape_extents_height)], @"Region",
+		nil];
+	XCBDELEGATE_U(WindowShapeNotify, userInfo);
+	XCBNOTIFY_U(WindowShapeNotify, userInfo);
 }
 @end
 

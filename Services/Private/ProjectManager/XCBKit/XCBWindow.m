@@ -52,6 +52,12 @@ enum _XCBWindowLoadedValues
   */
 static XCBWindow* UnknownWindow;
 
+/**
+  * The handlers for new ClientMessage types. These are registered
+  * by ICCCM and EWMH initialisers, and operate for all XCBWindows
+  */
+static NSMapTable *ClientMessageHandlers;
+
 @interface XCBWindow (Private)
 - (XCBWindow*)initWithXCBWindow: (xcb_window_t)aWindow 
                          parent: (xcb_window_t)parent_id
@@ -67,6 +73,7 @@ static XCBWindow* UnknownWindow;
 {
 	UnknownWindow = [[XCBWindow alloc]
 		initWithXCBWindow: 0 parent: 0 above: 0];
+	ClientMessageHandlers = NSCreateMapTable(NSIntMapKeyCallBacks, NSIntMapValueCallBacks, 5);
 }
 + (XCBWindow*)unknownWindow
 {
@@ -527,6 +534,12 @@ static XCBWindow* UnknownWindow;
 	[XCBConn setNeedsFlush: YES];
 }
 
+- (void)setEventMask: (uint32_t)eventMask
+{
+	[self changeWindowAttributes: XCB_CW_EVENT_MASK
+	                      values: &eventMask];
+}
+
 - (xcb_window_t)xcbWindowId
 {
 	return window;
@@ -550,7 +563,7 @@ static XCBWindow* UnknownWindow;
 	xcb_change_save_set([XCBConn connection], XCB_SET_MODE_DELETE, window);
 	[XCBConn setNeedsFlush: YES];
 }
-- (void)setWindowAttributes:(xcb_get_window_attributes_reply_t*)reply
+- (void)setWindowAttributes: (xcb_get_window_attributes_reply_t*)reply
 {
 	attributes = *reply;
 	_cache_load_values |= XCBWindowLoadedAttributes;
@@ -599,6 +612,11 @@ static XCBWindow* UnknownWindow;
 		   XCBStringFromRect(frame)];
 }
 
+- (NSString*)name
+{
+	return [self description];
+}
+
 - (void)refreshCachedProperty: (NSString*)propertyName
 {
 	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
@@ -615,7 +633,7 @@ static XCBWindow* UnknownWindow;
 	}
 }
 
-- (XCBCachedProperty*)cachedPropertyValue: (NSString*)cachedPropertyName
+- (XCBCachedProperty*)cachedProperty: (NSString*)cachedPropertyName
 {
 	return [cached_property_values objectForKey: cachedPropertyName];
 }
@@ -692,6 +710,7 @@ static XCBWindow* UnknownWindow;
 		dictionaryWithObjectsAndKeys: 
 		propertyName, @"PropertyName",
 		property, @"PropertyValue",
+		[NSNumber numberWithBool: YES], @"GetPropertyRequest",
 		nil];
 	XCBDELEGATE_U(WindowPropertyDidRefresh, userInfo);
 	XCBNOTIFY_U(WindowPropertyDidRefresh, userInfo);
@@ -907,6 +926,7 @@ static XCBWindow* UnknownWindow;
 	XCBRect rframe = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
 	NSValue *rframeVal = [NSValue valueWithBytes: &rframe 
 	                                   objCType: @encode(XCBRect)];
+	NSNumber *sendEvent = [NSNumber numberWithBool: anEvent->response_type & 0x80];
 	NSValue *borderWidth = [NSNumber numberWithInteger: anEvent->border_width];
 	// If the XCB_CONFIG_WINDOW_SIBLING parameter is specified, we report
 	// the above window or NSNull if it is to be placed on top. We put in
@@ -923,6 +943,7 @@ static XCBWindow* UnknownWindow;
 			rframeVal, @"Frame",
 			borderWidth, @"BorderWidth",
 			stackMode, @"StackMode",
+			sendEvent, @"SendEvent",
 			aboveWindow, @"Above", // Put last in case it is nil
 			nil
 			];
@@ -1022,6 +1043,35 @@ static XCBWindow* UnknownWindow;
 		nil];
 	XCBDELEGATE_U(WindowMotionNotify, dictionary);
 	XCBNOTIFY_U(WindowMotionNotify, dictionary);
+}
+
+- (void)handlePropertyNotify: (xcb_property_notify_event_t*)anEvent
+{
+	NSString *propertyName = [[XCBAtomCache sharedInstance] nameForAtom: anEvent->atom];
+	NSNumber *sendEvent = [NSNumber numberWithBool: anEvent->response_type & 0x80];
+	NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
+		propertyName, @"PropertyName",
+		[NSNumber numberWithUnsignedLong: anEvent->time], @"Time",
+		[NSNumber numberWithUnsignedChar: anEvent->state], @"State",
+		sendEvent, @"SendEvent",
+		nil];
+	XCBDELEGATE_U(WindowPropertyDidChange, info);
+	XCBNOTIFY_U(WindowPropertyDidChange, info);
+}
+
+- (void)handleClientMessage: (xcb_client_message_event_t*)anEvent
+{
+	SEL handler = NSMapGet(ClientMessageHandlers, (intptr_t*)anEvent->type);
+	if (0 != handler)
+	{
+		[self performSelector: handler withObject: (id)anEvent];
+	}
+}
+
++ (void) setHandler: (SEL)handler forClientMessageType: (NSString*)atomName
+{
+	xcb_atom_t atom = [[XCBAtomCache sharedInstance] atomNamed: atomName];
+	NSMapInsert(ClientMessageHandlers, (void*)(intptr_t)atom, handler);
 }
 @end
 

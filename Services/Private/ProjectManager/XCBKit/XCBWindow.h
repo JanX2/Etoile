@@ -200,6 +200,8 @@ enum
 - (void)configureWindow: (uint16_t)valueMask
                  values: (const uint32_t*)values;
 
+- (void)setEventMask: (uint32_t)eventMask;
+
 - (uint32_t)eventMask;
 - (int16_t)borderWidth;
 - (XCBWindow*)parent;
@@ -278,7 +280,7 @@ enum
   * Retreive the cached value of a property. This method
   * returns nil if the property has not been cached.
   */
-- (XCBCachedProperty*)cachedPropertyValue: (NSString*)propertyName;
+- (XCBCachedProperty*)cachedProperty: (NSString*)propertyName;
 
 - (void)changeProperty: (NSString*)propertyName
                   type: (NSString*)type
