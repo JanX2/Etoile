@@ -83,7 +83,7 @@
 
 /** @task Initialization */
 
-- (id) initWithParserSourceDirectory: (NSString *)aSourceDirPath
+- (id) initWithParserSourceDirectory: (NSString *)aParserDirPath
                            fileTypes: (NSArray *)fileExtensions
                   rawSourceDirectory: (NSString *)otherDirPath
                         templateFile: (NSString *)aTemplatePath;

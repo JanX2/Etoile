@@ -1,10 +1,14 @@
-//
-//  GSDocParser.h
-//  ETDocGenerator
-//
-//  Created by Nicolas Roard (Home) on 6/7/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
+/**
+	<abstract>GSDoc parser that can drive a DocPageWeaver through 
+	CodeDocWeaving protocol.</abstract>
+
+	Copyright (C) 2008 Nicolas Roard
+
+	Authors:  Nicolas Roard,
+	          Quentin Mathe <quentin.mathe@gmail.com>
+	Date:  June 2008
+	License:  Modified BSD (see COPYING)
+ */
 
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
@@ -22,13 +26,6 @@
     withContent: (NSString *)aContent;
 @end
 
-/**
- * <title>GSDocParser</title>
- * Author: Nicolas Roard
- * <abstract> 
- * GSDoc parser + HTML Writing
- * </abstract>
- */
 
 @interface GSDocParser : NSObject <GSDocParserDelegate>
 {
@@ -87,12 +84,12 @@
                                          qualifiedName:(NSString *)qName;
 
 - (void) parser: (GSDocParser *)parser 
-   startElement: (NSString *)anElement
-  withAttributes: (NSDictionary *)theAttributes;
+   startElement: (NSString *)elementName
+  withAttributes: (NSDictionary *)attributeDict;
 
 - (void) parser: (GSDocParser *)parser
-     endElement: (NSString *)anElement
-    withContent: (NSString *)aContent;
+     endElement: (NSString *)elementName
+    withContent: (NSString *)trimmedContent;
 
 - (NSDictionary *) currentAttributes;
 - (NSString *) argTypeFromArgsAttributes: (NSDictionary *)attributeDict;

@@ -57,7 +57,7 @@ returns <em>constant</em>, this way DocConstant doesn't override
 	}
 </example>
 
-By default, returns <em>type<em>. */
+By default, returns <em>type</em>. */
 - (NSString *) GSDocElementName;
 /** <override-dummy />
 Returns the selector matching a CodeDocWeaving method, that should be used to 

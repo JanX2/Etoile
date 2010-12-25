@@ -1,10 +1,12 @@
-//
-//  GSDocParser.m
-//  ETDocGenerator
-//
-//  Created by Nicolas Roard (Home) on 6/7/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
+/*
+	Copyright (C) 2008 Nicolas Roard
+
+	Authors:  Nicolas Roard,
+	          Quentin Mathe <quentin.mathe@gmail.com>
+	Date:  June 2008
+	License:  Modified BSD (see COPYING)
+ */
+
 
 #import "GSDocParser.h"
 #import "DocCDataType.h"
@@ -296,23 +298,23 @@ didStartElement:(NSString *)elementName
 
 - (void) parser: (GSDocParser *)parser
      endElement: (NSString *)elementName
-    withContent: (NSString *)trimmed
+    withContent: (NSString *)trimmedContent
 {
 	/* When we parse a class, we parse the declared child element too */
 	if ([elementName isEqualToString: @"declared"])
 	{
 		ETAssert(nil != [weaver currentHeader]);
-		[[weaver currentHeader] setDeclaredIn: trimmed];
+		[[weaver currentHeader] setDeclaredIn: trimmedContent];
 	}
 	else if ([elementName isEqualToString: @"conform"])
 	{
 		ETAssert(nil != [weaver currentHeader]);
-		[[weaver currentHeader] addAdoptedProtocolName: trimmed];
+		[[weaver currentHeader] addAdoptedProtocolName: trimmedContent];
 	}
 	else if ([elementName isEqualToString: @"desc"])
 	{
 		ETAssert(nil != [weaver currentHeader]);
-		[[weaver currentHeader] setOverview: trimmed];
+		[[weaver currentHeader] setOverview: trimmedContent];
 	}
 }
 

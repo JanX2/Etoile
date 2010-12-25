@@ -35,7 +35,7 @@ Enum and union are represented with DocConstant. */
 /** @taskunit GSDoc Parsing */
 
 /** <override-dummy />
-Returns <em>type<em>.
+Returns <em>type</em>.
 
 See -[DocElement GSDocElementName]. */
 - (NSString *) GSDocElementName;
@@ -63,7 +63,7 @@ See -[DocElement weaveSelector]. */
 /** @taskunit GSDoc Parsing */
 
 /** <override-dummy />
-Returns <em>constant<em>.
+Returns <em>constant</em>.
 
 See -[DocElement GSDocElementName]. */
 - (NSString *) GSDocElementName;

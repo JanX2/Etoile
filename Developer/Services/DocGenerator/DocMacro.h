@@ -22,7 +22,7 @@
 /** @taskunit GSDoc Parsing */
 
 /** <override-dummy />
-Returns <em>macro<em>.
+Returns <em>macro</em>.
 
 See -[DocElement GSDocElementName]. */
 - (NSString *) GSDocElementName;
