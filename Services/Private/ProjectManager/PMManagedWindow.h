@@ -45,11 +45,17 @@ typedef enum _PMManagedWindowState
 	PMManagedWindowNormalState
 } PMManagedWindowState;
 
+@protocol PMManagedWindowDecorator;
+@protocol PMManagedWindowDelegate;
+
 @interface PMManagedWindow : NSObject {
-	id delegate;
+	id<PMManagedWindowDelegate> delegate;
 	XCBWindow *child;
 	XCBWindow *decorationWindow;
 	PMManagedWindowState state;
+
+	// The decoration strategy aka the "decorator"
+	NSObject<PMManagedWindowDecorator> *decorator;
 
 	// Pending events to be processed
 	NSArray* pendingEvents;
@@ -76,15 +82,34 @@ typedef enum _PMManagedWindowState
 
 	xcb_window_t window_group;
 	int16_t req_border_width;
+
+	// Shape caching
+	BOOL shapedBounding, shapedClip;
 }
 - (id)initWithChildWindow: (XCBWindow*)win pendingEvents: (NSArray*)pending;
 - (XCBWindow*)childWindow;
 - (XCBWindow*)decorationWindow;
-- (void)setDelegate: (id)delegate;
+- (void)setDelegate: (id<PMManagedWindowDelegate>)delegate;
+
+- (void)establishInactiveGrabs;
+- (void)releaseInactiveGrabs;
+/**
+  * Gets the outermost window managed
+  * by this object. It is the decoration
+  * window when the object is decorated, and
+  * the child window when there is
+  * no decoration window
+  */
+- (XCBWindow*)outermostWindow;
+- (BOOL)hasFocus;
 @end
 
-@interface NSObject (PMManagedWindowDelegate)
+@protocol PMManagedWindowDelegate
+@optional
 - (void)managedWindowWithdrawn: (PMManagedWindow*)managedWindow;
 - (void)managedWindowDestroyed: (PMManagedWindow*)managedWindow;
 - (void)managedWindowDidMap: (PMManagedWindow*)managedWindow;
+
+@required
+- (NSArray*)managedWindowDecorators: (PMManagedWindow*)managedWindow;
 @end

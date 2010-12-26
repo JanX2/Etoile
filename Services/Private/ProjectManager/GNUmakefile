@@ -25,9 +25,19 @@ $(TOOL_NAME)_OBJC_FILES = \
 	 PMScreen.m \
 	 PMCompositeWindow.m \
 	 PMManagedWindow.m \
+	 PMNormalWindowDecorator.m \
 	 main.m
 
 $(TOOL_NAME)_TOOL_LIBS = -lXCBKit
+
+$(TOOL_NAME)_HEADER_FILES =\
+	PMManagedWindow.h \
+	PMManagedWindowDecorator.h\
+	PMCompositeWindow.h\
+	PMScreen.h\
+	PMNotifications.h\
+	PMConnectionDelegate.h\
+	PMNormalWindowDecorator.h
 
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Wno-unused  -Werror -Wall
 

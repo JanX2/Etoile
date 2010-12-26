@@ -24,6 +24,7 @@
  *
  **/
 #import "PMManagedWindow.h"
+#import "PMManagedWindowDecorator.h"
 #import <XCBKit/XCBWindow.h>
 #import <XCBKit/XCBCachedProperty.h>
 #import <XCBKit/XCBAtomCache.h>
@@ -38,20 +39,15 @@
   */
 const uint16_t PM_XCB_MOD_MASK_ANY = 32768;
 
+
 /**
-  * The width of the border used to house the
-  * resize handles. This should be at least 1px
-  * greater than the resize handle width to allow
-  * some space between the outer child border and
-  * the resize handles
+  * A property which is used to track the callback from
+  * -[XCBWindow(Shape) queryShapeExtentsAsync] during the
+  * WaitingOnProperties stage. This one handles the bounding
+  * rect property.
   */
-static const ICCCMBorderExtents BORDER_WIDTHS = { 8, 8, 8, 8};
-
-static const uint32_t CHILD_BORDER_WIDTH = 1;
-
-static const uint32_t RH_WIDTH = 4;
-static const uint32_t MIN_RH_LENGTH = 20;
-static const float RH_QUOTIENT = 0.15;
+static NSString * ShapeBoundingProperty = @"_PMManagedWindow_ShapeBoundingProperty";
+static NSString * ShapeClipProperty = @"_PMManagedWindow_ShapeClipProperty";
 
 @interface PMManagedWindow (Private)
 - (void)mapDecorationWindow;
@@ -88,12 +84,12 @@ static const float RH_QUOTIENT = 0.15;
 /**
   * The term "client frame", as used in this file, is a rectangle
   * with the size (w,h) of the child window, and with the
-  * position (x,y) of the outer border-adjusted or decoration-adjusted
+  * position (x,y) of the outer (i.e. border-adjusted or decoration-adjusted)
   * north-west corner. A window that has been reparented will
   * use the decoration frame position, whilst an undecorated 
   * window will use the child-specified position (which is the
   * same as the outer-north west corner of the frame and which
-  * automatically disregards border width
+  * automatically disregards border width).
   */
 - (XCBRect)clientFrame;
 - (XCBRect)calculateDecorationFrame: (XCBRect)clientFrame;
@@ -113,9 +109,6 @@ static const float RH_QUOTIENT = 0.15;
   */
 - (void)repositionManagedWindow: (XCBRect)newRect
                         gravity: (int)gravity;
-- (void)updateShape;
-- (void)updateShapeWithDecorationFrame: (XCBRect)decorationFrame
-                            childFrame: (XCBRect)childFrame;
 /**
   * Convert a point specified in root window space into
   * decoration window space. For example, with a root decoration window
@@ -125,24 +118,12 @@ static const float RH_QUOTIENT = 0.15;
 - (XCBPoint)convertScreenToBase: (XCBPoint)point;
 
 /**
-  * Determine the type of move or resize based on the
-  * specified point (in decoration window space). This method
-  * depends on size of the resize handles. The move-resize
-  * type is specified using the EWMH constants.
-  *
-  * The result is unspecified if there is no decoration
-  * window.
-  */
-- (int)moveresizeTypeForPoint: (XCBPoint)point;
-
-/**
   * Adjusts the proposed client frame so that it
   * complies with the size hints specified when the
   * window was mapped, or otherwise, sane values (e.g.
   * positive size).
   */
 - (XCBSize)adjustSizeForHints: (XCBSize)newSize;
-- (void)establishInactiveGrabs;
 - (void)setFocus;
 @end
 
@@ -161,6 +142,8 @@ static const float RH_QUOTIENT = 0.15;
 		[self xcbWindowDidCreate: nil];
 	if ([child windowLoadState] >= XCBWindowAvailableState)
 		[self xcbWindowBecomeAvailable: nil];
+
+	// FIXME: We should have something better like chain of responsibility for this thing.
 	return self;
 }
 
@@ -173,6 +156,7 @@ static const float RH_QUOTIENT = 0.15;
 	[child release];
 	[pendingEvents release];
 	[decorationWindow release];
+	[decorator release];
 	[super dealloc];
 }
 - (NSString*)description
@@ -185,7 +169,7 @@ static const float RH_QUOTIENT = 0.15;
 {
 	return child;
 }
-- (void)setDelegate: (id)dg
+- (void)setDelegate: (id<PMManagedWindowDelegate>)dg
 {
 	self->delegate = dg;
 }
@@ -193,10 +177,41 @@ static const float RH_QUOTIENT = 0.15;
 {
 	return decorationWindow;
 }
+- (XCBWindow*)outermostWindow
+{
+	XCBWindow *w = decorationWindow != nil ? decorationWindow : child;
+	return w;
+}
+- (void)establishInactiveGrabs
+{
+	XCBWindow *w = [self outermostWindow];
+	int status = [w 
+	   grabButton: XCB_BUTTON_INDEX_1
+	    modifiers: PM_XCB_MOD_MASK_ANY
+	    // Must be false so that the real window doesn't get normal events and undo the grab
+	  ownerEvents: NO
+	    eventMask: XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_1_MOTION | XCB_EVENT_MASK_BUTTON_RELEASE
+	  pointerMode: XCB_GRAB_MODE_SYNC
+	 keyboardMode: XCB_GRAB_MODE_ASYNC
+	    confineTo: nil
+	       cursor: XCB_NONE];
+	NSDebugLLog(@"PMManagedWindow", @"%@ Grabbed button with status %d", self, status);
+}
+- (void)releaseInactiveGrabs
+{
+	XCBWindow *w = [self outermostWindow];
+	[w ungrabButton: XCB_BUTTON_INDEX_1 modifiers: PM_XCB_MOD_MASK_ANY];
+	NSDebugLLog(@"PMManagedWindow", @"%@ Ungrabbed button", self);
+}
+- (BOOL)hasFocus
+{
+	return has_focus;
+}
 @end
 @implementation PMManagedWindow (Private)
 - (void)xcbWindowDidCreate: (NSNotification*)notification
 {
+	// Add the needed set of window properties to the pending list
 	NSString *neededPropertyValuesArray[] = {
 		ICCCMWMName,
 		ICCCMWMNormalHints,
@@ -212,6 +227,22 @@ static const float RH_QUOTIENT = 0.15;
 	ASSIGN(pendingWindowProperties, [NSMutableSet setWithCapacity: [neededPropertyValues count]]); 
 	[pendingWindowProperties addObjectsFromArray: neededPropertyValues];
 	[child refreshCachedProperties: neededPropertyValues];
+
+	// Turn on ShapeNotify for the child window and add
+	// the bounding and clip properties (which come from ShapeNotify)
+	// to the pending properties list. This stuff should really
+	// go somewhere in the XCBWindow+Shape category in XCBKit,
+	// but its specialised.
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+		   selector: @selector(childWindowShapeNotify:)
+		       name: XCBWindowShapeNotifyNotification
+		     object: child];
+
+	[pendingWindowProperties addObject: ShapeBoundingProperty];
+	[pendingWindowProperties addObject: ShapeClipProperty];
+	[child queryShapeExtentsAsync];
+
 }
 - (void)xcbWindowBecomeAvailable: (NSNotification*)notification
 {
@@ -219,19 +250,42 @@ static const float RH_QUOTIENT = 0.15;
 	
 	req_border_width = [child borderWidth];
 	// We send synthetic ConfigureNotify events but we
-	// must ignore them because they mess up our child
+	// must ignore them when they get sent back to us
+	// because they mess up our child
 	// frame values stored in XCBWindow and used to
-	// calculate a range of internal values
+	// calculate a range of internal values. These
+	// synthetic events are sent for the benefit of
+	// other programmes.
 	[child setIgnoreSyntheticConfigureNotify: YES];
 
 	if ([pendingWindowProperties count] == 0) {
-		NSDebugLLog(@"PMManagedWindow", @"Become ready for transition form xcbWindowBecomeAvailable");
+		NSDebugLLog(@"PMManagedWindow", @"Become ready for transition from xcbWindowBecomeAvailable");
 		[self windowReadyForTransition];
 	}
 }
-/**
-  * TODO: Candidate for decoration class 
-  */
+
+- (void)childWindowShapeNotify: (NSNotification*)notification
+{
+	// FIXME: Update properties and tell decorator
+	int kind = [[[notification userInfo] objectForKey: @"Kind"] intValue];
+	switch (kind)
+	{
+		case XCB_SHAPE_SK_BOUNDING:
+			[pendingWindowProperties removeObject: ShapeBoundingProperty];
+			break;
+		case XCB_SHAPE_SK_CLIP:
+			[pendingWindowProperties removeObject: ShapeClipProperty];
+			break;
+		default:
+			break;
+
+	}
+
+	if ([pendingWindowProperties count] == 0) {
+		NSDebugLLog(@"PMManagedWindow", @"Become ready for transition from xcbWindowBecomeAvailable");
+		[self windowReadyForTransition];
+	}
+}
 - (void)createDecorationWindow
 {
 	XCBWindow *root = [child parent];
@@ -278,16 +332,18 @@ static const float RH_QUOTIENT = 0.15;
 	             object: decorationWindow];
 }
 /**
+  * Calculate the frame of the decoration window.
   * Refactor so that border widths supplied by decoration
   * class or strategy
   */
 - (XCBRect)calculateDecorationFrame: (XCBRect)clientFrame
 {
 	XCBRect frame = clientFrame;
-	frame.origin.x -= BORDER_WIDTHS.left;
-	frame.origin.y -= BORDER_WIDTHS.top;
-	frame.size.height += BORDER_WIDTHS.top + BORDER_WIDTHS.bottom ;
-	frame.size.width += BORDER_WIDTHS.left + BORDER_WIDTHS.right;
+	ICCCMBorderExtents border_widths = [decorator extentsForDecorationWindow: self];
+	frame.origin.x -= border_widths.left;
+	frame.origin.y -= border_widths.top;
+	frame.size.height += border_widths.top + border_widths.bottom ;
+	frame.size.width += border_widths.left + border_widths.right;
 	return frame;
 }
 - (void)xcbWindowPropertyDidRefresh: (NSNotification*)notification
@@ -298,7 +354,7 @@ static const float RH_QUOTIENT = 0.15;
 	if (state == PMManagedWindowWaitingOnPropertiesState && 
 			[pendingWindowProperties count] == 0)
 	{
-		NSDebugLLog(@"PMManagedWindow", @"Become ready for transition form xcbWindowPropertyDidRefresh");
+		NSDebugLLog(@"PMManagedWindow", @"Become ready for transition from xcbWindowPropertyDidRefresh");
 		[self windowReadyForTransition];
 	}
 }
@@ -323,54 +379,29 @@ static const float RH_QUOTIENT = 0.15;
 }
 - (void)managedWindowFocusIn: (NSNotification*)aNotification
 {
-	NSDebugLLog(@"PMManagedWindow", @"%@ received focus in, raising to top and releasing grab", self);
-	XCBWindow *w = reparented ? decorationWindow : child;
-	[w restackAboveWindow: nil];
+	NSDebugLLog(@"PMManagedWindow", @"%@ received focus in", self);
 	self->has_focus = YES;
-	[child ungrabButton: XCB_BUTTON_INDEX_1 modifiers: PM_XCB_MOD_MASK_ANY];
-	// TODO: Move to decoration strategy through delegate or callback
-	[self updateShape];
+	[decorator managedWindow: self focusIn: aNotification];
 }
 - (void)managedWindowFocusOut: (NSNotification*)aNotification
 {
-	//if (state == PMManagedWindowWithdrawnState)
-	//	return;
-	NSDebugLLog(@"PMManagedWindow", @"%@ focus out, grabbing", self);
-	// FIXME: Move this so it occurs when the window is below the top,
-	// not when it loses its focus.
-	// 
-	[self establishInactiveGrabs];
+	NSDebugLLog(@"PMManagedWindow", @"%@ received focus out", self);
 	self->has_focus = NO;
-
-	// TODO: Move to decoration strategy through delegate or callback
-	[self updateShape];
-}
-- (void)establishInactiveGrabs
-{
-	XCBWindow *w = reparented ? decorationWindow : child;
-	int status = [child grabButton: XCB_BUTTON_INDEX_1
-	    modifiers: PM_XCB_MOD_MASK_ANY
-	    // Must be false so that the real window doesn't get normal events and undo the grab
-	  ownerEvents: YES
-	    eventMask: XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_1_MOTION | XCB_EVENT_MASK_BUTTON_RELEASE
-	  pointerMode: XCB_GRAB_MODE_SYNC
-	 keyboardMode: XCB_GRAB_MODE_ASYNC
-	    confineTo: nil
-	       cursor: XCB_NONE];
-	NSDebugLLog(@"PMManagedWindow", @"%@ Grabbed button with status %d", self, status);
+	[decorator managedWindow: self focusOut: aNotification];
 }
 - (void)managedWindowButton1Press: (NSNotification*)aNotification
 {
 	if (state == PMManagedWindowWithdrawnState)
 		return;
 	NSDebugLLog(@"PMManagedWindow", @"%@ managedWindowButton1Press:", self);
-	[XCBConn allowEvents: XCB_ALLOW_SYNC_POINTER timestamp: XCB_CURRENT_TIME /*[XCBConn currentTime]*/];
+	[XCBConn allowEvents: XCB_ALLOW_SYNC_POINTER timestamp: [XCBConn currentTime]];
 	//[XCBConn allowEvents: XCB_ALLOW_REPLAY_POINTER timestamp: XCB_CURRENT_TIME /*[XCBConn currentTime]*/];
 	mouseDownPosition = [[[aNotification userInfo] objectForKey: @"RootPoint"] xcbPointValue];
 	mouseDownClientFrame = [self clientFrame];
 	moveresizeType = EWMH_WMMoveresizeCancel;
 
-	uint8_t type = [self moveresizeTypeForPoint: [self convertScreenToBase: mouseDownPosition]];
+	uint8_t type = decorator ? [decorator managedWindow: self moveresizeTypeForPoint: [self convertScreenToBase: mouseDownPosition]]
+		: EWMH_WMMoveresizeCancel;
 	switch (type)
 	{
 	EWMH_WMMoveresizeSizeTopLeft:
@@ -383,7 +414,7 @@ static const float RH_QUOTIENT = 0.15;
 	EWMH_WMMoveresizeSizeLeft:
 	EWMH_WMMoveresizeSizeKeyboard:
 		// Active grab pointer
-		[XCBConn grabPointerWithWindow: decorationWindow
+		[XCBConn grabPointerWithWindow: [self outermostWindow]
 		                   ownerEvents: NO
 		                     eventMask: XCB_EVENT_MASK_BUTTON_1_MOTION | XCB_EVENT_MASK_BUTTON_RELEASE 
 		                   pointerMode: XCB_GRAB_MODE_SYNC
@@ -401,6 +432,9 @@ static const float RH_QUOTIENT = 0.15;
 }
 - (void)managedWindowButton1Move: (NSNotification*)notification
 {
+	if (nil == decorator)
+		return;
+
 	XCBPoint currentPosition = [[[notification userInfo] objectForKey: @"RootPoint"] xcbPointValue];
 	int16_t x_diff = currentPosition.x - mouseDownPosition.x;
 	int16_t y_diff = currentPosition.y - mouseDownPosition.y;
@@ -409,10 +443,11 @@ static const float RH_QUOTIENT = 0.15;
 		return;
 
 	if (moveresizeType == EWMH_WMMoveresizeCancel)
-		moveresizeType = [self moveresizeTypeForPoint: [self convertScreenToBase: mouseDownPosition]];
+		moveresizeType = decorator ? [decorator managedWindow: self moveresizeTypeForPoint: [self convertScreenToBase: mouseDownPosition]]
+			: EWMH_WMMoveresizeMove;
 
 	XCBRect newClientFrame;
-	BOOL move = NO, drawProposed = NO;
+	BOOL move = NO;
 	int gravity;
 	switch (moveresizeType)
 	{
@@ -443,7 +478,6 @@ static const float RH_QUOTIENT = 0.15;
 						mouseDownClientFrame.size.width - x_diff,
 						mouseDownClientFrame.size.height - y_diff);
 				move = YES;
-				drawProposed = NO;
 				gravity = wm_size_hints.win_gravity;
 			}
 			break;
@@ -459,7 +493,6 @@ static const float RH_QUOTIENT = 0.15;
 					mouseDownClientFrame.size.width - x_diff,
 					mouseDownClientFrame.size.height - y_diff);
 				move = YES;
-				drawProposed = NO;
 				gravity = wm_size_hints.win_gravity;
 			}
 			break;
@@ -475,7 +508,6 @@ static const float RH_QUOTIENT = 0.15;
 					mouseDownClientFrame.size.width - x_diff,
 					mouseDownClientFrame.size.height - y_diff);
 				move = YES;
-				drawProposed = NO;
 				gravity = wm_size_hints.win_gravity;
 			}
 			break;
@@ -491,7 +523,6 @@ static const float RH_QUOTIENT = 0.15;
 					mouseDownClientFrame.size.width - x_diff,
 					mouseDownClientFrame.size.height - y_diff);
 				move = YES;
-				drawProposed = NO;
 				gravity = wm_size_hints.win_gravity;
 			}
 			break;
@@ -504,36 +535,21 @@ static const float RH_QUOTIENT = 0.15;
 		[self updateRefPoint: newClientFrame gravity: gravity];
 		[self repositionManagedWindow: newClientFrame gravity: gravity];
 	}
-	if (drawProposed)
-	{
-		xcb_gcontext_t id = xcb_generate_id([XCBConn connection]);
-		xcb_create_gc(([XCBConn connection]), id, [[decorationWindow parent] xcbDrawableId],
-				0, 0);
-		xcb_rectangle_t rect = XCBRectangleFromRect(mouseDownClientFrame);
-		xcb_poly_rectangle([XCBConn connection], [[decorationWindow parent] xcbDrawableId],
-				id, 1, &rect);
-		xcb_free_gc([XCBConn connection], id);
-		xcb_flush([XCBConn connection]);
-
-	}
 }
 - (void)managedWindowButton1Release: (NSNotification*)notification
 {
-	[XCBConn allowEvents: XCB_ALLOW_ASYNC_POINTER timestamp: [XCBConn currentTime]];
+	[XCBConn allowEvents: XCB_ALLOW_REPLAY_POINTER timestamp: [XCBConn currentTime]];
 
 	if (moveresizeType == EWMH_WMMoveresizeCancel)
 	{
 		NSDebugLLog(@"PMManagedWindow", @"%@ button press and release, focusing window", self);
-		// FIXME: Raise the window, offer/give it the focus and release
-		// the grab
-		[child ungrabButton: XCB_BUTTON_INDEX_1 modifiers: PM_XCB_MOD_MASK_ANY];
+		// Offer/Give the window the focus
 		[self setFocus];
 	}
 	else if (moveresizeType == EWMH_WMMoveresizeMove || moveresizeType == EWMH_WMMoveresizeMoveKeyboard)
 	{
 		NSDebugLLog(@"PMManagedWindow", @"%@ move complete", self);
 	}
-
 	else
 	{
 		NSDebugLLog(@"PMManagedWindow", @"%@ resize complete", self);
@@ -551,10 +567,6 @@ static const float RH_QUOTIENT = 0.15;
 - (void)xcbWindowDidMap: (NSNotification*)notification
 {
 	NSDebugLLog(@"PMManagedWindow", @"%@: -[PMManagedWindow xcbWindowDidMap:] child window mapped.", self);
-	// If we are withdrawn and get a map request, we
-	// re-manage the window
-	//if (state == PMManagedWindowWithdrawnState)
-	//	[self handleMapRequest];
 }
 - (void)xcbWindowConfigureRequest: (NSNotification*)aNotification
 {
@@ -609,43 +621,46 @@ static const float RH_QUOTIENT = 0.15;
 }
 - (void)repositionManagedWindow: (XCBRect)newRect gravity: (int)gravity
 {
-	if (decorationWindow)
+	if (nil != decorationWindow)
 	{
 		// 2. Align decoration frame's ref point with the
 		//    child's reference point.
+		ICCCMBorderExtents border_widths = [decorator extentsForDecorationWindow: self];
 		XCBRect decorationFrame = ICCCMDecorationFrameWithReferencePoint(
-				gravity, refPoint, newRect.size, BORDER_WIDTHS);
+				gravity, refPoint, newRect.size, border_widths);
 		XCBRect childFrame = XCBMakeRect(
-				BORDER_WIDTHS.left - CHILD_BORDER_WIDTH, BORDER_WIDTHS.top - CHILD_BORDER_WIDTH, 
+				border_widths.left, border_widths.top, 
 				newRect.size.width, newRect.size.height);
 		[child setFrame: childFrame
-		         border: CHILD_BORDER_WIDTH];
+		         border: 0];
 		[decorationWindow setFrame: decorationFrame border: 0];
 		
-		uint32_t border_widths[4] = { BORDER_WIDTHS.left, BORDER_WIDTHS.right, BORDER_WIDTHS.top, BORDER_WIDTHS.bottom};
+		uint32_t frame_extents[4] = {
+			border_widths.left,
+			border_widths.right,
+			border_widths.top,
+			border_widths.bottom };
 		[child replaceProperty: EWMH_WMFrameExtents
 		                  type: @"CARDINAL"
 		                format: 32
-		                  data: border_widths
+		                  data: frame_extents
 		                 count: 4];
-		[self updateShapeWithDecorationFrame: decorationFrame childFrame: childFrame];
+		[decorator managedWindowRepositioned: self
+		                     decorationFrame: decorationFrame
+		                          childFrame: childFrame];
 		[self sendSyntheticConfigureNotify: newRect];
 	}
 	else
 	{
 		// 2. Align decoration frame's ref point (in this case just a 1px border) with the
 		//    child's reference point.
-		ICCCMBorderExtents bws = { 1, 1, 1, 1 };
+		ICCCMBorderExtents bws = { req_border_width, req_border_width, req_border_width, req_border_width };
 		XCBRect decorationFrame = ICCCMDecorationFrameWithReferencePoint(gravity, refPoint, newRect.size, bws);
-		// Okay, the width and size in decorationFrame is wrong, because the X server
-		// automatically takes into account the border_width when specified. We really
-		// just want the point from this function, as it tells us where to plonk
-		// the child frame, adjusted for the child frame
 
 		// No need for decoration window update or synthentic ConfigureNotify
 		// because there is only the child window
 		[child setFrame: XCBMakeRect(decorationFrame.origin.x, decorationFrame.origin.y, newRect.size.width, newRect.size.height)
-		         border: CHILD_BORDER_WIDTH];
+		         border: req_border_width];
 	}
 }
 - (void)xcbWindowDidUnMap: (NSNotification*)aNotification
@@ -688,11 +703,10 @@ static const float RH_QUOTIENT = 0.15;
 	// 2. DOESN'T NEED DECORATION
 	// 2a) Map the child window
 
-	BOOL decorate = YES;
 	if (state == PMManagedWindowWaitingOnPropertiesState || 
 			state == PMManagedWindowWithdrawnState)
 	{
-		XCBCachedProperty *wmHintsProperty = [child cachedPropertyValue: ICCCMWMHints];
+		XCBCachedProperty *wmHintsProperty = [child cachedProperty: ICCCMWMHints];
 		mapState = ICCCMNormalWindowState;
 		window_group = XCB_NONE;
 		if (![wmHintsProperty isEmpty])
@@ -708,21 +722,7 @@ static const float RH_QUOTIENT = 0.15;
 				input_hint = YES;
 		}
 
-		XCBCachedProperty *ewmhWindowType = [child cachedPropertyValue: EWMH_WMWindowType];
-		if (![ewmhWindowType isEmpty])
-		{
-			// FIXME: This is an atom list, not a single atom
-			xcb_atom_t value = [ewmhWindowType asAtom];
-			NSDebugLLog(@"PMManagedWindow", @"%@ window type = %@", self, [[XCBAtomCache sharedInstance] nameForAtom: value]);
-
-			if ([atomCache atomNamed: EWMH_WMWindowTypeNormal] == value ||
-					[atomCache atomNamed: EWMH_WMWindowTypeUtility] == value ||
-					[atomCache atomNamed: EWMH_WMWindowTypeDialog] == value)
-				decorate = YES;
-			else
-				decorate = NO;
-		}
-		XCBCachedProperty *wmNormalHintsProperty = [child cachedPropertyValue: ICCCMWMNormalHints];
+		XCBCachedProperty *wmNormalHintsProperty = [child cachedProperty: ICCCMWMNormalHints];
 		if (![wmNormalHintsProperty isEmpty])
 		{
 			wm_size_hints = [wmNormalHintsProperty asWMSizeHints];
@@ -733,15 +733,13 @@ static const float RH_QUOTIENT = 0.15;
 			wm_size_hints.win_gravity = ICCCMNorthWestGravity;
 		}
 
-		XCBCachedProperty *wmProtocols = [child cachedPropertyValue: ICCCMWMProtocols];
-		if (![wmProtocols isEmpty])
+		wm_take_focus = [child hasWMProtocol: ICCCMWMTakeFocus];
+
+		ASSIGN(decorator, nil);
+		FOREACH([delegate managedWindowDecorators: self], proposedDecorator, NSObject<PMManagedWindowDecorator>*)
 		{
-			NSDebugLLog(@"PMManagedWindow", @"%@ WM_PROTOCOLS found: %@", self, [wmProtocols asAtomArray]);
-			wm_take_focus = [[wmProtocols asAtomArray] containsObject: ICCCMWMTakeFocus];
-		}
-		else
-		{
-			wm_take_focus = NO;
+			if ([proposedDecorator shouldDecorateManagedWindow: self])
+				ASSIGN(decorator, proposedDecorator);
 		}
 		NSDebugLLog(@"PMManagedWindow", @"%@ wm_take_focus = %d", self, wm_take_focus);
 	}
@@ -754,7 +752,7 @@ static const float RH_QUOTIENT = 0.15;
 			if (state == PMManagedWindowWithdrawnState || 
 					state == PMManagedWindowWaitingOnPropertiesState)
 			{
-				if (decorate)
+				if (nil != decorator)
 				{
 					NSDebugLLog(@"PMManagedWindow", @"%@: mapping the decoration window and then reparenting the child.", self);
 					if (decorationWindow == nil)
@@ -787,12 +785,15 @@ static const float RH_QUOTIENT = 0.15;
 			state = PMManagedWindowIconicState;
 			break;
 		case ICCCMWithdrawnWindowState:
+			state = PMManagedWindowWithdrawnState;
 			[decorationWindow destroy];
 			ASSIGN(decorationWindow, nil);
-			state = PMManagedWindowWithdrawnState;
 			break;
 	}
 
+	// Notify decorator (some do extra stuff on may like establish grabs)
+	[decorator managedWindow: self
+	            changedState: mapState];
 	// Update WM_STATE
 	[child setWMState: mapState iconWindow: nil];
 }
@@ -804,10 +805,11 @@ static const float RH_QUOTIENT = 0.15;
 	// position
 	[decorationWindow restackAboveWindow: child];
 	[[self decorationWindow] map];
+	ICCCMBorderExtents border_widths = [decorator extentsForDecorationWindow: self];
 	[child 
 		reparentToWindow: decorationWindow
-		              dX: BORDER_WIDTHS.left - CHILD_BORDER_WIDTH
-		              dY: BORDER_WIDTHS.right - CHILD_BORDER_WIDTH];
+		              dX: border_widths.left
+		              dY: border_widths.right];
 
 	[XCBConn setNeedsFlush: YES];
 }
@@ -856,8 +858,6 @@ static const float RH_QUOTIENT = 0.15;
 	// These must be in the same order as the increasing
 	// order of mask bit values.
 	values[0] = XCB_EVENT_MASK_EXPOSURE |
-		XCB_EVENT_MASK_BUTTON_PRESS | 
-		XCB_EVENT_MASK_BUTTON_RELEASE | 
 		XCB_EVENT_MASK_STRUCTURE_NOTIFY |
 		XCB_EVENT_MASK_FOCUS_CHANGE | 
 		XCB_EVENT_MASK_PROPERTY_CHANGE;
@@ -869,7 +869,6 @@ static const float RH_QUOTIENT = 0.15;
 	// there will be no MapNotify
 	if ([child mapState] == XCB_MAP_STATE_VIEWABLE)
 		[delegate managedWindowDidMap: self];
-	[self establishInactiveGrabs];
 	// FIXME: Establish a more sophisticated system of setting
 	// initial window mapping focus
 	//[self setFocus];
@@ -933,15 +932,16 @@ static const float RH_QUOTIENT = 0.15;
 
 - (XCBRect)clientFrame
 {
-	XCBRect decorationFrame = [decorationWindow frame];
 	XCBRect childFrame =  [child frame];
-	ICCCMBorderExtents border = BORDER_WIDTHS;
 	if (nil == decorationWindow)
 	{
 		return childFrame;
 	}
 	else
 	{
+		XCBRect decorationFrame = [decorationWindow frame];
+		ICCCMBorderExtents border = [decorator extentsForDecorationWindow: self];
+
 		switch (wm_size_hints.win_gravity)
 		{
 		case ICCCMStaticGravity:
@@ -965,8 +965,8 @@ static const float RH_QUOTIENT = 0.15;
 	event.response_type = XCB_CONFIGURE_NOTIFY | 0x80;
 	event.event = [[self childWindow] xcbWindowId];
 	event.window = [[self childWindow] xcbWindowId];
-	event.x = clientFrame.origin.x;
-	event.y = clientFrame.origin.y;
+	event.x = clientFrame.origin.x - req_border_width;
+	event.y = clientFrame.origin.y - req_border_width;
 	event.width = clientFrame.size.width;
 	event.height = clientFrame.size.height;
 	event.above_sibling = XCB_NONE;
@@ -976,106 +976,6 @@ static const float RH_QUOTIENT = 0.15;
 		sendEvent: XCB_EVENT_MASK_STRUCTURE_NOTIFY
 		propagate: 0
 		     data: (const char*)&event];
-}
-/**
-  * TODO: Move to decoration class
-  */
-- (void)updateShape
-{
-	[self updateShapeWithDecorationFrame: [decorationWindow frame]
-	                          childFrame: [child frame]];
-}
-/**
-  * TODO: Move to decoration class
-  */
-- (void)updateShapeWithDecorationFrame: (XCBRect)decorationFrame
-                            childFrame: (XCBRect)childFrame
-{
-	if (nil != decorationWindow)
-	{
-		// Child location
-		XCBPoint cp = childFrame.origin;
-
-		// Child size
-		XCBSize cs = childFrame.size;
-
-		// Decoration Size
-		XCBSize ds = decorationFrame.size;
-
-		// Resize Handle Length
-		int16_t rhl = MIN_RH_LENGTH;
-
-		// Resize Handle Width
-		int16_t rhw = RH_WIDTH;
-
-		// Child border width
-		int16_t cbw = CHILD_BORDER_WIDTH;
-		if (has_focus)
-		{
-
-			xcb_rectangle_t rects[9] = {
-				{ 0, 0, rhw + rhl, rhw }, // NW H
-				{ ds.width - rhw - rhl, 0, rhw + rhl, rhw }, // NE H
-				{ 0, rhw, rhw, rhl }, // NW V
-				{ ds.width - rhw, rhw, rhw, rhl }, // NE V
-				/* { cp.x, cp.y, cs.width + cbw * 2, cs.height + cbw * 2}, // Child */
-				{ 0, ds.height - rhw - rhl, rhw, rhl }, // SW V
-				{ ds.width - rhw, ds.height - rhl - rhw, rhw, rhl }, // SE V
-				{ 0, ds.height - rhw, rhw + rhl, rhw }, // SW H
-				{ ds.width - rhl - rhw, ds.height - rhw, rhl + rhw, rhw } // SE H
-			};
-			[decorationWindow setShapeRectangles: rects
-						       count: 8
-						    ordering: XCB_SHAPE_YXSORTED
-						   operation: XCB_SHAPE_SO_SET
-							kind: XCB_SHAPE_SK_BOUNDING
-						      offset: XCBMakePoint(0, 0)];
-			[decorationWindow 
-				shapeCombineWithKind: XCB_SHAPE_SK_BOUNDING
-				           operation: XCB_SHAPE_SO_UNION
-				              offset: XCBMakePoint(BORDER_WIDTHS.left, BORDER_WIDTHS.top)
-				              source: child
-				          sourceKind: XCB_SHAPE_SK_BOUNDING];
-		}
-		else
-		{
-			[decorationWindow 
-				shapeCombineWithKind: XCB_SHAPE_SK_BOUNDING
-				           operation: XCB_SHAPE_SO_SET
-				              offset: XCBMakePoint(BORDER_WIDTHS.left, BORDER_WIDTHS.top)
-				              source: child
-				          sourceKind: XCB_SHAPE_SK_BOUNDING];
-			// xcb_rectangle_t rect = { cp.x, cp.y, cs.width + cbw * 2, cs.height + cbw*2};
-			// [decorationWindow setShapeRectangles: &rect
-			// 			       count: 1
-			// 			    ordering: XCB_SHAPE_UNSORTED
-			// 			   operation: XCB_SHAPE_SO_SET
-			// 				kind: XCB_SHAPE_SK_BOUNDING
-			// 			      offset: XCBMakePoint(0, 0)];
-		}
-	}
-}
-/**
-  * TODO: Move to decoration class
-  */
-- (int)moveresizeTypeForPoint: (XCBPoint)point
-{
-	XCBRect df = [decorationWindow frame];
-	XCBRect cf = [child frame];
-	// Resize handle square size - the length of a resize handle square
-	int16_t rhss = RH_WIDTH + MIN_RH_LENGTH;
-	if (XCBPointInRect(point, cf))
-		return EWMH_WMMoveresizeMove;
-	else if (point.x < rhss && point.y < rhss)
-		return EWMH_WMMoveresizeSizeTopLeft;
-	else if (point.x >= (df.size.width - rhss) && point.y < rhss)
-		return EWMH_WMMoveresizeSizeTopRight;
-	else if (point.x < rhss && point.y >= (df.size.height - rhss))
-		return EWMH_WMMoveresizeSizeBottomLeft;
-	else if (point.x >= (df.size.width - rhss) && point.y >= (df.size.height - rhss))
-		return EWMH_WMMoveresizeSizeBottomRight;
-	else
-		return EWMH_WMMoveresizeCancel;
 }
 - (XCBPoint)convertScreenToBase: (XCBPoint)point
 {
@@ -1092,11 +992,12 @@ static const float RH_QUOTIENT = 0.15;
 	int32_t min_width, min_height, max_width, max_height;
 	// FIXME: This should be delegated out somehow and justifiable
 	// Set the minimum width and height to be no smaller than the resize handles + some space
-	int32_t min_size = MIN_RH_LENGTH * 2 + RH_WIDTH * 2 + 2;
+	XCBSize min_size;
+	min_size = decorator ? [decorator minimumSizeForClientFrame: self] : XCBMakeSize(1, 1);
 	XCBSize ns = newSize;
 
-	min_width = MAX(wm_size_hints.flags & ICCCMPMinSize ? wm_size_hints.min_width : 0, min_size);
-	min_height = MAX(wm_size_hints.flags & ICCCMPMinSize ? wm_size_hints.min_height: 0, min_size);
+	min_width = MAX(wm_size_hints.flags & ICCCMPMinSize ? wm_size_hints.min_width : 0, min_size.width);
+	min_height = MAX(wm_size_hints.flags & ICCCMPMinSize ? wm_size_hints.min_height: 0, min_size.height);
 
 	max_width = MIN(wm_size_hints.flags & ICCCMPMaxSize ? wm_size_hints.max_width : INT32_MAX, INT32_MAX);
 	max_height = MIN(wm_size_hints.flags & ICCCMPMaxSize ? wm_size_hints.max_height : INT32_MAX, INT32_MAX);

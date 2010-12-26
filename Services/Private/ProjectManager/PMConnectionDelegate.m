@@ -27,6 +27,8 @@
 #import "PMScreen.h"
 #import "PMCompositeWindow.h"
 #import "PMManagedWindow.h"
+#import "PMNormalWindowDecorator.h"
+
 #import <XCBKit/XCBConnection.h>
 #import <XCBKit/XCBDamage.h>
 #import <XCBKit/XCBRender.h>
@@ -59,6 +61,10 @@
 - (void)handleNewCompositedWindow: (XCBWindow*)window;
 - (void)windowBecomeAvailable: (NSNotification*)notification;
 - (void)newWindow: (XCBWindow*)window pendingEvent: (NSNotification*)notification;
+@end
+
+@interface PMConnectionDelegate (PMManagedWindowDelegate)<PMManagedWindowDelegate> 
+- (NSArray*)managedWindowDecorators: (PMManagedWindow*)managedWindow;
 @end
 
 @implementation PMConnectionDelegate
@@ -291,5 +297,9 @@
 			return screen;
 	}
 	return nil;
+}
+- (NSArray*)managedWindowDecorators: (PMManagedWindow*)managedWindow
+{
+	return A([PMNormalWindowDecorator sharedInstance]);
 }
 @end
