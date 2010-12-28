@@ -159,12 +159,18 @@ e.g. -[(CodeDocWeaving) weaveOtherDataType:] or -[(CodeDocWeaving) weaveConstant
 
 @class Parameter;
 
+/** DocSubroutine is an abstract class whose subclasses represent function-like 
+constructs suchs methods, C functions or macros. */
 @interface DocSubroutine : DocElement
 {
+	@private
 	NSMutableArray *parameters;
 	NSString *returnType;
 }
 
+/** @taskunit Returned Value */
+
+/** Declares the return type. e.g. NSString * or void. */
 - (void) setReturnType: (NSString *)aReturnType;
 /** Returns the return type as an anonymous parameter object to which a HTML 
 representation of the type can be asked. 
@@ -173,7 +179,13 @@ When generating the HTML representation for the return type, the parameter
 object will insert symbol links and apply standard formatting (e.g. class name 
 + space + star) as expected. */ 
 - (Parameter *) returnParameter;
-- (void) addParameter: (NSString *)aName ofType: (NSString *)aType;
+
+/** @taskunit Parameters */
+
+/** Declares a new parameter that follow any previously added parameters. */
+- (void) addParameter: (Parameter *)aParameter;
+/** Returns the parameters. */
+- (NSArray *) parameters;
 
 @end
 

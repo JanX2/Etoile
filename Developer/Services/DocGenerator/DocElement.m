@@ -282,9 +282,14 @@
 	return [Parameter newWithName: nil andType: returnType];
 }
 
-- (void) addParameter: (NSString *)aName ofType: (NSString *)aType
+- (void) addParameter: (Parameter *)aParameter
 {
-	[parameters addObject: [Parameter newWithName: aName andType: aType]];
+	[parameters addObject: aParameter];
+}
+
+- (NSArray *) parameters
+{
+	return [NSArray arrayWithArray: parameters];
 }
 
 @end

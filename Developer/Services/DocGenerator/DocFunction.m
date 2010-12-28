@@ -27,7 +27,7 @@
 
 - (void) setDescription: (NSString *)aDescription forParameter: (NSString *)aName
 {
-	FOREACH(parameters, p, Parameter *)
+	FOREACH([self parameters], p, Parameter *)
 	{
 		if ([[p name] isEqualToString: aName])
 		{
@@ -42,12 +42,12 @@
 	H param_list = [DIV class: @"paramsList"];
 	H ul = UL;
 
-	if ([parameters count] > 0)
+	if ([[self parameters] count] > 0)
 	{
 		[param_list and: [H3 with: @"Parameters"]];
 	}
 
-	FOREACH(parameters, p, Parameter *)
+	FOREACH([self parameters], p, Parameter *)
 	{
 		H h_param = [LI with: [I with: [p name]]];
 		[h_param and: [p description]];
@@ -78,7 +78,7 @@
 	[h_signature with: @"("];
 
 	BOOL isFirst = YES;
-	FOREACH(parameters, p, Parameter *)
+	FOREACH([self parameters], p, Parameter *)
 	{
 		H h_parameter = [p HTMLRepresentationWithParentheses: NO];
 
@@ -128,8 +128,8 @@
 {
 	if ([elementName isEqualToString: @"arg"]) 
 	{
-		[self addParameter: trimmed
-		            ofType: [parser argTypeFromArgsAttributes: [parser currentAttributes]]];	
+		NSString *type = [parser argTypeFromArgsAttributes: [parser currentAttributes]];
+		[self addParameter: [Parameter newWithName: trimmed andType: type]];	
 	}
 	else if ([elementName isEqualToString: @"desc"]) 
 	{

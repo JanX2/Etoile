@@ -102,7 +102,8 @@
 	
 	[h_signature and: h_returnType];
 
-	BOOL isUnaryMessage = [parameters isEmpty];
+	NSArray *params = [self parameters];
+	BOOL isUnaryMessage = [params isEmpty];
 
 	for (int i = 0; i < [selectorKeywords count]; i++)
 	{
@@ -114,7 +115,7 @@
 		if (isUnaryMessage)
 			break;
 
-		Parameter *p = [parameters objectAtIndex: i];
+		Parameter *p = [params objectAtIndex: i];
 	
 		[h_signature and: [p HTMLRepresentationWithParentheses: YES]];
 	}
@@ -153,8 +154,8 @@
 	}
 	else if ([elementName isEqualToString: @"arg"]) 
 	{
-		[self addParameter: trimmed 
-		            ofType: [parser argTypeFromArgsAttributes: [parser currentAttributes]]];
+		NSString *type = [parser argTypeFromArgsAttributes: [parser currentAttributes]];
+		[self addParameter: [Parameter newWithName: trimmed andType: type]];
 	}
 	else if ([elementName isEqualToString: @"desc"]) 
 	{
