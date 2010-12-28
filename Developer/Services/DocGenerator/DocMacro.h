@@ -1,4 +1,5 @@
-/** <abstract>Macros in the doc element tree.</abstract>
+/**
+	<abstract>Macros in the doc element tree.</abstract>
 
 	Copyright (C) 2010 Quentin Mathe
 
@@ -14,6 +15,7 @@
 
 @class HtmlElement;
 
+/** A DocMacro object represents a macro in the documentation element tree. */
 @interface DocMacro : DocFunction
 {
 

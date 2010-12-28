@@ -1,10 +1,13 @@
-//
-//  Function.h
-//  ETDocGenerator
-//
-//  Created by Nicolas Roard (Home) on 6/8/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
+/**
+	<abstract>Functions in the doc element tree.</abstract>
+
+	Copyright (C) 2008 Nicolas Roard
+
+	Authors:  Nicolas Roard,
+	          Quentin Mathe <quentin.mathe@gmail.com>
+	Date:  June 2008
+	License:  Modified BSD (see COPYING)
+ */
 
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
@@ -13,12 +16,12 @@
 
 @class HtmlElement;
 
+/** A DocFunction object represents a function in the documentation element tree. */
 @interface DocFunction : DocSubroutine <GSDocParserDelegate>
 {
+	@private
 	NSString *returnDescription; 
 }
-
-- (HtmlElement *) richDescription;
 
 /** @taskunit GSDoc Parsing */
 

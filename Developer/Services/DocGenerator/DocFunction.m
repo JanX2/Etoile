@@ -1,10 +1,11 @@
-//
-//  Function.m
-//  ETDocGenerator
-//
-//  Created by Nicolas Roard (Home) on 6/8/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
+/*
+	Copyright (C) 2008 Nicolas Roard
+
+	Authors:  Nicolas Roard,
+	          Quentin Mathe <quentin.mathe@gmail.com>
+	Date:  June 2008
+	License:  Modified BSD (see COPYING)
+ */
 
 #import "DocFunction.h"
 #import "HtmlElement.h"
@@ -37,6 +38,7 @@
 	}
 }
 
+// TODO: Remove...
 - (H) richDescription
 {
 	H param_list = [DIV class: @"paramsList"];
