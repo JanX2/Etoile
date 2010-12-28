@@ -62,7 +62,7 @@
 	}
 	
 	[param_list and: [H3 with: @"Description"]];
-	[param_list and: filteredDescription];
+	[param_list and: [self filteredDescription]];
 
 	return param_list;
 }
@@ -74,7 +74,7 @@
 	                       with: [SPAN class: @"type" with: [[self returnParameter] HTMLRepresentationWithParentheses: NO]]];
 	
 	[h_signature and: h_returnType];
-	[h_signature and: [SPAN class: @"selector" with: @" " and: name]];
+	[h_signature and: [SPAN class: @"selector" with: @" " and: [self name]]];
 	[h_signature with: @"("];
 
 	BOOL isFirst = YES;

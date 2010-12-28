@@ -14,7 +14,7 @@
 
 @implementation DocElement
 
-@synthesize task, taskUnit;
+@synthesize name, task, taskUnit, filteredDescription;
 
 - (id) init
 {
@@ -97,14 +97,9 @@
 		[self name], [self task]];
 }
 
-- (NSString *) name
++ (NSString *) forthcomingDescription
 {
-	return name;
-}
-
-- (void) setName: (NSString *)aName
-{
-	ASSIGN(name, aName);
+	return @"<em>Description forthcoming.</em>";
 }
 
 - (void) appendToRawDescription: (NSString *)aDescription
@@ -115,16 +110,6 @@
 - (NSString *) rawDescription
 {
 	return rawDescription;
-}
-
-- (NSString *) filteredDescription
-{
-	return filteredDescription;
-}
-
-- (void) setFilteredDescription: (NSString *)aDescription
-{
-	ASSIGN(filteredDescription, aDescription);
 }
 
 - (void) addInformationFrom: (DescriptionParser *)aParser
@@ -232,7 +217,7 @@
 	}
 }
 
-- (NSString *) HTMLDescriptionWithDocIndex: (DocIndex *)aDocIndex
+- (NSString *) HTMLDescriptionWithDocIndex: (HTMLDocIndex *)aDocIndex
 {
 	NSMutableString *description = [NSMutableString stringWithString: [self filteredDescription]];
 
@@ -244,7 +229,7 @@
 
 - (HtmlElement *) HTMLRepresentation
 {
-	return [[HtmlElement new] autorelease];
+	return [HtmlElement blankElement];
 }
 
 - (NSString *) GSDocElementName

@@ -49,6 +49,8 @@
 - (void) setTitle: (NSString *)aTitle;
 - (NSString *) title;
 
+/** @taskunit HTML Generation */
+
 - (HtmlElement *) HTMLRepresentation;
 - (HtmlElement *) HTMLTOCRepresentation;
 

@@ -65,9 +65,9 @@
 
 - (NSString *) name
 {
-	if (name != nil)
+	if ([super name] != nil)
 	{
-		return [[name componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceCharacterSet]] 
+		return [[[super name] componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceCharacterSet]] 
 			componentsJoinedByString: @""];
 	}
 	/* Insert either class, category or protocol as main symbol */
@@ -132,7 +132,14 @@
 
 - (void) setOverview: (NSString *)aDescription
 {
-	ASSIGN(overview, aDescription);
+	NSString *validDesc = aDescription;
+
+	if ([aDescription isEqual: [[self class] forthcomingDescription]])
+	{
+		validDesc = nil;
+	}
+
+	ASSIGN(overview, validDesc);
 	// FIXME: redundancy
 	[self setFilteredDescription: aDescription];
 }
@@ -156,6 +163,29 @@
 - (NSString *) title
 {
 	return title;
+}
+
+- (HtmlElement *) HTMLOverviewRepresentation
+{
+	H hOverview = [DIV id: @"overview" with: [H3 with: @"Overview"]];
+	BOOL noOverview = (fileOverview == nil && overview == nil);
+
+	if (noOverview)
+		return [HtmlElement blankElement];
+
+	if (fileOverview != nil)
+	{
+		NSString *fo = [NSString stringWithContentsOfFile: fileOverview 
+		                                         encoding: NSUTF8StringEncoding 
+		                                            error: NULL];
+		[hOverview and: fo];
+	}
+	else if (overview != nil)
+	{
+		[hOverview and: [P with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]]];
+	}
+
+	return hOverview;
 }
 
 - (HtmlElement *) HTMLRepresentation
@@ -221,28 +251,9 @@
 
 	// TODO: Could be better not to insert an empty table when authors is empty and declared is nil
 	H meta = [DIV id: @"meta" with: [P id: @"metadesc" with: abstract] and: table];
-	H h_overview = [DIV id: @"overview" with: [H3 with: @"Overview"]];
-	BOOL setOverview = NO;
-
-	/* Insert Overview */
-	if (fileOverview != nil)
-	{
-		NSString *fo = [NSString stringWithContentsOfFile: fileOverview encoding: NSUTF8StringEncoding error: NULL];
-		[h_overview and: fo];
-		setOverview = YES;
-	}
-	else if (overview != nil)
-	{
-		[h_overview and: [P with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]]];
-		setOverview = YES;
-	}
 
 	/* Pack title, meta and overview in a header html element */
-	H header = [DIV id: @"header" with: h_title and: meta];
-	if (setOverview) 
-	{
-		[header and: h_overview];
-	}
+	H header = [DIV id: @"header" with: h_title and: meta and: [self HTMLOverviewRepresentation]];
 
 	return header;
 }
