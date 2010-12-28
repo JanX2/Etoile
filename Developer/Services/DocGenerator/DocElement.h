@@ -1,10 +1,11 @@
-/** <abstract>Base class to represent element in a doc element tree.</abstract>
+/**
+	<abstract>Base class to represent element in a doc element tree.</abstract>
 
-	Copyright (C) 2010 Nicolas Roard
+	Copyright (C) 2008 Nicolas Roard
 
 	Authors:  Nicolas Roard,
 	          Quentin Mathe <quentin.mathe@gmail.com>
-	Date:  May 2008
+	Date:  June 2008
 	License:  Modified BSD (see COPYING)
  */
 

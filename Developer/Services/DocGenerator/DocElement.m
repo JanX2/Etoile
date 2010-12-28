@@ -1,10 +1,11 @@
-//
-//  GSDocBlock.m
-//  ETDocGenerator
-//
-//  Created by Nicolas Roard (Home) on 6/15/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
+/*
+	Copyright (C) 2008 Nicolas Roard
+
+	Authors:  Nicolas Roard,
+	          Quentin Mathe <quentin.mathe@gmail.com>
+	Date:  June 2008
+	License:  Modified BSD (see COPYING)
+ */
 
 #import "DocElement.h"
 #import "DescriptionParser.h"
