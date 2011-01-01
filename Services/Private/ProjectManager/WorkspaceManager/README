@@ -1,0 +1,6 @@
+WorkspaceManager
+----------------
+
+This is a sandbox for developing the bits and pieces needed for a workspace manager in the ProjectManager. At this point in time (1/1/2011) it just renders little versions of the windows on your screen. It is intended that this can be used for a task bar and project display.
+
+It will eventually be cleaned up and turned into a proper workspace manager.

@@ -2,7 +2,7 @@ ETOILE_CORE_MODULE = YES
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-SUBPROJECTS = XCBKit
+SUBPROJECTS = XCBKit WorkspaceManager
 DEPENDENCIES = XCBKit
 
 #
@@ -14,6 +14,7 @@ TOOL_NAME = ProjectManager
 #
 # Resource files
 #
+CC = clang
 $(TOOL_NAME)_LANGUAGES = English
 
 $(TOOL_NAME)_CPPFLAGS += -I.

@@ -215,7 +215,7 @@ const uint32_t OPAQUE = UINT32_MAX;
 	{
 		uint32_t pa = 1;
 		XCBRenderPictureFormat *format;
-		if (nil == pixmap)
+		if (nil != pixmap)
 			[pixmap release];
 		pixmap = [[XCBComposite nameWindowPixmap: window] retain];
 		format = [XCBRender findVisualFormat: [window visual]];
