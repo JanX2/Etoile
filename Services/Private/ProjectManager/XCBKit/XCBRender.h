@@ -34,12 +34,15 @@
 @class XCBRenderPictureFormat;
 @protocol XCBDrawable;
 
+#define XCB_RENDER_D2F(f) ((xcb_render_fixed_t) ((f) * 65536))
+#define XCB_RENDER_F2D(f) (((double)(f)) / 65536)
+
 @interface XCBRender : NSObject
 {
 }
 + (void)initializeExtensionWithConnection: (XCBConnection*)connection;
-+ (XCBRenderPictureFormat*)findVisualFormat: (xcb_visualid_t)visual;
-+ (XCBRenderPictureFormat*)findStandardVisualFormat: (xcb_pict_standard_t)visual;
++ (XCBRenderPictureFormat*)findVisualFormat: (XCBVisual*)visual;
++ (XCBRenderPictureFormat*)findStandardVisualFormat: (xcb_pict_standard_t)pict_standard_type;
 @end
 
 static inline xcb_render_color_t XCBRenderMakeColor(
@@ -79,6 +82,10 @@ static inline xcb_render_color_t XCBRenderMakeColor(
                  count: (uint32_t)count
                  color: (xcb_render_color_t)colour
              operation: (xcb_render_pict_op_t)op;
+- (void)setTransform: (xcb_render_transform_t)transform;
+- (void)setFilter: (NSString*)filterName
+           values: (xcb_render_fixed_t*)values
+     valuesLength: (uint32_t)valuesLength;
 @end
 
 @interface XCBRenderPictureFormat : NSObject

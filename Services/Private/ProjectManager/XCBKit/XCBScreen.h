@@ -33,11 +33,12 @@
 	XCBWindow *root;
 	xcb_visualid_t default_visual;
 	NSMutableArray* childWindows;
+	NSMutableDictionary* depthsMap;
 }
 + (XCBScreen*)screenWithXCBScreen: (xcb_screen_t*)aScreen;
 - (XCBWindow*)rootWindow;
 - (xcb_screen_t*)screenInfo;
-- (xcb_visualid_t)defaultVisual;
+- (XCBVisual*)defaultVisual;
 - (uint8_t)defaultDepth;
 
 // Methods related to child window tracking

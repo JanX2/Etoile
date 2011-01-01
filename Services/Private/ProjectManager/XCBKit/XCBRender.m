@@ -73,11 +73,12 @@
 	free(version_reply);
 }
 
-+ (XCBRenderPictureFormat*)findVisualFormat: (xcb_visualid_t)visual_id
++ (XCBRenderPictureFormat*)findVisualFormat: (XCBVisual*)visual
 {
 	const xcb_render_query_pict_formats_reply_t* formats;
 	xcb_render_pictvisual_t *pictvisual;
 	xcb_render_pictforminfo_t *format;
+	xcb_visualid_t visual_id = [visual visualId];
 
 	formats = xcb_render_util_query_formats([XCBConn connection]);
 	pictvisual = xcb_render_util_find_visual_format(formats, visual_id);
@@ -207,5 +208,35 @@
 			colour,
 			count,
 			rects);
+}
+- (void)setTransform: (xcb_render_transform_t)transform
+{
+	xcb_render_set_picture_transform([XCBConn connection],
+		self->picture_id,
+		transform);
+}
+- (void)setFilter: (NSString*)filterName
+           values: (xcb_render_fixed_t*)values
+     valuesLength: (uint32_t)valuesLength
+{
+	NSUInteger filter_len  = [filterName lengthOfBytesUsingEncoding: NSISOLatin1StringEncoding] + 1;
+	char *filter = (char*)malloc(filter_len);
+	if (![filterName getCString: filter 
+	                  maxLength: filter_len
+	                   encoding: NSISOLatin1StringEncoding])
+	{
+		free(filter);
+		[NSException raise: NSInvalidArgumentException
+		            format: @"Unable to convert filter name to ISO-Latin1 encoding"];
+	}
+	filter_len = strlen(filter);
+	xcb_render_set_picture_filter(
+		[XCBConn connection],
+		self->picture_id,
+		filter_len,
+		filter,
+		valuesLength,
+		values);
+	free(filter);
 }
 @end

@@ -178,7 +178,7 @@ enum
                          values: (const uint32_t*)valuesList
                           depth: (uint8_t)depth
                           class: (xcb_window_class_t)windowClass
-                         visual: (xcb_visualid_t)visual;
+                         visual: (XCBVisual*)visual;
 
 - (XCBRect)frame;
 - (void)setFrame: (XCBRect)aRect;
@@ -252,7 +252,7 @@ enum
 - (void)changeWindowAttributes: (uint32_t)mask
                         values: (const uint32_t*)values;
 /** Window attributes */
-- (xcb_visualid_t)visual;
+- (XCBVisual*)visual;
 - (xcb_window_class_t)windowClass;
 - (xcb_map_state_t)mapState;
 - (BOOL)overrideRedirect;
@@ -265,6 +265,21 @@ enum
   * this one is unknown.
   */
 - (XCBWindow*)aboveWindow;
+
+/**
+  * Retrieve a list of all the child windows. This
+  * method is synchronous.
+  */
+- (NSArray*)queryTree;
+
+/**
+  * Refresh the cached value of a property
+  * immediately and return the value. This
+  * method is synchronous: it will ensure the
+  * atom is cached first and then attempt
+  * to retrieve the property value.
+  */
+- (XCBCachedProperty*)retrieveAndCacheProperty: (NSString*)propertyName;
 
 /**
   * Refresh the cached value of a property, or cache it

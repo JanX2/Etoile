@@ -128,7 +128,12 @@ NSString* XCBWindowDamageNotifyNotification = @"XCBWindowDamageNotifyNotificatio
 
 - (void)damageNotify: (xcb_damage_notify_event_t*)event
 {
-	XCBWindow *damagedWindow = [XCBWindow windowWithXCBWindow: event->drawable];
+	XCBWindow *damagedWindow = [XCBConn windowForXCBId: event->drawable];
+	if (nil == damagedWindow)
+	{
+		NSLog(@"DamageNotify for unregistered or non-window %x", event->drawable);
+		return;
+	}
 	[damagedWindow handleDamageNotifyEvent: event];
 }
 @end

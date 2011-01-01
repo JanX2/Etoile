@@ -55,57 +55,69 @@
 @interface XCBConnection (Private)
 - (void)eventsReady: (NSNotification*)notification;
 @end
+#define HANDLE_EVENT(eventName, eventObj, eventWin, xcbWindow) \
+	if (nil == xcbWindow) \
+		NSLog(@ #eventName " without window (%x)", eventWin); \
+	else \
+		[xcbWindow handle##eventName : eventObj];
 
 @implementation XCBConnection (EventHandlers)
 - (void) handleFocusIn: (xcb_focus_in_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection", @"Focus in");
 	XCBWindow *win = [self windowForXCBId: anEvent->event];
-	NSAssert1(win, @"Focus in without window (%x)", anEvent->event);
-	[win handleFocusIn: anEvent];
+	HANDLE_EVENT(FocusIn, anEvent, anEvent->event, win)
+	// NSAssert1(win, @"Focus in without window (%x)", anEvent->event);
+	//[win handleFocusIn: anEvent];
 }
 - (void) handleFocusOut: (xcb_focus_out_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection", @"Focus out");
 	XCBWindow *win = [self windowForXCBId: anEvent->event];
-	NSAssert1(win, @"Focus out without window (%x)", anEvent->event);
-	[win handleFocusOut: anEvent];
+	//NSAssert1(win, @"Focus out without window (%x)", anEvent->event);
+	//[win handleFocusOut: anEvent];
+	HANDLE_EVENT(FocusOut, anEvent, anEvent->event, win);
 }
 - (void) handleMapRequest: (xcb_map_request_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection", @"Mapping requested for window: %x", anEvent->window);
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
-	NSAssert1(win, @"Map request without window (%x)", anEvent->window);
-	[win handleMapRequest: anEvent];
+	HANDLE_EVENT(MapRequest, anEvent, anEvent->window, win);
+	//NSAssert1(win, @"Map request without window (%x)", anEvent->window);
+	//[win handleMapRequest: anEvent];
 }
 - (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent
 {
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
-	NSAssert1(win, @"Circulate request without window (%x)", anEvent->window);
-	[win handleCirculateRequest: anEvent];
+	HANDLE_EVENT(CirculateRequest, anEvent, anEvent->window, win);
+	//NSAssert1(win, @"Circulate request without window (%x)", anEvent->window);
+	//[win handleCirculateRequest: anEvent];
 }
 - (void)handleConfigureRequest: (xcb_configure_request_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"XCBConnection: Configure requested for window: %x", anEvent->window);
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
-	NSAssert1(win, @"Configure request without window (%x)", anEvent->window);
-	[win handleConfigureRequest: anEvent];
+	HANDLE_EVENT(ConfigureRequest, anEvent, anEvent->window, win);
+	//NSAssert1(win, @"Configure request without window (%x)", anEvent->window);
+	//[win handleConfigureRequest: anEvent];
 }
 - (void)handleButtonPress: (xcb_button_press_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Button pressed");
 	XCBWindow *win = [self windowForXCBId: anEvent->event];
-	NSAssert1(win, @"Button Press without window (%x)", anEvent->event);
+	//NSAssert1(win, @"Button Press without window (%x)", anEvent->event);
 	currentTime = anEvent->time;
-	[win handleButtonPress: anEvent];
+	HANDLE_EVENT(ButtonPress, anEvent, anEvent->event, win);
+	//[win handleButtonPress: anEvent];
 }
 - (void)handleButtonRelease: (xcb_button_release_event_t*)anEvent
 {
 	NSDebugLLog(@"XCBConnection",@"Button released");
 	XCBWindow *win = [self windowForXCBId: anEvent->event];
-	NSAssert1(win, @"Button Release without window (%x)", anEvent->event);
+	//NSAssert1(win, @"Button Release without window (%x)", anEvent->event);
 	currentTime = anEvent->time;
-	[win handleButtonRelease: anEvent];
+	HANDLE_EVENT(ButtonRelease, anEvent, anEvent->event, win);
+	//[win handleButtonRelease: anEvent];
 }
 - (void)handleKeyPress: (xcb_key_press_event_t*)anEvent
 {
@@ -121,9 +133,10 @@
 {
 	NSDebugLLog(@"XCBConnection",@"Motion notify");
 	XCBWindow *win = [self windowForXCBId: anEvent->event];
-	NSAssert1(win, @"Motion Notify without window (%x)", anEvent->event);
+	//NSAssert1(win, @"Motion Notify without window (%x)", anEvent->event);
 	currentTime = anEvent->time;
-	[win handleMotionNotify: anEvent];
+	HANDLE_EVENT(MotionNotify, anEvent, anEvent->event, win);
+	//[win handleMotionNotify: anEvent];
 }
 - (void)handleEnterNotify: (xcb_enter_notify_event_t*)anEvent
 {
@@ -138,33 +151,38 @@
 - (void)handleConfigureNotify: (xcb_configure_notify_event_t*)anEvent
 {
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
-	NSAssert1(win, @"Configure Notify without window (%x)", anEvent->window);
-	[win handleConfigureNotifyEvent: anEvent];
+	//NSAssert1(win, @"Configure Notify without window (%x)", anEvent->window);
+	//[win handleConfigureNotifyEvent: anEvent];
+	HANDLE_EVENT(ConfigureNotifyEvent, anEvent, anEvent->window, win);
 }
 - (void)handleDestroyNotify: (xcb_destroy_notify_event_t*)anEvent
 {
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	//NSAssert1(win, @"Destroy notify without window (%x)", anEvent->window);
-	[win handleDestroyNotifyEvent: anEvent];
+	HANDLE_EVENT(DestroyNotifyEvent, anEvent, anEvent->window, win);
+	//[win handleDestroyNotifyEvent: anEvent];
 }
 - (void)handleUnMapNotify: (xcb_unmap_notify_event_t*)anEvent
 {
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
-	NSAssert1(win, @"Unmap Notify without window (%x)", anEvent->window);
+	//NSAssert1(win, @"Unmap Notify without window (%x)", anEvent->window);
 	NSDebugLLog(@"XCBConnection",@"UnMapping window %@ (%x)", win, anEvent->window);
-	[win handleUnMapNotifyEvent: anEvent];
+	//[win handleUnMapNotifyEvent: anEvent];
+	HANDLE_EVENT(UnMapNotifyEvent, anEvent, anEvent->window, win);
 }
 - (void)handleMapNotify: (xcb_map_notify_event_t*)anEvent
 {
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
-	NSAssert1(win, @"Map Notify without window (%x)", anEvent->window);
-	[win handleMapNotifyEvent: anEvent];
+	//NSAssert1(win, @"Map Notify without window (%x)", anEvent->window);
+	//[win handleMapNotifyEvent: anEvent];
+	HANDLE_EVENT(MapNotifyEvent, anEvent, anEvent->window, win);
 }
 - (void)handleCirculateNotify: (xcb_circulate_notify_event_t*)anEvent
 {
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
-	NSAssert1(win, @"Circulate Notify without window (%x)", anEvent->window);
-	[win handleCirculateNotifyEvent: anEvent];
+	//NSAssert1(win, @"Circulate Notify without window (%x)", anEvent->window);
+	//[win handleCirculateNotifyEvent: anEvent];
+	HANDLE_EVENT(CirculateNotifyEvent, anEvent, anEvent->window, win);
 }
 - (void)handleCreateNotify: (xcb_create_notify_event_t*)anEvent
 {
@@ -175,20 +193,23 @@
 - (void)handleExpose: (xcb_expose_event_t*)anEvent
 {
 	XCBWindow *win = [self windowForXCBId:anEvent->window];
-	NSAssert1(win, @"Expose without window (%x)", anEvent->window);
-	[win handleExpose: anEvent];
+	//NSAssert1(win, @"Expose without window (%x)", anEvent->window);
+	//[win handleExpose: anEvent];
+	HANDLE_EVENT(Expose, anEvent, anEvent->window, win);
 }
 - (void)handleReparentNotify: (xcb_reparent_notify_event_t*)anEvent
 {
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
-	NSAssert1(win, @"Reparent without window (%x)", anEvent->window);
-	[win handleReparentNotify: anEvent];
+	//NSAssert1(win, @"Reparent without window (%x)", anEvent->window);
+	//[win handleReparentNotify: anEvent];
+	HANDLE_EVENT(ReparentNotify, anEvent, anEvent->window, win);
 }
 - (void)handlePropertyNotify: (xcb_property_notify_event_t*)anEvent
 {
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
-	NSAssert1(win, @"Property notify without window (%x)", anEvent->window);
-	[win handlePropertyNotify: anEvent];
+	//NSAssert1(win, @"Property notify without window (%x)", anEvent->window);
+	//[win handlePropertyNotify: anEvent];
+	HANDLE_EVENT(PropertyNotify, anEvent, anEvent->window, win);
 }
 @end
 
@@ -270,7 +291,7 @@ XCBConnection *XCBConn;
 		[screens addObject: [XCBScreen screenWithXCBScreen: screen]];
 		NSDebugLLog(@"XCBConnection",@"Root %x (%dx%d)", screen->root, screen->width_in_pixels, 
 				screen->height_in_pixels);
-		[self registerWindow: [XCBWindow windowWithXCBWindow: screen->root parent:XCB_NONE]];
+		[self registerWindow: [XCBWindow windowWithXCBWindow: screen->root parent: XCB_NONE]];
 
 		xcb_screen_next(&iter);
 	}
@@ -338,6 +359,7 @@ XCBConnection *XCBConn;
 			case 0: {}
 		}
 		eventsHandled = YES;
+		free(event);
 	}
 	return eventsHandled;
 }
@@ -467,6 +489,7 @@ XCBConnection *XCBConn;
 }
 - (void)handleError: (xcb_generic_error_t*)error
 {
+	XCBRaiseGenericErrorException(error, @"<unknown>", @"Unknown asynchronous request (from processing event loop)");
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithUnsignedShort: error->sequence], @"Sequence",
 		[NSNumber numberWithUnsignedChar: error->error_code], @"ErrorCode",

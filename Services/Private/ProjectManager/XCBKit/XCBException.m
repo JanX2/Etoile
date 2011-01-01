@@ -24,6 +24,11 @@
  **/
 
 #import <XCBKit/XCBException.h>
+#import <Foundation/NSValue.h>
+#import <Foundation/NSException.h>
+#import <Foundation/NSDictionary.h>
+
+#include <xcb/xcb_event.h>
 
 /**
   * An exception thrown containing the details of an error
@@ -32,3 +37,22 @@
 NSString *XCBRequestErrorException = @"XCBRequestErrorException";
 
 
+void XCBRaiseGenericErrorException(xcb_generic_error_t* error, NSString* callName, NSString* description)
+{
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithUnsignedShort: error->sequence], @"Sequence",
+		[NSNumber numberWithUnsignedChar: error->error_code], @"ErrorCode",
+		[NSNumber numberWithUnsignedInteger: error->response_type], @"ResponseType",
+		callName, @"CallName",
+		description, @"CallDescription",
+		nil];
+	NSException *e =
+		[NSException exceptionWithName: XCBRequestErrorException
+		                        reason: [NSString stringWithFormat: @"%s error (%s) - sequence %d", 
+		                            xcb_event_get_error_label(error->error_code), 
+		                            xcb_event_get_label(error->response_type), 
+		                            error->sequence, nil]
+		                      userInfo: userInfo];
+	free(error);
+	[e raise];
+}

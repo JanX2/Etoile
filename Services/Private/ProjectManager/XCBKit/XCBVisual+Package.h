@@ -1,5 +1,5 @@
 /**
- * Étoilé ProjectManager - XCBVisual.h
+ * Étoilé ProjectManager - XCBVisual+Package.h
  *
  * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
  *
@@ -22,18 +22,15 @@
  * THE SOFTWARE.
  *
  **/
-#import <XCBKit/XCBConnection.h>
 
-@interface XCBVisual : NSObject 
-{
-	xcb_visualtype_t visual_type;
-}
-+ (XCBVisual*)visualWithId: (xcb_visualid_t)visualId;
-- (xcb_visualid_t)visualId;
-- (uint8_t)bitsPerRGBValue;
-- (uint16_t)colormapEntries;
-- (uint32_t)redMask;
-- (uint32_t)greenMask;
-- (uint32_t)blueMask;
-- (xcb_visual_class_t)visualClass;
+#import "XCBVisual.h"
+
+@interface XCBVisual (Package)
+/**
+  * A method for XCBScreen to register a new visual
+  * description. It returns the newly created visual
+  * object (or an existing one if this visual_type_t
+  * has the same visual_id as a previous call).
+  */
++ (XCBVisual*)discoveredVisualType: (xcb_visualtype_t*)visual_type;
 @end

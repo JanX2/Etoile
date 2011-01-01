@@ -66,6 +66,8 @@ static NSMapTable *ClientMessageHandlers;
 - (XCBWindow*)initWithNewXCBWindow: (xcb_window_t)new_window_id;
 - (void)requestProperty: (NSString*)property atomValue: (NSNumber*)atom;
 - (void)handleCreateEvent: (xcb_create_notify_event_t*)anEvent;
+- (void)handlePropertyReply: (xcb_get_property_reply_t*)reply
+               propertyName: (NSString*)propertyName;
 @end
 
 @implementation XCBWindow
@@ -89,15 +91,18 @@ static NSMapTable *ClientMessageHandlers;
 }
 + (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow 
 {
-	return [self windowWithXCBWindow: aWindow parent: 0];
+	XCBWindow * newWindow = [self windowWithXCBWindow: aWindow parent: 0];
+	//if ([newWindow parent] == nil)
+	//	ASSIGN(newWindow->parent, [XCBWindow unknownWindow]);
+	return newWindow;
 }
 + (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow 
                            parent: (xcb_window_t)parent_id
 {
 	// If a 0 (None) window is specified, just return
-	// nothing.
+	// the unknown window.
 	if (aWindow == 0)
-		return nil;
+		return [XCBWindow unknownWindow];
 	// Don't create multiple objects for the same window.
 	id win = [XCBConn windowForXCBId: aWindow];
 	if (nil != win)
@@ -111,9 +116,9 @@ static NSMapTable *ClientMessageHandlers;
                             above: (xcb_window_t)above;
 {
 	// If a 0 (None) window is specified, just return
-	// nothing.
+	// the unknown window.
 	if (aWindow == 0)
-		return nil;
+		return [XCBWindow unknownWindow];
 	// Don't create multiple objects for the same window.
 	id win = [XCBConn windowForXCBId: aWindow];
 	if (nil != win)
@@ -197,7 +202,7 @@ static NSMapTable *ClientMessageHandlers;
                          values: (const uint32_t*)valuesList
                           depth: (uint8_t)depth
                           class: (xcb_window_class_t)windowClass
-                         visual: (xcb_visualid_t)visual
+                         visual: (XCBVisual*)visual
 {
 	xcb_connection_t *conn = [XCBConn connection];
 	xcb_window_t winid = xcb_generate_id(conn);
@@ -212,7 +217,7 @@ static NSMapTable *ClientMessageHandlers;
 		aRect.size.height,
 		borderWidth,
 		windowClass,
-		visual,
+		[visual visualId],
 		valuesMask,
 		valuesList);
 	XCBWindow *newWindow = [[[self class] alloc]
@@ -225,7 +230,7 @@ static NSMapTable *ClientMessageHandlers;
 	newWindow->frame = aRect;
 	newWindow->border_width = borderWidth;
 	newWindow->attributes._class = windowClass;
-	newWindow->attributes.visual = visual;
+	newWindow->attributes.visual = [visual visualId];
 	// FIXME: Copy the valuesMask/valuesList
 	NSDebugLLog(@"XCBWindow", @"-[XCBWindow createChildInRect: ..] Creating child window %x", winid);
 	[XCBConn setNeedsFlush: YES];
@@ -277,7 +282,6 @@ static NSMapTable *ClientMessageHandlers;
                       dY: (uint16_t)dy
 {
 	xcb_reparent_window([XCBConn connection], window, [newParent xcbWindowId], dx, dy);
-	//ASSIGN(parent, newParent);
 	[XCBConn setNeedsFlush: YES];
 }
 - (void)setInputFocus: (uint8_t)revert_to
@@ -572,9 +576,9 @@ static NSMapTable *ClientMessageHandlers;
 	
 	[self checkIfAvailable];
 }
-- (xcb_visualid_t)visual
+- (XCBVisual*)visual
 {
-	return attributes.visual;
+	return [XCBVisual visualWithId: attributes.visual];
 }
 - (xcb_window_class_t)windowClass
 {
@@ -615,6 +619,59 @@ static NSMapTable *ClientMessageHandlers;
 - (NSString*)name
 {
 	return [self description];
+}
+
+- (NSArray*)queryTree
+{
+	xcb_query_tree_cookie_t cookie = 
+		xcb_query_tree([XCBConn connection], window);
+	xcb_query_tree_reply_t *reply =
+		xcb_query_tree_reply([XCBConn connection],
+		cookie,
+		NULL);
+	
+	int length = xcb_query_tree_children_length(reply);
+	NSMutableArray *childWindows = [[NSMutableArray alloc] initWithCapacity: length];
+	xcb_window_t *window_array = xcb_query_tree_children(reply);
+	XCBWindow *previous = nil;
+	for (int i = 0; i < length; i++)
+	{
+		XCBWindow *newWindow = [XCBWindow
+			windowWithXCBWindow: window_array[i]
+			             parent: reply->parent
+			              above: [previous xcbWindowId]];
+		
+		[childWindows addObject: newWindow];
+		previous = newWindow;
+	}
+	free(reply);
+	return [childWindows autorelease];
+}
+
+- (XCBCachedProperty*)retrieveAndCacheProperty: (NSString*)propertyName
+{
+	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
+	xcb_atom_t atom = [atomCache atomNamed: propertyName];
+
+	// We are currently assuming we want the whole
+	// property value, no matter how long it is. Other
+	// people may only want an offset of it.
+	xcb_get_property_cookie_t cookie = 
+		xcb_get_property([XCBConn connection],
+			0,
+			window,
+			atom,
+			XCB_GET_PROPERTY_TYPE_ANY,
+			0,
+			UINT32_MAX);
+	xcb_get_property_reply_t *reply = xcb_get_property_reply(
+		[XCBConn connection],
+		cookie,
+		NULL);
+	[self handlePropertyReply: reply
+	             propertyName: propertyName];
+	free(reply);
+	return [self cachedProperty: propertyName];
 }
 
 - (void)refreshCachedProperty: (NSString*)propertyName
@@ -778,8 +835,8 @@ static NSMapTable *ClientMessageHandlers;
 		xcb_get_geometry_cookie_t cookie =
 			xcb_get_geometry([XCBConn connection], window);
 		[XCBConn setHandler: self
-				   forReply: cookie.sequence
-				   selector: @selector(setGeometry:)];
+			   forReply: cookie.sequence
+			   selector: @selector(setGeometry:)];
 		[self updateWindowAttributes];
 		[XCBConn setNeedsFlush:YES];
 	}
@@ -808,7 +865,9 @@ static NSMapTable *ClientMessageHandlers;
 @implementation XCBWindow (Package)
 - (void)setAboveWindow: (XCBWindow*)newAbove
 {
-	if (nil == newAbove ||
+	if (nil == newAbove || 
+		window_load_state != XCBWindowAvailableState ||
+		[newAbove windowLoadState] != XCBWindowAvailableState ||
 		[[newAbove parent] isEqual: parent])
 		ASSIGN(above, newAbove);
 	else
@@ -847,7 +906,7 @@ static NSMapTable *ClientMessageHandlers;
 		(id)[NSNull null] :
 		(id)[XCBWindow 
 			windowWithXCBWindow: anEvent->above_sibling
-			             parent: 0];
+			             parent: [[self parent] xcbWindowId]];
 	XCBRect frameRect = XCBMakeRect(anEvent->x, anEvent->y,
 		anEvent->width, anEvent->height);
 	NSValue *frameRectValue = [NSValue 

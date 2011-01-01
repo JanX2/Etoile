@@ -24,18 +24,85 @@
  **/
 #import <XCBKit/XCBVisual.h>
 
-@implementation XCBVisual
+/**
+  * A store of visual objects. This assumes
+  * one connection (like the rest of XCBKit).
+  */
+static NSMapTable * VisualStore = nil;
 
-- (id)initWithVisualId:(xcb_visualid_t)id
+@interface XCBVisual (Private)
+- (id)initWithVisualType: (xcb_visualtype_t*)aVisualType;
+@end
+
+@implementation XCBVisual
++ (void)initialize
 {
-	self = [super init]; 
-	if (!self) return 0;
-	visual_id = id;
-	return self;
+	if (VisualStore == nil)
+	{
+		VisualStore = NSCreateMapTable(NSIntMapKeyCallBacks,
+			NSObjectMapValueCallBacks, 30);
+	}
+}
+
+- (uint8_t)bitsPerRGBValue
+{
+	return visual_type.bits_per_rgb_value;
 }
 
 - (xcb_visualid_t)visualId
 {
-	return visual_id;
+	return visual_type.visual_id;
 }
+- (uint16_t)colormapEntries
+{
+	return visual_type.colormap_entries;
+}
+- (uint32_t)redMask
+{
+	return visual_type.red_mask;
+}
+- (uint32_t)greenMask
+{
+	return visual_type.green_mask;
+}
+- (uint32_t)blueMask
+{
+	return visual_type.blue_mask;
+}
+- (xcb_visual_class_t)visualClass
+{
+	return visual_type._class;
+}
+
++ (XCBVisual*)visualWithId: (xcb_visualid_t)visual_id
+{
+	XCBVisual *visual = NSMapGet(VisualStore, (void*)(intptr_t)visual_id);
+	return visual;
+}
+@end
+
+@implementation XCBVisual (Private)
+- (id)initWithVisualType: (xcb_visualtype_t*)aVisualType
+{
+	self = [super init];
+	if (self == nil)
+		return nil;
+	visual_type = *aVisualType;
+	return self;
+}
+@end
+
+@implementation XCBVisual (Package)
++ (XCBVisual*)discoveredVisualType: (xcb_visualtype_t*)visual_type
+{
+	XCBVisual *visual = NSMapGet(VisualStore, (void*)(intptr_t)visual_type->visual_id);
+	if (visual == nil)
+	{
+		visual = [[XCBVisual alloc]
+			initWithVisualType: visual_type];
+		NSMapInsert(VisualStore, (void*)(intptr_t)[visual visualId], visual);
+	}
+	return visual;
+}
+
 @end

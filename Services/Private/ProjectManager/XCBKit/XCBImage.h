@@ -1,7 +1,7 @@
 /**
- * Étoilé ProjectManager - XCBVisual.h
+ * Étoilé ProjectManager - XCBImage.h
  *
- * Copyright (C) 2010 Christopher Armstrong <carmstrong@fastmail.com.au>
+ * Copyright (C) 2010 Christopher Armstrong
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,33 @@
  *
  **/
 #import <XCBKit/XCBConnection.h>
+#import <XCBKit/XCBGeometry.h>
+#import <xcb/xcb.h>
 
-@interface XCBVisual : NSObject 
+@protocol XCBDrawable;
+@class NSData;
+
+@interface XCBImage : NSObject
 {
-	xcb_visualtype_t visual_type;
+	NSData *data;
+	XCBRect rect;
+	uint8_t depth;
+	xcb_image_format_t format;
+	xcb_visualid_t visual;
 }
-+ (XCBVisual*)visualWithId: (xcb_visualid_t)visualId;
-- (xcb_visualid_t)visualId;
-- (uint8_t)bitsPerRGBValue;
-- (uint16_t)colormapEntries;
-- (uint32_t)redMask;
-- (uint32_t)greenMask;
-- (uint32_t)blueMask;
-- (xcb_visual_class_t)visualClass;
+
+- (id)initWithData: (NSData*)data
+            inRect: (XCBRect)rect
+            format: (xcb_image_format_t)format
+             depth: (uint8_t)depth;
++ (XCBImage*)getImageWithDrawable: (id<XCBDrawable>)drawable
+                           inRect: (XCBRect)rect
+                           format: (xcb_image_format_t)format
+                           planes: (uint32_t)planes;
+
+- (NSData*)data;
+- (uint8_t)depth;
+- (XCBVisual*)visual;
+- (XCBRect)rect;
+
 @end

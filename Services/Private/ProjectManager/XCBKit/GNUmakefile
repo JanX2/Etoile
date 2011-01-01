@@ -32,6 +32,7 @@ $(FRAMEWORK_NAME)_OBJC_FILES = \
 	 XCBShape.m \
 	 XCBPropertyHelpers.m \
 	 XCBException.m \
+	 XCBImage.m \
 	 ICCCM.m \
 	 EWMH.m 
 
@@ -55,6 +56,7 @@ $(FRAMEWORK_NAME)_HEADER_FILES = \
 	 XCBPropertyHelpers.h \
 	 XCBDrawable.h \
 	 XCBException.h \
+	 XCBImage.h \
 	 ICCCM.h \
 	 EWMH.h 
 

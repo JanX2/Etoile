@@ -27,6 +27,11 @@
 
 const NSString *XCBInvalidTypeException = @"XCBInvalidTypeException";
 
+@interface XCBCachedProperty(Private)
+- (void)checkAtomTypes: (NSArray*)expectedTypes;
+@end
+
+
 @implementation XCBCachedProperty
 
 - (id)initWithGetPropertyReply: (xcb_get_property_reply_t*)reply
@@ -122,9 +127,24 @@ const NSString *XCBInvalidTypeException = @"XCBInvalidTypeException";
 	}
 }
 
+- (void)checkAtomTypes: (NSArray*)expectedTypes
+{
+	FOREACH(expectedTypes, expectedType, NSString*)
+	{
+		if (type == [[XCBAtomCache sharedInstance] atomNamed: expectedType])
+			return;
+	}
+	[NSException raise: (NSString*)XCBInvalidTypeException
+		    format: @"Expected cached data for property %@ in one of the %@ (stored as %@)",
+		propertyName,
+		expectedTypes,
+		[[XCBAtomCache sharedInstance] nameForAtom: type]]
+		;
+}
+
 - (NSString*)asString
 {
-	[self checkAtomType: @"STRING"];
+	[self checkAtomTypes: A(@"STRING", @"UTF8_STRING")];
 	return [[[NSString alloc]
 		initWithBytes: [[self data] bytes]
 		       length: [[self data] length]

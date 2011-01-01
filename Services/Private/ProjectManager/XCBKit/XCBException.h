@@ -24,6 +24,7 @@
  **/
 
 #import <Foundation/NSString.h>
+#include <xcb/xcb.h>
 
 /**
   * An exception thrown containing the details of an error
@@ -31,4 +32,5 @@
   */
 extern NSString *XCBRequestErrorException;
 
+void XCBRaiseGenericErrorException(xcb_generic_error_t* error, NSString* callName, NSString* description);
 

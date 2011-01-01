@@ -25,7 +25,7 @@
  **/
 #import <XCBKit/XCBScreen.h>
 #import "XCBWindow+Package.h"
-#import <XCBKit/XCBVisual.h>
+#import "XCBVisual+Package.h"
 
 #import <EtoileFoundation/EtoileFoundation.h>
 #import <Foundation/NSKeyValueObserving.h>
@@ -56,6 +56,26 @@
 	screen = *aScreen;
 	root = [[XCBWindow windowWithXCBWindow: screen.root parent: XCB_NONE] 
 		retain];
+	depthsMap = [NSMutableDictionary new];
+
+	xcb_depth_iterator_t depths_iter = xcb_screen_allowed_depths_iterator(aScreen);
+	for (int i = 0; i < xcb_screen_allowed_depths_length(aScreen); i++)
+	{
+		xcb_depth_t *depth = depths_iter.data;
+		NSNumber *depthRef = [NSNumber numberWithUnsignedChar: depth->depth];
+		NSMutableArray *visuals = [NSMutableArray arrayWithCapacity:
+			xcb_depth_visuals_length(depth)];
+		xcb_visualtype_iterator_t visuals_iter = xcb_depth_visuals_iterator(depth);
+		for (int j = 0; j < xcb_depth_visuals_length(depth); j++)
+		{
+			xcb_visualtype_t *visual_data = visuals_iter.data;
+			XCBVisual *visual = [XCBVisual discoveredVisualType: visual_data];
+			[visuals addObject: visual];
+			xcb_visualtype_next(&visuals_iter);
+		}
+		[depthsMap setObject: visuals forKey: depthRef];
+		xcb_depth_next(&depths_iter);
+	}
 	return self;
 }
 - (NSString*)description
@@ -73,6 +93,7 @@
 - (void) dealloc
 {
 	[childWindows release];
+	[depthsMap release];
 	[root release];
 	[super dealloc];
 }
@@ -85,9 +106,9 @@
 	return &screen;
 }
 
-- (xcb_visualid_t)defaultVisual
+- (XCBVisual*)defaultVisual
 {
-	return screen.root_visual;
+	return [XCBVisual visualWithId: screen.root_visual];
 }
 - (uint8_t)defaultDepth
 {
@@ -154,7 +175,9 @@
 			// in the notification
 			XCBWindow *xcbAboveWindow = [[notification userInfo] 
 				objectForKey: @"Above"];
-			if (xcbAboveWindow != nil)
+			if (xcbAboveWindow != nil &&
+				[childWindows containsObject: xcbWindow] &&
+				[childWindows containsObject: xcbAboveWindow])
 			{
 				[self restackWindow: xcbWindow
 					aboveWindow: xcbAboveWindow];
