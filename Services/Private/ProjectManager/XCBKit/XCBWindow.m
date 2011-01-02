@@ -27,6 +27,7 @@
 #import <XCBKit/XCBVisual.h>
 #import <XCBKit/XCBAtomCache.h>
 #import <XCBKit/XCBCachedProperty.h>
+#import <XCBKit/XCBException.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
 #import <Foundation/NSNull.h>
@@ -606,8 +607,9 @@ static NSMapTable *ClientMessageHandlers;
 }
 - (BOOL)isEqual: (id)anObject
 {
-	return [anObject isKindOfClass: [XCBWindow class]] &&
-		[anObject xcbWindowId] == window;
+	return ([anObject isKindOfClass: [XCBWindow class]] &&
+		[anObject xcbWindowId] == window)
+		? YES : NO;
 }
 - (NSString*)description
 {
@@ -625,10 +627,14 @@ static NSMapTable *ClientMessageHandlers;
 {
 	xcb_query_tree_cookie_t cookie = 
 		xcb_query_tree([XCBConn connection], window);
+	xcb_generic_error_t *error;
 	xcb_query_tree_reply_t *reply =
 		xcb_query_tree_reply([XCBConn connection],
 		cookie,
-		NULL);
+		&error);
+	if (reply == NULL)
+		XCBRaiseGenericErrorException(error, @"xcb_query_tree()",
+			[NSString stringWithFormat: @"Query tree on %@", self]);
 	
 	int length = xcb_query_tree_children_length(reply);
 	NSMutableArray *childWindows = [[NSMutableArray alloc] initWithCapacity: length];
@@ -664,10 +670,14 @@ static NSMapTable *ClientMessageHandlers;
 			XCB_GET_PROPERTY_TYPE_ANY,
 			0,
 			UINT32_MAX);
+	xcb_generic_error_t *error;
 	xcb_get_property_reply_t *reply = xcb_get_property_reply(
 		[XCBConn connection],
 		cookie,
-		NULL);
+		&error);
+	if (reply == NULL)
+		XCBRaiseGenericErrorException(error, @"xcb_get_property()", 
+		[NSString stringWithFormat: @"Requesting property %@ on window %@", propertyName, self]);
 	[self handlePropertyReply: reply
 	             propertyName: propertyName];
 	free(reply);
