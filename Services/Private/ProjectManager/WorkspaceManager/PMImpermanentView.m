@@ -26,15 +26,25 @@
 #import "PMWindowTracker.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
+#define NOTIFY_DELEGATE(sel) \
+	if ([delegate respondsToSelector: @selector(sel)]) \
+		[delegate sel self]
+
 @implementation PMImpermanentView
 - (id)initWithWindowTracker: (PMWindowTracker*)aTracker
 {
 	SUPERINIT;
 	tracker = [aTracker retain];
 	[tracker setDelegate: self];
+	[self setIcon: [tracker windowPixmap]];
 	[self setImage: [tracker windowPixmap]];
 	[self setName: [tracker windowName]];
 	return self;
+}
+
+- (void)setDelegate: (id<PMImpermanentViewDelegate>)aDelegate
+{
+	self->delegate = aDelegate;
 }
 
 - (void)dealloc
@@ -48,21 +58,25 @@
 }
 - (void)trackedWindowActivated: (PMWindowTracker*)aTracker
 {
-	[self setValue: [aTracker windowName] forProperty: @"name"];
+	[self setName: [aTracker windowName]];
+	NOTIFY_DELEGATE(viewActivated:);
 }
 - (void)trackedWindowDidShow: (PMWindowTracker*)aTracker
 {
+	NOTIFY_DELEGATE(viewDidShow:);
 }
 - (void)trackedWindowDidHide: (PMWindowTracker*)aTracker
 {
+	NOTIFY_DELEGATE(viewDidHide:);
 }
 - (void)trackedWindowDeactivated: (PMWindowTracker*)aTracker
 {
+	NOTIFY_DELEGATE(viewDeactivated:);
 }
 - (void)trackedWindowPixmapUpdated: (PMWindowTracker*)aTracker
 {
-	[self setValue: [tracker windowPixmap] forProperty: @"image"];
-	[self setValue: [tracker windowPixmap] forProperty: @"icon"];
+	[self setImage: [tracker windowPixmap]];
+	[self setIcon: [tracker windowPixmap]];
 }
 - (NSImage*)image
 {
@@ -88,8 +102,12 @@
 
 - (void)setName: (NSString*)newName
 {
-	NSLog(@"New window name: %@", newName);
 	ASSIGN(name, newName);
+}
+
+- (NSString*)displayName
+{
+	return [self name];
 }
 
 + (ETEntityDescription*)newEntityDescription
@@ -111,10 +129,16 @@
 	return desc;
 }
 
+- (PMWindowTracker*)tracker
+{
+	return tracker;
+}
+
 - (NSArray*)properties
 {
 	return [[super properties] arrayByAddingObjectsFromArray: A(@"image", @"icon", @"name")];
 }
+
 - (NSSet*)observableKeyPaths
 {
 	return S(@"image", @"icon", @"name");

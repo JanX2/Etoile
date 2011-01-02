@@ -23,14 +23,16 @@
  *
  **/
 #import <Foundation/NSObject.h>
+#import <PMImpermanentView.h>
 
 @class NSMutableDictionary;
 @class NSMutableArray;
 @class ETLayoutItemGroup;
 
-@interface PMWorkspaceManager :NSObject
+@interface PMWorkspaceManager :NSObject <PMImpermanentViewDelegate>
 {
 	NSMutableDictionary *trackers;
+	NSMutableArray *discoveredWindows;
 	NSMutableArray *views;
 	ETLayoutItemGroup *viewSwitcher;
 }

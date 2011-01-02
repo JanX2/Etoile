@@ -71,8 +71,8 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 	[waitingOnProperties addObjectsFromArray: A(PMProjectWindowProperty, PMViewWindowProperty, ICCCMWMState, ICCCMWMName)];
 
 	NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
-	//if (![window isEqual: topLevelWindow])
-	//	[window setEventMask: XCB_EVENT_MASK_PROPERTY_CHANGE];
+	if (![window isEqual: topLevelWindow])
+		[window setEventMask: XCB_EVENT_MASK_PROPERTY_CHANGE | XCB_EVENT_MASK_STRUCTURE_NOTIFY];
 	damageTracker = [[XCBDamage damageWithDrawable: topLevelWindow
 	                                  reportLevel: XCB_DAMAGE_REPORT_LEVEL_NON_EMPTY] retain];
 
@@ -85,6 +85,11 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 		addObserver: self
 		   selector: @selector(propertyDidRefresh:)
 		       name: XCBWindowPropertyDidRefreshNotification
+		     object: window];
+	[defaultCenter
+		addObserver: self
+		   selector: @selector(propertyDidChange:)
+		       name: XCBWindowPropertyDidChangeNotification
 		     object: window];
 	[defaultCenter
 		addObserver: self
@@ -128,8 +133,6 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 		          valueList: 0] retain];
 	
 	[window refreshCachedProperties: [waitingOnProperties allObjects]];
-	if ([window windowLoadState] == XCBWindowAvailableState)
-		[self windowAvailable: nil];
 	return self;
 }
 
@@ -165,6 +168,13 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 	}
 	return nil;
 }
+
+- (void)propertyDidChange: (NSNotification*)notification
+{
+	NSString *propertyName = [[notification userInfo] objectForKey: @"PropertyName"];
+	[window refreshCachedProperty: propertyName];
+}
+
 - (void)propertyDidRefresh: (NSNotification*)notification
 {
 	NSString *propName; 
@@ -220,18 +230,25 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 	switch (window_state)
 	{
 	case ICCCMNormalWindowState:
+		if (mapped)
+			break;
 		mapped = YES;
 		NSDebugLLog(@"PMWindowTracker", @"Tracked window shown (%@)", window);
 		[delegate trackedWindowDidShow: self];
 
 		break;
 	case ICCCMIconicWindowState:
+		if (!mapped)
+			break;
 		mapped = NO;
 		NSDebugLLog(@"PMWindowTracker", @"Tracked window iconic (%@)", window);
 		[delegate trackedWindowDidHide: self];
 		break;
 	case ICCCMWithdrawnWindowState:
 	default:
+		if (!activated)
+			break;
+		activated = NO;
 		NSDebugLLog(@"PMWindowTracker", @"Tracked window deactivated (%@)", window);
 		[delegate trackedWindowDeactivated: self];
 		break;
@@ -246,7 +263,7 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 
 - (void)windowDamaged: (NSNotification*)notification
 {
-	NSDebugLLog(@"PMWindowTracker", @"DamageNotify on %@, recreating pixmap", topLevelWindow);
+	//NSDebugLLog(@"PMWindowTracker", @"DamageNotify on %@, recreating pixmap", topLevelWindow);
 	[self recreatePixmap];
 	[damageTracker subtractWithRepair: nil parts: nil];
 }
@@ -259,12 +276,22 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 - (void)windowDidMap: (NSNotification*)notification
 {
 	NSDebugLLog(@"PMWindowTracker", @"Top level window %@ mapped - recreating pixmap", topLevelWindow);
+	ASSIGN(windowPixmap, nil);
 	[self recreatePixmap];
 }
 
 - (void)windowDidUnmap: (NSNotification*)notification
 {
 	NSDebugLLog(@"PMWindowTracker", @"Top level window %@ unmapped", topLevelWindow);
+	if (mapped)
+	{
+		if (!activated)
+			return;
+		mapped = NO;
+		activated = NO;
+		NSDebugLLog(@"PMWindowTracker", @"Tracked window deactivated (%@)", window);
+		[delegate trackedWindowDeactivated: self];
+	}
 }
 
 - (void)windowDidResize: (NSNotification*)notification
@@ -288,7 +315,7 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 {
 	if ([topLevelWindow mapState] != XCB_MAP_STATE_VIEWABLE)
 		return;
-	NSDebugLLog(@"PMWindowTracker", @"Window %@ is visible so creating pixmap", topLevelWindow);
+	// NSDebugLLog(@"PMWindowTracker", @"Window %@ is visible so creating pixmap", topLevelWindow);
 	XCBSize xcbWindowSize = [topLevelWindow frame].size;
 	//NSSize windowSize = NSMakeSize(xcbWindowSize.width, xcbWindowSize.height);
 	double scale = 1.0 / ScaleFactorForMaxSize(xcbWindowSize, MAX_WIDTH, MAX_HEIGHT);
@@ -379,12 +406,18 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 	return viewName;
 }
 
+- (XCBWindow*)topLevelWindow
+{
+	return topLevelWindow;
+}
 - (XCBWindow*)window
 {
 	return window;
 }
 - (NSImage*)windowPixmap
 {
+	if (imageRep == nil)
+		return nil;
 	NSImage* image = [[NSImage alloc]
 		initWithSize: [imageRep size]];
 	[image addRepresentation: imageRep];

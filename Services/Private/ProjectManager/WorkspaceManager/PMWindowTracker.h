@@ -56,6 +56,7 @@ extern NSString *PMViewWindowProperty;
 - (BOOL)isTrackingWindow: (XCBWindow*)aWindow;
 - (void)setDelegate: (id)aDelegate;
 - (XCBWindow*)window;
+- (XCBWindow*)topLevelWindow;
 - (NSImage*)windowPixmap;
 - (NSString*)windowName;
 @end

@@ -27,18 +27,34 @@
 @class PMWindowTracker;
 @class XCBWindow;
 @class NSImage;
+@protocol PMImpermanentViewDelegate;
 
 @interface PMImpermanentView : NSObject
 {
 	PMWindowTracker *tracker;
+	id delegate;
 	NSImage *image;
 	NSImage *icon;
 	NSString *name;
 }
 - (id)initWithWindowTracker: (PMWindowTracker*)tracker;
+- (void)setDelegate: (id<PMImpermanentViewDelegate>)delegate;
 - (NSImage*)image;
 - (void)setImage: (NSImage*)aImage;
+- (NSImage*)icon;
+- (void)setIcon: (NSImage*)icon;
+- (NSString*)name;
 - (void)setName: (NSString*)newName;
+- (NSString*)displayName;
+- (PMWindowTracker*)tracker;
 @end
 
+
+@protocol PMImpermanentViewDelegate
+@optional
+- (void)viewActivated: (PMImpermanentView*)view;
+- (void)viewDidShow: (PMImpermanentView*)view;
+- (void)viewDidHide: (PMImpermanentView*)view;
+- (void)viewDeactivated: (PMImpermanentView*)view;
+@end
 

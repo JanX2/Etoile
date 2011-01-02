@@ -52,6 +52,9 @@
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	[trackers release];
+	[views release];
+	[viewSwitcher release];
 	[super dealloc];
 }
 - (void)applicationDidFinishLaunching: (NSNotification*)notification
@@ -62,12 +65,16 @@
 		   selector: @selector(windowAvailable:)
 		       name: XCBWindowBecomeAvailableNotification
 		     object: nil];
+	[defaultCenter
+		addObserver: self
+		   selector: @selector(windowMapped:)
+		       name: XCBWindowDidMapNotification
+		     object: nil];
 	[XCBConnection sharedConnection];
 
 	[XCBConn setDelegate: self];
-	//[XCBFixes initializeExtensionWithConnection: XCBConn];
-	//[XCBComposite initializeExtensionWithConnection: XCBConn];
-	//[XCBRender initializeExtensionWithConnection: XCBConn];
+	[XCBFixes initializeExtensionWithConnection: XCBConn];
+	[XCBRender initializeExtensionWithConnection: XCBConn];
 	[XCBDamage initializeExtensionWithConnection: XCBConn];
 	XCBScreen *screen = [[XCBConn screens] objectAtIndex: 0];
 	[screen setTrackingChildren: YES];
@@ -76,55 +83,24 @@
 			XCB_EVENT_MASK_PROPERTY_CHANGE |
 			XCB_EVENT_MASK_STRUCTURE_NOTIFY |
 			XCB_EVENT_MASK_EXPOSURE];
+	[XCBComposite initializeExtensionWithConnection: XCBConn];
 	[XCBComposite redirectSubwindows: [screen rootWindow]
 	                          method: XCB_COMPOSITE_REDIRECT_AUTOMATIC];
 
-	viewSwitcher = [[ETLayoutItemFactory factory] itemGroup]; // WithRepresentedObject: 
-	[viewSwitcher setRepresentedObject: [self allViews]];
-	[viewSwitcher setSource: viewSwitcher];
-	// 	[ETProperty propertyWithName: @"allViews" representedObject: self]]
-	// 	;
  	// viewSwitcher = [[ETModelDescriptionRenderer renderer] 
  	// 		renderModel: self 
  	// 		description: [[ETModelDescriptionRepository mainRepository] entityDescriptionForClass: [PMWorkspaceManager class]]];
- 	// [viewSwitcher setRepresentedPathBase: @"/allViews"];
 
-	//[viewSwitcher setLayout: [ETColumnLayout layout]];
+	viewSwitcher = [[[ETLayoutItemFactory factory] itemGroupWithRepresentedObject: [self allViews]] retain];
+	[viewSwitcher setSource: viewSwitcher];
 	[viewSwitcher setSize: NSMakeSize(200, 400)];
 
-	ETIconLayout *layout = [ETIconLayout layout];
-	ETLayoutItem *templateItem = [[ETLayoutItemFactory factory] item];
-	[templateItem setStyle: [[[ETIconAndLabelStyle alloc] init] autorelease]];
-	[templateItem setSize: NSMakeSize(128, 128)];
-	[layout setTemplateItem: templateItem];
-	[layout setPositionalLayout: [ETFlowLayout layout]];
-	[layout setItemSizeConstraintStyle: ETSizeConstraintStyleNone];
-	[layout setTemplateKeys: A(kETStyleProperty, kETFrameProperty)];
-	[layout setIconSizeForScaleFactorUnit: NSMakeSize(256, 256)];
-	[layout setMinIconSize: NSMakeSize(256, 256)];
-
-	//[[layout positionalLayout] setItemMargin: 20];
-	[viewSwitcher setLayout: layout];
-	[[[ETLayoutItemFactory factory] windowGroup]
-		addItem: viewSwitcher];
+	//ETIconLayout *layout = [ETIconLayout layout];
+	[viewSwitcher setLayout: [ETColumnLayout layout]];
+	//[layout setIconSizeForScaleFactorUnit: NSMakeSize(80, 80)];
+	//[layout setMinIconSize: NSMakeSize(80, 80)];
+	[[[ETLayoutItemFactory factory] windowGroup] addItem: viewSwitcher];
 	[viewSwitcher reloadAndUpdateLayout];
-}
-
-- (int)baseItem: (ETLayoutItemGroup*)baseItem
-  numberOfItemsInItemGroup: (ETLayoutItemGroup*)itemGroup
-{
-	return [[self allViews] count];
-}
-
-- (ETLayoutItem*)baseItem: (ETLayoutItemGroup*)baseItem
-              itemAtIndex: (int)index
-              inItemGroup: (ETLayoutItemGroup*)itemGroup
-{
-	ETLayoutItem *layoutItem = [[ETLayoutItemFactory factory] button];
-	[layoutItem setRepresentedObject: [[self allViews] objectAtIndex: index]];
-	[layoutItem setStyle: [ETIconAndLabelStyle sharedInstance]];
-	[layoutItem setSize: NSMakeSize(192, 192)];
-	return layoutItem;
 }
 
 - (void)windowAvailable: (NSNotification*)notification
@@ -137,22 +113,36 @@
 		return;
 	if ([newXcbWindow isEqual: [XCBWindow unknownWindow]])
 		return;
+	[discoveredWindows addObject: newXcbWindow];
 
 	PMWindowTracker *windowTracker = [[PMWindowTracker alloc] initByTrackingWindow: newXcbWindow];
 	if (windowTracker == nil)
 		return;
+	if (nil != [trackers objectForKey: [windowTracker window]])
+	{
+		NSDebugLLog(@"PMWorkspaceManager", @"Already tracking window: %@", [windowTracker window]);
+		[windowTracker release];
+		return;
+	}
 	[windowTracker setDelegate: self];
-	[trackers setObject: windowTracker forKey: newXcbWindow];
+	[trackers setObject: windowTracker forKey: [windowTracker window]];
 	[windowTracker release];
+}
+
+- (void)windowMapped: (NSNotification*)notification
+{
+	[self windowAvailable: notification];
 }
 
 - (void)trackedWindowActivated: (PMWindowTracker*)tracker
 {
 	// FIXME: Determine the type of view by checking cached window properties
-	NSLog(@"Tracked window activated - creating view (%@)", [tracker window]);
+	NSLog(@"Tracked window (%@) activated - creating view (%@)", tracker, [tracker topLevelWindow]);
 	PMImpermanentView *view = [[PMImpermanentView alloc] initWithWindowTracker: tracker];
+	[view setDelegate: self];
 	[(NSMutableArray*)[self allViews] addObject: view];
 	[viewSwitcher reloadAndUpdateLayout];
+	[view release];
 }
 - (void)trackedWindowDidShow: (PMWindowTracker*)tracker
 {
@@ -164,11 +154,20 @@
 {
 	// This only gets called when a tracked window turns out
 	// to be in the withdrawn state.
+	[tracker setDelegate: nil];
 	[trackers removeObjectForKey: [tracker window]];
 }
 - (void)trackedWindowPixmapUpdated: (PMWindowTracker*)tracker
 {
 	
+}
+
+- (void)viewDeactivated: (PMImpermanentView*)view
+{
+	NSDebugLLog(@"PMWorkspaceManager", @"View deactivated: %@", view);
+	[trackers removeObjectForKey: [[view tracker] window]];
+	[(NSMutableArray*)[self allViews] removeObject: view];
+	[viewSwitcher reloadAndUpdateLayout];
 }
 
 - (NSArray*)allViews

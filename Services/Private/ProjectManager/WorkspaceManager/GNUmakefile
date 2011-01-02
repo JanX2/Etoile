@@ -9,6 +9,7 @@ $(APP_NAME)_OBJC_FILES = \
 	PMImpermanentView.m \
 	PMWorkspaceManager.m \
 
+CC=clang
 $(APP_NAME)_PRINCIPAL_CLASS = ETApplication
 $(APP_NAME)_GUI_LIBS = -lEtoileUI -lXCBKit -lXWindowServerKit
 ADDITIONAL_CPPFLAGS = -std=c99
