@@ -23,6 +23,7 @@
  *
  **/
 #import <EtoileFoundation/EtoileFoundation.h>
+#import <XWindowServerKit/XWindow.h>
 #import <Foundation/NSNotification.h>
 #import <XCBKit/XCBWindow.h>
 #import <XCBKit/XCBComposite.h>
@@ -91,7 +92,7 @@
 	[viewSwitcher setSource: viewSwitcher];
 	NSRect screenFrame = [[NSScreen mainScreen] frame];
 
-	[viewSwitcher setFrame: NSMakeRect(0, 0, 96, screenFrame.size.height)];
+	[viewSwitcher setFrame: NSMakeRect(0, 0, 104, screenFrame.size.height)];
 
 	ETLayoutItem *viewItem = [[ETLayoutItemFactory factory] item];
 	[viewItem setSize: NSMakeSize(96, 96)];
@@ -109,8 +110,13 @@
 	[[viewSwitcher controller] setTemplate: [ETItemTemplate templateWithItem: viewItem objectClass: Nil] 
 	                               forType: kETTemplateObjectType];
 	[viewSwitcher setLayout: [ETColumnLayout layout]];
-	//[layout setIconSizeForScaleFactorUnit: NSMakeSize(80, 80)];
-	//[layout setMinIconSize: NSMakeSize(80, 80)];
+	
+	XWindow *allViewsWindow = [[XWindow alloc] init];
+	[allViewsWindow setAsSystemDock];
+	ETWindowItem *windowItem = [ETWindowItem itemWithWindow: allViewsWindow];
+
+	[[viewSwitcher lastDecoratorItem] setDecoratorItem: windowItem];
+	[allViewsWindow release];
 	[[[ETLayoutItemFactory factory] windowGroup] addItem: viewSwitcher];
 	[viewSwitcher reloadAndUpdateLayout];
 }

@@ -24,13 +24,14 @@
  **/
 #import "PMWindowTracker.h"
 
-#import <XCBKit/ICCCM.h>
 #import <XCBKit/XCBComposite.h>
 #import <XCBKit/XCBPixmap.h>
 #import <XCBKit/XCBRender.h>
 #import <XCBKit/XCBImage.h>
 #import <XCBKit/XCBVisual.h>
 #import <XCBKit/XCBDamage.h>
+#import <XCBKit/ICCCM.h>
+#import <XCBKit/EWMH.h>
 #import <XWindowServerKit/XWindowImageRep.h>
 #import <XWindowServerKit/XFunctions.h>
 
@@ -46,12 +47,13 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 	return MAX(widthFactor, heightFactor);
 }
 
-
 @interface PMWindowTracker (Private)
 - (void)checkViewAvailable;
 - (void)windowAvailable: (NSNotification*)notification;
 - (void)windowDidResize: (NSNotification*)notification;
-- (XCBWindow*)findChildWindow: (XCBWindow*)topWindow;
+- (id)findChildWindow: (XCBWindow*)topWindow;
+- (BOOL)isCandidateSubwindow: (XCBWindow*)candidateSubwindow;
+- (BOOL)shouldTrackWindow: (XCBWindow*)topWindow;
 - (void)recreatePixmap;
 @end
 
@@ -59,16 +61,17 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 - (id)initByTrackingWindow: (XCBWindow*)aWindow
 {
 	SELFINIT;
-	window = [[self findChildWindow: aWindow] retain];
-	if (nil == window)
+	id subwindow = [self findChildWindow: aWindow];
+	if (nil == subwindow || [subwindow isEqual: [NSNull null]])
 	{
 		[self release];
 		return nil;
 	}
+	window = [subwindow retain];
 	topLevelWindow = [aWindow retain];
 	waitingOnProperties = [[NSMutableSet setWithCapacity: 2] retain];
 	NSDebugLLog(@"PMWindowTracker", @"Created tracker for top level window %@ (child %@)", topLevelWindow, window);
-	[waitingOnProperties addObjectsFromArray: A(PMProjectWindowProperty, PMViewWindowProperty, ICCCMWMState, ICCCMWMName)];
+	[waitingOnProperties addObjectsFromArray: A(PMProjectWindowProperty, PMViewWindowProperty, ICCCMWMState, ICCCMWMProtocols, ICCCMWMName, EWMH_WMState, EWMH_WMWindowType)];
 
 	NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
 	if (![window isEqual: topLevelWindow])
@@ -152,13 +155,31 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 
 	[super dealloc];
 }
-- (XCBWindow*)findChildWindow: (XCBWindow*)topWindow
-{
-	XCBCachedProperty *stateProperty = [topWindow retrieveAndCacheProperty: ICCCMWMState];
-	XCBCachedProperty *nameProperty = [topWindow retrieveAndCacheProperty: ICCCMWMName];
-	if (![stateProperty isEmpty] && ![nameProperty isEmpty])
-		return topWindow;
 
+/**
+  * Given a top-level window topWindow, find the real
+  * sub-window that was created by an X11 client. This
+  * method searches through the window hierarchy to find
+  * the reparented child window (if the window manager
+  * has reparented the window). Usually, this will not
+  * go down more than one level, depending on the 
+  * window manager.
+  */
+- (id)findChildWindow: (XCBWindow*)topWindow
+{
+	[topWindow retrieveAndCacheProperties: A(PMProjectWindowProperty, PMViewWindowProperty, ICCCMWMState, ICCCMWMProtocols, ICCCMWMName, EWMH_WMState, EWMH_WMWindowType)];
+	if ([self isCandidateSubwindow: topWindow])
+	{
+		// If we should track this window, return it. Otherwise,
+		// return NSNull null, which means that we have found the
+		// candidate window, but we shouldn't track it (i.e. stop
+		// searching because we know that the top-level window
+		// doesn't contain a trackable sub-window that we want).
+		if ([self shouldTrackWindow: topWindow])
+			return topWindow;
+		else
+			return [NSNull null];
+	}
 	NSArray *childWindows = [topWindow queryTree];
 	FOREACH(childWindows, childWindow, XCBWindow*)
 	{
@@ -167,6 +188,58 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 			return testWindow;
 	}
 	return nil;
+}
+
+/**
+  * Determine if the window is one that is a candidate for
+  * tracking. This just checks that it is a window that has
+  * being managed by a window manager, and is not a selection or
+  * some other special window.
+  */
+- (BOOL)isCandidateSubwindow: (XCBWindow*)candidateSubwindow
+{
+	XCBCachedProperty *stateProperty = [candidateSubwindow cachedProperty: ICCCMWMState];
+	XCBCachedProperty *nameProperty = [candidateSubwindow cachedProperty: ICCCMWMName];
+	if (![stateProperty isEmpty] && ![nameProperty isEmpty])
+		return YES;
+	else
+		return NO;
+}
+
+/**
+  * Given that topWindow is a window-managed window (i.e. isCandidateSubwindow
+  * has determined that it is being managed by a window manager), determine
+  * if this window matches our criteria for being tracked. 
+  *
+  * We check its window properties to make sure that it is a "normal" window
+  * such as a terminal or document window, and not a special window, like a 
+  * transient, override-redirect, menu window or some other special type.
+  */
+- (BOOL)shouldTrackWindow: (XCBWindow*)topWindow
+{
+	XCBCachedProperty *windowType = [topWindow cachedProperty: EWMH_WMWindowType];
+	XCBCachedProperty *windowProtocols = [topWindow cachedProperty: ICCCMWMProtocols];
+	XCBCachedProperty *windowState = [topWindow cachedProperty: EWMH_WMState];
+	if (![windowType isEmpty])
+	{
+		if ([[windowType asAtomArray] containsObject: EWMH_WMWindowTypeNormal])
+			return YES;
+	}
+	else
+	{
+		if (![windowState isEmpty])
+		{
+			NSArray *stateAtoms = [windowState asAtomArray];
+			if (![stateAtoms containsObject: EWMH_WMStateSkipTaskbar])
+				return YES;
+		}
+		else if (![windowProtocols isEmpty])
+		{
+			if (![[windowProtocols asAtomArray] containsObject: ICCCMWMTransientFor])
+				return YES;
+		}
+	}
+	return NO;
 }
 
 - (void)propertyDidChange: (NSNotification*)notification
