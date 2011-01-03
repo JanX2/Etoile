@@ -692,6 +692,49 @@ static NSMapTable *ClientMessageHandlers;
 	free(reply);
 	return [self cachedProperty: propertyName];
 }
+- (NSDictionary*)retrieveAndCacheProperties: (NSArray*)propertyNames
+{
+	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
+	int count = [propertyNames count];
+	xcb_get_property_cookie_t *cookies = calloc([propertyNames count], sizeof(xcb_get_property_cookie_t));
+	if (NULL == cookies)
+		[NSException raise: NSMallocException format: @"Insufficient memory for -retrievendCacheProperties"];
+	for (int i = 0; i < [propertyNames count]; i++)
+	{
+		xcb_atom_t atom = [atomCache atomNamed: [propertyNames objectAtIndex: i]];
+		xcb_get_property_cookie_t cookie =
+			xcb_get_property([XCBConn connection],
+				0,
+				window,
+				atom,
+				XCB_GET_PROPERTY_TYPE_ANY,
+				0,
+				UINT32_MAX);
+		cookies[i] = cookie;
+	}
+	NSMutableDictionary *result = [[NSMutableDictionary new] autorelease];
+	for (int i = 0; i < count; i++)
+	{
+		NSString *propertyName = [propertyNames objectAtIndex: i];
+		xcb_generic_error_t *error;
+		xcb_get_property_reply_t *reply = xcb_get_property_reply(
+			[XCBConn connection],
+			cookies[i],
+			&error);
+		if (reply == NULL)
+		{
+			free(cookies);
+			XCBRaiseGenericErrorException(error, @"xcb_get_property()",
+			[NSString stringWithFormat: @"Requesting property %@ on window %@", propertyName, self]);
+		}
+		[self handlePropertyReply: reply
+			     propertyName: propertyName];
+		free(reply);
+		[result setObject: [self cachedProperty: propertyName] forKey: propertyName];
+	}
+	free(cookies);
+	return result;
+}
 
 - (void)refreshCachedProperty: (NSString*)propertyName
 {

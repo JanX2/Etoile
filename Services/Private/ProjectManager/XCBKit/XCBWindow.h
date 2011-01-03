@@ -282,7 +282,7 @@ enum
 - (XCBCachedProperty*)retrieveAndCacheProperty: (NSString*)propertyName;
 - (XCBCachedProperty*)retrieveAndCacheProperty: (NSString*)propertyName
                                           type: (NSString*)type;
-
+- (NSDictionary*)retrieveAndCacheProperties: (NSArray*)propertyNames;
 /**
   * Refresh the cached value of a property, or cache it
   * if it has not already been loaded. This method will
