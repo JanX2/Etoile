@@ -37,7 +37,7 @@
   * of the values we have successfully cached
   * so far. It is needed so that we know when
   * we may transition into the XCBWindowAvailableState
-  * when there is multiple things that need to be 
+  * when there is multiple things that need to be
   * requested, like geometry and attributes.
   */
 enum _XCBWindowLoadedValues
@@ -60,7 +60,7 @@ static XCBWindow* UnknownWindow;
 static NSMapTable *ClientMessageHandlers;
 
 @interface XCBWindow (Private)
-- (XCBWindow*)initWithXCBWindow: (xcb_window_t)aWindow 
+- (XCBWindow*)initWithXCBWindow: (xcb_window_t)aWindow
                          parent: (xcb_window_t)parent_id
                           above: (xcb_window_t)above_sibling;
 - (void) checkIfAvailable;
@@ -90,14 +90,14 @@ static NSMapTable *ClientMessageHandlers;
 	[cached_property_values release];
 	[super dealloc];
 }
-+ (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow 
++ (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow
 {
 	XCBWindow * newWindow = [self windowWithXCBWindow: aWindow parent: 0];
 	//if ([newWindow parent] == nil)
 	//	ASSIGN(newWindow->parent, [XCBWindow unknownWindow]);
 	return newWindow;
 }
-+ (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow 
++ (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow
                            parent: (xcb_window_t)parent_id
 {
 	// If a 0 (None) window is specified, just return
@@ -112,7 +112,7 @@ static NSMapTable *ClientMessageHandlers;
 	}
 	return [[[self alloc] initWithXCBWindow: aWindow parent: parent_id above: 0] autorelease];
 }
-+ (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow 
++ (XCBWindow*)windowWithXCBWindow: (xcb_window_t)aWindow
                            parent: (xcb_window_t)parent
                             above: (xcb_window_t)above;
 {
@@ -126,10 +126,10 @@ static NSMapTable *ClientMessageHandlers;
 	{
 		return win;
 	}
-	return [[[self alloc] 
-		initWithXCBWindow: aWindow 
-		           parent: parent 
-		            above: above] 
+	return [[[self alloc]
+		initWithXCBWindow: aWindow
+		           parent: parent
+		            above: above]
 			autorelease];
 }
 - (XCBWindowLoadState) windowLoadState
@@ -151,7 +151,7 @@ static NSMapTable *ClientMessageHandlers;
 }
 - (void)updateWindowAttributes
 {
-	xcb_get_window_attributes_cookie_t acookie = 
+	xcb_get_window_attributes_cookie_t acookie =
 		xcb_get_window_attributes([XCBConn connection], window);
 	[XCBConn setHandler: self
 		forReply:acookie.sequence
@@ -186,7 +186,7 @@ static NSMapTable *ClientMessageHandlers;
                      valuesMask: (uint32_t)valuesMask
                          values: (const uint32_t*)valuesList
 {
-	return [self 
+	return [self
 		createChildInRect: aRect
 		      borderWidth: borderWidth
 		       valuesMask: valuesMask
@@ -260,7 +260,7 @@ static NSMapTable *ClientMessageHandlers;
 	while (window_load_state != state &&
 		[[date laterDate: [NSDate date]] isEqual: date])
 	{
-		BOOL result = [runLoop 
+		BOOL result = [runLoop
 			runMode: NSDefaultRunLoopMode
 			beforeDate: date];
 		if (NO == result)
@@ -426,7 +426,7 @@ static NSMapTable *ClientMessageHandlers;
 		mask |= XCB_CONFIG_WINDOW_BORDER_WIDTH;
 	}
 
-	
+
 	[self configureWindow: mask
 	               values: values];
 }
@@ -470,7 +470,7 @@ static NSMapTable *ClientMessageHandlers;
 	mask |= XCB_CONFIG_WINDOW_SIBLING;
 	values[i++] = stackMode;
 	mask |= XCB_CONFIG_WINDOW_STACK_MODE;
-	
+
 	[self configureWindow: mask
 	               values: values];
 }
@@ -574,7 +574,7 @@ static NSMapTable *ClientMessageHandlers;
 	_cache_load_values |= XCBWindowLoadedAttributes;
 	XCBDELEGATE(WindowAttributesDidChange);
 	XCBNOTIFY(WindowAttributesDidChange);
-	
+
 	[self checkIfAvailable];
 }
 - (XCBVisual*)visual
@@ -625,7 +625,7 @@ static NSMapTable *ClientMessageHandlers;
 
 - (NSArray*)queryTree
 {
-	xcb_query_tree_cookie_t cookie = 
+	xcb_query_tree_cookie_t cookie =
 		xcb_query_tree([XCBConn connection], window);
 	xcb_generic_error_t *error;
 	xcb_query_tree_reply_t *reply =
@@ -635,7 +635,7 @@ static NSMapTable *ClientMessageHandlers;
 	if (reply == NULL)
 		XCBRaiseGenericErrorException(error, @"xcb_query_tree()",
 			[NSString stringWithFormat: @"Query tree on %@", self]);
-	
+
 	int length = xcb_query_tree_children_length(reply);
 	NSMutableArray *childWindows = [[NSMutableArray alloc] initWithCapacity: length];
 	xcb_window_t *window_array = xcb_query_tree_children(reply);
@@ -646,7 +646,7 @@ static NSMapTable *ClientMessageHandlers;
 			windowWithXCBWindow: window_array[i]
 			             parent: reply->parent
 			              above: [previous xcbWindowId]];
-		
+
 		[childWindows addObject: newWindow];
 		previous = newWindow;
 	}
@@ -664,14 +664,14 @@ static NSMapTable *ClientMessageHandlers;
 {
 	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
 	xcb_atom_t atom = [atomCache atomNamed: propertyName];
-	xcb_atom_t typeAtom = (type != nil) ? 
+	xcb_atom_t typeAtom = (type != nil) ?
 		[atomCache atomNamed: type] :
 		XCB_GET_PROPERTY_TYPE_ANY;
 
 	// We are currently assuming we want the whole
 	// property value, no matter how long it is. Other
 	// people may only want an offset of it.
-	xcb_get_property_cookie_t cookie = 
+	xcb_get_property_cookie_t cookie =
 		xcb_get_property([XCBConn connection],
 			0,
 			window,
@@ -685,7 +685,7 @@ static NSMapTable *ClientMessageHandlers;
 		cookie,
 		&error);
 	if (reply == NULL)
-		XCBRaiseGenericErrorException(error, @"xcb_get_property()", 
+		XCBRaiseGenericErrorException(error, @"xcb_get_property()",
 		[NSString stringWithFormat: @"Requesting property %@ on window %@", propertyName, self]);
 	[self handlePropertyReply: reply
 	             propertyName: propertyName];
@@ -765,7 +765,7 @@ static NSMapTable *ClientMessageHandlers;
 	// We are currently assuming we want the whole
 	// property value, no matter how long it is. Other
 	// people may only want an offset of it.
-	xcb_get_property_cookie_t cookie = 
+	xcb_get_property_cookie_t cookie =
 		xcb_get_property([XCBConn connection],
 			0,
 			window,
@@ -794,7 +794,7 @@ static NSMapTable *ClientMessageHandlers;
 	[cached_property_values setObject: property
 	                           forKey: propertyName];
 	NSDictionary *userInfo = [NSDictionary
-		dictionaryWithObjectsAndKeys: 
+		dictionaryWithObjectsAndKeys:
 		propertyName, @"PropertyName",
 		property, @"PropertyValue",
 		[NSNumber numberWithBool: YES], @"GetPropertyRequest",
@@ -814,7 +814,7 @@ static NSMapTable *ClientMessageHandlers;
 	}
 }
 /**
-  * Create a new XCBWindow object for a window that the 
+  * Create a new XCBWindow object for a window that the
   * programme just created using xcb_create_window, but
   * haven't received the notification for yet.
   */
@@ -832,7 +832,7 @@ static NSMapTable *ClientMessageHandlers;
 	[XCBConn registerWindow: self];
 	return self;
 }
-- (XCBWindow*)initWithXCBWindow: (xcb_window_t)aWindow 
+- (XCBWindow*)initWithXCBWindow: (xcb_window_t)aWindow
                          parent: (xcb_window_t)parent_id
                           above: (xcb_window_t)above_sibling
 {
@@ -845,7 +845,7 @@ static NSMapTable *ClientMessageHandlers;
 	// as this information can be discovered through
 	// the various events and geometry/attributes
 	// callbacks, and nil means it has no parent.
-	parent = [[XCBWindow windowWithXCBWindow: parent_id] 
+	parent = [[XCBWindow windowWithXCBWindow: parent_id]
 			retain];
 
 	// If the above window is set to zero, we don't know
@@ -895,7 +895,7 @@ static NSMapTable *ClientMessageHandlers;
 @implementation XCBWindow (Package)
 - (void)setAboveWindow: (XCBWindow*)newAbove
 {
-	if (nil == newAbove || 
+	if (nil == newAbove ||
 		window_load_state != XCBWindowAvailableState ||
 		[newAbove windowLoadState] != XCBWindowAvailableState ||
 		[[newAbove parent] isEqual: parent])
@@ -920,7 +920,7 @@ static NSMapTable *ClientMessageHandlers;
 - (void)handleExpose: (xcb_expose_event_t*)anEvent
 {
 	XCBRect exposeRect = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
-	NSDictionary *userInfo = [NSDictionary 
+	NSDictionary *userInfo = [NSDictionary
 		dictionaryWithObjectsAndKeys:
 			[NSValue valueWithBytes:&exposeRect objCType:@encode(XCBRect)],
 			@"Rect",
@@ -934,24 +934,24 @@ static NSMapTable *ClientMessageHandlers;
 {
 	id aboveWindow = anEvent->above_sibling == 0 ?
 		(id)[NSNull null] :
-		(id)[XCBWindow 
+		(id)[XCBWindow
 			windowWithXCBWindow: anEvent->above_sibling
 			             parent: [[self parent] xcbWindowId]];
 	XCBRect frameRect = XCBMakeRect(anEvent->x, anEvent->y,
 		anEvent->width, anEvent->height);
-	NSValue *frameRectValue = [NSValue 
+	NSValue *frameRectValue = [NSValue
 		valueWithBytes:&frameRect
 		objCType:@encode(XCBRect)];
 	NSValue *borderWidth = [NSNumber numberWithInt: anEvent->border_width];
 	NSNumber *sendEvent = [NSNumber numberWithBool: anEvent->response_type & 0x80];
-	NSDictionary *userInfo = 
+	NSDictionary *userInfo =
 		[NSDictionary dictionaryWithObjectsAndKeys:
 		frameRectValue, @"Rect",
 		borderWidth, @"BorderWidth",
 		sendEvent, @"SendEvent",
 		aboveWindow, @"Above", // Place last as aboveWindow == nil, which then cuts off the rest of the dictionary (and hence it is absent, indicating stacked at the bottom). maybe we should have the concept of a nil window or just [NSNull null]
 		nil];
-		
+
 	_cache_load_values |= XCBWindowLoadedGeometry;
 	XCBDELEGATE_U(WindowFrameWillChange, userInfo);
 	XCBNOTIFY_U(WindowFrameWillChange, userInfo);
@@ -964,7 +964,7 @@ static NSMapTable *ClientMessageHandlers;
 	ASSIGN(above, [XCBWindow windowWithXCBWindow: anEvent->above_sibling]);
 	XCBDELEGATE_U(WindowFrameDidChange, userInfo);
 	XCBNOTIFY_U(WindowFrameDidChange, userInfo);
-	
+
 	[self checkIfAvailable];
 }
 - (void)handleDestroyNotifyEvent: (xcb_destroy_notify_event_t*)anEvent
@@ -993,17 +993,17 @@ static NSMapTable *ClientMessageHandlers;
 - (void)handleMapRequest: (xcb_map_request_event_t*)anEvent
 {
 	XCBWindow *parent_window = [XCBWindow windowWithXCBWindow: anEvent->parent];
-	NSDictionary *dictionary = 
-		[NSDictionary dictionaryWithObject: parent_window 
+	NSDictionary *dictionary =
+		[NSDictionary dictionaryWithObject: parent_window
 		                            forKey: @"Parent"];
 	XCBDELEGATE_U(WindowMapRequest, dictionary);
 }
 - (void)handleCirculateRequest: (xcb_circulate_request_event_t*)anEvent
 {
 	NSValue *place = [NSNumber numberWithInteger: anEvent->place];
-	NSDictionary *dictionary = 
-		[NSDictionary 
-			dictionaryWithObjectsAndKeys: place, 
+	NSDictionary *dictionary =
+		[NSDictionary
+			dictionaryWithObjectsAndKeys: place,
 			                              @"Place",
 			                              nil];
 	XCBDELEGATE_U(WindowCirculateRequest, dictionary);
@@ -1013,7 +1013,7 @@ static NSMapTable *ClientMessageHandlers;
 	XCBWindow *parent_window = [XCBWindow windowWithXCBWindow: anEvent->parent];
 	uint16_t vm = anEvent->value_mask;
 	XCBRect rframe = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
-	NSValue *rframeVal = [NSValue valueWithBytes: &rframe 
+	NSValue *rframeVal = [NSValue valueWithBytes: &rframe
 	                                   objCType: @encode(XCBRect)];
 	NSNumber *sendEvent = [NSNumber numberWithBool: anEvent->response_type & 0x80];
 	NSValue *borderWidth = [NSNumber numberWithInteger: anEvent->border_width];
@@ -1025,8 +1025,8 @@ static NSMapTable *ClientMessageHandlers;
 		nil
 		;
 	NSValue *stackMode = [NSNumber numberWithInteger: anEvent->stack_mode];
-	NSDictionary *dictionary = 
-		[NSDictionary dictionaryWithObjectsAndKeys: 
+	NSDictionary *dictionary =
+		[NSDictionary dictionaryWithObjectsAndKeys:
 			[NSNumber numberWithInteger: vm], @"ValueMask",
 			parent_window, @"Parent",
 			rframeVal, @"Frame",
@@ -1042,7 +1042,7 @@ static NSMapTable *ClientMessageHandlers;
 {
 	XCBWindow* oldParent = [parent retain];
 	ASSIGN(parent, [XCBWindow windowWithXCBWindow: anEvent->parent]);
-	NSDictionary *dictionary = [NSDictionary 
+	NSDictionary *dictionary = [NSDictionary
 		dictionaryWithObject: oldParent
 		              forKey: @"OldParent"];
 	// There are no ConfigureNotify events to update these
@@ -1093,7 +1093,7 @@ static NSMapTable *ClientMessageHandlers;
 - (void)handleFocusIn: (xcb_focus_in_event_t*)anEvent
 {
 	NSDictionary *dictionary = [NSDictionary
-		dictionaryWithObjectsAndKeys: 
+		dictionaryWithObjectsAndKeys:
 			[NSNumber numberWithInteger: anEvent->mode],
 			@"Mode",
 			[NSNumber numberWithInteger: anEvent->detail],
@@ -1105,7 +1105,7 @@ static NSMapTable *ClientMessageHandlers;
 - (void)handleFocusOut: (xcb_focus_out_event_t*)anEvent
 {
 	NSDictionary *dictionary = [NSDictionary
-		dictionaryWithObjectsAndKeys: 
+		dictionaryWithObjectsAndKeys:
 			[NSNumber numberWithInteger: anEvent->mode],
 			@"Mode",
 			[NSNumber numberWithInteger: anEvent->detail],
@@ -1150,7 +1150,7 @@ static NSMapTable *ClientMessageHandlers;
 
 - (void)handleClientMessage: (xcb_client_message_event_t*)anEvent
 {
-	SEL handler = NSMapGet(ClientMessageHandlers, (intptr_t*)anEvent->type);
+	SEL handler = NSMapGet(ClientMessageHandlers, (void*)(intptr_t)anEvent->type);
 	if (0 != handler)
 	{
 		[self performSelector: handler withObject: (id)anEvent];
@@ -1170,7 +1170,7 @@ void XCBWindowForwardConfigureRequest(NSNotification* aNotification)
 	NSDictionary *values = [aNotification userInfo];
 	uint32_t vl[7];
 	int i = 0;
-	
+
 	XCBRect frame;
 	NSInteger borderWidth, stackMode;
 	id aboveWindow;
@@ -1198,7 +1198,7 @@ void XCBWindowForwardConfigureRequest(NSNotification* aNotification)
 		vl[i++] = [aboveWindow xcbWindowId];
 	if (valueMask & XCB_CONFIG_WINDOW_STACK_MODE)
 		vl[i++] = stackMode;
-	
+
 	// Just in case it contains other bit junk
 	valueMask &= XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y |
 		XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT |
