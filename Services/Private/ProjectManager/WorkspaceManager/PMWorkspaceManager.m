@@ -87,15 +87,27 @@
 	[XCBComposite redirectSubwindows: [screen rootWindow]
 	                          method: XCB_COMPOSITE_REDIRECT_AUTOMATIC];
 
- 	// viewSwitcher = [[ETModelDescriptionRenderer renderer] 
- 	// 		renderModel: self 
- 	// 		description: [[ETModelDescriptionRepository mainRepository] entityDescriptionForClass: [PMWorkspaceManager class]]];
-
 	viewSwitcher = [[[ETLayoutItemFactory factory] itemGroupWithRepresentedObject: [self allViews]] retain];
 	[viewSwitcher setSource: viewSwitcher];
-	[viewSwitcher setSize: NSMakeSize(200, 400)];
+	NSRect screenFrame = [[NSScreen mainScreen] frame];
 
-	//ETIconLayout *layout = [ETIconLayout layout];
+	[viewSwitcher setFrame: NSMakeRect(0, 0, 96, screenFrame.size.height)];
+
+	ETLayoutItem *viewItem = [[ETLayoutItemFactory factory] item];
+	[viewItem setSize: NSMakeSize(96, 96)];
+	[viewItem setContentAspect: ETContentAspectComputed];
+	[[viewItem coverStyle] setLabelPosition: ETLabelPositionInsideBottom];
+	[[viewItem coverStyle] setLabelMargin: 5];
+	[[viewItem coverStyle] setEdgeInset: 6];
+	/* Make the label a bit bigger than the default small system font size */
+	[[viewItem coverStyle] setLabelAttributes: D([NSFont labelFontOfSize: [NSFont systemFontSize]], NSFontAttributeName)];
+
+	[viewSwitcher setController: AUTORELEASE([[ETController alloc] init])];
+	/* allViews provides instantiated impermanent views that the controller will set as represented objects on 
+	   each item cloned from the template. If an objectClass was passed, each item represented object would be 
+	   instantied from it. */
+	[[viewSwitcher controller] setTemplate: [ETItemTemplate templateWithItem: viewItem objectClass: Nil] 
+	                               forType: kETTemplateObjectType];
 	[viewSwitcher setLayout: [ETColumnLayout layout]];
 	//[layout setIconSizeForScaleFactorUnit: NSMakeSize(80, 80)];
 	//[layout setMinIconSize: NSMakeSize(80, 80)];

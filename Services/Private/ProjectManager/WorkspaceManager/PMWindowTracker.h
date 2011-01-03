@@ -22,11 +22,12 @@
  * THE SOFTWARE.
  *
  **/
-#include <EtoileUI/EtoileUI.h>
-#include <EtoileFoundation/EtoileFoundation.h>
-#include <XCBKit/XCBWindow.h>
-#include <XCBKit/XCBNotifications.h>
-#include <XCBKit/XCBCachedProperty.h>
+#import <EtoileUI/EtoileUI.h>
+#import <EtoileFoundation/EtoileFoundation.h>
+#import <XCBKit/ICCCM.h>
+#import <XCBKit/XCBWindow.h>
+#import <XCBKit/XCBNotifications.h>
+#import <XCBKit/XCBCachedProperty.h>
 
 extern NSString *PMProjectWindowProperty;
 extern NSString *PMViewWindowProperty;
@@ -44,7 +45,13 @@ extern NSString *PMViewWindowProperty;
 	XCBDamage *damageTracker;
 	NSMutableSet *waitingOnProperties;
 	NSString *viewName, *projectName;
-	BOOL activated, mapped;
+	// These track the ICCCM states of Withdrawn, Iconic and Normal
+	ICCCMWindowState window_state;
+
+	BOOL activated;
+	// This tracks the Map/UnMap events so that we
+	// know when a window is withdrawn.
+	BOOL mapped;
 	id delegate;
 
 	NSBitmapImageRep *imageRep;
@@ -58,7 +65,24 @@ extern NSString *PMViewWindowProperty;
 - (XCBWindow*)window;
 - (XCBWindow*)topLevelWindow;
 - (NSImage*)windowPixmap;
+/**
+  * The window name as a string. This method
+  * can return nil and can also throw exceptions
+  * if the window name is an unexpected type.
+  */
 - (NSString*)windowName;
+
+/**
+  * YES if the window has been activated (i.e. it is not in the 
+  * ICCCM withdrawn state and is being managed by the window manager)
+  * or NO if it is deactivated.
+  */
+- (BOOL)activated;
+/**
+  * The ICCCM window state. The value of this property is invalid
+  * if -activated is NO.
+  */
+- (ICCCMWindowState)windowState;
 @end
 
 @interface NSObject (PMWindowTrackerDelegate)

@@ -203,18 +203,24 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 		[waitingOnProperties count] != 0)
 		return;
 
-
-	ICCCMWindowState window_state = ICCCMWithdrawnWindowState;
+	// Determine the new window state.
+	ICCCMWindowState new_window_state;
 	
 	XCBCachedProperty *wmStateProp = [window cachedProperty: ICCCMWMState];
 	if (![wmStateProp isEmpty])
 	{
 		icccm_wm_state_t wmState = [wmStateProp asWMState];
-		window_state = wmState.state;
+		new_window_state = wmState.state;
 	}
+	else
+	{
+		new_window_state = ICCCMWithdrawnWindowState;
+	}
+
 	if (!activated)
 	{
-		if (window_state != ICCCMWithdrawnWindowState)
+		window_state = new_window_state;
+		if (new_window_state != ICCCMWithdrawnWindowState)
 		{
 			NSDebugLLog(@"PMTrackedWindow", @"Tracked window activated (%@)", window);
 			activated = YES;
@@ -222,41 +228,43 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 		}
 		else
 		{
+			// Send a deactivated notification so that the
+			// delegate knows this tracker is invalid.
 			[delegate trackedWindowDeactivated: self];
 			return;
 		}
 	}
-
-	switch (window_state)
+	else
 	{
-	case ICCCMNormalWindowState:
-		if (mapped)
-			break;
-		mapped = YES;
-		NSDebugLLog(@"PMWindowTracker", @"Tracked window shown (%@)", window);
-		[delegate trackedWindowDidShow: self];
-
-		break;
-	case ICCCMIconicWindowState:
-		if (!mapped)
-			break;
-		mapped = NO;
-		NSDebugLLog(@"PMWindowTracker", @"Tracked window iconic (%@)", window);
-		[delegate trackedWindowDidHide: self];
-		break;
-	case ICCCMWithdrawnWindowState:
-	default:
-		if (!activated)
-			break;
-		activated = NO;
-		NSDebugLLog(@"PMWindowTracker", @"Tracked window deactivated (%@)", window);
-		[delegate trackedWindowDeactivated: self];
-		break;
+		// Only send state notifications when the window has
+		// already been activated
+		if (new_window_state != window_state)
+		{
+			window_state = new_window_state;
+			switch (window_state)
+			{
+			case ICCCMNormalWindowState:
+				NSDebugLLog(@"PMWindowTracker", @"Tracked window shown (%@)", window);
+				[delegate trackedWindowDidShow: self];
+				break;
+			case ICCCMIconicWindowState:
+				NSDebugLLog(@"PMWindowTracker", @"Tracked window iconic (%@)", window);
+				[delegate trackedWindowDidHide: self];
+				break;
+			case ICCCMWithdrawnWindowState:
+			default:
+				activated = NO;
+				NSDebugLLog(@"PMWindowTracker", @"Tracked window deactivated (%@)", window);
+				[delegate trackedWindowDeactivated: self];
+				break;
+			}
+		}
 	}
 }
 
 - (void)windowAvailable: (NSNotification*)notification
 {
+	mapped = ([window mapState] == XCB_MAP_STATE_VIEWABLE);
 	[self checkViewAvailable];
 	[self recreatePixmap];
 }
@@ -276,18 +284,26 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 - (void)windowDidMap: (NSNotification*)notification
 {
 	NSDebugLLog(@"PMWindowTracker", @"Top level window %@ mapped - recreating pixmap", topLevelWindow);
+	mapped = YES;
 	ASSIGN(windowPixmap, nil);
 	[self recreatePixmap];
 }
 
 - (void)windowDidUnmap: (NSNotification*)notification
 {
+	if (activated == NO)
+		return;
 	NSDebugLLog(@"PMWindowTracker", @"Top level window %@ unmapped", topLevelWindow);
 	if (mapped)
 	{
-		if (!activated)
-			return;
+		// Initial Unmap event - don't assume hiding
+		// because we will get the
+		// property state change for that.
 		mapped = NO;
+	}
+	else
+	{
+		// This is a second UnMap event in a row. Assume window withdrawn.
 		activated = NO;
 		NSDebugLLog(@"PMWindowTracker", @"Tracked window deactivated (%@)", window);
 		[delegate trackedWindowDeactivated: self];
@@ -380,7 +396,13 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 	// 		//dd[i * bpr + j * 4 + 3] = 0xFF; 
 	// 	}
 	// }
+
+	// Copy the bitmap data. Because we created the destination pixmap
+	// in RGBA format, it should be possible to just copy it over. 
+	// Endian-difference in the server and client could cause problems
+	// here.
 	[data getBytes: [newImageRep bitmapData] length: [data length]];
+	
 	ASSIGN(imageRep, [newImageRep autorelease]);
 
 	[delegate trackedWindowPixmapUpdated: self];
@@ -434,5 +456,13 @@ static double ScaleFactorForMaxSize(XCBSize currentSize, uint16_t maxWidth, uint
 	{
 		return @"<unknown>";
 	}
+}
+- (BOOL)activated
+{
+	return activated;
+}
+- (ICCCMWindowState)windowState
+{
+	return window_state;
 }
 @end
