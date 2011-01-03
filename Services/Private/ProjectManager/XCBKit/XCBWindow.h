@@ -280,6 +280,8 @@ enum
   * to retrieve the property value.
   */
 - (XCBCachedProperty*)retrieveAndCacheProperty: (NSString*)propertyName;
+- (XCBCachedProperty*)retrieveAndCacheProperty: (NSString*)propertyName
+                                          type: (NSString*)type;
 
 /**
   * Refresh the cached value of a property, or cache it
@@ -290,6 +292,8 @@ enum
   * shall be posted.
   */
 - (void)refreshCachedProperty: (NSString*)propertyName;
+- (void)refreshCachedProperty: (NSString*)propertyName
+                         type: (NSString*)type;
 - (void)refreshCachedProperties: (NSArray*)properties;
 /**
   * Retreive the cached value of a property. This method

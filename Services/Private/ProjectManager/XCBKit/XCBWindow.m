@@ -65,7 +65,7 @@ static NSMapTable *ClientMessageHandlers;
                           above: (xcb_window_t)above_sibling;
 - (void) checkIfAvailable;
 - (XCBWindow*)initWithNewXCBWindow: (xcb_window_t)new_window_id;
-- (void)requestProperty: (NSString*)property atomValue: (NSNumber*)atom;
+- (void)requestProperty: (NSString*)property atomValue: (NSNumber*)atomValue type: (uint32_t)propertyType;
 - (void)handleCreateEvent: (xcb_create_notify_event_t*)anEvent;
 - (void)handlePropertyReply: (xcb_get_property_reply_t*)reply
                propertyName: (NSString*)propertyName;
@@ -656,8 +656,17 @@ static NSMapTable *ClientMessageHandlers;
 
 - (XCBCachedProperty*)retrieveAndCacheProperty: (NSString*)propertyName
 {
+	return [self retrieveAndCacheProperty: propertyName type: nil];
+}
+
+- (XCBCachedProperty*)retrieveAndCacheProperty: (NSString*)propertyName
+                                          type: (NSString*)type
+{
 	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
 	xcb_atom_t atom = [atomCache atomNamed: propertyName];
+	xcb_atom_t typeAtom = (type != nil) ? 
+		[atomCache atomNamed: type] :
+		XCB_GET_PROPERTY_TYPE_ANY;
 
 	// We are currently assuming we want the whole
 	// property value, no matter how long it is. Other
@@ -667,7 +676,7 @@ static NSMapTable *ClientMessageHandlers;
 			0,
 			window,
 			atom,
-			XCB_GET_PROPERTY_TYPE_ANY,
+			typeAtom,
 			0,
 			UINT32_MAX);
 	xcb_generic_error_t *error;
@@ -689,7 +698,18 @@ static NSMapTable *ClientMessageHandlers;
 	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
 	xcb_atom_t atom = [atomCache atomNamed: propertyName];
 	[self requestProperty: propertyName
-	            atomValue: [NSNumber numberWithLong: atom]];
+	            atomValue: [NSNumber numberWithLong: atom]
+	                 type: XCB_GET_PROPERTY_TYPE_ANY];
+}
+- (void)refreshCachedProperty: (NSString*)propertyName
+                         type: (NSString*)type
+{
+	XCBAtomCache *atomCache = [XCBAtomCache sharedInstance];
+	xcb_atom_t atom = [atomCache atomNamed: propertyName];
+	xcb_atom_t typeAtom = [atomCache atomNamed: type];
+	[self requestProperty: propertyName
+	            atomValue: [NSNumber numberWithLong: atom]
+	                 type: typeAtom];
 }
 
 - (void)refreshCachedProperties: (NSArray*)properties
@@ -740,7 +760,7 @@ static NSMapTable *ClientMessageHandlers;
 @end
 
 @implementation XCBWindow (Private)
-- (void)requestProperty: (NSString*)property atomValue: (NSNumber*)atomValue
+- (void)requestProperty: (NSString*)property atomValue: (NSNumber*)atomValue type: (uint32_t)propertyType
 {
 	// We are currently assuming we want the whole
 	// property value, no matter how long it is. Other
@@ -750,7 +770,7 @@ static NSMapTable *ClientMessageHandlers;
 			0,
 			window,
 			(xcb_atom_t)[atomValue longValue],
-			XCB_GET_PROPERTY_TYPE_ANY,
+			propertyType,
 			0,
 			UINT32_MAX);
 	// Retain the property name in case it gets released
