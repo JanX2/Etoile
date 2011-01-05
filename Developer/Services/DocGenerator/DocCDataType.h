@@ -14,7 +14,9 @@
 #import "DocElement.h"
 #import "GSDocParser.h"
 
-/** DocCDataType objects are used to represent various C data types:
+/** @group Doc Element Tree
+
+DocCDataType objects are used to represent various C data types:
 
 <ul>
 <li>structure</li>
@@ -37,7 +39,10 @@ Enum and union are represented with DocConstant. */
 /** <override-dummy />
 Returns <em>type</em>.
 
-See -[DocElement GSDocElementName]. */
+See -[DocElement GSDocElementName].
+
+@param bla
+@return bli */
 - (NSString *) GSDocElementName;
 /** <override-dummy />
 Returns -weaveOtherDataType:.

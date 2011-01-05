@@ -15,6 +15,9 @@
 #import "GSDocParser.h"
 #import "HtmlElement.h"
 
+@interface WeavedDocPage (Private)
+- (void) addElement: (DocElement *)anElement toDictionaryNamed: (NSString *)anIvarName forKey: (NSString *)aKey;
+@end
 
 @implementation DocTOCPage
 
@@ -28,31 +31,59 @@
 	// TODO: Delegate that to DocHeader
 
 	/* Pack title and overview in a header html element */
-	H hHeader = [DIV id: @"header" with: [H1 with: [aHeader title]]];
+	H hHeader = [DIV id: @"header" with: [H2 with: [aHeader title]]];
 
 	if (setOverview) 
 	{
 		[hHeader with: hOverview];
 	}
+	[hHeader addText: @"Classes, Protocols and Categories by Groups"];
 
 	return hHeader;
 }
 
+/* DocPageWeaver inserts the subheaders out of order, and before also their group 
+name is parsed and set. */
+- (void) sortSubheaders
+{
+	NSArray *elementArrays = [subheaders valueForKey: @"value"];
+	NSMutableArray *elements = [NSMutableArray array];
+
+	// TODO: We should use a -flattenedCollection or similar
+	for (NSArray *groupedElements in elementArrays)
+	{
+		[elements addObjectsFromArray: groupedElements];
+	}
+
+	NSSortDescriptor *groupSortDesc = AUTORELEASE([[NSSortDescriptor alloc] initWithKey: @"group" ascending: YES]);
+	NSSortDescriptor *nameSortDesc = AUTORELEASE([[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES]);
+
+	[elements sortedArrayUsingDescriptors: [NSArray arrayWithObjects: groupSortDesc, nameSortDesc, nil]];
+
+	RETAIN(elements);
+	[subheaders removeAllObjects];
+
+	for (DocHeader *element in elements)
+	{
+		[self addElement: element toDictionaryNamed: @"subheaders" forKey: [element group]];
+	}
+	RELEASE(elements);
+}
+
 - (NSArray *) mainContentHTMLRepresentations
 {
+	[self sortSubheaders];
+
 	NSMutableArray *reps = [NSMutableArray array];
 
 	/*if ([[self header] title] != nil)
 	{
 		[reps addObject: [H1 with: [[self header] title]]];
 	}*/
-	
-	for (NSString *group in [subheaders allKeys])
-	{
-		[reps addObject: [self HTMLRepresentationWithTitle: @"Classes, Protocols and Categories by Groups"
-		                                       subroutines: subheaders
-		                        HTMLRepresentationSelector: @selector(HTMLTOCRepresentation)]];
-	}
+	[reps addObject: [self HTMLRepresentationWithTitle: nil
+	                subroutines: subheaders
+	                        HTMLRepresentationSelector: @selector(HTMLTOCRepresentation)]];
+
 	return reps;
 }
 

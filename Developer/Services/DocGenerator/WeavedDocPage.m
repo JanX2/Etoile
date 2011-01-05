@@ -69,12 +69,12 @@
 	ASSIGN(templateContent, [NSString stringWithContentsOfFile: aTemplatePath encoding: NSUTF8StringEncoding error: NULL]);
 	ASSIGN(menuContent, [NSString stringWithContentsOfFile: finalMenuPath encoding: NSUTF8StringEncoding error: NULL]);
 
-	subheaders = [NSMutableDictionary new];
-	methods = [NSMutableDictionary new];
-	functions = [NSMutableDictionary new];
-	constants = [NSMutableDictionary new];
-	macros = [NSMutableDictionary new];
-	otherDataTypes = [NSMutableDictionary new];
+	subheaders = [NSMutableArray new];
+	methods = [NSMutableArray new];
+	functions = [NSMutableArray new];
+	constants = [NSMutableArray new];
+	macros = [NSMutableArray new];
+	otherDataTypes = [NSMutableArray new];
 
 	return self;
 }
@@ -206,15 +206,20 @@
 	return header;
 }
 
+- (id) firstPairWithKey: (NSString *)aKey inArray: (NSArray *)anArray
+{
+	return [anArray firstObjectMatchingValue: aKey forKey: @"key"];
+}
+
 - (void) addElement: (DocElement *)anElement toDictionaryNamed: (NSString *)anIvarName forKey: (NSString *)aKey
 {
-	NSMutableDictionary *elements = [self valueForKey: anIvarName];
-	NSMutableArray *array = [elements objectForKey: aKey];
+	NSMutableArray *elements = [self valueForKey: anIvarName];
+	NSMutableArray *array = [[self firstPairWithKey: aKey inArray: elements] value];
 
 	if (array == nil)
 	{
 		array = [NSMutableArray array];
-		[elements setObject: array forKey: aKey];
+		[elements addObject: [ETKeyValuePair pairWithKey: aKey value: array]];
 	}
 	[array addObject: anElement];
 }
@@ -261,7 +266,7 @@
 }
 
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
-                                  subroutines: (NSDictionary *)subroutinesByTask
+                                  subroutines: (NSArray *)subroutinesByTask
 {
 	return [self HTMLRepresentationWithTitle: aTitle 
 	                             subroutines: subroutinesByTask 
@@ -284,14 +289,12 @@
 }
 
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
-                                  subroutines: (NSDictionary *)subroutinesByTask
+                                  subroutines: (NSArray *)subroutinesByTask
                    HTMLRepresentationSelector: (SEL)repSelector
 {
 	if ([subroutinesByTask isEmpty])
 		return [HtmlElement blankElement];
 
-	NSArray *unsortedTasks = [subroutinesByTask allKeys];
-	NSArray *tasks = unsortedTasks;//[unsortedTasks sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
 	NSString *titleWithoutSpaces = [[aTitle componentsSeparatedByCharactersInSet: 
 		[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString: @"-"];
 	HtmlElement *html = [DIV class: [titleWithoutSpaces lowercaseString]];
@@ -303,14 +306,14 @@
 		hasH3 = YES;
 	}
 	
-	for (NSString *task in tasks)
+	for (int i = 0; i < [subroutinesByTask count]; i++)
 	{
+		NSString *task = [[subroutinesByTask objectAtIndex: i] key];
+		NSArray *subroutinesInTask = [[subroutinesByTask objectAtIndex: i] value];
 		HtmlElement *hTask = (hasH3 ? [H4 with: task] : [H3 with: task]);
 
 		[html add: hTask];
 		NSLog(@"HTML Task: %@", hTask);
-		NSArray *subroutinesInTask = [subroutinesByTask objectForKey: task];
-			//sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
 
 		for (DocSubroutine *subroutine in subroutinesInTask)
 		{

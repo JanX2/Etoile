@@ -38,6 +38,7 @@
 - (void) parseAndWeave;
 @end
 
+/** @group Page Generation */
 @interface DocPageWeaver : NSObject <CodeDocWeaving>
 {
 	@private

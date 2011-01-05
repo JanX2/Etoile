@@ -283,7 +283,7 @@ didStartElement:(NSString *)elementName
 	if ([elementName isEqualToString: @"class"]) 
 	{
 			[weaver weaveClassNamed: [attributeDict objectForKey: @"name"]
-				 superclassName: [attributeDict objectForKey: @"super"]];
+			         superclassName: [attributeDict objectForKey: @"super"]];
 	}
 	else if ([elementName isEqualToString: @"category"]) 
 	{
@@ -314,7 +314,12 @@ didStartElement:(NSString *)elementName
 	else if ([elementName isEqualToString: @"desc"])
 	{
 		ETAssert(nil != [weaver currentHeader]);
-		[[weaver currentHeader] setOverview: trimmedContent];
+		DocMethodGroupDescriptionParser *descParser = [DocMethodGroupDescriptionParser new];
+		
+		[descParser parse: trimmedContent];
+		[[weaver currentHeader] setGroup: [descParser group]];
+		[[weaver currentHeader] setOverview: [descParser description]];
+		[descParser release];
 	}
 }
 

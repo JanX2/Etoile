@@ -13,6 +13,7 @@
 
 @class HtmlElement;
 
+/** @group Doc Element Tree */
 @interface DocHeader : DocElement <GSDocParserDelegate>
 {
 	/* Main Symbol (optional) presented on the page */

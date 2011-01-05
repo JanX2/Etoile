@@ -13,6 +13,7 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "DocPageWeaver.h"
 
+/** @group GSDoc Parsing */
 @interface DeclarationReorderer : NSObject <CodeDocWeaving>
 {
 	@private

@@ -17,6 +17,7 @@
 @class DocHeader, DocMethod, DocFunction;
 @class GSDocParser;
 
+/** @group GSDoc Parsing */
 @protocol GSDocParserDelegate
 - (void) parser: (GSDocParser *)parser 
    startElement: (NSString *)anElement
@@ -26,7 +27,7 @@
     withContent: (NSString *)aContent;
 @end
 
-
+/** @group GSDoc Parsing */
 @interface GSDocParser : NSObject <GSDocParserDelegate>
 {
 	id <CodeDocWeaving> weaver; /* Weak ref */

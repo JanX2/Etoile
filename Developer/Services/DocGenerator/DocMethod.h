@@ -14,7 +14,9 @@
 #import "GSDocParser.h"
 #import "DocElement.h"
 
-/** A DocMMethod object represents a method in the documentation element tree. */
+/** @group Doc Element Tree
+
+A DocMMethod object represents a method in the documentation element tree. */
 @interface DocMethod : DocSubroutine <GSDocParserDelegate>
 {
 	@private

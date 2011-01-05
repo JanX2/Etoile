@@ -13,7 +13,9 @@
 
 @class DocHeader, DocMethod, DocFunction, DocMacro, DocConstant, DocCDataType, HtmlElement;
 
-/** A documentation page that weaves various HTML, GSDoc, Markdown and plist 
+/** @group Page Generation
+
+A documentation page that weaves various HTML, GSDoc, Markdown and plist 
 files (usually provided on the command-line), into a new HTML representation  
 based on the template tags embedded in the HTML or Markdown content.
 
@@ -40,12 +42,12 @@ experimental and untested. */
 	   Each doc element dictionaries is organized as described:
 	   { taskOrGroupName = ( doc element 1, doc element 2 ...); ... } */
 	DocHeader *header;
-	NSMutableDictionary *subheaders;
-	NSMutableDictionary *methods;
-	NSMutableDictionary *functions;
-	NSMutableDictionary *constants;
-	NSMutableDictionary *macros;
-	NSMutableDictionary *otherDataTypes;
+	NSMutableArray *subheaders;
+	NSMutableArray *methods;
+	NSMutableArray *functions;
+	NSMutableArray *constants;
+	NSMutableArray *macros;
+	NSMutableArray *otherDataTypes;
 }
 
 /** @taskunit Initialization and Identity */
@@ -119,6 +121,10 @@ use a custom representation in the output.
 
 See also DocSubroutine, DocMethod and DocFunction. */
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *) aTitle 
-                                  subroutines: (NSDictionary *)subroutinesByTask
+                                  subroutines: (NSArray *)subroutinesByTask
+                   HTMLRepresentationSelector: (SEL)repSelector;
+
+- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *) aTitle 
+                                     elements: (NSArray *)docElements
                    HTMLRepresentationSelector: (SEL)repSelector;
 @end

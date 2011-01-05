@@ -11,6 +11,7 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "WeavedDocPage.h"
 
+/** @group Page Generation */
 @interface DocTOCPage : WeavedDocPage
 {
 

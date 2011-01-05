@@ -1,10 +1,11 @@
-//
-//  DescriptionParser.m
-//  ETDocGenerator
-//
-//  Created by Nicolas Roard (Home) on 6/12/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
+/*
+	Copyright (C) 2008 Nicolas Roard
+
+	Authors:  Nicolas Roard,
+	          Quentin Mathe <quentin.mathe@gmail.com>
+	Date:  June 2008
+	License:  Modified BSD (see COPYING)
+ */
 
 #import "DescriptionParser.h"
 
@@ -21,6 +22,7 @@
 - (void) dealloc
 {
   [parsed release];
+  [currentTag release];
   [super dealloc];
 }
 
@@ -45,7 +47,7 @@
   return (NSMutableDictionary*) [self getContent: [NSMutableDictionary class] for: tag];
 }
 
-- (NSArray *) linesForString: (NSString *)aString
+- (NSMutableArray *) linesForString: (NSString *)aString
 {
 	NSUInteger length = [aString length];
 	NSRange searchRange = NSMakeRange(0, 0);
@@ -75,22 +77,146 @@
 
 @tag + spaces + description + </p> + spaces
 
-and where </p> is optional. */ 
-- (NSString *) descriptionFromString: (NSString *)aString
+and where </p> is optional.
+
+Requires the line argument to be trimmed, no white spaces at the beginning and end. */ 
+- (NSString *) descriptionFromString: (NSString *)aString 
+                        isTerminated: (BOOL *)isDescFinished 
+                       lineRemainder: (NSString **)unparsedString
 {
 	NSRange r = [aString rangeOfCharacterFromSet: [NSCharacterSet whitespaceCharacterSet]];
 	/* Skip the first word and space e.g. @task + space */
 	NSString *desc = [aString substringFromIndex: (r.location == NSNotFound ? 0 : r.location + r.length)];
 
-	desc = [desc stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
-	if ([desc hasSuffix: @"</p>"])
+	/* Detect multiple tags on the same line, and return the next tag and its 
+	   content on the current line through unparsedString */
+	NSInteger nextTagIndex = [desc rangeOfString: @"@"].location;
+
+	if (nextTagIndex != NSNotFound)
+	{
+		*unparsedString = [desc substringFromIndex: nextTagIndex];
+		desc = [desc substringToIndex: nextTagIndex];
+		*isDescFinished = YES;
+	}
+	else if ([desc hasSuffix: @"</p>"])
 	{
 		desc = [desc substringToIndex: [desc length] - 4];
+		*isDescFinished = YES;
 	}
 	return desc;
 }
 
+- (void) parseParamRawDescription: (NSString *)rawDesc
+{
+	NSArray *words = [rawDesc componentsSeparatedByString: @" "];
+	NSString *paramName = [words firstObject];
+	NSArray *descWords = [words subarrayWithRange: NSMakeRange(1, [words count] - 1)];
 
+	[[self getDictionaryFor: @"params"] setObject: [descWords componentsJoinedByString: @" "]
+	                                       forKey: paramName];
+}
+
+/* Returns YES when a new tag has been parsed, whether or not the tag content 
+has been entirely parsed. 
+
+Requires the line argument to be trimmed, no white spaces at the beginning and end.
+
+When multiple tags are on the same line, will parse up to the next tag e.g. 
+@return, and put the line remainder into unparsedString.<br />
+When a single tag is present on the line, unparsedString won't be touched.  */
+- (BOOL) parseTag: (NSString *)aTag  atLine: (NSString *)line lineRemainder: (NSString **)unparsedString
+{
+	if (currentTag != nil)
+		return NO;
+
+	NSString *tagWithP = [NSString stringWithFormat: @"<p>%@", aTag];
+
+	if ([line hasPrefix: tagWithP] || [line hasPrefix: aTag])
+	{
+		BOOL isDescFinished;
+		NSString *desc = [self descriptionFromString: line 
+		                                isTerminated: &isDescFinished 
+		                               lineRemainder: unparsedString];
+
+		// TODO: Remove this ugly if
+		if ([aTag isEqual: @"@param"])
+		{
+			[self parseParamRawDescription: desc];
+		}
+		else
+		{
+			[[self getStringFor: aTag] appendFormat: @"%@ ", desc];
+		}
+
+		ASSIGN(currentTag, (isDescFinished ? nil : aTag));
+		return YES;
+	}
+
+	return NO;
+}
+
+- (BOOL) parseStartAmongTags: (NSArray *)tags 
+                      atLine: (NSString *)line 
+               lineRemainder: (NSString **)unparsedString
+{
+	NSCharacterSet *blankCharset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+	NSString *trimmedLine = [line stringByTrimmingCharactersInSet: blankCharset];
+
+	for (NSString *tag in tags)
+	{
+		BOOL parsedNewTag = [self parseTag: tag atLine: trimmedLine lineRemainder: unparsedString];
+
+		if (parsedNewTag)
+			return YES;
+	}
+
+	return NO;
+}
+
+- (void) parseContentLine: (NSString *)line forTag: (NSString *)aTag
+{
+	NSCharacterSet *blankCharset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+	NSString *trimmedLine = [line stringByTrimmingCharactersInSet: blankCharset];
+	BOOL isTagEnd = ([trimmedLine hasSuffix: @"</p>"] || [trimmedLine isEqualToString: @""]);
+	
+	if ([trimmedLine hasSuffix: @"</p>"])
+	{
+		trimmedLine = [trimmedLine substringToIndex: [trimmedLine length] - 4];
+	}
+	[[self getStringFor: aTag] appendString: trimmedLine];
+
+	ASSIGN(currentTag, (isTagEnd ? nil : aTag));
+}
+
+- (void) parseMainDescriptionLine: (NSString *)line isLastLine: (BOOL)isLastLine
+{
+	NSMutableString *desc = [self getStringFor: @"description"];
+
+	if (isLastLine)
+	{
+			[desc appendString: line];
+	}
+	else
+	{
+			[desc appendFormat: @"%@\n", line];
+	}
+}
+
+- (NSArray *) validTagsBeforeMainDescription
+{
+	return A(@"@taskunit", @"@task");
+}
+
+- (NSArray *) validTagsAfterMainDescription
+{
+	return A(@"@param", @"@return");
+}
+
+- (void) reset
+{
+	DESTROY(currentTag);
+	[parsed removeAllObjects];
+}
 
 /* Rough Grammar
 
@@ -113,125 +239,50 @@ TASKUNIT must be located before DESC(MAIN).
 PARAM, RETURN and TASK must follow DESC(MAIN).
 
 PARAM, RETURN and TASK declaration order doesn't matter. */
-- (void) parse: (NSString*) corpus
+- (void) parse: (NSString *) corpus
 {
-	NSMutableString *current = [self getStringFor: @"description"];
-	NSArray *lines = [self linesForString: corpus];
-	NSCharacterSet *blankCharset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-	BOOL isParsingDocTag = NO;
-	BOOL hasParsedMainDescription = NO;
-	int nbOfLines = [lines count];
+	[self reset];
 
-	for (int i = 0; i < nbOfLines; i++)
+	NSMutableArray *lines = [self linesForString: corpus];
+	NSArray *validTags = [self validTagsBeforeMainDescription];
+	NSString *unparsedString = nil;
+
+	for (int i = 0; i < [lines count]; i++)
 	{
 		NSString *line = [lines objectAtIndex: i];
-		BOOL isLastLine =  (i == (nbOfLines - 1));
 
-		if ([line hasPrefix: @"<p>@taskunit"] || [line hasPrefix: @"@taskunit"])
+		/* For multiple tags are on the same line, will return a line remainder.
+		   For example, <p>@param blabla @return bip</p> would be parsed up to 
+		   @return and unparsedString equal to '@return bip</p>'. */		
+		BOOL parsedNewTag = [self parseStartAmongTags: validTags 
+		                                       atLine: line 
+		                                lineRemainder: &unparsedString];
+
+		if (unparsedString != nil)
 		{
-			current = [self getStringFor: @"taskunit"];
-			[current appendFormat: @"%@ ", [self descriptionFromString: line]];
-
-			isParsingDocTag = YES;
+			ETAssert(parsedNewTag);
+			[lines insertObject: unparsedString atIndex: i + 1];
+			unparsedString = nil;
 		}
-		else if ([line hasPrefix: @"<p>@task"] || [line hasPrefix: @"@task"])
+	
+		if (parsedNewTag)
+			continue;
+	
+		if (currentTag != nil)
 		{
-			current = [self getStringFor: @"task"];
-			[current appendFormat: @"%@ ", [self descriptionFromString: line]];
-
-			isParsingDocTag = YES;
+			[self parseContentLine: line forTag: currentTag];
 		}
-		else if (isParsingDocTag == NO && hasParsedMainDescription == NO)
+		else
 		{
-			current = [self getStringFor: @"description"];
-			[current appendFormat: @"%@\n", line]; 
-
-			hasParsedMainDescription = YES;
-		}
-    		else if (isParsingDocTag)
-		{
-      			[current appendFormat: @"%@ ", line];
-		}
-		else /* Parsing Main Description */
-    		{
-			if (isLastLine)
-			{
-      				[current appendString: line];
-			}
-			else
-			{
-      				[current appendFormat: @"%@\n", line];
-			}
-    		}
-
-		if (isParsingDocTag)
-		{
-			NSString *trimmedLine = [line stringByTrimmingCharactersInSet: blankCharset];
- 			BOOL isDocTagEnd = ([trimmedLine hasSuffix: @"</p>"] || [trimmedLine isEqualToString: @""]);
-
-			if (isDocTagEnd)
-			{
-				isParsingDocTag = NO;
-				current = nil;
-			}
+			[self parseMainDescriptionLine: line 
+			                    isLastLine: (i == ([lines count] - 1))];
+			validTags = [self validTagsAfterMainDescription];
 		}
 	}
 
 	//NSLog(@"Parsed task unit: %@", [self taskUnit]);
 	//NSLog(@"Parsed desc: %@", [self description]);
 	//NSLog(@"Parsed task: %@", [self task]);
-
-#if 0
-  BOOL param = NO;
-  BOOL paramNameSet = NO;
-  BOOL hasParsedMainDescription = NO;  
-  NSMutableString* current = [self getStringFor: @"description"];  
-
-  NSArray* words = [corpus componentsSeparatedByString: @" "];
-  for (int i=0; i< [words count]; i++)
-  {
-    NSString* word = [[words objectAtIndex: i]
-                         stringByTrimmingCharactersInSet:
-                         [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-	/*if ([word isEqualToString: @"<p>@taskunit"])
-	{
-		current = [self getStringFor: @"taskunit"];
-	}
-	else if (hasParsedMainDescription == NO && [word hasSuffix: @"</p>"])
-	{
-		current = [self getStringFor: @"description"];
-		hasParsedMainDescription = YES;
-	}
-    else*/ if ([word isEqualToString: @"@task"])
-    {
-      current = [self getStringFor: @"task"];
-    }
-    else if ([word isEqualToString: @"@return"])
-    {
-      current = [self getStringFor: @"return"];
-    }
-    else if ([word isEqualToString: @"@param"])
-    {
-      param = YES;
-      paramNameSet = NO;
-    }
-    else if (param && !paramNameSet) 
-    {
-      paramNameSet = YES; 
-      NSMutableDictionary* params = [self getDictionaryFor: @"params"];
-      current = [NSMutableString new];
-      [params setObject: current forKey: word];
-      [current release];
-      param = paramNameSet = NO;
-      //NSLog (@"PARAM NAME");
-    } 
-    else
-    {
-      [current appendFormat: @"%@ ", word];
-    }
-  }
-#endif
 }
 
 - (NSString*) description
@@ -241,23 +292,43 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
   
 - (NSString*) task
 {
-  return [self getStringFor: @"task"];
+  return [self getStringFor: @"@task"];
 }
 
 - (NSString *) taskUnit
 {
-	return [self getStringFor: @"taskunit"];
+	return [self getStringFor: @"@taskunit"];
 }
 
 - (NSString*) returnDescription
 {
-  return [self getStringFor: @"return"];
+  return [self getStringFor: @"@return"];
 }
 
 - (NSString*) descriptionForParameter: (NSString*) aName
 {
   NSMutableDictionary* params = [self getDictionaryFor: @"params"];
   return [params objectForKey: aName];
+}
+
+@end
+
+
+@implementation DocMethodGroupDescriptionParser
+
+- (NSArray *) validTagsBeforeMainDescription
+{
+	return A(@"@group");
+}
+
+- (NSArray *) validTagsAfterMainDescription
+{
+	return [NSArray array];
+}
+
+- (NSString *) group
+{
+  return [self getStringFor: @"@group"];
 }
 
 @end

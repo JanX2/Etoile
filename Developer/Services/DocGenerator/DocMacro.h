@@ -15,7 +15,9 @@
 
 @class HtmlElement;
 
-/** A DocMacro object represents a macro in the documentation element tree. */
+/** @group Doc Element Tree
+
+A DocMacro object represents a macro in the documentation element tree. */
 @interface DocMacro : DocFunction
 {
 

@@ -14,6 +14,7 @@
 #undef A
 #endif
 
+/** @group HTML Support */
 @interface HtmlElement : NSObject 
 {
 	NSString* elementName;
@@ -63,7 +64,7 @@ The name is set to 'Blank'. */
 #define UL [HtmlElement elementWithName: @"ul"]
 #define LI [HtmlElement elementWithName: @"li"]
 
-
+/** @group HTML Support */
 @interface HtmlElement (CommonUseCases)
 - (HtmlElement *) class: (NSString *)aClass with: (id)something;
 - (HtmlElement *) class: (NSString *)aClass with: (id)something and: (id) something;

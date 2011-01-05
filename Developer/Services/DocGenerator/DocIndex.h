@@ -14,7 +14,9 @@
 
 @class DocHeader, DocMethod, DocFunction, WeavedDocPage;
 
-/** DocIndex represents an autgsdoc-compatible documentation index.
+/** @group Link Generation
+
+DocIndex represents an autgsdoc-compatible documentation index.
 
 It must be initialized with the igsdoc file corresponding to the gsdoc sources 
 passed to the DocPageWeaver instance in use.

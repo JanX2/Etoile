@@ -14,7 +14,9 @@
 
 @class HtmlElement, DescriptionParser, DocIndex, HTMLDocIndex;
 
-/** DocElement is an abstract class, whose subclasses represents concrete 
+/** @group Doc Element Tree
+
+DocElement is an abstract class, whose subclasses represents concrete 
 nodes such as methods, constants, etc. in the documentation element tree.
 
 Each DocElement subclass is expected to implement both the GSDoc parsing and 
@@ -160,7 +162,9 @@ e.g. -[(CodeDocWeaving) weaveOtherDataType:] or -[(CodeDocWeaving) weaveConstant
 
 @class Parameter;
 
-/** DocSubroutine is an abstract class whose subclasses represent function-like 
+/** @group Doc Element Tree
+
+DocSubroutine is an abstract class whose subclasses represent function-like 
 constructs suchs methods, C functions or macros. */
 @interface DocSubroutine : DocElement
 {

@@ -11,6 +11,7 @@
 
 @class HtmlElement;
 
+/** @group Doc Element Tree */
 @interface Parameter : NSObject
 {
 	NSString* name;
