@@ -23,23 +23,12 @@
 
 - (HtmlElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader
 {
-	DocIndex *docIndex = [DocIndex currentIndex];
-	H hOverview = [DIV id: @"overview" with: [H2 with: @"Overview"]];
-	BOOL setOverview = NO;
-
-	/* Insert Overview */
-	// TODO: Delegate that to DocHeader
+	H hOverview = [aHeader HTMLOverviewRepresentation];
 
 	/* Pack title and overview in a header html element */
 	H hHeader = [DIV id: @"header" with: [H2 with: [aHeader title]]];
 
-	if (setOverview) 
-	{
-		[hHeader with: hOverview];
-	}
-	[hHeader addText: @"Classes, Protocols and Categories by Groups"];
-
-	return hHeader;
+	[hHeader with: hOverview and: @"Classes, Protocols and Categories by Groups"];
 }
 
 /* DocPageWeaver inserts the subheaders out of order, and before also their group 
@@ -76,12 +65,8 @@ name is parsed and set. */
 
 	NSMutableArray *reps = [NSMutableArray array];
 
-	/*if ([[self header] title] != nil)
-	{
-		[reps addObject: [H1 with: [[self header] title]]];
-	}*/
 	[reps addObject: [self HTMLRepresentationWithTitle: nil
-	                subroutines: subheaders
+	                                          elements: subheaders
 	                        HTMLRepresentationSelector: @selector(HTMLTOCRepresentation)]];
 
 	return reps;

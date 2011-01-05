@@ -107,11 +107,16 @@ By default, returns the -[DocHeader HTMLRepresentation].
 
 Can be overriden to return a custom representation. */
 - (HtmlElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader;
-/** Returns the given methods or functions rendered as a HTML element tree.
+/** Returns the given doc elements rendered as a HTML element tree.
 
-Both methods and functions are sorted by tasks before being rendered to HTML.
+The array argument must contain ETKeyValuePair and not DocElement objects.<br />
+For -[ETKeyValuePair value], every pairs must return a mutable array that 
+contains DocElement objects only.
 
-Task names are output with a &lt;h4&gt; header (&lt;h3&gt; when the title is nil).<br />
+Doc elements are sorted by their -[ETKeyValuePair key] such as task or group 
+name, before being rendered to HTML.
+
+Group or task names are output with a &lt;h4&gt; header (&lt;h3&gt; when the title is nil).<br />
 A title is also added, which uses a &lt;h3;&gt; header.
 
 repSelector should usually be -HTMLRepresentation. Additional representations 
@@ -119,12 +124,9 @@ can be added to the DocElement subclasses such as
 -[DocHeader HTMLTOCRepresentation]. You can pass such a selector in argument to 
 use a custom representation in the output.
 
-See also DocSubroutine, DocMethod and DocFunction. */
-- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *) aTitle 
-                                  subroutines: (NSArray *)subroutinesByTask
+See also DocElement. */
+- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
+                                     elements: (NSArray *)elementsByGroup
                    HTMLRepresentationSelector: (SEL)repSelector;
 
-- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *) aTitle 
-                                     elements: (NSArray *)docElements
-                   HTMLRepresentationSelector: (SEL)repSelector;
 @end

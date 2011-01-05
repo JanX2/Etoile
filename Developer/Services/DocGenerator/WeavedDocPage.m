@@ -266,21 +266,21 @@
 }
 
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
-                                  subroutines: (NSArray *)subroutinesByTask
+                                     elements: (NSArray *)elementsByGroup
 {
 	return [self HTMLRepresentationWithTitle: aTitle 
-	                             subroutines: subroutinesByTask 
+	                                elements: elementsByGroup 
 	              HTMLRepresentationSelector: @selector(HTMLRepresentation)];
 }
 
 - (NSArray *) mainContentHTMLRepresentations
 {
 	return [NSArray arrayWithObjects: 
-		[self HTMLRepresentationWithTitle: nil subroutines: methods],
-		[self HTMLRepresentationWithTitle: @"Functions" subroutines: functions],
- 		[self HTMLRepresentationWithTitle: @"Macros" subroutines: macros], 
-		[self HTMLRepresentationWithTitle: @"Constants" subroutines: constants], 
-		[self HTMLRepresentationWithTitle: @"Other Data Types" subroutines: otherDataTypes], nil];
+		[self HTMLRepresentationWithTitle: nil elements: methods],
+		[self HTMLRepresentationWithTitle: @"Functions" elements: functions],
+ 		[self HTMLRepresentationWithTitle: @"Macros" elements: macros], 
+		[self HTMLRepresentationWithTitle: @"Constants" elements: constants], 
+		[self HTMLRepresentationWithTitle: @"Other Data Types" elements: otherDataTypes], nil];
 }
 
 - (HtmlElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader
@@ -289,10 +289,10 @@
 }
 
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
-                                  subroutines: (NSArray *)subroutinesByTask
+                                     elements: (NSArray *)elementsByGroup
                    HTMLRepresentationSelector: (SEL)repSelector
 {
-	if ([subroutinesByTask isEmpty])
+	if ([elementsByGroup isEmpty])
 		return [HtmlElement blankElement];
 
 	NSString *titleWithoutSpaces = [[aTitle componentsSeparatedByCharactersInSet: 
@@ -306,18 +306,18 @@
 		hasH3 = YES;
 	}
 	
-	for (int i = 0; i < [subroutinesByTask count]; i++)
+	for (int i = 0; i < [elementsByGroup count]; i++)
 	{
-		NSString *task = [[subroutinesByTask objectAtIndex: i] key];
-		NSArray *subroutinesInTask = [[subroutinesByTask objectAtIndex: i] value];
-		HtmlElement *hTask = (hasH3 ? [H4 with: task] : [H3 with: task]);
+		NSString *group = [[elementsByGroup objectAtIndex: i] key];
+		NSArray *elementsInGroup = [[elementsByGroup objectAtIndex: i] value];
+		HtmlElement *hGroup = (hasH3 ? [H4 with: group] : [H3 with: group]);
 
-		[html add: hTask];
-		NSLog(@"HTML Task: %@", hTask);
+		[html add: hGroup];
+		//NSLog(@"HTML Task or Group: %@", hGroup);
 
-		for (DocSubroutine *subroutine in subroutinesInTask)
+		for (DocElement *element in elementsInGroup)
 		{
-			[html add: [subroutine performSelector: repSelector]];
+			[html add: [element performSelector: repSelector]];
 		}
 	}
 

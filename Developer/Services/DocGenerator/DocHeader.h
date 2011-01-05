@@ -52,6 +52,7 @@
 
 /** @taskunit HTML Generation */
 
+- (HtmlElement *) HTMLOverviewRepresentation;
 - (HtmlElement *) HTMLRepresentation;
 - (HtmlElement *) HTMLTOCRepresentation;
 
