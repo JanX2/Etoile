@@ -2,7 +2,7 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "DocPageWeaver.h"
 #import "DocIndex.h"
-#import "WeavedDocPage.h"
+#import "DocPage.h"
 
 /**
  * Display the help
@@ -202,7 +202,7 @@ int main (int argc, const char * argv[])
 
 	[[DocIndex currentIndex] regenerate];
 
-	FOREACH(pages, page, WeavedDocPage *)
+	FOREACH(pages, page, DocPage *)
 	{
 		NSString *outputPath = [outputDir stringByAppendingPathComponent: [page name]];
 

@@ -7,7 +7,7 @@
 	License:  Modified BSD (see COPYING)
  */
 
-#import "WeavedDocPage.h"
+#import "DocPage.h"
 #import "DocHeader.h"
 #import "DocCDataType.h"
 #import "DocFunction.h"
@@ -18,7 +18,7 @@
 #import "HtmlElement.h"
 
 
-@implementation WeavedDocPage
+@implementation DocPage
 
 - (NSString *) sourcePath
 {

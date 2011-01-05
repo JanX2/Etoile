@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class HtmlElement, DocDescriptionParser, DocIndex, HTMLDocIndex;
+@class HtmlElement, DocDescriptionParser, DocIndex, DocHTMLIndex;
 
 /** @group Doc Element Tree
 
@@ -22,10 +22,10 @@ nodes such as methods, constants, etc. in the documentation element tree.
 Each DocElement subclass is expected to implement both the GSDoc parsing and 
 HTML generation that pertains to the element type.
 
-Any ETDoc markup parsing should be delegated to DescriptionParser, see 
+Any ETDoc markup parsing should be delegated to DocDescriptionParser, see 
 -addInformationFrom:.
 
-The doc element tree is rooted in a page. See WeavedDocPage. */
+The doc element tree is rooted in a page. See DocPage. */
 @interface DocElement : NSObject <NSCopying> 
 {
 	@private
@@ -48,7 +48,7 @@ is the taskUnit, otherwise <em>Default</em> is returned if both are nil. */
 /** The task to which the receiver, and the elements that follow it on the page, 
 belongs to.
 
-For example, every method whose task is nil and added to WeavedDocPage, will 
+For example, every method whose task is nil and added to DocPage, will 
 share the same task than the last previously added method whose task unit was 
 not nil.
 
@@ -74,11 +74,11 @@ See also -rawDescription. */
 - (NSString *) rawDescription;
 /** The final description with ETDoc markup such as <em>@task</em> filtered out.
 
-DescriptionParser can be used to filter the raw description and 
+DocDescriptionParser can be used to filter the raw description and 
 -addInformationFrom: to retrieve it. */
 @property (retain, nonatomic) NSString *filteredDescription;
 /** Updates the receiver properties listed below based on the values parsed 
-in the raw description by the given DescriptionParser object.
+in the raw description by the given DocDescriptionParser object.
 
 <list>
 <item>task</item>
@@ -117,7 +117,7 @@ enclosed by common punctuation patterns. */
 The returned description includes API symbol links.
 
 See -filteredDescription. */
-- (NSString *) HTMLDescriptionWithDocIndex: (HTMLDocIndex *)aDocIndex;
+- (NSString *) HTMLDescriptionWithDocIndex: (DocHTMLIndex *)aDocIndex;
 /** <override-dummy />
 Returns the HTML element tree into which the receiver should be rendered.
 

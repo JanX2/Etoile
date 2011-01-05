@@ -15,7 +15,7 @@
 #import "GSDocParser.h"
 #import "HtmlElement.h"
 
-@interface WeavedDocPage (Private)
+@interface DocPage (Private)
 - (void) addElement: (DocElement *)anElement toDictionaryNamed: (NSString *)anIvarName forKey: (NSString *)aKey;
 @end
 

@@ -13,7 +13,7 @@
 #import "DocMethod.h"
 #import "DocTOCPage.h"
 #import "GSDocParser.h"
-#import "WeavedDocPage.h"
+#import "DocPage.h"
 
 @implementation DocPageWeaver
 
@@ -46,7 +46,7 @@
 	SUPERINIT;
 
 	ETAssert([[paths pathsMatchingExtensions: (A(@"igsdoc"))] count] == 1);
-	docIndex = [[HTMLDocIndex alloc] initWithGSDocIndexFile: 
+	docIndex = [[DocHTMLIndex alloc] initWithGSDocIndexFile: 
 		[[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject]];
 	[DocIndex setCurrentIndex: docIndex]; /* Also reset in -weaveCurrentSourcePages */
 
@@ -138,10 +138,10 @@
 	}
 }
 
-- (WeavedDocPage *) weaveMainPageOfClass: (Class)aPageClass withName: (NSString *)aName documentFile: (NSString *)aDocumentFile
+- (DocPage *) weaveMainPageOfClass: (Class)aPageClass withName: (NSString *)aName documentFile: (NSString *)aDocumentFile
 {
 	NSString *templateFile = [[self templateDirectory] stringByAppendingPathComponent: @"etoile-documentation-template.html"];	
-	WeavedDocPage *page = [[aPageClass alloc] initWithDocumentFile: aDocumentFile
+	DocPage *page = [[aPageClass alloc] initWithDocumentFile: aDocumentFile
 	                                                     templateFile: templateFile                                       
 	                                                         menuFile: menuPath];
 
@@ -153,9 +153,9 @@
 	return page;
 }
 
-- (WeavedDocPage *) weaveMainPageWithName: (NSString *)aName documentFile: (NSString *)aDocumentFile
+- (DocPage *) weaveMainPageWithName: (NSString *)aName documentFile: (NSString *)aDocumentFile
 {
-	return [self weaveMainPageOfClass: [WeavedDocPage class] withName: aName documentFile: aDocumentFile];
+	return [self weaveMainPageOfClass: [DocPage class] withName: aName documentFile: aDocumentFile];
 }
 
 - (void) weaveMainPages
@@ -233,7 +233,7 @@
 	return [sourcePathQueue firstObject];
 }
 
-- (WeavedDocPage *) currentPage
+- (DocPage *) currentPage
 {
 	return [weavedPages lastObject];
 }
@@ -257,7 +257,7 @@
 	DESTROY(currentClassName);
 	DESTROY(currentProtocolName);
 
-	WeavedDocPage *page = [[WeavedDocPage alloc] initWithDocumentFile: [self currentSourceFile]
+	DocPage *page = [[DocPage alloc] initWithDocumentFile: [self currentSourceFile]
 	                                templateFile: [self templateFileForSourceFile: [self currentSourceFile]]
 	                                    menuFile: menuPath];
     [weavedPages addObject: AUTORELEASE(page)];

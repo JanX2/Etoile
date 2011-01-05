@@ -42,7 +42,7 @@ CodeDocWeaving protocol it implements, and emit reordered symbols by invoking
 CodeDocWeaving methods on the weaver.
 
 The weaver argument should be a DocPageWeaver object.<br />
-The parser calling CodeDocWeaving methods on a DeclarationReorderer object 
+The parser calling CodeDocWeaving methods on a DocDeclarationReorderer object 
 should be a GSDocParser.<br />
 
 The returned object reorders the symbols to match their ordering in the given 

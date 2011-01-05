@@ -13,7 +13,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class DocHeader, DocMethod, DocFunction, DocMacro, DocCDataType, DocConstant, WeavedDocPage, DocIndex;
+@class DocHeader, DocMethod, DocFunction, DocMacro, DocCDataType, DocConstant, DocPage, DocIndex;
 
 @protocol CodeDocWeaving <NSObject>
 - (void) weaveClassNamed: (NSString *)aClassName 
@@ -69,13 +69,13 @@
 	NSMutableArray *allWeavedPages;
 
 	/* Main Page to collect ObjC constructs */
-	WeavedDocPage *apiOverviewPage;
+	DocPage *apiOverviewPage;
 
 	/* Main Pages to collect C constructs */
-	WeavedDocPage *functionPage;
-	WeavedDocPage *constantPage;
-	WeavedDocPage *macroPage;
-	WeavedDocPage *otherDataTypePage;
+	DocPage *functionPage;
+	DocPage *constantPage;
+	DocPage *macroPage;
+	DocPage *otherDataTypePage;
 }
 
 /** @task Parser Choice */
@@ -116,7 +116,7 @@ See also -currentSourceFile. */
 /** @task Progress and Status */
 
 - (NSString *) currentSourceFile;
-- (WeavedDocPage *) currentPage;
+- (DocPage *) currentPage;
 - (NSString *) currentClassName;
 - (DocHeader *) currentHeader;
 

@@ -9,10 +9,10 @@
 
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
-#import "WeavedDocPage.h"
+#import "DocPage.h"
 
 /** @group Page Generation */
-@interface DocTOCPage : WeavedDocPage
+@interface DocTOCPage : DocPage
 {
 
 }

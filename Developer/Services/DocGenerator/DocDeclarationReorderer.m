@@ -11,7 +11,7 @@
 #import "DocIndex.h"
 #import "DocMethod.h"
 #import "DocTOCPage.h"
-#import "WeavedDocPage.h"
+#import "DocPage.h"
 
 static NSString *root = @"root";
 

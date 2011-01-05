@@ -214,7 +214,7 @@ withDictionaryName: (NSString *)mergedDictName
 @end
 
 
-@implementation HTMLDocIndex
+@implementation DocHTMLIndex
 
 - (NSString *) linkWithName: (NSString *)aName ref: (NSString *)aRef anchor: (NSString *)anAnchor
 {

@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class DocHeader, DocMethod, DocFunction, WeavedDocPage;
+@class DocHeader, DocMethod, DocFunction, DocPage;
 
 /** @group Link Generation
 
@@ -98,7 +98,7 @@ You must call this method before generating the document output e.g. invoking
 @end
 
 
-@interface HTMLDocIndex : DocIndex
+@interface DocHTMLIndex : DocIndex
 {
 
 }

@@ -1,4 +1,5 @@
-/** <abstract>WeavedDocPage represents a documentation page.</abstract>
+/**
+	<abstract>DocPage represents a documentation page.</abstract>
 
 	Copyright (C) 2008 Nicolas Roard
 
@@ -20,7 +21,7 @@ files (usually provided on the command-line), into a new HTML representation
 based on the template tags embedded in the HTML or Markdown content.
 
 You usually don't instantiate this class, but give the documentation input files 
-to DocPageWeaver which will create new WeavedDocPages instances and return 
+to DocPageWeaver which will create new DocPage instances and return 
 them.<br />
 The returned pages can then be written to disk with -writeToURL: or 
 their HTML representation retrieved with -HTMLString.
@@ -28,8 +29,9 @@ their HTML representation retrieved with -HTMLString.
 Subclasses can be written to customize the presentation and how the various 
 elements (methods, macros, menu etc.) are laid out. Subclassing support is 
 experimental and untested. */
-@interface WeavedDocPage : NSObject 
+@interface DocPage : NSObject 
 {
+	@private
 	/* Source & Template */
 	NSString *documentType;
 	NSString *documentPath;
@@ -42,6 +44,7 @@ experimental and untested. */
 	   Each doc element dictionaries is organized as described:
 	   { taskOrGroupName = ( doc element 1, doc element 2 ...); ... } */
 	DocHeader *header;
+	@protected
 	NSMutableArray *subheaders;
 	NSMutableArray *methods;
 	NSMutableArray *functions;

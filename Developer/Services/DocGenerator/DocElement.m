@@ -218,7 +218,7 @@
 	}
 }
 
-- (NSString *) HTMLDescriptionWithDocIndex: (HTMLDocIndex *)aDocIndex
+- (NSString *) HTMLDescriptionWithDocIndex: (DocHTMLIndex *)aDocIndex
 {
 	NSMutableString *description = [NSMutableString stringWithString: [self filteredDescription]];
 
