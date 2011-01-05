@@ -7,7 +7,7 @@
  */
 
 #import "DocPageWeaver.h"
-#import "DeclarationReorderer.h"
+#import "DocDeclarationReorderer.h"
 #import "DocHeader.h"
 #import "DocIndex.h"
 #import "DocMethod.h"
@@ -55,7 +55,7 @@
 	ETAssert([[paths pathsMatchingExtensions: (A(@"plist"))] count] == 1);
 	NSDictionary *orderedSymbolDeclarations = [NSDictionary dictionaryWithContentsOfFile: 
 		[[paths pathsMatchingExtensions: A(@"plist")] firstObject]];
-	reorderingWeaver = (id)[[DeclarationReorderer alloc] initWithWeaver: self 
+	reorderingWeaver = (id)[[DocDeclarationReorderer alloc] initWithWeaver: self 
 	                                                     orderedSymbols: orderedSymbolDeclarations];
 	
 	/* Don't include igsdoc or plist, we don't want to turn them into a page */

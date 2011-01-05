@@ -15,7 +15,7 @@
 #import "DocMethod.h"
 #import "DocFunction.h"
 #import "HtmlElement.h"
-#import "DescriptionParser.h"
+#import "DocDescriptionParser.h"
 
 @interface NullParserDelegate : NSObject <GSDocParserDelegate>
 @end

@@ -7,10 +7,10 @@
 	License:  Modified BSD (see COPYING)
  */
 
-#import "DescriptionParser.h"
+#import "DocDescriptionParser.h"
 
 
-@implementation DescriptionParser
+@implementation DocDescriptionParser
 
 - (id) init
 {

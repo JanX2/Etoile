@@ -10,8 +10,8 @@
 #import "DocMethod.h"
 #import "DocIndex.h"
 #import "HtmlElement.h"
-#import "DescriptionParser.h"
-#import "Parameter.h"
+#import "DocDescriptionParser.h"
+#import "DocParameter.h"
 
 @implementation DocMethod
 
@@ -116,7 +116,7 @@
 		if (isUnaryMessage)
 			break;
 
-		Parameter *p = [params objectAtIndex: i];
+		DocParameter *p = [params objectAtIndex: i];
 	
 		[h_signature and: [p HTMLRepresentationWithParentheses: YES]];
 	}
@@ -156,7 +156,7 @@
 	else if ([elementName isEqualToString: @"arg"]) 
 	{
 		NSString *type = [parser argTypeFromArgsAttributes: [parser currentAttributes]];
-		[self addParameter: [Parameter newWithName: trimmed andType: type]];
+		[self addParameter: [DocParameter newWithName: trimmed andType: type]];
 	}
 	else if ([elementName isEqualToString: @"desc"]) 
 	{
@@ -165,7 +165,7 @@
 	}
 	else if ([elementName isEqualToString: @"method"]) /* Closing tag */
 	{
-		DescriptionParser *descParser = AUTORELEASE([DescriptionParser new]);
+		DocDescriptionParser *descParser = AUTORELEASE([DocDescriptionParser new]);
 
 		[descParser parse: [self rawDescription]];
 		[self addInformationFrom: descParser];

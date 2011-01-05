@@ -28,7 +28,7 @@
 	/* Pack title and overview in a header html element */
 	H hHeader = [DIV id: @"header" with: [H2 with: [aHeader title]]];
 
-	[hHeader with: hOverview and: @"Classes, Protocols and Categories by Groups"];
+	return [hHeader with: hOverview and: @"Classes, Protocols and Categories by Groups"];
 }
 
 /* DocPageWeaver inserts the subheaders out of order, and before also their group 

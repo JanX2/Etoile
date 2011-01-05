@@ -8,10 +8,10 @@
  */
 
 #import "DocElement.h"
-#import "DescriptionParser.h"
+#import "DocDescriptionParser.h"
 #import "DocIndex.h"
 #import "HtmlElement.h"
-#import "Parameter.h"
+#import "DocParameter.h"
 
 @implementation DocElement
 
@@ -113,7 +113,7 @@
 	return rawDescription;
 }
 
-- (void) addInformationFrom: (DescriptionParser *)aParser
+- (void) addInformationFrom: (DocDescriptionParser *)aParser
 {
 	[self setFilteredDescription: [aParser description]];
 	[self setTask: [aParser task]];
@@ -262,11 +262,11 @@
 	[super dealloc];
 }
 
-- (void) addInformationFrom: (DescriptionParser *)aParser
+- (void) addInformationFrom: (DocDescriptionParser *)aParser
 {
 	[super addInformationFrom: aParser];
 
-	FOREACH(parameters, p, Parameter *)
+	FOREACH(parameters, p, DocParameter *)
 	{
 		[p setDescription: [aParser descriptionForParameter: [p name]]];
 	}
@@ -278,12 +278,12 @@
 	ASSIGN(returnType, aReturnType);
 }
 
-- (Parameter *) returnParameter
+- (DocParameter *) returnParameter
 {
-	return [Parameter newWithName: nil andType: returnType];
+	return [DocParameter newWithName: nil andType: returnType];
 }
 
-- (void) addParameter: (Parameter *)aParameter
+- (void) addParameter: (DocParameter *)aParameter
 {
 	[parameters addObject: aParameter];
 }

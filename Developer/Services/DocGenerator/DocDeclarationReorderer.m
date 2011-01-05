@@ -6,7 +6,7 @@
 	License:  Modified BSD (see COPYING)
  */
 
-#import "DeclarationReorderer.h"
+#import "DocDeclarationReorderer.h"
 #import "DocHeader.h"
 #import "DocIndex.h"
 #import "DocMethod.h"
@@ -15,7 +15,7 @@
 
 static NSString *root = @"root";
 
-@implementation DeclarationReorderer 
+@implementation DocDeclarationReorderer 
 
 - (id) initWithWeaver: (id <CodeDocWeaving>)aWeaver 
        orderedSymbols: (NSDictionary *)symbolArraysByKind

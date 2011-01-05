@@ -9,9 +9,9 @@
 
 #import "DocFunction.h"
 #import "HtmlElement.h"
-#import "DescriptionParser.h"
+#import "DocDescriptionParser.h"
 #import "DocIndex.h"
-#import "Parameter.h"
+#import "DocParameter.h"
 
 @implementation DocFunction
 
@@ -28,7 +28,7 @@
 
 - (void) setDescription: (NSString *)aDescription forParameter: (NSString *)aName
 {
-	FOREACH([self parameters], p, Parameter *)
+	FOREACH([self parameters], p, DocParameter *)
 	{
 		if ([[p name] isEqualToString: aName])
 		{
@@ -49,7 +49,7 @@
 		[param_list and: [H3 with: @"Parameters"]];
 	}
 
-	FOREACH([self parameters], p, Parameter *)
+	FOREACH([self parameters], p, DocParameter *)
 	{
 		H h_param = [LI with: [I with: [p name]]];
 		[h_param and: [p description]];
@@ -80,7 +80,7 @@
 	[h_signature with: @"("];
 
 	BOOL isFirst = YES;
-	FOREACH([self parameters], p, Parameter *)
+	FOREACH([self parameters], p, DocParameter *)
 	{
 		H h_parameter = [p HTMLRepresentationWithParentheses: NO];
 
@@ -131,7 +131,7 @@
 	if ([elementName isEqualToString: @"arg"]) 
 	{
 		NSString *type = [parser argTypeFromArgsAttributes: [parser currentAttributes]];
-		[self addParameter: [Parameter newWithName: trimmed andType: type]];	
+		[self addParameter: [DocParameter newWithName: trimmed andType: type]];	
 	}
 	else if ([elementName isEqualToString: @"desc"]) 
 	{
@@ -140,7 +140,7 @@
 	}
 	else if ([elementName isEqualToString: [self GSDocElementName]]) /* Closing tag */
 	{
-		DescriptionParser* descParser = [DescriptionParser new];
+		DocDescriptionParser* descParser = [DocDescriptionParser new];
 		
 		[descParser parse: [self rawDescription]];
 		

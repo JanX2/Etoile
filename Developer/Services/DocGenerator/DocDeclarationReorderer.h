@@ -13,8 +13,12 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "DocPageWeaver.h"
 
-/** @group GSDoc Parsing */
-@interface DeclarationReorderer : NSObject <CodeDocWeaving>
+/** @group GSDoc Parsing
+
+DocPageWeaver uses this class internally.
+
+See -initWithWeaver:orderedSymbols:. */
+@interface DocDeclarationReorderer : NSObject <CodeDocWeaving>
 {
 	@private
 	id <CodeDocWeaving> weaver;
@@ -32,6 +36,18 @@
 	NSString *currentConstructName;
 }
 
+/** <init />
+Initializes and returns a new reorderer that can receive parsed symbols through 
+CodeDocWeaving protocol it implements, and emit reordered symbols by invoking 
+CodeDocWeaving methods on the weaver.
+
+The weaver argument should be a DocPageWeaver object.<br />
+The parser calling CodeDocWeaving methods on a DeclarationReorderer object 
+should be a GSDocParser.<br />
+
+The returned object reorders the symbols to match their ordering in the given 
+property list, whose structure must match <em>OrderedSymbolDeclarations.plist</em>
+ output by autogsdoc. */
 - (id) initWithWeaver: (id <CodeDocWeaving>)aWeaver 
        orderedSymbols: (NSDictionary *)symbolArraysByKind;
 

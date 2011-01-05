@@ -8,10 +8,10 @@
 
 #import <objc/runtime.h>
 #import "DocCDataType.h"
-#import "DescriptionParser.h"
+#import "DocDescriptionParser.h"
 #import "DocIndex.h"
 #import "HtmlElement.h"
-#import "Parameter.h"
+#import "DocParameter.h"
 
 @implementation DocCDataType
 
@@ -60,7 +60,7 @@
 	}
 	else if ([elementName isEqualToString: [self GSDocElementName]]) /* Closing tag */
 	{
-		DescriptionParser* descParser = [DescriptionParser new];
+		DocDescriptionParser* descParser = [DocDescriptionParser new];
 		
 		[descParser parse: [self rawDescription]];
 		
@@ -93,7 +93,7 @@
 
 	// TODO: Fix or remove... This code wrongly truncates the types.
 	// TODO: Insert links in the returned type
-	Parameter *formatter = [Parameter newWithName: nil andType: [self type]];
+	DocParameter *formatter = [DocParameter newWithName: nil andType: [self type]];
 	NSString *formattedType = @"";
 
 	if ([formatter typePrefix] != nil)

@@ -12,7 +12,7 @@
 @class HtmlElement;
 
 /** @group Doc Element Tree */
-@interface Parameter : NSObject
+@interface DocParameter : NSObject
 {
 	NSString* name;
 	NSString* type;

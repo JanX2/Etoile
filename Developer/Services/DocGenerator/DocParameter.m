@@ -6,12 +6,12 @@
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import "Parameter.h"
+#import "DocParameter.h"
 #import "DocIndex.h"
 #import "HtmlElement.h"
 
 
-@implementation Parameter
+@implementation DocParameter
 
 @synthesize typePrefix, className, protocolName, typeSuffix;
 
@@ -37,7 +37,7 @@
 
 + (id) newWithName: (NSString *) aName andType: (NSString *) aType
 {
-	return AUTORELEASE([[Parameter alloc] initWithName: aName andType: aType]);
+	return AUTORELEASE([[DocParameter alloc] initWithName: aName andType: aType]);
 }
 
 - (void) setName: (NSString *) aName

@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class HtmlElement, DescriptionParser, DocIndex, HTMLDocIndex;
+@class HtmlElement, DocDescriptionParser, DocIndex, HTMLDocIndex;
 
 /** @group Doc Element Tree
 
@@ -98,7 +98,7 @@ DescriptionParser *descParser = AUTORELEASE([[DescriptionParser alloc] init]);
 </example>
 
 Can be overriden in a subclass to update additional markup values. */
-- (void) addInformationFrom: (DescriptionParser *)aParser;
+- (void) addInformationFrom: (DocDescriptionParser *)aParser;
 
 /** @taskunit Link Insertion */
 
@@ -160,7 +160,7 @@ e.g. -[(CodeDocWeaving) weaveOtherDataType:] or -[(CodeDocWeaving) weaveConstant
 @end
 
 
-@class Parameter;
+@class DocParameter;
 
 /** @group Doc Element Tree
 
@@ -183,12 +183,12 @@ representation of the type can be asked.
 When generating the HTML representation for the return type, the parameter 
 object will insert symbol links and apply standard formatting (e.g. class name 
 + space + star) as expected. */ 
-- (Parameter *) returnParameter;
+- (DocParameter *) returnParameter;
 
 /** @taskunit Parameters */
 
 /** Declares a new parameter that follow any previously added parameters. */
-- (void) addParameter: (Parameter *)aParameter;
+- (void) addParameter: (DocParameter *)aParameter;
 /** Returns the parameters. */
 - (NSArray *) parameters;
 

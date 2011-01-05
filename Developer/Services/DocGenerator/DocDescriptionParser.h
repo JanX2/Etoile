@@ -17,7 +17,7 @@
 
 Parser to extract ETDoc markup located in method, function and macro 
 descriptions. */
-@interface DescriptionParser : NSObject 
+@interface DocDescriptionParser : NSObject 
 {
 	@private
 	NSMutableDictionary *parsed;
@@ -38,6 +38,8 @@ The element order matters, see -validTagsBeforeMainDescription. */
 Query the receiver to retrieve the parsing result. */
 - (void) parse: (NSString *)corpus;
 
+/** @taskunit Parsing Result */
+
 /** Returns the parsed main description. */
 - (NSString *) description;
 /** Returns the parsed content for <em>@task</em> tag. */
@@ -55,10 +57,12 @@ Query the receiver to retrieve the parsing result. */
 
 Parser to extract ETDoc markup located in class, protocol or category 
 descriptions. */
-@interface DocMethodGroupDescriptionParser : DescriptionParser
+@interface DocMethodGroupDescriptionParser : DocDescriptionParser
 {
 
 }
+
+/** @taskunit Parsing Result */
 
 /** Returns the parsed content for <em>@group</em> tag. */
 - (NSString *) group;
