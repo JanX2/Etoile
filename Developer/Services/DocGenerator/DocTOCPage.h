@@ -1,4 +1,5 @@
-/** <abstract>DocTOCPage represents a Table Of Contents page.</abstract>
+/**
+	<abstract>DocTOCPage represents a Table Of Contents page.</abstract>
 
 	Copyright (C) 2010 Quentin Mathe
 

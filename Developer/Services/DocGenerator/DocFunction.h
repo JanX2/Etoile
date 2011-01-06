@@ -16,7 +16,8 @@
 
 @class HtmlElement;
 
-/** @group Doc Element Tree 
+/** @group Doc Element Tree
+
 A DocFunction object represents a function in the documentation element tree. */
 @interface DocFunction : DocSubroutine <GSDocParserDelegate>
 {

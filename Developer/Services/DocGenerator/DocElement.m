@@ -129,7 +129,6 @@
 
 - (NSString *) insertLinksWithDocIndex: (DocIndex *)aDocIndex forString: (NSString *)aDescription 
 {
-	return aDescription;
 	NSMutableArray *descWords = [self wordsFromString: aDescription];
 	NSCharacterSet *punctCharset = [NSCharacterSet punctuationCharacterSet];
 

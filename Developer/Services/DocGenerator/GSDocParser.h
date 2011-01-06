@@ -30,6 +30,7 @@
 /** @group GSDoc Parsing */
 @interface GSDocParser : NSObject <GSDocParserDelegate>
 {
+	@private
 	id <CodeDocWeaving> weaver; /* Weak ref */
 	NSXMLParser *xmlParser;
 	NSMutableArray *parserDelegateStack;
@@ -39,6 +40,7 @@
 	NSSet *symbolElements;
 	NSMutableDictionary *substitutionElements;
 	NSSet *etdocElements;
+	NSDictionary *escapedCharacters;
 	NSMutableString *content;
 	NSDictionary *currentAttributes;
 }

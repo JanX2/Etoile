@@ -91,7 +91,7 @@ receiver. For example, when handling the closing tag in
 -[(GSDocParserDelegate) parser:endElement:withContent:] a subclass can do:
 
 <example>
-DescriptionParser *descParser = AUTORELEASE([[DescriptionParser alloc] init]);
+DocDescriptionParser *descParser = AUTORELEASE([[DocDescriptionParser alloc] init]);
 
 [descParser parse: [self rawDescription]];
 [self addInformationFrom: descParser];

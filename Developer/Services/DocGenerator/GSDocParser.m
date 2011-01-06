@@ -56,7 +56,7 @@
 		@"li", @"item", @"ol", @"enum", @"dl", @"deflist", @"dt", @"term", @"", @"ref", nil];
 	// NOTE: var corresponds to GSDoc var and not HTML var
 	etdocElements = [[NSSet alloc] initWithObjects: @"p", @"code", @"example", @"br", @"em", @"strong", @"var", @"ivar", nil]; 
-
+	escapedCharacters = [[NSMutableDictionary alloc] initWithObjectsAndKeys: @"&lt;", @"<", @"&gt;", @">", nil];
 	content = [NSMutableString new];
 	
 	return self;
@@ -70,6 +70,7 @@
 	[symbolElements release];
 	[substitutionElements release];
 	[etdocElements release];
+	[escapedCharacters release];
 	[content release];
 	[super dealloc];
 }
@@ -223,9 +224,25 @@ didStartElement:(NSString *)elementName
 	[[self parserDelegate] parser: self startElement: elementName withAttributes: attributeDict];
 }
 
+/* On Mac OS X, this method is called with '<' and '>' as foundCharacters when 
+the parser encounters &lt; or &gt;.
+
+NSXMLParser automatically unescape common sequences such as &lt; and &gt;, and 
+no way exists to disable it. */
 - (void) parser: (NSXMLParser *)parser foundCharacters:(NSString *)string 
 {
-	[content appendString: string];
+	NSString *escapedCharacter = [escapedCharacters objectForKey: string];
+
+#if 0
+	NSString *escapedString = [string stringByReplacingOccurrencesOfString: @"<" withString: @"&lt;"];
+	escapedString = [escpaedString stringByReplacingOccurrencesOfString: @">" withString: @"&gt;"];
+	if ([escapedString isEqual: string] == NO || [string rangeOfString: @"<"].location != NSNotFound)
+	{
+		NSLog(@"bla");
+	}
+#endif
+
+	[content appendString: (escapedCharacter != nil ? escapedCharacter : string)];
 }
 
 - (void) parser: (NSXMLParser *)parser
@@ -269,6 +286,7 @@ didStartElement:(NSString *)elementName
 	[self newContent];
 	DESTROY(currentAttributes);
 }
+
 
 - (void) parserDidEndDocument: (NSXMLParser *)parser
 {

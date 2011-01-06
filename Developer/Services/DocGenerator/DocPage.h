@@ -120,7 +120,7 @@ Doc elements are sorted by their -[ETKeyValuePair key] such as task or group
 name, before being rendered to HTML.
 
 Group or task names are output with a &lt;h4&gt; header (&lt;h3&gt; when the title is nil).<br />
-A title is also added, which uses a &lt;h3;&gt; header.
+A title is also added, which uses a &lt;h3&gt; header.
 
 repSelector should usually be -HTMLRepresentation. Additional representations 
 can be added to the DocElement subclasses such as 

@@ -1,5 +1,4 @@
-/** <title>DocPageWeaver</title>
-
+/**
 	<abstract>A documentation builder that produce pages based on the input 
 	content.</abstract>
 

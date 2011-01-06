@@ -1,5 +1,4 @@
-/** <title>DocIndex</title>
-
+/**
 	<abstract>A documentation index that can be used to create links.</abstract>
 
 	Copyright (C) 2010 Quentin Mathe
