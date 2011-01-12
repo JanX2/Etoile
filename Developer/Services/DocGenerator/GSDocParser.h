@@ -17,7 +17,11 @@
 @class DocHeader, DocMethod, DocFunction;
 @class GSDocParser;
 
-/** @group GSDoc Parsing */
+/** @group GSDoc Parsing
+
+Parsing protocol usually implemented by DocElement subclass, so the parsing 
+can be delegated per major XML elements (e.g. class, method etc.) to a newly 
+instantied doc element and initialize it in this way.  */
 @protocol GSDocParserDelegate
 - (void) parser: (GSDocParser *)parser 
    startElement: (NSString *)anElement
@@ -27,7 +31,23 @@
     withContent: (NSString *)aContent;
 @end
 
-/** @group GSDoc Parsing */
+/** @group GSDoc Parsing
+
+Main GSDoc parser which wraps a NSXMLParser internally, handles the basic 
+XML parsing and preprocessing, but delegates the rest to DocElement 
+objects instantiated based on the class returned by -elementClassForName:.<br />
+For example &lt;method&gt; is delegated to DocMethod through GSDocParserDelegate 
+methods.
+
+The parsing state is managed as a delegate parser stack that contains the 
+receiver itself and zero or more DocElement objects pushed on top.
+
+To parse a GDoc document, you have to initialize a new GSDocParser, use 
+-setWeaver: to set the object which handles the parsing ouput such 
+DocDeclarationReorderer or DocPageWeaver, and triggers the parsing with 
+-parseAndWeave.
+
+All XML parsing related methods are used internally, you can ignore them. */
 @interface GSDocParser : NSObject <GSDocParserDelegate>
 {
 	@private
@@ -43,58 +63,79 @@
 	NSDictionary *escapedCharacters;
 	NSMutableString *content;
 	NSDictionary *currentAttributes;
+	BOOL trimFoundCharacters;
 }
 
-- (id) initWithString: (NSString *)aContent;
+/** @taskunit Initialization */
 
+/** Returns a GSDoc parser initialized with the given GSDoc document content.
+
+Call -setWeaver: on the returned object to be ready to parse. */
+- (id) initWithString: (NSString *)aContent;
+/** Sets the weaver on which the receiver should call back CodeDocWeaving 
+methods while parsing the GSDoc XML provided at initialization time. */
 - (void) setWeaver: (id <CodeDocWeaving>)aDocWeaver;
+/** Returns the weaver currently in use or nil. 
+
+See also -setWeaver:. */
 - (id <CodeDocWeaving>) weaver;
+
+/** Parses the GSDoc XML with which the receiver was initialized, and at the same 
+time weaves the produced doc elements through CodeDocWeaving methods.
+
+DocElement subclass objects are created, when parsing an XML element to which 
+a valid class is bound to with -elementClassForName:.
+
+@task Parsing and Weaving */
 - (void) parseAndWeave;
 
-/**
- * Reinitialize the current CDATA stored in the content variable.
- * @task Parsing
- */
-- (void) newContent;
+/**  @taskunit XML Parsing */
 
+/** Reinitializes the current CDATA stored in the content variable. */
+- (void) newContent;
+/** Returns the class to be instantiated while parsing the given XML element.
+
+When a valid class is returned, once instantiated, the parsing gets delegated 
+to it through GSDocParserDelegate until the given XML element end is reached. */
 - (Class) elementClassForName: (NSString *)anElementName;
+/** Returns the current parser delegate.
+
+The parser delegate is usually a DocElement object or the receiver iself.
+
+Never returns nil. */
 - (id <GSDocParserDelegate>) parserDelegate;
+/** Pushes a new parser delegate to which the XML parsing should be delegated to.
+
+Will be popped once we reach the end of the XML element that triggered the 
+delegate creation.
+
+You usually don't have to call this method, it is called each time 
+-elementClassForName: returns a valid class.
+
+The given delegate must not be nil.
+
+See also -popParserDelegate and -parserDelegate. */
 - (void) pushParserDelegate: (id <GSDocParserDelegate>)aDelegate;
+/** Pops the last pushed parser delegate to which the XML parsing was delegated 
+to until now.
+
+You usually don't have to call this method, it is called each time we reach the 
+end of an XML element bound to a valid class in -elementClassForName:.
+
+See also -pushParserDelegate and -parserDelegate. */
 - (void) popParserDelegate;
+/** Returns the current indenting in use.
+
+The indentation varies each time a parser delegate is popped or pushed. */
 - (NSString *) indentSpaces;
 
-/**
- * NSXMLParse delegate method.
- * @task Parsing
- */
-- (void) parser: (NSXMLParser*) parser didStartElement:(NSString *)elementName
-                                          namespaceURI:(NSString *)namespaceURI
-                                         qualifiedName:(NSString *)qName
-                                            attributes:(NSDictionary *)attributeDict;
+/** @taskunit XML Attribute Retrieval */
 
-/**
- * NSXMLParse delegate method.
- * @task Parsing
- */
-- (void) parser: (NSXMLParser*) parser foundCharacters:(NSString *)string;
-
-/**
- * NSXMLParse delegate method.
- * @task Parsing
- */
-- (void) parser: (NSXMLParser*) parser   didEndElement:(NSString *)elementName
-                                          namespaceURI:(NSString *)namespaceURI
-                                         qualifiedName:(NSString *)qName;
-
-- (void) parser: (GSDocParser *)parser 
-   startElement: (NSString *)elementName
-  withAttributes: (NSDictionary *)attributeDict;
-
-- (void) parser: (GSDocParser *)parser
-     endElement: (NSString *)elementName
-    withContent: (NSString *)trimmedContent;
-
+/** Returns the XML attributes in the last parsed element. */
 - (NSDictionary *) currentAttributes;
+/** Retrieves the value for the <em>type</em> key in the given XML attributes, 
+usually retrieved with -currentAttributes when parsing the element <em>arg</em>, 
+and returns the type or a blank string if no type is declared. */
 - (NSString *) argTypeFromArgsAttributes: (NSDictionary *)attributeDict;
 
 @end
