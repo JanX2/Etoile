@@ -122,7 +122,7 @@ to until now.
 You usually don't have to call this method, it is called each time we reach the 
 end of an XML element bound to a valid class in -elementClassForName:.
 
-See also -pushParserDelegate and -parserDelegate. */
+See also -pushParserDelegate: and -parserDelegate. */
 - (void) popParserDelegate;
 /** Returns the current indenting in use.
 

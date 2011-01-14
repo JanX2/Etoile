@@ -15,7 +15,7 @@
 
 @implementation DocElement
 
-@synthesize name, task, taskUnit, filteredDescription;
+@synthesize name, task, taskUnit, filteredDescription, ownerSymbolName;
 
 - (id) init
 {
@@ -31,6 +31,7 @@
 	[name release];
 	[task release];
 	[taskUnit release];
+	[ownerSymbolName release];
 	[super dealloc];
 }
 
@@ -113,6 +114,14 @@
 	return rawDescription;
 }
 
+- (void) setFilteredDescription: (NSString *)aDescription
+{
+	/* We remove white spaces and newlines to prevent many empty words when 
+	   breaking the description into words in -insertLinksWithDocIndex:forString:
+	   Without it, it won't parse '-[Class \nblabla]'. */
+	ASSIGN(filteredDescription, [aDescription stringByTrimmingWhitespacesAndNewlinesByLine]);
+}
+
 - (void) addInformationFrom: (DocDescriptionParser *)aParser
 {
 	[self setFilteredDescription: [aParser description]];
@@ -122,15 +131,96 @@
 
 - (NSMutableArray *) wordsFromString: (NSString *)aDescription
 {
-	NSCharacterSet *charset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-	return [NSMutableArray arrayWithArray: 
-    	[aDescription componentsSeparatedByCharactersInSet: charset]];
+	NSCharacterSet *spaceCharset = [NSCharacterSet whitespaceCharacterSet];
+	NSArray *lines = [aDescription componentsSeparatedByCharactersInSet: [NSCharacterSet newlineCharacterSet]];
+	NSUInteger estimatedMaxDescWordSize = 10000;
+	NSMutableArray *allWords = [NSMutableArray arrayWithCapacity: estimatedMaxDescWordSize];
+	BOOL treatAsSingleWord = NO;
+
+	for (NSString *line in lines)
+	{
+		/* <pre> corresponds to  <example> in the doc comment */
+		if ([line hasPrefix: @"<pre>"])
+		{
+			treatAsSingleWord = YES;
+			[allWords addObject: [NSMutableString stringWithFormat: @"\n%@\n", line]];
+		}
+		else if ([line hasPrefix: @"</pre>"])
+		{
+			treatAsSingleWord = NO;
+			[[allWords lastObject] appendString: line];
+			[[allWords lastObject] appendString: @"\n"];
+		}
+		else if (treatAsSingleWord)
+		{
+			[[allWords lastObject] appendString: line];
+			[[allWords lastObject] appendString: @"\n"];
+		}
+		else
+		{
+			NSArray *lineWords = [line componentsSeparatedByCharactersInSet: spaceCharset];
+			[allWords addObjectsFromArray: lineWords];
+		}
+	}
+
+	return allWords;
+}
+
+- (NSString *) methodLinkWithDocIndex: (DocIndex *)aDocIndex 
+	word: (NSString *)word atIndex: (int)i inWords: (NSMutableArray *)descWords
+{
+	unichar secondChar = [word characterAtIndex: 1];
+	BOOL isFullMethodRef = (secondChar == '[' && i + 1 < [descWords count]);
+
+	if (isFullMethodRef)
+	{
+		NSString *nextWord = [descWords objectAtIndex: i + 1];
+
+		/* A trimming use case is 'weaveSelector].</p>' to 'weaveSelector]' */
+		NSArray *nextWordParts = [nextWord componentsSeparatedByString: @"]"];
+
+		/* It makes no sense to have more than a single ] in 
+		   'weaveSelector].</p>' or similar, so we disallow it.
+		   See also -setFilteredDescription:. */
+		ETAssert([nextWordParts count] == 2);
+
+		NSString *methodWord = [nextWordParts firstObject];
+		NSString *symbol = [NSString stringWithFormat: @"%@ %@]", word, methodWord];
+
+		[descWords replaceObjectAtIndex: i + 1 
+							 withObject: [nextWordParts lastObject]];
+
+		return [aDocIndex linkForSymbolName: symbol ofKind: @"methods"];
+	}
+	else
+	{
+		return [aDocIndex linkForLocalMethodRef: word relativeTo: self];
+	}
+	return nil;
+}
+
+/* In most cases, no link is created and link is the same than symbol */
+- (NSString *) otherLinkWithDocIndex: (DocIndex *)aDocIndex symbolName: (NSString *)symbol
+{
+
+	NSString *link = [aDocIndex linkForClassName: symbol];
+	BOOL linkCreated = (link != symbol);
+
+	if (linkCreated)
+		return link;
+
+	link = [aDocIndex linkForProtocolName: symbol];
+
+	return link;
 }
 
 - (NSString *) insertLinksWithDocIndex: (DocIndex *)aDocIndex forString: (NSString *)aDescription 
 {
 	NSMutableArray *descWords = [self wordsFromString: aDescription];
-	NSCharacterSet *punctCharset = [NSCharacterSet punctuationCharacterSet];
+	NSMutableCharacterSet *punctCharset = [NSMutableCharacterSet punctuationCharacterSet];
+
+	/* [ and ] don't have to be removed, they are not included in this charset */
+	[punctCharset removeCharactersInString: @"-+"];
 
 	for (int i = 0; i < [descWords count]; i++)
 	{
@@ -139,6 +229,11 @@
 		NSRange r = NSMakeRange(0, length);
 		BOOL usesSubword = NO;
 		NSString *symbol = word;
+		NSString *link =  nil;
+		unichar firstChar = '\0';
+		
+		if (r.length > 2)
+			firstChar = [word characterAtIndex: 0];
 
 		/* We want to trim some common punctuation patterns e.g.
 		   - word
@@ -147,11 +242,18 @@
 		   TODO: But we need to handle square bracket use specially. For square 
 		   brackets, we detect [Class], [(Protocol)], -[Class method], 
 		   +[Class method], -[(Protocol) method], +[(Protocol) method] */
-		if (r.length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: 0]])
+		if (r.length >= 2 && [punctCharset characterIsMember: firstChar])
 		{
 			r.location++;
 			r.length--;
 			usesSubword = YES;
+		}
+
+		BOOL isPotentialMethodLink = (firstChar == '+' || firstChar == '-');
+	
+		if (isPotentialMethodLink)
+		{
+			[punctCharset removeCharactersInString: @":)"];
 		}
 		if (r.length >= 2 && [punctCharset characterIsMember: [word characterAtIndex: length - 1]])
 		{
@@ -162,13 +264,22 @@
 			}
 			usesSubword = YES;
 		}
+
 		if (usesSubword)
 		{
 			symbol = [word substringWithRange: r];
 		}
 
-		/* In most cases, no link is created and link is the same than symbol */
-		NSString *link = [aDocIndex linkForSymbolName: symbol ofKind: nil];
+		if (isPotentialMethodLink)
+		{
+			link = [self methodLinkWithDocIndex: aDocIndex word: symbol atIndex: i inWords: descWords];
+			[punctCharset addCharactersInString: @":)"];
+		}
+		else
+		{
+			link = [self otherLinkWithDocIndex: aDocIndex symbolName: symbol];
+		}
+
 		NSString *finalWord = link;
 
 		if (usesSubword)
@@ -220,6 +331,11 @@
 - (NSString *) HTMLDescriptionWithDocIndex: (DocHTMLIndex *)aDocIndex
 {
 	NSMutableString *description = [NSMutableString stringWithString: [self filteredDescription]];
+
+	if ([description rangeOfString: @"<example>"].location != NSNotFound)
+	{
+		NSLog(@"bla");	
+	}
 
 	[self replaceBasicDocMarkupWithHTMLInString: description];
 	[self replaceDocSectionsWithHTMLInString: description];
@@ -290,6 +406,41 @@
 - (NSArray *) parameters
 {
 	return [NSArray arrayWithArray: parameters];
+}
+
+@end
+
+@implementation NSString (DocGenerator)
+
+// TODO: Should be handled in DocDescriptionParser. Would be faster too.
+- (NSString *) stringByTrimmingWhitespacesAndNewlinesByLine
+{
+	NSCharacterSet *spaceCharset = [NSCharacterSet whitespaceCharacterSet];
+	NSArray *lines = [self componentsSeparatedByCharactersInSet: [NSCharacterSet newlineCharacterSet]];
+	NSMutableArray *trimmedLines = [NSMutableArray arrayWithCapacity: [lines count]];
+	BOOL skipLines = NO;
+
+	for (NSString *line in lines)
+	{
+		if ([line hasPrefix: @"<example>"])
+		{
+			skipLines = YES;
+		}
+		else if ([line hasPrefix: @"</example>"])
+		{
+			skipLines = NO;
+		}
+
+		if (skipLines)
+		{
+			[trimmedLines addObject: line];
+		}
+		else
+		{
+			[trimmedLines addObject: [line stringByTrimmingCharactersInSet: spaceCharset]];
+		}
+	}
+	return [trimmedLines componentsJoinedByString: @"\n"];
 }
 
 @end

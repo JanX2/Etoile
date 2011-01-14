@@ -11,7 +11,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class DocHeader, DocMethod, DocFunction, DocPage;
+@class DocElement;
 
 /** @group Link Generation
 
@@ -85,11 +85,7 @@ You must call this method before generating the document output e.g. invoking
 - (NSString *) linkForProtocolName: (NSString *)aProtocolName;
 
 - (NSString *) linkForGSDocRef: (NSString *)aRef;
-- (NSString *) linkForMethodName: (NSString *)aMethodName 
-                     inClassName: (NSString *)aClassName
-                    categoryName: (NSString *)aCategoryName
-                   isClassMethod: (BOOL)isClassMethod;
-- (NSString *) linkForMethodRef: (NSString *)aRef;
+- (NSString *) linkForLocalMethodRef: (NSString *)aRef relativeTo: (DocElement *)anElement;
 
 - (NSString *) linkWithName: (NSString *)aName ref: (NSString *)aRef anchor: (NSString *)anAnchor;
 - (NSString *) refFileExtension;

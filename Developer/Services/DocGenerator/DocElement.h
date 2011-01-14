@@ -34,6 +34,7 @@ The doc element tree is rooted in a page. See DocPage. */
 	NSString *filteredDescription;
 	NSString *task;
 	NSString *taskUnit;
+	NSString *ownerSymbolName;
 }
 
 /** @taskunit Basic Documentation Properties */
@@ -102,6 +103,12 @@ Can be overriden in a subclass to update additional markup values. */
 
 /** @taskunit Link Insertion */
 
+/** The class, category or protocol symbol that is valid to resolve local 
+symbols in the element documentation.
+
+As an example, -ownerSymbolName is a local symbol that is resolved and replaced 
+by a link in -insertLinksWithDocIndex:forString:. */
+@property (nonatomic, retain) NSString *ownerSymbolName;
 /** Parses valid ETDoc symbol names in the given description and replaces them 
 with links built by the given doc index.
 
@@ -112,6 +119,7 @@ enclosed by common punctuation patterns. */
 
 /** @taskunit HTML Generation */
 
+
 /** Returns a HTML formatted description from the filtered description.
 
 The returned description includes API symbol links.
@@ -121,10 +129,11 @@ See -filteredDescription. */
 /** <override-dummy />
 Returns the HTML element tree into which the receiver should be rendered.
 
-By default, returns the [HtmlElement blankElement].
+By default, returns the +[HtmlElement blankElement].
 
 Should be overriden to return a custom representation. */
 - (HtmlElement *) HTMLRepresentation;
+
 
 /** @taskunit GSDoc Parsing */
 
@@ -194,3 +203,6 @@ object will insert symbol links and apply standard formatting (e.g. class name
 
 @end
 
+@interface NSString (DocGenerator)
+- (NSString *) stringByTrimmingWhitespacesAndNewlinesByLine;
+@end

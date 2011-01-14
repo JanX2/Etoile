@@ -25,7 +25,7 @@
 
 - (void) dealloc
 {
-	[selectorKeywords release];
+	DESTROY(selectorKeywords);
 	DESTROY(category);
 	[super dealloc];
 }
@@ -79,6 +79,15 @@
 	return [NSString stringWithFormat: @"%c[(%@) %@]", sign, aProtocolName, [self name]];
 }
 
+- (HtmlElement *) HTMLAnchorRepresentation
+{
+	/* -ownerSymbolName can return either a class or protocol e.g. ClassName or 
+	   (ProtocolName), so -refMarkupWithClassName: with the latter would return 
+	   a protocol ref markup. */
+	NSString *linkId = [self refMarkupWithClassName: [self ownerSymbolName]];
+	return [A name: [linkId stringByReplacingOccurrencesOfString: @" " withString: @"_"]];
+}
+
 /*
  <dl>
  <dt>+ (void) <strong>willVerify:</strong> (Class)aClass;</dt>
@@ -92,16 +101,17 @@
 */ 
 - (HtmlElement *) HTMLRepresentation
 {
-	DocIndex *docIndex = [DocIndex currentIndex];
-	H h_signature = [SPAN class: @"methodSignature"];
-	
-	[h_signature with: [SPAN class: @"methodScope" 
+	DocHTMLIndex *docIndex = [DocIndex currentIndex];
+	H hSignature = [SPAN class: @"methodSignature"];
+
+	[hSignature with: [SPAN class: @"methodScope" 
 	                          with: (isClassMethod ? @"+ " : @"- ")]];
+
+	H hReturnDesc = [[self returnParameter] HTMLRepresentationWithParentheses: YES];
+	H hReturnType = [SPAN class: @"returnType" 
+	                       with: [SPAN class: @"type" with: hReturnDesc]];
 	
-	H h_returnType = [SPAN class: @"returnType" 
-	                        with: [SPAN class: @"type" with: [[self returnParameter] HTMLRepresentationWithParentheses: YES]]];
-	
-	[h_signature and: h_returnType];
+	[hSignature and: hReturnType];
 
 	NSArray *params = [self parameters];
 	BOOL isUnaryMessage = [params isEmpty];
@@ -109,24 +119,32 @@
 	for (int i = 0; i < [selectorKeywords count]; i++)
 	{
 		NSString *selKeyword = [selectorKeywords objectAtIndex: i];
-		H h_selector = [SPAN class: @"selector" with: @" " and: selKeyword and: @" "];
+		H hSelector = [SPAN class: @"selector" with: @" " and: selKeyword and: @" "];
 
-		[h_signature and: h_selector];
+		[hSignature and: hSelector];
 
 		if (isUnaryMessage)
 			break;
 
 		DocParameter *p = [params objectAtIndex: i];
 	
-		[h_signature and: [p HTMLRepresentationWithParentheses: YES]];
+		[hSignature and: [p HTMLRepresentationWithParentheses: YES]];
 	}
-	
-	H methodFull = [DIV class: @"method" 
-	                     with: [DL with: [DT with: h_signature]
-	                                and: [DD with: [DIV class: @"methodDescription" 
-	                                                     with: [self HTMLDescriptionWithDocIndex: docIndex]]]]];
-	//NSLog(@"Method %@", methodFull);
-	return methodFull;
+
+	// FIXME: HTML output below broken
+	/*H hAnchoredSig = [[self HTMLAnchorRepresentation] with: hSignature];
+	H hMethodDesc = [DIV class: @"methodDescription" 
+	                      with: [self HTMLDescriptionWithDocIndex: docIndex]];
+	H hMethodDiv = [DIV class: @"method" with: [DL with: [DT with: hAnchoredSig]
+	                                                and: [DD with: hMethodDesc]]];*/
+	H hMethodDesc = [DIV class: @"methodDescription" 
+	                      with: [self HTMLDescriptionWithDocIndex: docIndex]];
+	H hMethodDiv = [DIV class: @"method" with: [self HTMLAnchorRepresentation]
+	                                      and: [DL with: [DT with: hSignature]
+	                                                and: [DD with: hMethodDesc]]];
+
+	//NSLog(@"Method %@", methodDiv);
+	return hMethodDiv;
 }
 
 - (void) parser: (GSDocParser *)parser 

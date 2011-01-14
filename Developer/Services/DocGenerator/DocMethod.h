@@ -16,7 +16,7 @@
 
 /** @group Doc Element Tree
 
-A DocMMethod object represents a method in the documentation element tree. */
+A DocMethod object represents a method in the documentation element tree. */
 @interface DocMethod : DocSubroutine <GSDocParserDelegate>
 {
 	@private
@@ -40,9 +40,9 @@ representation such as HTML.
 
 For example, would return <em>-refMarkup</em> for this method.
 
--[DocElement insertLinks:forString:] can detect the links returned by these 
-refMarkupXXX methods and hand them to a HTMLDocIndex, which in turn will return 
-a HTML link to replace this markup.  */
+-[DocElement insertLinksWithDocIndex:forString:] can detect the links returned 
+by these refMarkupXXX methods and hand them to a HTMLDocIndex, which in turn 
+will return a HTML link to replace this markup.  */
 - (NSString *) refMarkup;
 /** Returns a valid ETDoc method link, relative to the given class, that can be 
 turned into a real link in the output representation such as HTML.

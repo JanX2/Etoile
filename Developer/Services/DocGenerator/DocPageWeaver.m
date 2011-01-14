@@ -315,6 +315,7 @@
 
 	[apiOverviewPage addSubheader: currentHeader];
 
+	[[self currentHeader] setOwnerSymbolName: aClassName];
 	[docIndex setProjectRef: [[self currentPage] name] 
 	          forSymbolName: aClassName 
 	                 ofKind: @"classes"];
@@ -333,6 +334,7 @@
 
 	[apiOverviewPage addSubheader: currentHeader];
 
+	[[self currentHeader] setOwnerSymbolName: [NSString stringWithFormat: @"(%@)", aProtocolName]];
 	[docIndex setProjectRef: [[self currentPage] name] 
 	          forSymbolName: aProtocolName 
 	                 ofKind: @"protocols"];
@@ -360,6 +362,7 @@
 	{
 		kind = @"protocols";
 	}
+	[[self currentHeader] setOwnerSymbolName: categorySymbol];
 	[docIndex setProjectRef: [[self currentPage] name] 
 	          forSymbolName: categorySymbol
 	                 ofKind: kind];
@@ -370,16 +373,28 @@
 	[[self currentPage] addMethod: aMethod];
 
 	NSString *refMarkup = nil;
+	NSString *ownerSymbol = nil;
 
 	if ([self currentClassName] != nil)
 	{
-		refMarkup = [aMethod refMarkupWithClassName: [self currentClassName]]; 
+		refMarkup = [aMethod refMarkupWithClassName: [self currentClassName]];
+		ownerSymbol = [self currentClassName];
+
+		NSString *currentCategoryName = [[self currentHeader] categoryName];
+		
+		if (currentCategoryName != nil)
+		{
+			ownerSymbol = [NSString stringWithFormat: @"%@(%@)", 
+				[self currentClassName], currentCategoryName];
+		}
 	}
 	else
 	{
 		ETAssert([self currentProtocolName] != nil);
 		refMarkup = [aMethod refMarkupWithProtocolName: [self currentProtocolName]];
+		ownerSymbol = [NSString stringWithFormat: @"(%@)", [self currentProtocolName]];
 	}
+	[aMethod setOwnerSymbolName: ownerSymbol];
 	[docIndex setProjectRef: [[self currentPage] name] 
 	          forSymbolName: refMarkup
 	                 ofKind: @"methods"];

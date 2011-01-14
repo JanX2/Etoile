@@ -15,14 +15,14 @@
 
 /** @group Doc Element Tree
 
-DocCDataType objects are used to represent various C data types:
+-weaveOtherDataType: -[(GSDocParserDelegate) parser:endElement:withContent:] DocCDataType objects are used to represent various C data types:
 
-<ul>
-<li>structure</li>
-<li>function pointer</li>
-</ul> 
+<list>
+<item>structure</item>
+<item>function pointer</item>
+</list> 
 
-Enum and union are represented with DocConstant. */
+Enum and union are represented with DocConstant -weaveSelector. */
 @interface DocCDataType : DocElement <GSDocParserDelegate>
 {
 	NSString *type;
@@ -54,11 +54,11 @@ See -[DocElement weaveSelector]. */
 
 /** DocConstant objects are used to represent various constant-like C data types:
 
-<ul>
-<li>const variable or pointer</li>
-<li>enum</li>
-<li>union</li>
-</ul>  */
+<list>
+<item>const variable or pointer</item>
+<item>enum</item>
+<item>union</item>
+</list>  */
 @interface DocConstant : DocCDataType
 {
 

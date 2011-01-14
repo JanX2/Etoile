@@ -7,6 +7,7 @@
  */
 
 #import "DocIndex.h"
+#import "DocElement.h"
 
 @implementation DocIndex
 
@@ -187,17 +188,20 @@ withDictionaryName: (NSString *)mergedDictName
 	return nil;
 }
 
-- (NSString *) linkForMethodName: (NSString *)aMethodName 
-                     inClassName: (NSString *)aClassName
-                    categoryName: (NSString *)aCategoryName
-                   isClassMethod: (BOOL)isClassMethod
+// NOTE: Could be better to pass -ownerSymbolName result to relativeTo:, but 
+// we would lost the context to report a warning.
+- (NSString *) linkForLocalMethodRef: (NSString *)aRef relativeTo: (DocElement *)anElement
 {
-	return nil;
-}
+	if ([anElement ownerSymbolName] == nil)
+	{
+		ETLog(@"WARNING: %@ cannot be resolved in %@ (ownerSymbolName is nil)", aRef, anElement);
+		return nil;
+	}
 
-- (NSString *) linkForMethodRef: (NSString *)aRef
-{
-	return nil;
+	NSString *symbol = [NSString stringWithFormat: @"%@[%@ %@]", 
+		[aRef substringToIndex: 1], [anElement ownerSymbolName], [aRef substringFromIndex: 1]];
+
+	return [self linkWithName: aRef forSymbolName: symbol ofKind: @"methods"];
 }
 
 - (NSString *) linkWithName: (NSString *)aName ref: (NSString *)aRef anchor: (NSString *)anAnchor
@@ -223,7 +227,8 @@ withDictionaryName: (NSString *)mergedDictName
 
 	if (anAnchor != nil && [anAnchor isEqualToString: @""] == NO)
 	{
-		return [NSString stringWithFormat: @"<a href=\"%@#%@\">%@</a>", aRef, anAnchor, aName];
+		return [NSString stringWithFormat: @"<a href=\"%@#%@\">%@</a>", aRef, 
+			[anAnchor stringByReplacingOccurrencesOfString: @" " withString: @"_"], aName];
 	}
 	else
 	{

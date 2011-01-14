@@ -4,9 +4,11 @@ TODO DocGenerator
 Bugs and Small Features
 -----------------------
 
+- Support <override-XXX /> and <init /> GSDoc method attributes
 - Expand target method on a method link click
 - Support function and perhaps macro links in addition to method links
 - Fix autogsdoc to insert no spaces between a method ref and any punctuation that follows. e.g. '-weaveSelector.' and not '-weaveSelector .'
+- Ensure '-weaveSelector' is an unbreakable word and won't appear cut by a newline on '-'
 
 
 Other Features
