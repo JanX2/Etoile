@@ -249,8 +249,9 @@
 		[table add: [TR with: [TH with: @"Declared in:"] and: [TD with: declared]]];
 	}
 
+	NSString *formattedAbstract = [self insertLinksWithDocIndex: docIndex forString: abstract];
 	// TODO: Could be better not to insert an empty table when authors is empty and declared is nil
-	H meta = [DIV id: @"meta" with: [P id: @"metadesc" with: abstract] and: table];
+	H meta = [DIV id: @"meta" with: [P id: @"metadesc" with: formattedAbstract] and: table];
 
 	/* Pack title, meta and overview in a header html element */
 	H header = [DIV id: @"header" with: h_title and: meta and: [self HTMLOverviewRepresentation]];
