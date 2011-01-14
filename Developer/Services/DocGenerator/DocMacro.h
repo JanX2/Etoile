@@ -3,7 +3,7 @@
 
 	Copyright (C) 2010 Quentin Mathe
 
-	Authors:  Quentin Mathe <quentin.mathe@gmail.com>
+	Author:  Quentin Mathe <quentin.mathe@gmail.com>
 	Date:  December 2010
 	License:  Modified BSD (see COPYING)
  */

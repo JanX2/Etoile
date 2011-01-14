@@ -4,8 +4,8 @@
 
 	Copyright (C) 2008 Nicolas Roard
 
-	Authors:  Nicolas Roard,
-	          Quentin Mathe <quentin.mathe@gmail.com>
+	Author:  Nicolas Roard
+	Author:  Quentin Mathe <quentin.mathe@gmail.com>
 	Date:  June 2008
 	License:  Modified BSD (see COPYING)
  */
