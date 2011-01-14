@@ -22,12 +22,16 @@
 	NSMutableArray* children;
 	NSSet *blockElementNames;
 }
-/** Returns a new immutable HTML element whose content is always an empty string.
+/** Returns a new HTML element whose content is not wrapped into opening and 
+closing tags corresponding to the receiver, but limited to the child content.
 
-The name is set to 'Blank'. */
+When the content is evaluated, the element name and attributes are ignored, but 
+each child content is evaluated normally.
+
+When the receiver has no children, -content returns an empty string. */
 + (HtmlElement *) blankElement;
 + (HtmlElement *) elementWithName: (NSString *) aName;
-- (HtmlElement *) iniWithName: (NSString *) aName;
+- (HtmlElement *) initWithName: (NSString *) aName;
 - (HtmlElement *) addText: (NSString *) aText;
 - (HtmlElement *) add: (HtmlElement *) anElem;
 - (HtmlElement *) id: (NSString *) anID;
@@ -63,6 +67,8 @@ The name is set to 'Blank'. */
 #define DD [HtmlElement elementWithName: @"dd"]
 #define UL [HtmlElement elementWithName: @"ul"]
 #define LI [HtmlElement elementWithName: @"li"]
+#define EM [HtmlElement elementWithName: @"em"]
+#define HR [HtmlElement elementWithName: @"hr"]
 
 /** @group HTML Support */
 @interface HtmlElement (CommonUseCases)
@@ -74,4 +80,5 @@ The name is set to 'Blank'. */
 - (HtmlElement *) with: (id)something and: (id) something and: (id)something and: (id)something;
 - (HtmlElement *) id: (NSString *)anID with: (id)something;
 - (HtmlElement *) id: (NSString *)anID with: (id)something and: (id)something;
+- (HtmlElement *) id: (NSString *)anID with: (id)something and: (id)something and: (id)something;
 @end

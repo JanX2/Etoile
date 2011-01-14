@@ -246,17 +246,24 @@
 	}
 	if (declared != nil)
 	{
-		[table add: [TR with: [TH with: @"Declared in:"] and: [TD with: declared]]];
+		[table add: [TR with: [TH with: @"Declared in"] and: [TD with: declared]]];
 	}
 
 	NSString *formattedAbstract = [self insertLinksWithDocIndex: docIndex forString: abstract];
 	// TODO: Could be better not to insert an empty table when authors is empty and declared is nil
-	H meta = [DIV id: @"meta" with: [P id: @"metadesc" with: formattedAbstract] and: table];
+	H hMeta = [DIV id: @"meta" with: [P id: @"metadesc" with: [EM with: formattedAbstract]] 
+	                           and: table];
 
 	/* Pack title, meta and overview in a header html element */
-	H header = [DIV id: @"header" with: h_title and: meta and: [self HTMLOverviewRepresentation]];
+	H hOverview = [self HTMLOverviewRepresentation];
+	H hHeader = [DIV id: @"header" with: h_title and: hMeta and: hOverview];
 
-	return header;
+	if ([hOverview isEqual: [HtmlElement blankElement]])
+	{
+		return hHeader;
+	}
+
+	return [[HtmlElement blankElement] with: hHeader and: HR];
 }
 
 // TODO: Use correct span class names...
@@ -269,7 +276,9 @@
 	if (className != nil && categoryName == nil)
 	{
 		ETAssert(protocolName == nil);
-		[hEntryName with: className and: @" : " and: [docIndex linkForClassName: superClassName]];
+		[hEntryName with: className];
+		// TODO: When expanded, we should show...
+		//[hEntryName with: className and: @" : " and: [docIndex linkForClassName: superClassName]];
 	}
 	if (categoryName != nil)
 	{

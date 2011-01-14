@@ -31,6 +31,15 @@ em, i
   font-style: italic;
 }
 
+hr
+{
+  color: #ccc;
+  background-color: #ccc;
+  border-style: none;
+  border-top: 1px solid #ccc;
+  margin: 0;
+}
+
 img
 {
   border:0;

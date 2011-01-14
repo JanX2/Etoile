@@ -40,10 +40,23 @@
           <sel>blankElement</sel>
           <desc>
             <p>
-              Returns a new immutable HTML element whose
-              content is always an empty string.
+              Returns a new HTML element whose content is not
+              wrapped into opening and closing tags
+              corresponding to the receiver, but limited
+              to the child content.
             </p>
-            <p>The name is set to 'Blank'.</p>
+            <p>
+              When the content is evaluated, the element name and
+              attributes are ignored, but each child content
+              is evaluated normally.
+            </p>
+            <p>
+              When the receiver has no children,
+              <ref type="method" id="-content">
+                -content
+              </ref>
+              returns an empty string.
+            </p>
           </desc>
         </method>
         <method type="HtmlElement*" factory="yes">
@@ -107,7 +120,7 @@
           </desc>
         </method>
         <method type="HtmlElement*">
-          <sel>iniWithName:</sel>
+          <sel>initWithName:</sel>
           <arg type="NSString*">aName</arg>
           <desc>
             <em>Description forthcoming.</em>
@@ -186,6 +199,19 @@
           <sel>id:</sel>
           <arg type="NSString*">anID</arg>
           <sel>with:</sel>
+          <arg type="id">something</arg>
+          <sel>and:</sel>
+          <arg type="id">something</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="HtmlElement*">
+          <sel>id:</sel>
+          <arg type="NSString*">anID</arg>
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <sel>and:</sel>
           <arg type="id">something</arg>
           <sel>and:</sel>
           <arg type="id">something</arg>

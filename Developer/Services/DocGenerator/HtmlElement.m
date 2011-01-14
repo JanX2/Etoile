@@ -8,6 +8,10 @@
 
 #import "HtmlElement.h"
 
+@interface HtmlElement (Private)
+- (void) collectChildContentWithString: (NSMutableString *)buf;
+@end
+
 @interface BlankHTMLElement : HtmlElement 
 @end
 
@@ -15,7 +19,9 @@
 
 - (NSString *) content
 {
-	return @"";
+	NSMutableString *buf = AUTORELEASE([NSMutableString new]);
+	[self collectChildContentWithString: buf];
+	return buf;
 }
 
 @end
@@ -30,10 +36,10 @@
 
 + (HtmlElement *) elementWithName: (NSString *) aName
 {
-	return AUTORELEASE([[HtmlElement alloc] iniWithName: aName]);
+	return AUTORELEASE([[HtmlElement alloc] initWithName: aName]);
 }
 
-- (HtmlElement *) iniWithName: (NSString *) aName
+- (HtmlElement *) initWithName: (NSString *) aName
 {
 	SUPERINIT;
 	children = [NSMutableArray new];
@@ -50,6 +56,11 @@
 	[elementName release];
 	[blockElementNames release];
 	[super dealloc];
+}
+
+- (BOOL) isEqual: (id)anObject
+{
+	return [[self description] isEqualToString: [anObject description]];
 }
 
 - (HtmlElement *) addText: (NSString *) aText
@@ -173,20 +184,8 @@
 	return [self with: something];
 }
 
-- (NSString *) content
+- (void) collectChildContentWithString: (NSMutableString *)buf
 {
-	NSMutableString* buf = AUTORELEASE([NSMutableString new]);
-	BOOL insertNewLine = [blockElementNames containsObject: elementName];
-
-	[buf appendFormat: @"<%@", elementName];
-	for (NSString *key in attributes)
-	{
-		[buf appendFormat: @" %@=\"%@\"", key, [attributes objectForKey: key]];
-	}
-	[buf appendString: @">"];
-	if (insertNewLine)
-		[buf appendString: @"\n"];
-	
 	for (id elem in children)
 	{
 		if ([elem isKindOfClass: [HtmlElement class]])
@@ -202,6 +201,24 @@
 			[buf appendString: [elem description]];
 		}
 	}
+}
+
+- (NSString *) content
+{
+	NSMutableString* buf = AUTORELEASE([NSMutableString new]);
+	BOOL insertNewLine = [blockElementNames containsObject: elementName];
+
+	[buf appendFormat: @"<%@", elementName];
+	for (NSString *key in attributes)
+	{
+		[buf appendFormat: @" %@=\"%@\"", key, [attributes objectForKey: key]];
+	}
+	[buf appendString: @">"];
+	if (insertNewLine)
+		[buf appendString: @"\n"];
+	
+	[self collectChildContentWithString: buf];
+
 	[buf appendFormat: @"</%@>", elementName];
 	if (insertNewLine)
 		[buf appendString: @"\n"];
