@@ -212,7 +212,7 @@
 	return header;
 }
 
-- (id) firstPairWithKey: (NSString *)aKey inArray: (NSArray *)anArray
+- (ETKeyValuePair *) firstPairWithKey: (NSString *)aKey inArray: (NSArray *)anArray
 {
 	return [anArray firstObjectMatchingValue: aKey forKey: @"key"];
 }
@@ -317,7 +317,7 @@
 	for (int i = 0; i < [elementsByGroup count]; i++)
 	{
 		NSString *group = [[elementsByGroup objectAtIndex: i] key];
-		NSArray *elementsInGroup = [[elementsByGroup objectAtIndex: i] value];
+		NSArray *elementsInGroup = [(ETKeyValuePair *)[elementsByGroup objectAtIndex: i] value];
 		HtmlElement *hGroup = (hasH3 ? [H4 with: group] : [H3 with: group]);
 		BOOL isFirst = (i == 0);
 

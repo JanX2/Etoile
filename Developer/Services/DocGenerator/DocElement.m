@@ -228,7 +228,7 @@
 - (NSString *) insertLinksWithDocIndex: (DocIndex *)aDocIndex forString: (NSString *)aDescription 
 {
 	NSMutableArray *descWords = [self wordsFromString: aDescription];
-	NSMutableCharacterSet *punctCharset = [NSMutableCharacterSet punctuationCharacterSet];
+	NSMutableCharacterSet *punctCharset = (id)[NSMutableCharacterSet punctuationCharacterSet];
 
 	/* [ and ] don't have to be removed, they are not included in this charset */
 	[punctCharset removeCharactersInString: @"-+"];
