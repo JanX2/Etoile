@@ -60,7 +60,39 @@ them to the weaver.  */
 - (void) parseAndWeave;
 @end
 
-/** @group Page Generation */
+/** @group Page Generation
+
+DocPageWeaver is DocGenerator core class that controls the documentation 
+generation process.<br />
+<em>etdocgen</em> tool creates a new page weaver based on the options and 
+arguments the user provides on the command-line, then triggers the page 
+generation with -weaveAllPages which in turn returns the final pages. 
+See DocPage API to understand how these pages can be turned into HTML.
+
+You initialize a new page weaver with various input documentation source files 
+and an optional template file. Based on the source file types, DocPageWeaver looks up a 
+parser. When no parser is available, it hands the file content directly to a new 
+documentation page (see DocPage that provides a template-based substitution 
+mechanism). Otherwise it delegates the source file parsing to the right parser 
+e.g. GSDocParser, which will instantiate new doc elements and weave them through 
+the CodeDocWeaving protocol as the parsing goes.
+
+DocPageWeaver is free to weave multiple pages from a single source file, or 
+gather doc elements and consolidate them onto a common page.<br />
+So in addition to act as coordinator in the doc generation process, 
+DocPageWeaver implements a strategy to:
+
+<list>
+<item>organize the doc elements into a book-like structure</item>
+<item>arrange the doc elements on each weaved page</item>
+</list>
+
+By invoking -weaveNewPage based on some precise criterias (e.g. 
+-weaveClassNamed:superclassName: was called), DocPageWeaver defines page 
+generation rules which correspond to a precise book-like structure.
+
+Subclassing altough experimental and untested, can be used to customize the 
+existing page generation strategy or implement a new one. */
 @interface DocPageWeaver : NSObject <CodeDocWeaving>
 {
 	@private
@@ -100,30 +132,71 @@ them to the weaver.  */
 	DocPage *otherDataTypePage;
 }
 
-/** @task Parser Choice */
+/** @taskunit Parser Choice */
 
+/** Returns the right parser class or Nil for the given file type.
+
+For <em>gsdoc</em>, returns GSDocParser. */
 + (Class) parserClassForFileType: (NSString *)aFileExtension;
 
-/** @task Initialization */
+/** @taskunit Initialization */
 
+/** Initializes and returns a new weaver, which will attempt to gather and 
+parse every files from the first directory argument that matches the given 
+file types, and will look up additional files in HTML or Markdown to be directly 
+inserted without parsing in the second directory argument. 
+
+A page template file, usually in HTML can be passed as the last argument. Each 
+DocPage class or subclass instantiated by DocPageWeaver will be initialized 
+with this template, unless -templateFileForSourceFile: returns a custom one.
+
+TODO: Specify the argument constraints precisely and clarify the template file 
+use (it is currently ignored all the time). */
 - (id) initWithParserSourceDirectory: (NSString *)aParserDirPath
                            fileTypes: (NSArray *)fileExtensions
                   rawSourceDirectory: (NSString *)otherDirPath
                         templateFile: (NSString *)aTemplatePath;
+/** <init />
+Initializes and returns a new weaver that will attempt to process and parse the 
+given source file paths based on their file types.
+
+A page template file, usually in HTML can be passed as the last argument. Each 
+DocPage class or subclass instantiated by DocPageWeaver will be initialized 
+with this template, unless templateFileForSourceFile: returns a custom one.
+
+TODO: Specify the argument constraints precisely and clarify the template file 
+use (it is currently ignored all the time). */
 - (id) initWithSourceFiles: (NSArray *)paths
               templateFile: (NSString *)aTemplatePath;
 
-/** @task Additional Sources */
+/** @taskunit Additional Sources */
 
+/** Sets the menu template file path. */
 - (void) setMenuFile: (NSString *)aMenuPath;
+/** Sets the external index file path. */
 - (void) setExternalMappingFile: (NSString *)aMappingPath;
-- (void) setProjectMappingFile: (NSString *)aMappingPath;
 
+/** Returns the first source file path that matches the given file name.
+
+The source paths are the ones passed to -initWithSourceFiles:templateFile:. */
 - (NSString *) pathForRawSourceFileNamed: (NSString *)aName;
+/** Returns the page template file path to be used to initialize new DocPage 
+objects when processing the given source file.
+
+By default, returns the path to <em>etoile-documentation-template.html</em> for 
+a <em>gsdoc</em> file, otherwise returns the path to 
+<em>etoile-documentation-markdown-template.html</em>.
+
+Can be overriden to return custom page templates based on the file types or even 
+some other criterias (for example the page weaver state). */
 - (NSString *) templateFileForSourceFile: (NSString *)aSourceFile;
 
-/** @task Weaving Pages */
+/** @taskunit Weaving Pages */
 
+/** Weaves one or more pages from all the source files.
+
+The number of weaved pages is unrelated to the number of source 
+files. */
 - (NSArray *) weaveAllPages;
 /** Weaves one or more pages for the current source file.
 
@@ -132,14 +205,23 @@ You should usually call -weaveAllPages rather than this method directly.
 See also -currentSourceFile. */
 - (NSArray *) weaveCurrentSourcePages;
 
+/** Starts a new page into which doc elements can be weaved.
+
+Each time, -weaveNewPage is called, -currentPage changes. */
 - (void) weaveNewPage;
+/** Inserts an overview from a file if available, into the current page. */
 - (void) weaveOverviewFile;
 
-/** @task Progress and Status */
+/** @taskunit Progress and Status */
 
+/** Returns the documentation source file currently parsed. */
 - (NSString *) currentSourceFile;
+/** Returns the documentation page currently weaved. */
 - (DocPage *) currentPage;
+/** Returns the name of the class whose documentation is currently parsed from 
+-currentSourceFile. */
 - (NSString *) currentClassName;
+/** Returns the header of the page currently weaved. See -currentPage. */
 - (DocHeader *) currentHeader;
 
 @end
