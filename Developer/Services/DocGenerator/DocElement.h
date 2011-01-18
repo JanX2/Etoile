@@ -39,12 +39,18 @@ The doc element tree is rooted in a page. See DocPage. */
 
 /** @taskunit Basic Documentation Properties */
 
+/** Returns the task name returned by -task when no custom task was set.
+
+The default task name is <em>Default</em>. */
++ (NSString *) defaultTask;
 /** The element name. */
 @property (retain, nonatomic) NSString *name;
 /** The task to which the receiver belongs to. 
 
 When a taskUnit is set on the receiver and the task is nil, the returned task 
-is the taskUnit, otherwise <em>Default</em> is returned if both are nil. */
+is the taskUnit, otherwise +defaultTaskName is returned if both are nil.
+
+See also +defaultTask. */
 @property (retain, nonatomic) NSString *task;
 /** The task to which the receiver, and the elements that follow it on the page, 
 belongs to.
@@ -172,6 +178,7 @@ e.g. -[(CodeDocWeaving) weaveOtherDataType:] or -[(CodeDocWeaving) weaveConstant
 @class DocParameter;
 
 /** @group Doc Element Tree
+@abstract Base class to represent function-like constructs in a doc element tree.
 
 DocSubroutine is an abstract class whose subclasses represent function-like 
 constructs suchs methods, C functions or macros. */
@@ -203,6 +210,10 @@ object will insert symbol links and apply standard formatting (e.g. class name
 
 @end
 
+/** @abstract None */
 @interface NSString (DocGenerator)
+- (NSString *) trimmedString;
 - (NSString *) stringByTrimmingWhitespacesAndNewlinesByLine;
 @end
+
+#define IS_NIL_OR_EMPTY_STR(x) (x == nil || [x isEqualToString: @""])

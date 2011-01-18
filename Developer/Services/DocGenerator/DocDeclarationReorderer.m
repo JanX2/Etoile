@@ -69,10 +69,11 @@ static NSString *root = @"root";
 	{
 		NSInteger symbolIndex = [docElementSymbols indexOfObject: symbol];
 		DocMethod *docElement = [docElements objectAtIndex: symbolIndex];
+		BOOL hasDefaultTask = [[docElement task] isEqualToString: [[docElement class] defaultTask]];
 
 		currentTaskUnit = ([docElement taskUnit] != nil ? [docElement taskUnit] : currentTaskUnit);
 
-		if (currentTaskUnit != nil)
+		if (currentTaskUnit != nil && hasDefaultTask)
 		{
 			[docElement setTask: currentTaskUnit];
 		}

@@ -130,6 +130,6 @@ use a custom representation in the output.
 See also DocElement. */
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
                                      elements: (NSArray *)elementsByGroup
-                   HTMLRepresentationSelector: (SEL)repSelector;
-
+                   HTMLRepresentationSelector: (SEL)repSelector
+                               groupSeparator: (HtmlElement *)aSeparator;
 @end

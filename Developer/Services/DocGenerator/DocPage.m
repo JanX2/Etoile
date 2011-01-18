@@ -142,7 +142,13 @@
 {
 	// FIXME: HOM broken on NSString *mainContentStrings = [[[self mainContentHTMLRepresentation] mappedCollection] content];
 	// [[mainContentStrings rightFold] stringByAppendingString: @""];
-	[self insert: [[self mainContentHTMLRepresentations] componentsJoinedByString: @""]
+	NSString *content = [[self mainContentHTMLRepresentations] componentsJoinedByString: @""];
+	
+	if ([content isEqual: @""])
+	{
+		content = [[P with: [I with: @"No public API available"]] content];
+	}
+	[self insert: content
 	      forTag: @"<!-- etoile-methods -->"];
 }
 
@@ -270,7 +276,8 @@
 {
 	return [self HTMLRepresentationWithTitle: aTitle 
 	                                elements: elementsByGroup 
-	              HTMLRepresentationSelector: @selector(HTMLRepresentation)];
+	              HTMLRepresentationSelector: @selector(HTMLRepresentation)
+				              groupSeparator: [HtmlElement blankElement]];
 }
 
 - (NSArray *) mainContentHTMLRepresentations
@@ -291,6 +298,7 @@
 - (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
                                      elements: (NSArray *)elementsByGroup
                    HTMLRepresentationSelector: (SEL)repSelector
+                               groupSeparator: (HtmlElement *)aSeparator
 {
 	if ([elementsByGroup isEmpty])
 		return [HtmlElement blankElement];
@@ -311,7 +319,12 @@
 		NSString *group = [[elementsByGroup objectAtIndex: i] key];
 		NSArray *elementsInGroup = [[elementsByGroup objectAtIndex: i] value];
 		HtmlElement *hGroup = (hasH3 ? [H4 with: group] : [H3 with: group]);
+		BOOL isFirst = (i == 0);
 
+		if (isFirst == NO)
+		{
+			[html add: aSeparator];
+		}
 		[html add: hGroup];
 		//NSLog(@"HTML Task or Group: %@", hGroup);
 

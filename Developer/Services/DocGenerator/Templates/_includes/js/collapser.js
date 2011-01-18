@@ -51,6 +51,11 @@ function hide(obj) {
 	var sibling = (obj.nextSibling.nodeType == 3) ? obj.nextSibling.nextSibling : obj.nextSibling;
 	sibling.style.display = 'none';
 	//obj.style.color = '#000';
+
+	var expanders = getElementsByClass('expandedIndicator', obj, 'span');
+	for(var i = 0; i < expanders.length; i++) {
+		expanders[i].className = 'collapsedIndicator';
+	}
 	
 	var returnTypes = getElementsByClass('returnType', obj, 'span');
 	for(var i = 0; i < returnTypes.length; i++) {
@@ -67,7 +72,12 @@ function show(obj) {
 	var sibling = (obj.nextSibling.nodeType == 3) ? obj.nextSibling.nextSibling : obj.nextSibling;
 	sibling.style.display = 'block';
 	//obj.style.color = '#375dc7';
-	
+
+	var expanders = getElementsByClass('collapsedIndicator', obj, 'span');
+	for(var i = 0; i < expanders.length; i++) {
+		expanders[i].className = 'expandedIndicator';
+	}
+
 	var returnTypes = getElementsByClass('returnType', obj, 'span');
 	for(var i = 0; i < returnTypes.length; i++) {
 		returnTypes[i].style.display = 'inline';

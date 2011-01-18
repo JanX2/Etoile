@@ -12,29 +12,34 @@
 
 @implementation DocHeader
 
-@synthesize protocolName, categoryName, adoptedProtocolNames, group;
+@synthesize title, abstract, authors, overview, fileOverview , group;
+@synthesize className, superclassName, protocolName, categoryName, adoptedProtocolNames, declaredIn;
 
 - (id) init
 {
 	SUPERINIT;
 	authors = [NSMutableArray new];
 	adoptedProtocolNames = [NSMutableArray new];
-	ASSIGN(group, @"Default");
 	return self;
 }
 
 - (void) dealloc
 {
+	[title release];
+	[abstract release];
 	[authors release];
+	[overview release];
+	[fileOverview release];
+
 	[className release];
 	[protocolName release];
 	[categoryName release];
-	[superClassName release];
+	[superclassName release];
 	[adoptedProtocolNames release];
-	[abstract release];
-	[overview release];
-	[title release];
+	[declaredIn release];
+
 	[group release];
+
 	[super dealloc];
 }
 
@@ -89,30 +94,33 @@
 	return nil;
 }
 
-- (void) setDeclaredIn: (NSString *)aFile
-{
-	ASSIGN(declared, aFile);
-}
-
 - (NSString *) description
 {
 	return [NSString stringWithFormat: @"%@ - %@, %@", [super description], 
 			title, className];
 }
 
-- (void) setClassName: (NSString *)aName
+- (NSArray *) authors
 {
-	ASSIGN(className, aName);
+	return AUTORELEASE([authors copy]);
 }
 
-- (NSString *) className
+- (void) addAuthor: (NSString *)aName
 {
-	return className;
+	if (aName != nil)
+		[authors addObject: aName];
 }
 
-- (void) setSuperClassName: (NSString *)aName 
+- (NSString *) group
 {
-	ASSIGN(superClassName, aName);
+	if (IS_NIL_OR_EMPTY_STR(group) == NO)
+	{
+		return group;
+	}
+	else
+	{
+		return @"Misc";
+	}
 }
 
 - (NSArray *) adoptedProtocolNames
@@ -123,11 +131,6 @@
 - (void) addAdoptedProtocolName: (NSString *)aName
 {
 	[adoptedProtocolNames addObject: aName];
-}
-
-- (void) setAbstract: (NSString *)aDescription
-{
-	ASSIGN(abstract, aDescription);
 }
 
 - (void) setOverview: (NSString *)aDescription
@@ -144,31 +147,10 @@
 	[self setFilteredDescription: aDescription];
 }
 
-- (void) setFileOverview: (NSString *)aFile
-{
-	ASSIGN(fileOverview, aFile);
-}
-
-- (void) addAuthor: (NSString *)aName
-{
-	if (aName != nil)
-		[authors addObject: aName];
-}
-
-- (void) setTitle: (NSString *)aTitle
-{
-	ASSIGN(title, aTitle);
-}
-
-- (NSString *) title
-{
-	return title;
-}
-
 - (HtmlElement *) HTMLOverviewRepresentation
 {
 	H hOverview = [DIV id: @"overview" with: [H3 with: @"Overview"]];
-	BOOL noOverview = (fileOverview == nil && overview == nil);
+	BOOL noOverview = (IS_NIL_OR_EMPTY_STR(fileOverview) && IS_NIL_OR_EMPTY_STR(overview));
 
 	if (noOverview)
 		return [HtmlElement blankElement];
@@ -201,7 +183,7 @@
 	if (className != nil && categoryName == nil)
 	{
 		ETAssert(protocolName == nil);
-		[h_title with: className and: @" : " and: [docIndex linkForClassName: superClassName]];
+		[h_title with: className and: @" : " and: [docIndex linkForClassName: superclassName]];
 	}
 	if (categoryName != nil)
 	{
@@ -244,9 +226,9 @@
 	{
 		[table add: [TR with: [TH with: @"Authors"] and: tdAuthors]];
 	}
-	if (declared != nil)
+	if (declaredIn != nil)
 	{
-		[table add: [TR with: [TH with: @"Declared in"] and: [TD with: declared]]];
+		[table add: [TR with: [TH with: @"Declared in"] and: [TD with: declaredIn]]];
 	}
 
 	NSString *formattedAbstract = [self insertLinksWithDocIndex: docIndex forString: abstract];
@@ -270,25 +252,33 @@
 - (HtmlElement *) HTMLTOCRepresentation
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
-	H hEntryName = [SPAN class: @"symbolName"];
+	H hEntryName = [SPAN class: @"symbolName" with: [SPAN class: @"collapsedIndicator"]];
 
 	/* Insert either class, category or protocol as main symbol */
 	if (className != nil && categoryName == nil)
 	{
 		ETAssert(protocolName == nil);
-		[hEntryName with: className];
+		[hEntryName with: [docIndex linkForClassName: className]];
 		// TODO: When expanded, we should show...
 		//[hEntryName with: className and: @" : " and: [docIndex linkForClassName: superClassName]];
 	}
-	if (categoryName != nil)
+	else if (categoryName != nil)
 	{
 		ETAssert(protocolName == nil);
-		[hEntryName with: [docIndex linkForClassName: className] 
-		             and: @" (" and: categoryName and: @")"];
+		NSString *linkName = [NSString stringWithFormat: @"%@ (%@)", className, categoryName];
+		NSString *symbol = [NSString stringWithFormat: @"%@(%@)", className, categoryName];
+
+		[hEntryName with: [docIndex linkWithName: linkName 
+		                           forSymbolName: symbol
+		                                  ofKind: @"categories"]];
 	}
-	if (protocolName != nil)
+	else if (protocolName != nil)
 	{
-		[hEntryName with: protocolName];	
+		NSString *linkName = [NSString stringWithFormat: @"&lt;%@&gt;", protocolName];
+
+		[hEntryName with: [docIndex linkWithName: linkName 
+		                           forSymbolName: protocolName 
+		                                  ofKind: @"protocols"]];	
 	}
 
 	NSString *description = [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]];

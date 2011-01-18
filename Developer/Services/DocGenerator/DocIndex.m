@@ -166,11 +166,6 @@ withDictionaryName: (NSString *)mergedDictName
 
 - (NSString *) linkForClassName: (NSString *)aClassName
 {
-	return [self linkWithName: aClassName forClassName: aClassName];
-}
-
-- (NSString *) linkWithName: (NSString *)aName forClassName: (NSString *)aClassName
-{
 	return [self linkWithName: aClassName
 	                      ref: [[mergedRefs objectForKey: @"classes"] objectForKey: aClassName]
 	                   anchor: aClassName];

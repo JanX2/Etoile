@@ -161,7 +161,7 @@
 - (void) weaveMainPages
 {
 	// TODO: Perhaps pass an overview to insert in the header... or use the document file?
-	ASSIGN(apiOverviewPage, [self weaveMainPageOfClass: [DocTOCPage class] withName: @"APIOverview" documentFile: nil]);
+	ASSIGN(apiOverviewPage, [self weaveMainPageOfClass: [DocTOCPage class] withName: @"API Overview" documentFile: nil]);
 	ASSIGN(functionPage, [self weaveMainPageWithName: @"Functions" documentFile: nil]);
 	ASSIGN(constantPage, [self weaveMainPageWithName: @"Constants" documentFile: nil]);
 	ASSIGN(macroPage, [self weaveMainPageWithName: @"Macros" documentFile: nil]);
@@ -311,7 +311,7 @@
 	[[self currentPage] setHeader: currentHeader];
 
 	[[self currentHeader] setClassName: aClassName];
-	[[self currentHeader] setSuperClassName: aSuperclassName];
+	[[self currentHeader] setSuperclassName: aSuperclassName];
 
 	[apiOverviewPage addSubheader: currentHeader];
 

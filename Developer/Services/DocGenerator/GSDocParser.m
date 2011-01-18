@@ -331,12 +331,17 @@ no way exists to disable it. */
 	}
 	else if ([elementName isEqualToString: @"desc"])
 	{
-		ETAssert(nil != [weaver currentHeader]);
+		DocHeader *currentHeader = [weaver currentHeader];
+		ETAssert(nil != currentHeader);
 		DocMethodGroupDescriptionParser *descParser = [DocMethodGroupDescriptionParser new];
 		
 		[descParser parse: trimmedContent];
-		[[weaver currentHeader] setGroup: [descParser group]];
-		[[weaver currentHeader] setOverview: [descParser description]];
+		[currentHeader setGroup: [descParser group]];
+		if (IS_NIL_OR_EMPTY_STR([descParser abstract]) == NO)
+		{
+			[currentHeader setAbstract: [descParser abstract]];
+		}
+		[currentHeader setOverview: [descParser description]];
 		[descParser release];
 	}
 }

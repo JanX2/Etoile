@@ -14,6 +14,20 @@
 
 @class DocHeader, DocMethod, DocFunction, DocMacro, DocCDataType, DocConstant, DocPage, DocIndex;
 
+/** @group Weaving and Parsing
+    @abstract A documentation source parser reports parsing result to a weaver through this protocol.
+
+Any weaver must implement this protocol.<br /> 
+When required, multiple weavers can be chained. For instance, parsing GSDoc 
+documents requires to reorder the parsed declarations with DocDeclarationReorder 
+before handing them to DocPageWeaver. Hence the weaver set on GSDocParser is 
+then a DocDeclarationReorderer instance rather than a DocPageWeaver one.
+
+Each time a documentation source document (e.g. a gsdoc file) has been parsed, 
+the parser must invoke -finishWeaving.
+
+New page creation is entirely up to the weaver e.g. in reaction to a 
+CodeDocWeaving method called back by the parser.  */
 @protocol CodeDocWeaving <NSObject>
 - (void) weaveClassNamed: (NSString *)aClassName 
           superclassName: (NSString *)aSuperclassName;
@@ -30,6 +44,15 @@
 - (DocHeader *) currentHeader;
 @end
 
+/** 
+@abstract A weaver such as DocPageWeaver controls a documentation source parser through this protocol.
+@group Weaving and Parsing
+
+Any documentation source parser must implement this protocol to let the weaver 
+initiates the parsing. In addition, the parser must reports its parsing result 
+to the weaver through the CodeDocWeaving protocol.<br />
+Parsing usually involves to build new DocElement subclass instances and hand 
+them to the weaver.  */
 @protocol CodeDocParser
 - (id) initWithString: (NSString *)aString;
 - (void) setWeaver: (id <CodeDocWeaving>)aDocWeaver;

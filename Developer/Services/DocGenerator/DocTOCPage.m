@@ -67,7 +67,8 @@ name is parsed and set. */
 
 	[reps addObject: [self HTMLRepresentationWithTitle: nil
 	                                          elements: subheaders
-	                        HTMLRepresentationSelector: @selector(HTMLTOCRepresentation)]];
+	                        HTMLRepresentationSelector: @selector(HTMLTOCRepresentation)
+	                                    groupSeparator: HR]];
 
 	return reps;
 }

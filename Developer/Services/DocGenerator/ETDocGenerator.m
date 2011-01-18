@@ -101,7 +101,7 @@ void printError()
 }
 
 /**
- * Simple macro to check that the argument is different from NO
+ * Simple macro to check that the argument is different from NO.
  * 
  * @param arg a NSValue
  * @return YES if the argument is different from NO

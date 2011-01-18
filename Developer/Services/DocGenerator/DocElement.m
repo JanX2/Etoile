@@ -35,6 +35,11 @@
 	[super dealloc];
 }
 
++ (NSString *) defaultTask
+{
+	return @"Default";
+}
+
 - (NSString *) task
 {
 	if (task != nil)
@@ -48,7 +53,7 @@
 	}
 	else
 	{
-		return @"Default";
+		return [[self class] defaultTask];
 	}
 }
 
@@ -119,7 +124,13 @@
 	/* We remove white spaces and newlines to prevent many empty words when 
 	   breaking the description into words in -insertLinksWithDocIndex:forString:
 	   Without it, it won't parse '-[Class \nblabla]'. */
-	ASSIGN(filteredDescription, [aDescription stringByTrimmingWhitespacesAndNewlinesByLine]);
+	NSString *trimmedDesc = [aDescription stringByTrimmingWhitespacesAndNewlinesByLine];
+
+	if (IS_NIL_OR_EMPTY_STR(trimmedDesc))
+	{
+		trimmedDesc = [[self class] forthcomingDescription];
+	}
+	ASSIGN(filteredDescription, trimmedDesc);
 }
 
 - (void) addInformationFrom: (DocDescriptionParser *)aParser
@@ -411,6 +422,12 @@
 @end
 
 @implementation NSString (DocGenerator)
+
+- (NSString *) trimmedString
+{
+	NSCharacterSet *blankCharset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+	return [self stringByTrimmingCharactersInSet: blankCharset];
+}
 
 // TODO: Should be handled in DocDescriptionParser. Would be faster too.
 - (NSString *) stringByTrimmingWhitespacesAndNewlinesByLine

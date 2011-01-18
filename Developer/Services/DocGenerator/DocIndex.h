@@ -81,7 +81,6 @@ You must call this method before generating the document output e.g. invoking
 - (NSString *) linkForSymbolName: (NSString *)aSymbol ofKind: (NSString *)aKind;
 - (NSString *) linkWithName: (NSString *)aName forSymbolName: (NSString *)aSymbol ofKind: (NSString *)aKind;
 - (NSString *) linkForClassName: (NSString *)aClassName;
-- (NSString *) linkWithName: (NSString *)aName forClassName: (NSString *)aClassName;
 - (NSString *) linkForProtocolName: (NSString *)aProtocolName;
 
 - (NSString *) linkForGSDocRef: (NSString *)aRef;
@@ -92,7 +91,7 @@ You must call this method before generating the document output e.g. invoking
 
 @end
 
-
+/** @group Link Generation */
 @interface DocHTMLIndex : DocIndex
 {
 

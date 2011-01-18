@@ -29,7 +29,7 @@
         <desc>
           <p>
             Simple macro to check that the argument is different
-            from <code>NO</code> @param <var>arg</var> a NSValue
+            from <code>NO</code>. @param <var>arg</var> a NSValue
             @return <code>YES</code> if the argument is
             different from <code>NO</code>
           </p>

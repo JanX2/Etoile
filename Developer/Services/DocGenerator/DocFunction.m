@@ -38,8 +38,7 @@
 	}
 }
 
-// TODO: Remove...
-- (H) richDescription
+- (H) HTMLAddendumRepresentation
 {
 	H param_list = [DIV class: @"paramsList"];
 	H ul = UL;
@@ -62,9 +61,6 @@
 		[param_list and: [H3 with: @"Return"]];
 		[param_list and: returnDescription];
 	}
-	
-	[param_list and: [H3 with: @"Description"]];
-	[param_list and: [self filteredDescription]];
 
 	return param_list;
 }
@@ -93,11 +89,13 @@
 		isFirst = NO;
 	}
 	[h_signature with: @")"];
-	
+
+	H hMethodDesc = [DIV class: @"methodDescription" 
+		                  with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]
+	                       and: [self HTMLAddendumRepresentation]];
 	H methodFull = [DIV class: @"method" 
 	                     with: [DL with: [DT with: h_signature]
-	                                and: [DD with: [DIV class: @"methodDescription" 
-	                                                     with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]]]]];
+	                                and: [DD with: hMethodDesc]]];
 
 	return methodFull;
 }
@@ -141,7 +139,11 @@
 	else if ([elementName isEqualToString: [self GSDocElementName]]) /* Closing tag */
 	{
 		DocDescriptionParser* descParser = [DocDescriptionParser new];
-		
+
+				if ([[self name] hasPrefix: @"generateClassMapping"])
+				{
+					NSLog(@"bla");
+				}
 		[descParser parse: [self rawDescription]];
 		
 		//NSLog(@"Function raw description <%@>", [self rawDescription]);

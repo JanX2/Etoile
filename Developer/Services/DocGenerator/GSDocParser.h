@@ -19,6 +19,8 @@
 
 /** @group GSDoc Parsing
 
+@abstract None
+
 Parsing protocol usually implemented by DocElement subclass, so the parsing 
 can be delegated per major XML elements (e.g. class, method etc.) to a newly 
 instantied doc element and initialize it in this way.  */

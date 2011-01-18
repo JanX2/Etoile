@@ -13,7 +13,9 @@
 #import "DocElement.h"
 #import "GSDocParser.h"
 
-/** @group Doc Element Tree
+/** 
+@group Doc Element Tree
+@abstract oui!
 
 -weaveOtherDataType: -[(GSDocParserDelegate) parser:endElement:withContent:] DocCDataType objects are used to represent various C data types:
 
@@ -52,7 +54,10 @@ See -[DocElement weaveSelector]. */
 @end
 
 
-/** DocConstant objects are used to represent various constant-like C data types:
+/** @group Doc Element Tree
+@abstract C constant-like types in the doc element tree.
+
+DocConstant objects are used to represent various constant-like C data types:
 
 <list>
 <item>const variable or pointer</item>

@@ -9,6 +9,22 @@ Bugs and Small Features
 - Support function and perhaps macro links in addition to method links
 - Fix autogsdoc to insert no spaces between a method ref and any punctuation that follows. e.g. '-weaveSelector.' and not '-weaveSelector .'
 - Ensure '-weaveSelector' is an unbreakable word and won't appear cut by a newline on '-'
+- Wrap examples 
+- autogsdoc wrongly generates the paragraph markup when there is a tab on a blank line as below:
+
+	/** @group Weaving and Parsing
+	    @abstract A documentation source parser reports parsing result to a weaver through this protocol.
+		
+	Any weaver must implement this protocol.<br /> 
+
+The related gsdoc ouput is:
+
+	<p>
+	  @group Weaving and Parsing @abstract A documentation
+	  source parser reports parsing result to a weaver
+	  through this protocol. Any weaver must implement
+	  this protocol. <br /> When required, [snip].
+	</p>
 
 
 Other Features

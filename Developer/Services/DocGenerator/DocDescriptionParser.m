@@ -103,7 +103,7 @@ Requires the line argument to be trimmed, no white spaces at the beginning and e
 		desc = [desc substringToIndex: [desc length] - 4];
 		*isDescFinished = YES;
 	}
-	return desc;
+	return [desc trimmedString];
 }
 
 - (void) parseParamRawDescription: (NSString *)rawDesc
@@ -116,6 +116,27 @@ Requires the line argument to be trimmed, no white spaces at the beginning and e
 	                                       forKey: paramName];
 }
 
+// TODO: Could be improved to keep the markup where it doesn't get in the way. 
+// e.g. in each parameter or return description.
+- (NSString *) removeBasicDocMarkupForString: (NSString *)desc
+{
+	if ([desc rangeOfString: @"<"].location == NSNotFound)
+		return desc;
+
+ 	NSDictionary *gsdocTagRemovals = D(@"<var>", @"</var>", @"<code>", @"</code>"); 
+
+	for (NSString *tag in gsdocTagRemovals)
+	{
+		desc = [desc stringByReplacingOccurrencesOfString: tag 
+		                                       withString: [gsdocTagRemovals objectForKey: tag]
+		                                          options: NSCaseInsensitiveSearch
+		                                            range: NSMakeRange(0, [desc length])];
+	}
+
+	return desc;
+}
+
+
 /* Returns YES when a new tag has been parsed, whether or not the tag content 
 has been entirely parsed. 
 
@@ -126,8 +147,8 @@ When multiple tags are on the same line, will parse up to the next tag e.g.
 When a single tag is present on the line, unparsedString won't be touched.  */
 - (BOOL) parseTag: (NSString *)aTag  atLine: (NSString *)line lineRemainder: (NSString **)unparsedString
 {
-	if (currentTag != nil)
-		return NO;
+	/*if (currentTag != nil)
+		return NO;*/
 
 	NSString *tagWithP = [NSString stringWithFormat: @"<p>%@", aTag];
 
@@ -138,6 +159,8 @@ When a single tag is present on the line, unparsedString won't be touched.  */
 		                                isTerminated: &isDescFinished 
 		                               lineRemainder: unparsedString];
 
+		desc = [self removeBasicDocMarkupForString: desc];
+
 		// TODO: Remove this ugly if
 		if ([aTag isEqual: @"@param"])
 		{
@@ -145,7 +168,7 @@ When a single tag is present on the line, unparsedString won't be touched.  */
 		}
 		else
 		{
-			[[self getStringFor: aTag] appendFormat: @"%@ ", desc];
+			[[self getStringFor: aTag] appendString: desc];
 		}
 
 		ASSIGN(currentTag, (isDescFinished ? nil : aTag));
@@ -155,10 +178,30 @@ When a single tag is present on the line, unparsedString won't be touched.  */
 	return NO;
 }
 
+- (BOOL) isParagraphStartTag: (NSString *)line
+{
+	NSCharacterSet *blankCharset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+	NSString *trimmedLine = [line stringByTrimmingCharactersInSet: blankCharset];
+	return ([trimmedLine isEqualToString: @"<p>"]);
+}
+
+- (BOOL) isParagraphStartOrEnd: (NSString *)line
+{
+	NSCharacterSet *blankCharset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+	NSString *trimmedLine = [line stringByTrimmingCharactersInSet: blankCharset];
+	return ([trimmedLine isEqualToString: @""] || [trimmedLine hasSuffix: @"</p>"] || [trimmedLine hasSuffix: @"<p>"]);
+}
+
 - (BOOL) parseStartAmongTags: (NSArray *)tags 
                       atLine: (NSString *)line 
+              isNewParagraph: (BOOL)isNewParagraph
                lineRemainder: (NSString **)unparsedString
 {
+	BOOL canParseTag = (isNewParagraph || currentTag != nil);
+
+	if (canParseTag == NO)
+		return NO;
+
 	NSCharacterSet *blankCharset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
 	NSString *trimmedLine = [line stringByTrimmingCharactersInSet: blankCharset];
 
@@ -175,15 +218,17 @@ When a single tag is present on the line, unparsedString won't be touched.  */
 
 - (void) parseContentLine: (NSString *)line forTag: (NSString *)aTag
 {
-	NSCharacterSet *blankCharset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-	NSString *trimmedLine = [line stringByTrimmingCharactersInSet: blankCharset];
+	NSString *trimmedLine = [line trimmedString];
 	BOOL isTagEnd = ([trimmedLine hasSuffix: @"</p>"] || [trimmedLine isEqualToString: @""]);
-	
+
 	if ([trimmedLine hasSuffix: @"</p>"])
 	{
 		trimmedLine = [trimmedLine substringToIndex: [trimmedLine length] - 4];
 	}
-	[[self getStringFor: aTag] appendString: trimmedLine];
+	if ([trimmedLine length] > 0)
+	{
+		[[self getStringFor: aTag] appendFormat: @" %@", trimmedLine];
+	}
 
 	ASSIGN(currentTag, (isTagEnd ? nil : aTag));
 }
@@ -204,12 +249,12 @@ When a single tag is present on the line, unparsedString won't be touched.  */
 
 - (NSArray *) validTagsBeforeMainDescription
 {
-	return A(@"@taskunit", @"@task");
+	return A(@"@taskunit");
 }
 
 - (NSArray *) validTagsAfterMainDescription
 {
-	return A(@"@param", @"@return");
+	return A(@"@param", @"@return", @"@task");
 }
 
 - (void) reset
@@ -242,12 +287,16 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 - (void) parse: (NSString *) corpus
 {
 	[self reset];
-
+		
 	NSMutableArray *lines = [self linesForString: corpus];
 	NSArray *validTags = [self validTagsBeforeMainDescription];
 	NSString *unparsedString = nil;
+	BOOL isFirstLine = YES;
+	BOOL wasParagraphStartOrEnd = isFirstLine;
+	/* Skip first line if it is a <p> tag alone */
+	int startLine = ([self isParagraphStartTag: [lines firstObject]] ? 1 : 0);
 
-	for (int i = 0; i < [lines count]; i++)
+	for (int i = startLine; i < [lines count]; i++)
 	{
 		NSString *line = [lines objectAtIndex: i];
 
@@ -256,6 +305,7 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 		   @return and unparsedString equal to '@return bip</p>'. */		
 		BOOL parsedNewTag = [self parseStartAmongTags: validTags 
 		                                       atLine: line 
+                                       isNewParagraph: wasParagraphStartOrEnd
 		                                lineRemainder: &unparsedString];
 
 		if (unparsedString != nil)
@@ -278,11 +328,13 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 			                    isLastLine: (i == ([lines count] - 1))];
 			validTags = [self validTagsAfterMainDescription];
 		}
+
+		wasParagraphStartOrEnd = [self isParagraphStartOrEnd: line];
 	}
 
-	//NSLog(@"Parsed task unit: %@", [self taskUnit]);
-	//NSLog(@"Parsed desc: %@", [self description]);
-	//NSLog(@"Parsed task: %@", [self task]);
+	/*NSLog(@"Parsed task unit: %@", [self taskUnit]);
+	NSLog(@"Parsed task: %@", [self task]);
+	NSLog(@"Parsed desc: %@", [self description]);*/
 }
 
 - (NSString*) description
@@ -316,9 +368,20 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 
 @implementation DocMethodGroupDescriptionParser
 
+- (void) parse: (NSString *)corpus
+{
+	if ([corpus rangeOfString: @"@group Weaving"].location != NSNotFound)
+	{
+		NSLog(@"bla");
+	}
+	[super parse: corpus];
+	NSLog(@"Parsed group: %@", [self group]);
+	NSLog(@"Parsed abstract: %@", [self abstract]);
+}
+
 - (NSArray *) validTagsBeforeMainDescription
 {
-	return A(@"@group");
+	return A(@"@group", @"@abstract");
 }
 
 - (NSArray *) validTagsAfterMainDescription
@@ -328,7 +391,12 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 
 - (NSString *) group
 {
-  return [self getStringFor: @"@group"];
+	return [self getStringFor: @"@group"];
+}
+
+- (NSString *) abstract
+{
+  return [self getStringFor: @"@abstract"];
 }
 
 @end

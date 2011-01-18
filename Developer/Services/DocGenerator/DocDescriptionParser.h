@@ -66,5 +66,7 @@ descriptions. */
 
 /** Returns the parsed content for <em>@group</em> tag. */
 - (NSString *) group;
+/** Returns the parsed content for <em>@abstract</em> tag. */
+- (NSString *) abstract;
 
 @end

@@ -595,6 +595,31 @@ pre
   margin: 20px 0;
 }
 
+#documentation .collapsedIndicator
+{
+  background: url(file:///Users/qmathe/reps/trunkEtoile/Etoile/Developer/Services/DocGenerator/Documentation/images/collapsed.png) no-repeat;
+  width: 8px;
+  height: 10px;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  margin-left: 2px;
+  margin-right: 5px;
+  margin-bottom: 4px;
+}
+
+#documentation .expandedIndicator
+{
+  background: url(file:///Users/qmathe/reps/trunkEtoile/Etoile/Developer/Services/DocGenerator/Documentation/images/expanded.png) no-repeat;
+  width: 10px;
+  height: 8px;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  margin-right: 5px;
+  margin-bottom: 3px;
+}
+
 #documentation .arg
 {
 	

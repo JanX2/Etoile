@@ -134,6 +134,13 @@
           </desc>
         </method>
         <method type="HtmlElement*">
+          <sel>src:</sel>
+          <arg type="NSString*">aPath</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="HtmlElement*">
           <sel>with:</sel>
           <arg type="id">something</arg>
           <desc>
@@ -153,6 +160,24 @@
         <desc>
           <p>@group HTML Support</p>
         </desc>
+        <method type="HtmlElement*">
+          <sel>add:</sel>
+          <arg type="id">something</arg>
+          <sel>and:</sel>
+          <arg type="id">something</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="HtmlElement*">
+          <sel>class:</sel>
+          <arg type="NSString*">aClass</arg>
+          <sel>src:</sel>
+          <arg type="NSString*">something</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
         <method type="HtmlElement*">
           <sel>class:</sel>
           <arg type="NSString*">aClass</arg>
