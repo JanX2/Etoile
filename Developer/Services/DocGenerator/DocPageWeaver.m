@@ -138,34 +138,46 @@
 	}
 }
 
-- (DocPage *) weaveMainPageOfClass: (Class)aPageClass withName: (NSString *)aName documentFile: (NSString *)aDocumentFile
+- (DocPage *) weaveMainPageOfClass: (Class)aPageClass withName: (NSString *)aName overview: (NSString *)anOverview
 {
 	NSString *templateFile = [[self templateDirectory] stringByAppendingPathComponent: @"etoile-documentation-template.html"];	
-	DocPage *page = [[aPageClass alloc] initWithDocumentFile: aDocumentFile
+	DocPage *page = [[aPageClass alloc] initWithDocumentFile: nil
 	                                                     templateFile: templateFile                                       
 	                                                         menuFile: menuPath];
 
 	[page setHeader: AUTORELEASE([[DocHeader alloc] init])];
 	[[page header] setName: aName];
 	[[page header] setTitle: aName];
+	[[page header] setAbstract: anOverview];
 
 	[allWeavedPages addObject: AUTORELEASE(page)];
 	return page;
 }
 
-- (DocPage *) weaveMainPageWithName: (NSString *)aName documentFile: (NSString *)aDocumentFile
+- (DocPage *) weaveMainPageWithName: (NSString *)aName overview: (NSString *)anOverview
 {
-	return [self weaveMainPageOfClass: [DocPage class] withName: aName documentFile: aDocumentFile];
+	return [self weaveMainPageOfClass: [DocPage class] withName: aName overview: anOverview];
 }
 
 - (void) weaveMainPages
 {
 	// TODO: Perhaps pass an overview to insert in the header... or use the document file?
-	ASSIGN(apiOverviewPage, [self weaveMainPageOfClass: [DocTOCPage class] withName: @"API Overview" documentFile: nil]);
-	ASSIGN(functionPage, [self weaveMainPageWithName: @"Functions" documentFile: nil]);
-	ASSIGN(constantPage, [self weaveMainPageWithName: @"Constants" documentFile: nil]);
-	ASSIGN(macroPage, [self weaveMainPageWithName: @"Macros" documentFile: nil]);
-	ASSIGN(otherDataTypePage, [self weaveMainPageWithName: @"Other Data Types" documentFile: nil]);
+	ASSIGN(apiOverviewPage, [self weaveMainPageOfClass: [DocTOCPage class] withName: @"API Overview" overview: nil]);
+
+	NSString *functionOverview = [NSString stringWithFormat: @"All the public Functions in %@", [docIndex projectName]];
+	ASSIGN(functionPage, [self weaveMainPageWithName: @"Functions" overview: functionOverview]);
+
+	NSString *constantOverview = 
+		[NSString stringWithFormat: @"All the public Constants, Enums and Unions in %@", [docIndex projectName]];
+	ASSIGN(constantPage, [self weaveMainPageWithName: @"Constants" overview: constantOverview]);
+
+	NSString *macroOverview = 
+		[NSString stringWithFormat: @"All the public Macros in %@", [docIndex projectName]];
+	ASSIGN(macroPage, [self weaveMainPageWithName: @"Macros" overview: macroOverview]);
+
+	NSString *otherOverview = 
+		[NSString stringWithFormat: @"All the public Structures and Function Pointers in %@", [docIndex projectName]];
+	ASSIGN(otherDataTypePage, [self weaveMainPageWithName: @"Other Data Types" overview: otherOverview]);
 }
 
 - (void) weavePagesFromSourceFiles
