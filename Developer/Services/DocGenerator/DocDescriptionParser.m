@@ -400,3 +400,46 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 }
 
 @end
+
+
+
+@implementation NSString (DocGenerator)
+
+- (NSString *) trimmedString
+{
+	NSCharacterSet *blankCharset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+	return [self stringByTrimmingCharactersInSet: blankCharset];
+}
+
+// TODO: Should be handled in DocDescriptionParser. Would be faster too.
+- (NSString *) stringByTrimmingWhitespacesAndNewlinesByLine
+{
+	NSCharacterSet *spaceCharset = [NSCharacterSet whitespaceCharacterSet];
+	NSArray *lines = [self componentsSeparatedByCharactersInSet: [NSCharacterSet newlineCharacterSet]];
+	NSMutableArray *trimmedLines = [NSMutableArray arrayWithCapacity: [lines count]];
+	BOOL skipLines = NO;
+
+	for (NSString *line in lines)
+	{
+		if ([line hasPrefix: @"<example>"])
+		{
+			skipLines = YES;
+		}
+		else if ([line hasPrefix: @"</example>"])
+		{
+			skipLines = NO;
+		}
+
+		if (skipLines)
+		{
+			[trimmedLines addObject: line];
+		}
+		else
+		{
+			[trimmedLines addObject: [line stringByTrimmingCharactersInSet: spaceCharset]];
+		}
+	}
+	return [trimmedLines componentsJoinedByString: @"\n"];
+}
+
+@end

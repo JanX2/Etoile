@@ -70,3 +70,9 @@ descriptions. */
 - (NSString *) abstract;
 
 @end
+
+/** @abstract None */
+@interface NSString (DocGenerator)
+- (NSString *) trimmedString;
+- (NSString *) stringByTrimmingWhitespacesAndNewlinesByLine;
+@end

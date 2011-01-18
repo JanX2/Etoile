@@ -210,10 +210,4 @@ object will insert symbol links and apply standard formatting (e.g. class name
 
 @end
 
-/** @abstract None */
-@interface NSString (DocGenerator)
-- (NSString *) trimmedString;
-- (NSString *) stringByTrimmingWhitespacesAndNewlinesByLine;
-@end
-
 #define IS_NIL_OR_EMPTY_STR(x) (x == nil || [x isEqualToString: @""])

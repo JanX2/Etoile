@@ -68,7 +68,7 @@ void printHelp ()
  */
 void generateClassMapping(NSString *classFile)
 {
-	NSString *content = [NSString stringWithContentsOfFile: classFile];
+	NSString *content = [NSString stringWithContentsOfFile: classFile encoding: NSUTF8StringEncoding error: NULL];
 	NSArray *lines = [content componentsSeparatedByString: @"\n"];
 	//NSMutableDictionary *classMapping = [NSMutableDictionary new];
 	NSMutableDictionary *classMapping = [NSDictionary dictionaryWithContentsOfFile: @"class-mapping-foundation.plist"];
@@ -159,7 +159,7 @@ int main (int argc, const char * argv[])
 	NSString *templateFile = [options objectForKey: @"t"];
 	NSString *menuFile = [options objectForKey: @"m"];
 	NSString *externalClassFile = [options objectForKey: @"e"];
-	NSString * projectClassFile = [options objectForKey: @"p"];
+	//NSString * projectClassFile = [options objectForKey: @"p"];
 	NSString *outputDir = [options objectForKey: @"o"];;
 	NSNumber *help = [options objectForKey: @"h"];
 
@@ -189,7 +189,7 @@ int main (int argc, const char * argv[])
 
 	[weaver setMenuFile: menuFile];
 	[weaver setExternalMappingFile: externalClassFile];
-	[weaver setProjectMappingFile: projectClassFile];
+	//[weaver setProjectMappingFile: projectClassFile];
 
 	[[DocIndex currentIndex] setProjectName: projectName];
 
