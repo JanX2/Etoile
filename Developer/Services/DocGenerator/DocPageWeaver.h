@@ -80,16 +80,14 @@ the CodeDocWeaving protocol as the parsing goes.
 DocPageWeaver is free to weave multiple pages from a single source file, or 
 gather doc elements and consolidate them onto a common page.<br />
 So in addition to act as coordinator in the doc generation process, 
-DocPageWeaver implements a strategy to:
-
-<list>
-<item>organize the doc elements into a book-like structure</item>
-<item>arrange the doc elements on each weaved page</item>
-</list>
+DocPageWeaver implements a strategy to organize the doc elements into a 
+book-like structure.
 
 By invoking -weaveNewPage based on some precise criterias (e.g. 
 -weaveClassNamed:superclassName: was called), DocPageWeaver defines page 
-generation rules which correspond to a precise book-like structure.
+generation rules which correspond to a precise book-like structure.<br />
+The doc element arrangement on each weaved page is delegated to DocPage class 
+and subclasses.
 
 Subclassing altough experimental and untested, can be used to customize the 
 existing page generation strategy or implement a new one. */
