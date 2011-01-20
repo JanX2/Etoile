@@ -190,7 +190,7 @@ withDictionaryName: (NSString *)mergedDictName
 	if ([anElement ownerSymbolName] == nil)
 	{
 		ETLog(@"WARNING: %@ cannot be resolved in %@ (ownerSymbolName is nil)", aRef, anElement);
-		return nil;
+		return aRef;
 	}
 
 	NSString *symbol = [NSString stringWithFormat: @"%@[%@ %@]", 
