@@ -11,7 +11,7 @@
 		036271930E00B263005D79FE /* DocParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = 036271920E00B263005D79FE /* DocParameter.m */; };
 		0362732D0E048FD3005D79FE /* DocElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 0362732C0E048FD3005D79FE /* DocElement.m */; };
 		03FF75330DF9EFED007D79D3 /* DocHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF75320DF9EFED007D79D3 /* DocHeader.m */; };
-		03FF75360DF9F159007D79D3 /* HtmlElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF75350DF9F159007D79D3 /* HtmlElement.m */; };
+		03FF75360DF9F159007D79D3 /* DocHTMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF75350DF9F159007D79D3 /* DocHTMLElement.m */; };
 		03FF75DE0DFAAFEB007D79D3 /* DocMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF75DD0DFAAFEB007D79D3 /* DocMethod.m */; };
 		03FF77480DFB1D21007D79D3 /* GSDocParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF77470DFB1D21007D79D3 /* GSDocParser.m */; };
 		03FF78E50DFB75C9007D79D3 /* DocFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF78E40DFB75C9007D79D3 /* DocFunction.m */; };
@@ -81,8 +81,8 @@
 		0362732C0E048FD3005D79FE /* DocElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocElement.m; sourceTree = "<group>"; };
 		03FF75310DF9EFED007D79D3 /* DocHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocHeader.h; sourceTree = "<group>"; };
 		03FF75320DF9EFED007D79D3 /* DocHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocHeader.m; sourceTree = "<group>"; };
-		03FF75340DF9F159007D79D3 /* HtmlElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HtmlElement.h; sourceTree = "<group>"; };
-		03FF75350DF9F159007D79D3 /* HtmlElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HtmlElement.m; sourceTree = "<group>"; };
+		03FF75340DF9F159007D79D3 /* DocHTMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocHTMLElement.h; sourceTree = "<group>"; };
+		03FF75350DF9F159007D79D3 /* DocHTMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocHTMLElement.m; sourceTree = "<group>"; };
 		03FF75DC0DFAAFEB007D79D3 /* DocMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocMethod.h; sourceTree = "<group>"; };
 		03FF75DD0DFAAFEB007D79D3 /* DocMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocMethod.m; sourceTree = "<group>"; };
 		03FF77460DFB1D21007D79D3 /* GSDocParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSDocParser.h; sourceTree = "<group>"; };
@@ -167,8 +167,8 @@
 				03FF77470DFB1D21007D79D3 /* GSDocParser.m */,
 				0362712A0E00919B005D79FE /* DocDescriptionParser.h */,
 				0362712B0E00919B005D79FE /* DocDescriptionParser.m */,
-				03FF75340DF9F159007D79D3 /* HtmlElement.h */,
-				03FF75350DF9F159007D79D3 /* HtmlElement.m */,
+				03FF75340DF9F159007D79D3 /* DocHTMLElement.h */,
+				03FF75350DF9F159007D79D3 /* DocHTMLElement.m */,
 				606D338B12946F1500AA7554 /* DocIndex.h */,
 				606D338C12946F1500AA7554 /* DocIndex.m */,
 			);
@@ -292,7 +292,7 @@
 			files = (
 				8DD76F9A0486AA7600D96B5E /* ETDocGenerator.m in Sources */,
 				03FF75330DF9EFED007D79D3 /* DocHeader.m in Sources */,
-				03FF75360DF9F159007D79D3 /* HtmlElement.m in Sources */,
+				03FF75360DF9F159007D79D3 /* DocHTMLElement.m in Sources */,
 				03FF75DE0DFAAFEB007D79D3 /* DocMethod.m in Sources */,
 				03FF77480DFB1D21007D79D3 /* GSDocParser.m in Sources */,
 				03FF78E50DFB75C9007D79D3 /* DocFunction.m in Sources */,

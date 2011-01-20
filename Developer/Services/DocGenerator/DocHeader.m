@@ -9,7 +9,7 @@
 
 #import "DocHeader.h"
 #import "DocIndex.h"
-#import "HtmlElement.h"
+#import "DocHTMLElement.h"
 
 @implementation DocHeader
 
@@ -148,13 +148,13 @@
 	[self setFilteredDescription: aDescription];
 }
 
-- (HtmlElement *) HTMLOverviewRepresentation
+- (DocHTMLElement *) HTMLOverviewRepresentation
 {
 	H hOverview = [DIV id: @"overview" with: [H3 with: @"Overview"]];
 	BOOL noOverview = (IS_NIL_OR_EMPTY_STR(fileOverview) && IS_NIL_OR_EMPTY_STR(overview));
 
 	if (noOverview)
-		return [HtmlElement blankElement];
+		return [DocHTMLElement blankElement];
 
 	if (fileOverview != nil)
 	{
@@ -171,7 +171,7 @@
 	return hOverview;
 }
 
-- (HtmlElement *) HTMLRepresentation
+- (DocHTMLElement *) HTMLRepresentation
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
 	H h_title = [DIV id: @"classname"];
@@ -241,16 +241,16 @@
 	H hOverview = [self HTMLOverviewRepresentation];
 	H hHeader = [DIV id: @"header" with: h_title and: hMeta and: hOverview];
 
-	if ([hOverview isEqual: [HtmlElement blankElement]])
+	if ([hOverview isEqual: [DocHTMLElement blankElement]])
 	{
 		return hHeader;
 	}
 
-	return [[HtmlElement blankElement] with: hHeader and: HR];
+	return [[DocHTMLElement blankElement] with: hHeader and: HR];
 }
 
 // TODO: Use correct span class names...
-- (HtmlElement *) HTMLTOCRepresentation
+- (DocHTMLElement *) HTMLTOCRepresentation
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
 	H hEntryName = [SPAN class: @"symbolName" with: [SPAN class: @"collapsedIndicator"]];

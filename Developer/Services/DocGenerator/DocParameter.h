@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class HtmlElement;
+@class DocHTMLElement;
 
 /** @group Doc Element Tree
     @abstract Parameters in the doc element tree.
@@ -85,6 +85,6 @@ When usesParentheses is YES, the ouput will be wrapped into parentheses e.g.
 <em>(NSString *)</em> rather than <em>NSString *</em>.
 
 The ouput includes both the name and the type. */
-- (HtmlElement *) HTMLRepresentationWithParentheses: (BOOL)usesParentheses;
+- (DocHTMLElement *) HTMLRepresentationWithParentheses: (BOOL)usesParentheses;
 
 @end

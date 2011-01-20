@@ -13,7 +13,7 @@
 #import "DocIndex.h"
 #import "DocMethod.h"
 #import "GSDocParser.h"
-#import "HtmlElement.h"
+#import "DocHTMLElement.h"
 
 @interface DocPage (Private)
 - (void) addElement: (DocElement *)anElement toDictionaryNamed: (NSString *)anIvarName forKey: (NSString *)aKey;
@@ -21,7 +21,7 @@
 
 @implementation DocTOCPage
 
-- (HtmlElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader
+- (DocHTMLElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader
 {
 	H hOverview = [aHeader HTMLOverviewRepresentation];
 

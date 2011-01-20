@@ -10,7 +10,7 @@
 #import "DocElement.h"
 #import "DocDescriptionParser.h"
 #import "DocIndex.h"
-#import "HtmlElement.h"
+#import "DocHTMLElement.h"
 #import "DocParameter.h"
 
 @implementation DocElement
@@ -354,9 +354,9 @@
 	return [self insertLinksWithDocIndex: aDocIndex forString: description];
 }
 
-- (HtmlElement *) HTMLRepresentation
+- (DocHTMLElement *) HTMLRepresentation
 {
-	return [HtmlElement blankElement];
+	return [DocHTMLElement blankElement];
 }
 
 - (NSString *) GSDocElementName

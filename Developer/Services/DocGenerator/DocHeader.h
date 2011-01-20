@@ -14,7 +14,7 @@
 #import "DocElement.h"
 #import "GSDocParser.h"
 
-@class HtmlElement;
+@class DocHTMLElement;
 
 /** @group Doc Element Tree */
 @interface DocHeader : DocElement <GSDocParserDelegate>
@@ -101,12 +101,12 @@ For DocHeader class, that would be DocHeader.h. */
 
 /** Returns the overview rendered as a HTML element tree.
 
-Will return +[HtmlElement blankElement] if no overview is available. */
-- (HtmlElement *) HTMLOverviewRepresentation;
+Will return +[DocHTMLElement blankElement] if no overview is available. */
+- (DocHTMLElement *) HTMLOverviewRepresentation;
 /** Returns the entire header rendered as a HTML element tree.
 
 The returned representation includes -HTMLOverviewRepresentation. */
-- (HtmlElement *) HTMLRepresentation;
+- (DocHTMLElement *) HTMLRepresentation;
 /** Returns a short header, limited to its overview, rendered as a HTML element 
 tree.
 
@@ -114,6 +114,6 @@ The returned representation includes -HTMLOverviewRepresentation.
 
 See DocTOCPage which uses this custom representation. e.g. to present all 
 the classes, categories and protocol on the API overview page. */
-- (HtmlElement *) HTMLTOCRepresentation;
+- (DocHTMLElement *) HTMLTOCRepresentation;
 
 @end

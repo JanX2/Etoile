@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class HtmlElement, DocDescriptionParser, DocIndex, DocHTMLIndex;
+@class DocHTMLElement, DocDescriptionParser, DocIndex, DocHTMLIndex;
 
 /** @group Doc Element Tree
 
@@ -135,10 +135,10 @@ See -filteredDescription. */
 /** <override-dummy />
 Returns the HTML element tree into which the receiver should be rendered.
 
-By default, returns the +[HtmlElement blankElement].
+By default, returns the +[DocHTMLElement blankElement].
 
 Should be overriden to return a custom representation. */
-- (HtmlElement *) HTMLRepresentation;
+- (DocHTMLElement *) HTMLRepresentation;
 
 
 /** @taskunit GSDoc Parsing */

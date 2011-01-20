@@ -8,7 +8,7 @@
  */
 
 #import "DocFunction.h"
-#import "HtmlElement.h"
+#import "DocHTMLElement.h"
 #import "DocDescriptionParser.h"
 #import "DocIndex.h"
 #import "DocParameter.h"
@@ -65,7 +65,7 @@
 	return param_list;
 }
 
-- (HtmlElement *) HTMLRepresentation
+- (DocHTMLElement *) HTMLRepresentation
 {
 	H h_signature = [SPAN class: @"methodSignature"];
 	H h_returnType = [SPAN class: @"returnType" 

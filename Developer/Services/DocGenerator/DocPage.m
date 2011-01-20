@@ -15,7 +15,7 @@
 #import "DocMacro.h"
 #import "DocMethod.h"
 #import "GSDocParser.h"
-#import "HtmlElement.h"
+#import "DocHTMLElement.h"
 
 
 @implementation DocPage
@@ -271,13 +271,13 @@
 	return weavedContent;
 }
 
-- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
+- (DocHTMLElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
                                      elements: (NSArray *)elementsByGroup
 {
 	return [self HTMLRepresentationWithTitle: aTitle 
 	                                elements: elementsByGroup 
 	              HTMLRepresentationSelector: @selector(HTMLRepresentation)
-				              groupSeparator: [HtmlElement blankElement]];
+				              groupSeparator: [DocHTMLElement blankElement]];
 }
 
 - (NSArray *) mainContentHTMLRepresentations
@@ -290,22 +290,22 @@
 		[self HTMLRepresentationWithTitle: @"Other Data Types" elements: otherDataTypes], nil];
 }
 
-- (HtmlElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader
+- (DocHTMLElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader
 {
 	return [aHeader HTMLRepresentation];
 }
 
-- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
+- (DocHTMLElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
                                      elements: (NSArray *)elementsByGroup
                    HTMLRepresentationSelector: (SEL)repSelector
-                               groupSeparator: (HtmlElement *)aSeparator
+                               groupSeparator: (DocHTMLElement *)aSeparator
 {
 	if ([elementsByGroup isEmpty])
-		return [HtmlElement blankElement];
+		return [DocHTMLElement blankElement];
 
 	NSString *titleWithoutSpaces = [[aTitle componentsSeparatedByCharactersInSet: 
 		[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString: @"-"];
-	HtmlElement *html = [DIV class: [titleWithoutSpaces lowercaseString]];
+	DocHTMLElement *html = [DIV class: [titleWithoutSpaces lowercaseString]];
 	BOOL hasH3 = NO;
 
 	if (aTitle != nil)
@@ -318,7 +318,7 @@
 	{
 		NSString *group = [[elementsByGroup objectAtIndex: i] key];
 		NSArray *elementsInGroup = [(ETKeyValuePair *)[elementsByGroup objectAtIndex: i] value];
-		HtmlElement *hGroup = (hasH3 ? [H4 with: group] : [H3 with: group]);
+		DocHTMLElement *hGroup = (hasH3 ? [H4 with: group] : [H3 with: group]);
 		BOOL isFirst = (i == 0);
 
 		if (isFirst == NO)

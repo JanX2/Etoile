@@ -14,7 +14,7 @@
 #import "GSDocParser.h"
 #import "DocElement.h"
 
-@class HtmlElement;
+@class DocHTMLElement;
 
 /** @group Doc Element Tree
 

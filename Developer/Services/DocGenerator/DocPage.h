@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class DocHeader, DocMethod, DocFunction, DocMacro, DocConstant, DocCDataType, HtmlElement;
+@class DocHeader, DocMethod, DocFunction, DocMacro, DocConstant, DocCDataType, DocHTMLElement;
 
 /** @group Page Generation
 
@@ -97,7 +97,7 @@ A subheader can be used to regroup related documentation tree elements. */
 
 /** Returns a string representation of the whole page by weaving the input files. */
 - (NSString *) HTMLString;
-/** Returns the main page content rendered as an HtmlElement array, including 
+/** Returns the main page content rendered as an DocHTMLElement array, including 
 elements such as <em>Instance Methods</em>,<em>Macros</em> etc.
 
 Menu, navigation bar etc. are not present in the returned HTML representation 
@@ -109,7 +109,7 @@ Returns the HTML element tree into which the main header should be rendered.
 By default, returns the -[DocHeader HTMLRepresentation].
 
 Can be overriden to return a custom representation. */
-- (HtmlElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader;
+- (DocHTMLElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader;
 /** Returns the given doc elements rendered as a HTML element tree.
 
 The array argument must contain ETKeyValuePair and not DocElement objects.<br />
@@ -128,8 +128,8 @@ can be added to the DocElement subclasses such as
 use a custom representation in the output.
 
 See also DocElement. */
-- (HtmlElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
+- (DocHTMLElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
                                      elements: (NSArray *)elementsByGroup
                    HTMLRepresentationSelector: (SEL)repSelector
-                               groupSeparator: (HtmlElement *)aSeparator;
+                               groupSeparator: (DocHTMLElement *)aSeparator;
 @end

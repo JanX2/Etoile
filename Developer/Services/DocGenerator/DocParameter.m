@@ -9,7 +9,7 @@
 
 #import "DocParameter.h"
 #import "DocIndex.h"
-#import "HtmlElement.h"
+#import "DocHTMLElement.h"
 
 
 @implementation DocParameter
@@ -192,13 +192,13 @@ camel case). */
 	[self parseType: aType];
 }
 
-- (HtmlElement *) HTMLRepresentation
+- (DocHTMLElement *) HTMLRepresentation
 {
 	ETAssertUnreachable();
 	return nil;
 }
 
-- (HtmlElement *) HTMLRepresentationWithParentheses: (BOOL)usesParentheses
+- (DocHTMLElement *) HTMLRepresentationWithParentheses: (BOOL)usesParentheses
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
 	// NOTE: Should we use a span of class 'type inside the 'parameter' span...

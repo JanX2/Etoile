@@ -10,7 +10,7 @@
 #import "DocCDataType.h"
 #import "DocDescriptionParser.h"
 #import "DocIndex.h"
-#import "HtmlElement.h"
+#import "DocHTMLElement.h"
 #import "DocParameter.h"
 
 @implementation DocCDataType
@@ -115,7 +115,7 @@
 	return formattedType;
 }
 
-- (HtmlElement *) HTMLRepresentation
+- (DocHTMLElement *) HTMLRepresentation
 {
 	// TODO: Use more correct span class names
 	H hType = [SPAN class: @"returnType" with: [SPAN class: @"type" with: [self formattedType]]];

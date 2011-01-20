@@ -13,7 +13,7 @@
 #import "GSDocParser.h"
 #import "DocFunction.h"
 
-@class HtmlElement;
+@class DocHTMLElement;
 
 /** @group Doc Element Tree
 

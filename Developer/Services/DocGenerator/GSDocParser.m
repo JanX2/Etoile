@@ -13,7 +13,7 @@
 #import "DocMacro.h"
 #import "DocMethod.h"
 #import "DocFunction.h"
-#import "HtmlElement.h"
+#import "DocHTMLElement.h"
 #import "DocDescriptionParser.h"
 
 @interface NullParserDelegate : NSObject <GSDocParserDelegate>

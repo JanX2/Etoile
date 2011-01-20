@@ -6,13 +6,13 @@
 	License:  Modified BSD (see COPYING)
  */
 
-#import "HtmlElement.h"
+#import "DocHTMLElement.h"
 
-@interface HtmlElement (Private)
+@interface DocHTMLElement (Private)
 - (void) collectChildContentWithString: (NSMutableString *)buf;
 @end
 
-@interface BlankHTMLElement : HtmlElement 
+@interface BlankHTMLElement : DocHTMLElement 
 @end
 
 @implementation BlankHTMLElement
@@ -27,19 +27,19 @@
 @end
 
 
-@implementation HtmlElement
+@implementation DocHTMLElement
 
-+ (HtmlElement *) blankElement
++ (DocHTMLElement *) blankElement
 {
 	return AUTORELEASE([[BlankHTMLElement alloc] initWithName: @"Blank"]);
 }
 
-+ (HtmlElement *) elementWithName: (NSString *) aName
++ (DocHTMLElement *) elementWithName: (NSString *) aName
 {
-	return AUTORELEASE([[HtmlElement alloc] initWithName: aName]);
+	return AUTORELEASE([[DocHTMLElement alloc] initWithName: aName]);
 }
 
-- (HtmlElement *) initWithName: (NSString *) aName
+- (DocHTMLElement *) initWithName: (NSString *) aName
 {
 	SUPERINIT;
 	children = [NSMutableArray new];
@@ -63,7 +63,7 @@
 	return [[self description] isEqualToString: [anObject description]];
 }
 
-- (HtmlElement *) addText: (NSString *) aText
+- (DocHTMLElement *) addText: (NSString *) aText
 {
 	if (aText)
 	{
@@ -72,7 +72,7 @@
 	return self;
 }
 
-- (HtmlElement *) add: (HtmlElement *) anElem 
+- (DocHTMLElement *) add: (DocHTMLElement *) anElem 
 {
 	if (anElem)
 	{
@@ -81,7 +81,7 @@
 	return self;
 }
 
-- (HtmlElement *) id: (NSString *) anID
+- (DocHTMLElement *) id: (NSString *) anID
 {
 	if (anID)
 	{
@@ -90,7 +90,7 @@
 	return self;
 }
 
-- (HtmlElement *) class: (NSString *) aClass
+- (DocHTMLElement *) class: (NSString *) aClass
 {
 	if (aClass)
 	{
@@ -99,7 +99,7 @@
 	return self;
 }
 
-- (HtmlElement *) name: (NSString *) aName
+- (DocHTMLElement *) name: (NSString *) aName
 {
 	if (aName)
 	{
@@ -167,7 +167,7 @@
 	[invocation setReturnValue: &self];
 }
 
-- (HtmlElement *) with: (id) something
+- (DocHTMLElement *) with: (id) something
 {
 	if ([something isKindOfClass: [NSString class]])
 	{
@@ -179,7 +179,7 @@
 	}
 }
 
-- (HtmlElement *) and: (id) something
+- (DocHTMLElement *) and: (id) something
 {
 	return [self with: something];
 }
@@ -188,7 +188,7 @@
 {
 	for (id elem in children)
 	{
-		if ([elem isKindOfClass: [HtmlElement class]])
+		if ([elem isKindOfClass: [DocHTMLElement class]])
 		{
 			[buf appendString: [elem content]];
 		}

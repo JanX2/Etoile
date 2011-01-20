@@ -9,7 +9,7 @@
 
 #import "DocMethod.h"
 #import "DocIndex.h"
-#import "HtmlElement.h"
+#import "DocHTMLElement.h"
 #import "DocDescriptionParser.h"
 #import "DocParameter.h"
 
@@ -79,7 +79,7 @@
 	return [NSString stringWithFormat: @"%c[(%@) %@]", sign, aProtocolName, [self name]];
 }
 
-- (HtmlElement *) HTMLAnchorRepresentation
+- (DocHTMLElement *) HTMLAnchorRepresentation
 {
 	/* -ownerSymbolName can return either a class or protocol e.g. ClassName or 
 	   (ProtocolName), so -refMarkupWithClassName: with the latter would return 
@@ -99,7 +99,7 @@
  </dd>
  </dl>
 */ 
-- (HtmlElement *) HTMLRepresentation
+- (DocHTMLElement *) HTMLRepresentation
 {
 	DocHTMLIndex *docIndex = [DocIndex currentIndex];
 	H hSignature = [SPAN class: @"methodSignature"];
