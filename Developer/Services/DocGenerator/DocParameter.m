@@ -1,10 +1,11 @@
-//
-//  Parameter.m
-//  ETDocGenerator
-//
-//  Created by Nicolas Roard (Home) on 6/12/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
+/*
+	Copyright (C) 2008 Nicolas Roard
+
+	Author:  Nicolas Roard
+	Author:  Quentin Mathe <quentin.mathe@gmail.com>
+	Date:  June 2008
+	License:  Modified BSD (see COPYING)
+ */
 
 #import "DocParameter.h"
 #import "DocIndex.h"
@@ -13,7 +14,7 @@
 
 @implementation DocParameter
 
-@synthesize typePrefix, className, protocolName, typeSuffix;
+@synthesize name, type, description, typePrefix, className, protocolName, typeSuffix;
 
 - (id) initWithName: (NSString *) aName andType: (NSString *) aType
 {
@@ -25,9 +26,9 @@
 
 - (void) dealloc
 {
-	[name release];
-	[type release];
-	[description release];
+	DESTROY(name);
+	DESTROY(type);
+	DESTROY(description);
 	DESTROY(typePrefix);
 	DESTROY(className);
 	DESTROY(protocolName);
@@ -35,7 +36,7 @@
 	[super dealloc];
 }
 
-+ (id) newWithName: (NSString *) aName andType: (NSString *) aType
++ (id) parameterWithName: (NSString *) aName type: (NSString *) aType
 {
 	return AUTORELEASE([[DocParameter alloc] initWithName: aName andType: aType]);
 }
@@ -118,13 +119,16 @@ static inline unsigned int parseTypeSuffix(char *rawType, unsigned int length, N
 }
 
 
-/* We support parsing protocol and classe type such as:
-- id<ProtocolName>
-- id<ProtocolName>*
-- ClassName*
-- ClassName**
-- ClassName<ProtocolName>*
-- ClassName<ProtocolName>**
+/** We support parsing protocol and classe type such as:
+
+<list>
+<item>id&lt;ProtocolName&gt;</item>
+<item>id&lt;ProtocolName&gt;*</item>
+<item>ClassName*</item>
+<item>ClassName**</item>
+<item>ClassName&lt;ProtocolName&gt;*</item>
+<item>ClassName&lt;ProtocolName&gt;**</item>
+</list>
 
 These declarations can be wrapped with a prefix and suffix too, but this isn't 
 well tested yet. e.g. const.
@@ -186,26 +190,6 @@ camel case). */
 {
 	ASSIGN(type, aType);
 	[self parseType: aType];
-}
-
-- (void) setDescription: (NSString *) aDescription
-{
-	ASSIGN(description, aDescription);
-}
-
-- (NSString *) name
-{
-	return name;
-}
-
-- (NSString *) type
-{
-	return type;
-}
-
-- (NSString *) description
-{
-	return description;
 }
 
 - (HtmlElement *) HTMLRepresentation

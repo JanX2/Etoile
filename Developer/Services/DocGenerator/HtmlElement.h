@@ -1,10 +1,10 @@
-//
-//  HtmlElement.h
-//  ETDocGenerator
-//
-//  Created by Nicolas Roard (Home) on 6/6/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
+/**
+	Copyright (C) 2008 Nicolas Roard
+
+	Author:  Nicolas Roard
+	Date:  June 2008
+	License:  Modified BSD (see COPYING)
+ */
 
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>

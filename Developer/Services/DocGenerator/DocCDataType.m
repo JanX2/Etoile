@@ -93,7 +93,7 @@
 
 	// TODO: Fix or remove... This code wrongly truncates the types.
 	// TODO: Insert links in the returned type
-	DocParameter *formatter = [DocParameter newWithName: nil andType: [self type]];
+	DocParameter *formatter = [DocParameter parameterWithName: nil type: [self type]];
 	NSString *formattedType = @"";
 
 	if ([formatter typePrefix] != nil)
