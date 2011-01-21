@@ -15,6 +15,9 @@
 #import "GSDocParser.h"
 #import "DocHTMLElement.h"
 
+@interface DocPage ()
+- (DocHTMLElement *) HTMLRepresentationWithTitle: (NSString *)aTitle elements: (NSArray *)elements;
+@end
 
 @implementation DocCategoryPage
 

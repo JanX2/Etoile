@@ -383,7 +383,7 @@
 	DocElementGroup *category = AUTORELEASE([[DocElementGroup alloc] 
 		initWithHeader: currentHeader subgroupKey: @"task"]);
 
-	[[self currentPage] addMethodGroup: category];
+	[(DocCategoryPage *)[self currentPage] addMethodGroup: category];
 
 	[apiOverviewPage addSubheader: currentHeader];
 
