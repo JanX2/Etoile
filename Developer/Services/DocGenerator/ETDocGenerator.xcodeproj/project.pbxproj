@@ -16,6 +16,7 @@
 		03FF77480DFB1D21007D79D3 /* GSDocParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF77470DFB1D21007D79D3 /* GSDocParser.m */; };
 		03FF78E50DFB75C9007D79D3 /* DocFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF78E40DFB75C9007D79D3 /* DocFunction.m */; };
 		03FF79AF0DFCA7B4007D79D3 /* DocPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF79AE0DFCA7B4007D79D3 /* DocPage.m */; };
+		601A56A412E89AB100727DAA /* DocCategoryPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 601A56A212E89AB100727DAA /* DocCategoryPage.m */; };
 		602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */ = {isa = PBXBuildFile; fileRef = 602363D5128B3E6600C9EC82 /* DocPageWeaver.m */; };
 		606D338D12946F1500AA7554 /* DocIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 606D338C12946F1500AA7554 /* DocIndex.m */; };
 		608A56ED12C61ED7007CD303 /* DocDeclarationReorderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 608A56EC12C61ED7007CD303 /* DocDeclarationReorderer.m */; };
@@ -94,6 +95,8 @@
 		08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETDocGenerator.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* ETDocGenerator_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETDocGenerator_Prefix.pch; sourceTree = "<group>"; };
+		601A56A212E89AB100727DAA /* DocCategoryPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocCategoryPage.m; sourceTree = "<group>"; };
+		601A56A312E89AB100727DAA /* DocCategoryPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocCategoryPage.h; sourceTree = "<group>"; };
 		602363D4128B3E6600C9EC82 /* DocPageWeaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocPageWeaver.h; sourceTree = "<group>"; };
 		602363D5128B3E6600C9EC82 /* DocPageWeaver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocPageWeaver.m; sourceTree = "<group>"; };
 		606D338B12946F1500AA7554 /* DocIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocIndex.h; sourceTree = "<group>"; };
@@ -149,6 +152,8 @@
 				03FF79AE0DFCA7B4007D79D3 /* DocPage.m */,
 				60AF049C12B788F800BAF537 /* DocTOCPage.h */,
 				60AF049D12B788F800BAF537 /* DocTOCPage.m */,
+				601A56A312E89AB100727DAA /* DocCategoryPage.h */,
+				601A56A212E89AB100727DAA /* DocCategoryPage.m */,
 				0362732B0E048FD3005D79FE /* DocElement.h */,
 				0362732C0E048FD3005D79FE /* DocElement.m */,
 				60F7F14212AF91970031E9F1 /* DocCDataType.h */,
@@ -306,6 +311,7 @@
 				60AF049E12B788F800BAF537 /* DocMacro.m in Sources */,
 				60AF049F12B788F800BAF537 /* DocTOCPage.m in Sources */,
 				608A56ED12C61ED7007CD303 /* DocDeclarationReorderer.m in Sources */,
+				601A56A412E89AB100727DAA /* DocCategoryPage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

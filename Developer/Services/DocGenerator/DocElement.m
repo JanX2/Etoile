@@ -420,3 +420,54 @@
 }
 
 @end
+
+
+@implementation DocElementGroup
+
+@synthesize header, subgroupKey;
+
+- (id) initWithHeader: (DocHeader *)aHeader subgroupKey: (NSString *)aKey;
+{
+	SUPERINIT;
+	elements = [[NSMutableArray alloc] init];
+	ASSIGN(header, aHeader);
+	ASSIGN(subgroupKey, aKey);
+	return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(elements);
+	DESTROY(header);
+	DESTROY(subgroupKey);
+	[super dealloc];
+}
+
+- (ETKeyValuePair *) firstPairWithKey: (NSString *)aKey inArray: (NSArray *)anArray
+{
+	return [anArray firstObjectMatchingValue: aKey forKey: @"key"];
+}
+
+- (void) addElement: (DocElement *)anElement forKey: (NSString *)aKey
+{
+	NSMutableArray *array = [[self firstPairWithKey: aKey inArray: elements] value];
+
+	if (array == nil)
+	{
+		array = [NSMutableArray array];
+		[elements addObject: [ETKeyValuePair pairWithKey: aKey value: array]];
+	}
+	[array addObject: anElement];
+}
+
+- (NSArray *) elements
+{
+	return AUTORELEASE([elements copy]);
+}
+
+- (void) addElement: (DocElement *)anElement
+{
+	[self addElement: anElement forKey: [anElement valueForKey: subgroupKey]];
+}
+
+@end

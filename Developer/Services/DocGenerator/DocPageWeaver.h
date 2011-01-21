@@ -119,6 +119,7 @@ existing page generation strategy or implement a new one. */
 	NSMutableArray *weavedPages;
 
 	NSMutableArray *allWeavedPages;
+	NSMutableDictionary *categoryPages;
 
 	/* Main Page to collect ObjC constructs */
 	DocPage *apiOverviewPage;
@@ -210,6 +211,17 @@ Each time, -weaveNewPage is called, -currentPage changes. */
 /** Inserts an overview from a file if available, into the current page. */
 - (void) weaveOverviewFile;
 
+/** @taskunit Consolidated Symbol Pages */
+
+/** Looks up the page on which the given category should be consolidated, if 
+needed creates it, then makes it the current page.
+
+By default, looks up the page that regroups the categories on the class that 
+appears in the category symbol.
+
+The category symbol syntax is <em>ClassName(CategoryName)</em>. */
+- (void) weavePageForCategoryNamed: (NSString *)aCategoryName className: (NSString *)aClassName;
+
 /** @taskunit Progress and Status */
 
 /** Returns the documentation source file currently parsed. */
@@ -224,3 +236,10 @@ Each time, -weaveNewPage is called, -currentPage changes. */
 
 @end
 
+/** Whatever could happen... */
+@interface NSString (DocPageWeaver)
+/** Oops and -oops. */
+- (NSString *) bla;
+/** Piou. */
+- (NSString *) oops;
+@end

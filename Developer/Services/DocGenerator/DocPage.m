@@ -165,13 +165,33 @@
 - (void) insertProjectSymbolListOfKind: (NSString *)aKind
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
-	NSArray *symbolNames = [[docIndex projectSymbolNamesOfKind: aKind]
+	NSArray *symbols = [[docIndex projectSymbolNamesOfKind: aKind]
 		sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+	BOOL isCategoryKind = [aKind isEqual: @"categories"];
+	NSMutableSet *categoryClassNames = [NSMutableSet set];
 	H list = UL;
 
-	FOREACH(symbolNames, name, NSString *)
+	FOREACH(symbols, symbol, NSString *)
 	{
-		[list and: [LI with: [docIndex linkForSymbolName: name ofKind: aKind]]];
+		NSString *linkName = symbol;
+
+		/* We skip categories which extend the same class than a previous 
+		   category added to the list.
+
+		   For NSString(A) and NSString(B), on NSString(A) a link named 
+		   'NSString' to 'NSString_Categories.html' or similar will be inserted, 
+		   on NSString(B), no link is inserted since NSString(B) belongs to the
+		   same 'NSString_Categories.html' page. */
+		if (isCategoryKind)
+		{
+			linkName = [symbol substringToIndex: [symbol rangeOfString: @"("].location];
+			if ([categoryClassNames containsObject: linkName])
+				continue;
+			
+			[categoryClassNames addObject: linkName];
+		}
+
+		[list and: [LI with: [docIndex linkWithName: linkName forSymbolName: symbol ofKind: aKind]]];
 	}
 
 	NSString *blockId = [NSString stringWithFormat: @"project-%@-list", aKind];

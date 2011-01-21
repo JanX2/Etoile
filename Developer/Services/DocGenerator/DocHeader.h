@@ -107,6 +107,7 @@ Will return +[DocHTMLElement blankElement] if no overview is available. */
 
 The returned representation includes -HTMLOverviewRepresentation. */
 - (DocHTMLElement *) HTMLRepresentation;
+- (DocHTMLElement *) HTMLRepresentationWithTitleBlockElement: (DocHTMLElement *)hTitle;
 /** Returns a short header, limited to its overview, rendered as a HTML element 
 tree.
 

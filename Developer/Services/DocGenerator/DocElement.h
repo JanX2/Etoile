@@ -210,4 +210,34 @@ object will insert symbol links and apply standard formatting (e.g. class name
 
 @end
 
+
+@class DocHeader;
+
+/** @group Doc Element Tree
+@abstract Base class to represent related element constructs in a doc element 
+tree.
+
+DocElementGroup can be used to represent arbitrary element grouping in a page 
+layout.
+
+Alternatively subclasses can be created to represent concrete language 
+constructs such as a class, a category etc. */
+@interface DocElementGroup : DocElement
+{
+	@private
+	NSMutableArray *elements;
+	DocHeader *header;
+	NSString *subgroupKey;
+}
+
+- (id) initWithHeader: (DocHeader *)aHeader subgroupKey: (NSString *)aKey;
+
+@property (retain, nonatomic) DocHeader *header;
+@property (readonly, nonatomic) NSString *subgroupKey;
+
+- (void) addElement: (DocElement *)anElement;
+@property (readonly, nonatomic) NSArray *elements;
+
+@end
+
 #define IS_NIL_OR_EMPTY_STR(x) (x == nil || [x isEqualToString: @""])

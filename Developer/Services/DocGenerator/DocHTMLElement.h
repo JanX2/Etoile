@@ -111,6 +111,7 @@ TODO: Document a bit better and when line breaks are inserted. */
 #define LI [DocHTMLElement elementWithName: @"li"]
 #define EM [DocHTMLElement elementWithName: @"em"]
 #define HR [DocHTMLElement elementWithName: @"hr"]
+#define BR [DocHTMLElement elementWithName: @"br"]
 
 /** @group HTML Support
 
@@ -120,6 +121,9 @@ has no fixed API but support a large number of message chaining variations.  */
 - (DocHTMLElement *) class: (NSString *)aClass with: (id)something;
 - (DocHTMLElement *) class: (NSString *)aClass with: (id)something and: (id) something;
 - (DocHTMLElement *) class: (NSString *)aClass with: (id)something and: (id) something and: (id)something;
+@end
+
+@interface DocHTMLElement (OtherUseCases)
 - (DocHTMLElement *) with: (id)something and: (id) something;
 - (DocHTMLElement *) with: (id)something and: (id) something and: (id)something;
 - (DocHTMLElement *) with: (id)something and: (id) something and: (id)something and: (id)something;

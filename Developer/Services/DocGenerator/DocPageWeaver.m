@@ -7,10 +7,13 @@
  */
 
 #import "DocPageWeaver.h"
+#import "DocCategoryPage.h"
 #import "DocDeclarationReorderer.h"
+#import "DocElement.h"
 #import "DocHeader.h"
 #import "DocIndex.h"
 #import "DocMethod.h"
+#import "DocPage.h"
 #import "DocTOCPage.h"
 #import "GSDocParser.h"
 #import "DocPage.h"
@@ -65,6 +68,7 @@
 	ASSIGN(templateDirPath, [aTemplatePath stringByDeletingLastPathComponent]);
 	allWeavedPages = [[NSMutableArray alloc] init];
 	weavedPages = [[NSMutableArray alloc] init];
+	categoryPages = [[NSMutableDictionary alloc] init];
 
 	return self;
 }
@@ -85,6 +89,7 @@
 	DESTROY(currentHeader);
 	DESTROY(allWeavedPages);
 	DESTROY(weavedPages);
+	DESTROY(categoryPages);
 	DESTROY(apiOverviewPage);
 	DESTROY(functionPage);
 	DESTROY(constantPage);
@@ -162,7 +167,7 @@
 - (void) weaveMainPages
 {
 	// TODO: Perhaps pass an overview to insert in the header... or use the document file?
-	ASSIGN(apiOverviewPage, [self weaveMainPageOfClass: [DocTOCPage class] withName: @"API Overview" overview: nil]);
+	ASSIGN(apiOverviewPage, [self weaveMainPageOfClass: [DocTOCPage class] withName: @"API Overview" overview: @"Classes, Protocols and Categories by Groups"]);
 
 	NSString *functionOverview = [NSString stringWithFormat: @"All the public Functions in %@", [docIndex projectName]];
 	ASSIGN(functionPage, [self weaveMainPageWithName: @"Functions" overview: functionOverview]);
@@ -260,7 +265,7 @@
 	return currentProtocolName;
 }
 
-- (void) weaveNewPage
+- (void) resetCurrentPageRelatedState
 {
 	/* Don't release the current header because the header precedes class, 
 	   protocol and category declarations in GSDoc format.
@@ -268,11 +273,21 @@
 	   contains multiple class documentations. */
 	DESTROY(currentClassName);
 	DESTROY(currentProtocolName);
+}
 
-	DocPage *page = [[DocPage alloc] initWithDocumentFile: [self currentSourceFile]
+- (void) weaveNewPageOfClass: (Class)aPageClass
+{
+	[self resetCurrentPageRelatedState];
+
+	DocPage *page = [[aPageClass alloc] initWithDocumentFile: [self currentSourceFile]
 	                                templateFile: [self templateFileForSourceFile: [self currentSourceFile]]
 	                                    menuFile: menuPath];
     [weavedPages addObject: AUTORELEASE(page)];
+}
+
+- (void) weaveNewPage
+{
+	[self weaveNewPageOfClass: [DocPage class]];
 }
 
 - (BOOL) canWeaveMorePages
@@ -355,15 +370,20 @@
 - (void) weaveCategoryNamed: (NSString *)aCategoryName
                   className: (NSString *)aClassName
 {
-	[self weaveNewPage];
+	[self weavePageForCategoryNamed: aCategoryName className: aClassName];
 
 	ASSIGN(currentClassName, aClassName);
 	ASSIGNCOPY(currentHeader, currentHeader);
 
-	[[self currentPage] setHeader: currentHeader];
+	[currentHeader setCategoryName: aCategoryName];
+	[currentHeader setClassName: aClassName];
+	// FIXME: Is it really necessary to set both title and name separatly?
+	[currentHeader setTitle: aCategoryName];
 
-	[[self currentHeader] setCategoryName: aCategoryName];
-	[[self currentHeader] setClassName: aClassName];
+	DocElementGroup *category = AUTORELEASE([[DocElementGroup alloc] 
+		initWithHeader: currentHeader subgroupKey: @"task"]);
+
+	[[self currentPage] addMethodGroup: category];
 
 	[apiOverviewPage addSubheader: currentHeader];
 
@@ -449,6 +469,42 @@
 - (void) finishWeaving
 {
 
+}
+
+- (void) makeCurrentPage: (DocPage *)aPage
+{
+	/* For a category page, the page could have been generated with the current source 
+	   file or a previous one. In the former case, weavedPages holds the page, 
+	   in the latter allWeavedPages holds the page. */
+	[allWeavedPages removeObject: aPage];
+	[weavedPages removeObject: aPage];
+
+	/* -currentPage returns the last object */
+	[weavedPages addObject: aPage];
+
+	[self resetCurrentPageRelatedState];
+}
+
+- (void) weavePageForCategoryNamed: (NSString *)aCategoryName className: (NSString *)aClassName
+{
+	DocPage *page = [categoryPages objectForKey: aClassName];
+
+	if (page == nil)
+	{
+		[self weaveNewPageOfClass: [DocCategoryPage class]];
+		page = [self currentPage];
+
+		[categoryPages setObject: page forKey: aClassName];
+
+		[page setHeader: AUTORELEASE([[DocHeader alloc] init])];
+		[[page header] setName: [NSString stringWithFormat: @"%@ Categories", aClassName]];
+		[[page header] setTitle: [NSString stringWithFormat: @"%@ categories documentation", aClassName]];
+		[[page header] setAbstract: [NSString stringWithFormat: @"All the public Categories which extend %@ class.", aClassName]];
+	}
+	else
+	{
+		[self makeCurrentPage: page];
+	}
 }
 
 - (DocHeader *) currentHeader

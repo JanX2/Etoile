@@ -554,9 +554,14 @@ pre
 	text-indent: -1em;
 }
 
-#documentation #classname 
+#documentation .header
 {
-  margin-bottom: 10px;
+
+}
+
+#documentation .methodGroup
+{
+  margin-top: 30px;
 }
 
 #documentation #hider
@@ -564,35 +569,41 @@ pre
   display: none;
 }
 
-#documentation #meta
+#documentation .meta
 {
-  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
-#documentation #meta td
+#documentation .meta td
 {
   padding: 5px;
 }
 
-#documentation #meta th
+#documentation .meta th
 {
   font-weight: bold;
   padding: 5px 5px 5px 0;
 }
 
-#documentation #overview
+#documentation .overview
 {
   margin-bottom: 20px;
 }
 
-#documentation #overview-rest
+#documentation .overview-rest
 {
   display: none;
 }
 
 #documentation #toggler
 {
-  margin: 20px 0;
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+#documentation hr
+{
+  margin-bottom: 15px;
 }
 
 #documentation .collapsedIndicator

@@ -150,7 +150,7 @@
 
 - (DocHTMLElement *) HTMLOverviewRepresentation
 {
-	H hOverview = [DIV id: @"overview" with: [H3 with: @"Overview"]];
+	H hOverview = [DIV class: @"overview" with: [H3 with: @"Overview"]];
 	BOOL noOverview = (IS_NIL_OR_EMPTY_STR(fileOverview) && IS_NIL_OR_EMPTY_STR(overview));
 
 	if (noOverview)
@@ -174,27 +174,27 @@
 - (DocHTMLElement *) HTMLRepresentation
 {
 	DocIndex *docIndex = [DocIndex currentIndex];
-	H h_title = [DIV id: @"classname"];
-	if (title)
+	H hTitle = [DocHTMLElement blankElement];
+
+	if (title != nil)
 	{
-		[h_title with: [H2 with: title]];
+		[hTitle with: [H2 with: title]];
 	}
 
 	/* Insert either class, category or protocol as main symbol */
 	if (className != nil && categoryName == nil)
 	{
 		ETAssert(protocolName == nil);
-		[h_title with: className and: @" : " and: [docIndex linkForClassName: superclassName]];
+		[hTitle with: className and: @" : " and: [docIndex linkForClassName: superclassName]];
 	}
 	if (categoryName != nil)
 	{
 		ETAssert(protocolName == nil);
-		[h_title with: [docIndex linkForClassName: className] 
-		          and: @" (" and: categoryName and: @")"];
+		[hTitle with: [NSString stringWithFormat: @"%@ (%@)", className, categoryName]];
 	}
 	if (protocolName != nil)
 	{
-		[h_title with: protocolName];	
+		[hTitle with: protocolName];	
 	}
 
 	/* Insert adopted protocols */
@@ -202,18 +202,25 @@
 	{
 		BOOL isFirstProtocol = YES;
 		
-		[h_title addText: @" &lt;"];
+		[hTitle addText: @" &lt;"];
 		
 		for (NSString *adoptedProtocol in adoptedProtocolNames)
 		{
 			if (isFirstProtocol == NO)
-				[h_title addText: @", "];
+				[hTitle addText: @", "];
 			
-			[h_title addText: [docIndex linkForProtocolName: adoptedProtocol]];
+			[hTitle addText: [docIndex linkForProtocolName: adoptedProtocol]];
 			isFirstProtocol = NO;
 		}
-		[h_title addText: @"&gt;"];
+		[hTitle addText: @"&gt;"];
 	}
+
+	return [self HTMLRepresentationWithTitleBlockElement: hTitle];
+}
+
+- (DocHTMLElement *) HTMLRepresentationWithTitleBlockElement: (DocHTMLElement *)hTitleBlock
+{
+	DocIndex *docIndex = [DocIndex currentIndex];
 
 	/* Build authors and declared in table */
 	H table = TABLE;
@@ -234,12 +241,12 @@
 
 	NSString *formattedAbstract = [self insertLinksWithDocIndex: docIndex forString: abstract];
 	// TODO: Could be better not to insert an empty table when authors is empty and declared is nil
-	H hMeta = [DIV id: @"meta" with: [P id: @"metadesc" with: [EM with: formattedAbstract]] 
+	H hMeta = [DIV class: @"meta" with: [P class: @"metadesc" with: [EM with: formattedAbstract]] 
 	                           and: table];
 
 	/* Pack title, meta and overview in a header html element */
 	H hOverview = [self HTMLOverviewRepresentation];
-	H hHeader = [DIV id: @"header" with: h_title and: hMeta and: hOverview];
+	H hHeader = [DIV class: @"header" with: hTitleBlock and: hMeta and: hOverview];
 
 	if ([hOverview isEqual: [DocHTMLElement blankElement]])
 	{
@@ -250,6 +257,7 @@
 }
 
 // TODO: Use correct span class names...
+// Perhaps show the adopted protocols in the expanded variant.
 - (DocHTMLElement *) HTMLTOCRepresentation
 {
 	DocIndex *docIndex = [DocIndex currentIndex];

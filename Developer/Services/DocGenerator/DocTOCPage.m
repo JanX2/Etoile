@@ -23,12 +23,12 @@
 
 - (DocHTMLElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader
 {
-	H hOverview = [aHeader HTMLOverviewRepresentation];
-
 	/* Pack title and overview in a header html element */
-	H hHeader = [DIV id: @"header" with: [H2 with: [aHeader title]]];
+	H hMeta = [DIV class: @"meta" with: [P class: @"metadesc" with: [EM with: [aHeader abstract]]]];
 
-	return [hHeader with: hOverview and: @"Classes, Protocols and Categories by Groups"];
+	return [DIV class: @"header" with: [H2 with: [aHeader title]]
+	                              and: hMeta
+	                              and: [aHeader HTMLOverviewRepresentation]];
 }
 
 /* DocPageWeaver inserts the subheaders out of order, and before also their group 
