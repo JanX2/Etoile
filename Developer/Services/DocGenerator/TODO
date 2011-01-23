@@ -6,10 +6,11 @@ Bugs and Small Features
 
 - Support <override-XXX /> and <init /> GSDoc method attributes
 - Expand target method on a method link click
-- Support function and perhaps macro links in addition to method links
+- Support C type links (functions, constants etc.) in addition to method links
 - Fix autogsdoc to insert no spaces between a method ref and any punctuation that follows. e.g. '-weaveSelector.' and not '-weaveSelector .'
 - Ensure '-weaveSelector' is an unbreakable word and won't appear cut by a newline on '-'
-- Wrap examples 
+- Wrap examples to prevent them from overlapping with the sidebar
+- Support @taskunit with C types (functions, constants etc.) and not just methods
 - autogsdoc wrongly generates the paragraph markup when there is a tab on a blank line as below:
 
 	/** @group Weaving and Parsing
@@ -30,4 +31,12 @@ The related gsdoc ouput is:
 Other Features
 --------------
 
-- Add Clang-driven doc parser in addition to GSDocParser
+- Add DocElement subclass to represent properties (requires properties parsing in autogsdoc or a new Clang-driven doc parser)
+- Add DocElement subclass to represent ivars
+- Add Clang-driven or SourceCodeKit-driven doc parser in addition to GSDocParser
+- Integrate with EtoileText if possible
+- Support public vs internal doc generation with internal doc being visible on-demand with a switch
+- Improve sidebar with the possibility to switch between the current alphabetical listing per symbol kind, and an alternative view where the symbols are organized by their groups (collapsable/expandable)
+- Decide whether we need new ETDoc markup such as @author, @date, @copyright, @override (never|must|may) or not really
+- Decide whether we want to switch to HTML-like markup such ul, ol, dt etc. as our standard markup in the long run rather the GSDoc markup... Currently DocGenerator already accepts lists written in HTML, the only problem is that autogsdoc doesn't like at all and reports a bunch of warnings, because it doesn't comply with GSDoc.dtd.
+- Integrate with Smalltalk and other LK languages

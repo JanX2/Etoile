@@ -14,10 +14,9 @@
 #import "DocPage.h"
 
 /**
- * Display the help
+ * Displays the help
  *
  * @task Display
- * @return du vent
  */
 void printHelp ()
 {
@@ -70,7 +69,7 @@ void printHelp ()
 }
 
 /**
- * A simple utility function to generate a class mapping from a list of class names
+ * A simple utility function to generate a class mapping from a list of class names.
  *
  * @param classFile A plist file we can use as a base
  * @task Utility
@@ -100,7 +99,7 @@ void generateClassMapping(NSString *classFile)
 }
 
 /**
- * Display a simple error message.
+ * Displays a simple error message.
  *
  * @task Display
  */
@@ -116,6 +115,8 @@ void printError()
  * @return YES if the argument is different from NO
  */
 #define VALID(arg) (arg != nil && ![arg isEqual: [NSNumber numberWithBool: NO]])
+
+/** @taskunit Finding Files */
 
 NSString *indexFileInDirectory(NSString *aDirectory)
 {

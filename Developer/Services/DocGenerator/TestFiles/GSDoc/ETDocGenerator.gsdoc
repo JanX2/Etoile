@@ -44,7 +44,7 @@
         <desc>
           <p>
             A simple utility function to generate a class mapping
-            from a list of class names
+            from a list of class names.
           </p>
           <p>
             @param <var>classFile</var> A plist file we can use
@@ -55,7 +55,7 @@
       <function type="NSString*" name="indexFileInDirectory">
         <arg type="NSString*">aDirectory</arg>
         <desc>
-          <em>Description forthcoming.</em>
+          <p>@taskunit Finding Files</p>
         </desc>
       </function>
       <function type="NSString*" name="orderedSymbolDeclarationsFileInDirectory">
@@ -66,14 +66,13 @@
       </function>
       <function type="void" name="printError">
         <desc>
-          <p>Display a simple error message.</p>
+          <p>Displays a simple error message.</p>
           <p>@task Display</p>
         </desc>
       </function>
       <function type="void" name="printHelp">
         <desc>
-          <p>Display the help</p>
-          <p>@task Display @return du vent</p>
+          <p>Displays the help</p> <p>@task Display</p>
         </desc>
       </function>
       <function type="NSArray*" name="sourceFilesByAddingSupportFilesFromDirectory">
