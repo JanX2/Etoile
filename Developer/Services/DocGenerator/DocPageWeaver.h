@@ -235,11 +235,3 @@ The category symbol syntax is <em>ClassName(CategoryName)</em>. */
 - (DocHeader *) currentHeader;
 
 @end
-
-/** Whatever could happen... */
-@interface NSString (DocPageWeaver)
-/** Oops and -oops. */
-- (NSString *) bla;
-/** Piou. */
-- (NSString *) oops;
-@end

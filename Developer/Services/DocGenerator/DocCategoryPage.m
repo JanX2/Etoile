@@ -1,7 +1,7 @@
 /*
 	Copyright (C) 2010 Quentin Mathe
 
-	Authors:  Quentin Mathe <quentin.mathe@gmail.com>
+	Author:  Quentin Mathe <quentin.mathe@gmail.com>
 	Date:  December 2010
 	License:  Modified BSD (see COPYING)
  */
@@ -62,7 +62,7 @@
 	for (DocElementGroup *methodGroup in methodGroups)
 	{
 		H hHeader = [[methodGroup header] HTMLRepresentation];
-		H hMethods = [self HTMLRepresentationWithTitle: nil elements: [methodGroup elements]];
+		H hMethods = [self HTMLRepresentationWithTitle: nil elements: [methodGroup elementsBySubgroup]];
 
 		[reps addObject: [DIV class: @"methodGroup" with: hHeader and: hMethods]];
 	}

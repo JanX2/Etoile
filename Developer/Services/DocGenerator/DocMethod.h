@@ -22,8 +22,6 @@ A DocMethod object represents a method in the documentation element tree. */
 	@private
 	BOOL isClassMethod;
 	NSMutableArray *selectorKeywords;
-	NSString *category;
-	NSString *description;
 }
 
 /** @taskunit Method Kind */

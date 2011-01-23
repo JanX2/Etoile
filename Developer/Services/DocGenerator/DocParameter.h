@@ -42,7 +42,7 @@ support. */
 
 /** <init />
 Initializes and returns a new parameter with the given name and type. */
-- (id) initWithName: (NSString *)aName andType: (NSString *)aType;
+- (id) initWithName: (NSString *)aName type: (NSString *)aType;
 
 /** @taskunit Basic Properties */
 

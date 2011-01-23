@@ -21,8 +21,7 @@
 A DocFunction object represents a function in the documentation element tree. */
 @interface DocFunction : DocSubroutine <GSDocParserDelegate>
 {
-	@private
-	NSString *returnDescription; 
+
 }
 
 /** @taskunit GSDoc Parsing */

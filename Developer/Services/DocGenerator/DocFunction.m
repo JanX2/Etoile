@@ -15,89 +15,41 @@
 
 @implementation DocFunction
 
-- (void) dealloc
-{
-	[returnDescription release];
-	[super dealloc];
-}
-
-- (void) setReturnDescription: (NSString *)aDescription
-{
-	ASSIGN(returnDescription, aDescription);
-}
-
-- (void) setDescription: (NSString *)aDescription forParameter: (NSString *)aName
-{
-	FOREACH([self parameters], p, DocParameter *)
-	{
-		if ([[p name] isEqualToString: aName])
-		{
-			[p setDescription: aDescription];
-			return;
-		}
-	}
-}
-
-- (H) HTMLAddendumRepresentation
-{
-	H param_list = [DIV class: @"paramsList"];
-	H ul = UL;
-
-	if ([[self parameters] count] > 0)
-	{
-		[param_list and: [H3 with: @"Parameters"]];
-	}
-
-	FOREACH([self parameters], p, DocParameter *)
-	{
-		H h_param = [LI with: [I with: [p name]]];
-		[h_param and: [p description]];
-		[ul and: h_param];
-	}
-	[param_list and: ul];
-	
-	if ([returnDescription length])
-	{
-		[param_list and: [H3 with: @"Return"]];
-		[param_list and: returnDescription];
-	}
-
-	return param_list;
-}
-
+// TODO: We could use better span class names perhaps rather than just reusing 
+// the DocMethod ones... not sure though.
 - (DocHTMLElement *) HTMLRepresentation
 {
-	H h_signature = [SPAN class: @"methodSignature"];
-	H h_returnType = [SPAN class: @"returnType" 
-	                       with: [SPAN class: @"type" with: [[self returnParameter] HTMLRepresentationWithParentheses: NO]]];
-	
-	[h_signature and: h_returnType];
-	[h_signature and: [SPAN class: @"selector" with: @" " and: [self name]]];
-	[h_signature with: @"("];
+	H hReturn = [[self returnParameter] HTMLRepresentationWithParentheses: NO];
+	H hReturnType = [SPAN class: @"returnType" with: [SPAN class: @"type" with: hReturn]];
+	H hSignature = [SPAN class: @"methodSignature" 
+	                      with: hReturnType
+	                       and: [SPAN class: @"selector" with: @" " and: [self name]]
+	                       and: @"("];
 
 	BOOL isFirst = YES;
-	FOREACH([self parameters], p, DocParameter *)
+	for (DocParameter *param in [self parameters])
 	{
-		H h_parameter = [p HTMLRepresentationWithParentheses: NO];
+		H hParam = [param HTMLRepresentationWithParentheses: NO];
 
 		if (NO == isFirst)
 		{
-			[h_signature and: @", "];
+			[hSignature and: @", "];
 		}
-		[h_signature and: h_parameter];
+		[hSignature and: hParam];
 
 		isFirst = NO;
 	}
-	[h_signature with: @")"];
 
-	H hMethodDesc = [DIV class: @"methodDescription" 
-		                  with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]
-	                       and: [self HTMLAddendumRepresentation]];
-	H methodFull = [DIV class: @"method" 
-	                     with: [DL with: [DT with: h_signature]
-	                                and: [DD with: hMethodDesc]]];
+	[hSignature with: @")"];
 
-	return methodFull;
+	H hFunctionDesc = [DIV class: @"methodDescription" 
+	                        with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]
+	                         and: [self HTMLAddendumRepresentation]];
+	H hFunctionBlock = [DIV class: @"method" with: [DL with: [DT with: hSignature]
+	                                                    and: [DD with: hFunctionDesc]]];
+
+	//NSLog(@"Function %@", hFunctionBlock);
+	return hFunctionBlock;
 }
 
 - (NSString *) GSDocElementName
@@ -140,10 +92,6 @@
 	{
 		DocDescriptionParser* descParser = [DocDescriptionParser new];
 
-				if ([[self name] hasPrefix: @"generateClassMapping"])
-				{
-					NSLog(@"bla");
-				}
 		[descParser parse: [self rawDescription]];
 		
 		//NSLog(@"Function raw description <%@>", [self rawDescription]);
@@ -156,7 +104,5 @@
 		ENDLOG2(name, [self task]);
 	}
 }
-
-
 
 @end

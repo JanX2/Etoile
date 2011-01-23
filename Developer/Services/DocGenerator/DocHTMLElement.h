@@ -121,9 +121,6 @@ has no fixed API but support a large number of message chaining variations.  */
 - (DocHTMLElement *) class: (NSString *)aClass with: (id)something;
 - (DocHTMLElement *) class: (NSString *)aClass with: (id)something and: (id) something;
 - (DocHTMLElement *) class: (NSString *)aClass with: (id)something and: (id) something and: (id)something;
-@end
-
-@interface DocHTMLElement (OtherUseCases)
 - (DocHTMLElement *) with: (id)something and: (id) something;
 - (DocHTMLElement *) with: (id)something and: (id) something and: (id)something;
 - (DocHTMLElement *) with: (id)something and: (id) something and: (id)something and: (id)something;

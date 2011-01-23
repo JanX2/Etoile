@@ -19,14 +19,12 @@
 {
 	SUPERINIT;
 	selectorKeywords = [NSMutableArray new];
-	ASSIGN(category, @"");
 	return self;
 }
 
 - (void) dealloc
 {
 	DESTROY(selectorKeywords);
-	DESTROY(category);
 	[super dealloc];
 }
 
@@ -54,11 +52,6 @@
 - (void) appendSelectorKeyword: (NSString *)aSelector
 {
 	[selectorKeywords addObject: aSelector];
-}
-
-- (void) setCategory: (NSString *)aCategory
-{
-	ASSIGN(category, aCategory);
 }
 
 - (NSString *) refMarkup
@@ -102,16 +95,14 @@
 - (DocHTMLElement *) HTMLRepresentation
 {
 	DocHTMLIndex *docIndex = [DocIndex currentIndex];
-	H hSignature = [SPAN class: @"methodSignature"];
 
-	[hSignature with: [SPAN class: @"methodScope" 
-	                          with: (isClassMethod ? @"+ " : @"- ")]];
-
-	H hReturnDesc = [[self returnParameter] HTMLRepresentationWithParentheses: YES];
+	H hReturn = [[self returnParameter] HTMLRepresentationWithParentheses: YES];
 	H hReturnType = [SPAN class: @"returnType" 
-	                       with: [SPAN class: @"type" with: hReturnDesc]];
-	
-	[hSignature and: hReturnType];
+	                       with: [SPAN class: @"type" with: hReturn]];
+	H hSignature = [SPAN class: @"methodSignature" 
+	                      with: [SPAN class: @"methodScope" 
+	                                   with: (isClassMethod ? @"+ " : @"- ")]	
+	                       and: hReturnType];
 
 	NSArray *params = [self parameters];
 	BOOL isUnaryMessage = [params isEmpty];
@@ -138,13 +129,14 @@
 	H hMethodDiv = [DIV class: @"method" with: [DL with: [DT with: hAnchoredSig]
 	                                                and: [DD with: hMethodDesc]]];*/
 	H hMethodDesc = [DIV class: @"methodDescription" 
-	                      with: [self HTMLDescriptionWithDocIndex: docIndex]];
-	H hMethodDiv = [DIV class: @"method" with: [self HTMLAnchorRepresentation]
-	                                      and: [DL with: [DT with: hSignature]
-	                                                and: [DD with: hMethodDesc]]];
+	                      with: [self HTMLDescriptionWithDocIndex: docIndex]
+	                       and: [self HTMLAddendumRepresentation]];
+	H hMethodBlock = [DIV class: @"method" with: [self HTMLAnchorRepresentation]
+	                                        and: [DL with: [DT with: hSignature]
+	                                                  and: [DD with: hMethodDesc]]];
 
-	//NSLog(@"Method %@", methodDiv);
-	return hMethodDiv;
+	//NSLog(@"Method %@", hMethodBlock);
+	return hMethodBlock;
 }
 
 - (void) parser: (GSDocParser *)parser 

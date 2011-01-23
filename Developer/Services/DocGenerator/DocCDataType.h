@@ -15,9 +15,8 @@
 
 /** 
 @group Doc Element Tree
-@abstract oui!
 
--weaveOtherDataType: -[(GSDocParserDelegate) parser:endElement:withContent:] DocCDataType objects are used to represent various C data types:
+DocCDataType objects are used to represent various C data types:
 
 <list>
 <item>structure</item>
@@ -40,10 +39,7 @@ Enum and union are represented with DocConstant -weaveSelector. */
 /** <override-dummy />
 Returns <em>type</em>.
 
-See -[DocElement GSDocElementName].
-
-@param bla
-@return bli */
+See -[DocElement GSDocElementName]. */
 - (NSString *) GSDocElementName;
 /** <override-dummy />
 Returns -weaveOtherDataType:.

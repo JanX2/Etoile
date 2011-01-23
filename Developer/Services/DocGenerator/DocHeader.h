@@ -105,9 +105,17 @@ Will return +[DocHTMLElement blankElement] if no overview is available. */
 - (DocHTMLElement *) HTMLOverviewRepresentation;
 /** Returns the entire header rendered as a HTML element tree.
 
-The returned representation includes -HTMLOverviewRepresentation. */
+The returned representation includes -HTMLOverviewRepresentation.
+
+The method creates a title block and hands it to 
+-HTMLRepresentationWithTitleBlockElement: in order to obtain the HTML 
+representation that should be returned. */
 - (DocHTMLElement *) HTMLRepresentation;
-- (DocHTMLElement *) HTMLRepresentationWithTitleBlockElement: (DocHTMLElement *)hTitle;
+/** Returns the entire header rendered as a HTML element tree with a custom 
+title element at the beginning.
+
+The returned representation includes -HTMLOverviewRepresentation. */
+- (DocHTMLElement *) HTMLRepresentationWithTitleBlockElement: (DocHTMLElement *)hTitleBlock;
 /** Returns a short header, limited to its overview, rendered as a HTML element 
 tree.
 

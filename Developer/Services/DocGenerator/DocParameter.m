@@ -16,7 +16,7 @@
 
 @synthesize name, type, description, typePrefix, className, protocolName, typeSuffix;
 
-- (id) initWithName: (NSString *) aName andType: (NSString *) aType
+- (id) initWithName: (NSString *) aName type: (NSString *) aType
 {
 	SUPERINIT;
 	[self setName: aName];
@@ -38,7 +38,7 @@
 
 + (id) parameterWithName: (NSString *) aName type: (NSString *) aType
 {
-	return AUTORELEASE([[DocParameter alloc] initWithName: aName andType: aType]);
+	return AUTORELEASE([[DocParameter alloc] initWithName: aName type: aType]);
 }
 
 - (void) setName: (NSString *) aName

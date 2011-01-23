@@ -187,12 +187,15 @@ constructs suchs methods, C functions or macros. */
 	@private
 	NSMutableArray *parameters;
 	NSString *returnType;
+	NSString *returnDescription; 
 }
 
 /** @taskunit Returned Value */
 
 /** Declares the return type. e.g. NSString * or void. */
-- (void) setReturnType: (NSString *)aReturnType;
+@property (retain, nonatomic) NSString *returnType;
+/** An optional description of the return value role and use. */
+@property (retain, nonatomic) NSString *returnDescription;
 /** Returns the return type as an anonymous parameter object to which a HTML 
 representation of the type can be asked. 
 
@@ -207,6 +210,15 @@ object will insert symbol links and apply standard formatting (e.g. class name
 - (void) addParameter: (DocParameter *)aParameter;
 /** Returns the parameters. */
 - (NSArray *) parameters;
+
+/** @taskunit HTML Generation */
+
+/** Returns the HTML element tree that corresponds to the described parameters and 
+return value. 
+
+Subclasses can use this method to include this addendum representation into the 
+HTML element tree returned by -HTMLRepresentation. */
+- (DocHTMLElement *) HTMLAddendumRepresentation;
 
 @end
 
@@ -230,13 +242,42 @@ constructs such as a class, a category etc. */
 	NSString *subgroupKey;
 }
 
+/** @taskunit Initialization */
+
+/** <init />
+Initializes and returns a new doc element group whose HTML representation should 
+start with the given header.
+
+The elements hold in the receiver will be organized into subgroups based on the 
+subgroup key. See -subgroupKey. */
 - (id) initWithHeader: (DocHeader *)aHeader subgroupKey: (NSString *)aKey;
 
+/** @taskunit Basic Properties */
+
 @property (retain, nonatomic) DocHeader *header;
+/** The subgroup kind name use to arrange the elements hold by the receiver into 
+subgroups. 
+
+Both <em>task</em> or <em>group</em> are examples of possible keys.
+
+See also -elementsBySubgroup */
 @property (readonly, nonatomic) NSString *subgroupKey;
 
+/** @taskunit Element Collection */
+
+/** Adds the given element to the receiver.
+
+The element must be KVC-compliant for -subgroupKey. */
 - (void) addElement: (DocElement *)anElement;
-@property (readonly, nonatomic) NSArray *elements;
+/** Returns an array of ETKeyValuePair objects where each pair contains:
+
+<deflist>
+<term>key</term><desc>a value such as task name or group name retrieved with the subgroup key.</desc>
+<term>value</term><desc>an array of DocElement objects which belongs to the subgroup</desc>
+</deflist>
+
+See also -subgroupKey. */
+@property (readonly, nonatomic) NSArray *elementsBySubgroup;
 
 @end
 

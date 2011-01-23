@@ -334,17 +334,19 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 
 	/*NSLog(@"Parsed task unit: %@", [self taskUnit]);
 	NSLog(@"Parsed task: %@", [self task]);
-	NSLog(@"Parsed desc: %@", [self description]);*/
+	NSLog(@"Parsed desc: %@", [self description]);
+	NSLog(@"Parsed return desc: %@", [self returnDescription]);
+	NSLog(@"Parsed param desc: %@", [[self getDictionaryFor: @"params"] stringValue]);*/
 }
 
-- (NSString*) description
+- (NSString *) description
 {
-  return [self getStringFor: @"description"];
+	return [self getStringFor: @"description"];
 }
   
-- (NSString*) task
+- (NSString *) task
 {
-  return [self getStringFor: @"@task"];
+	return [self getStringFor: @"@task"];
 }
 
 - (NSString *) taskUnit
@@ -352,15 +354,14 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 	return [self getStringFor: @"@taskunit"];
 }
 
-- (NSString*) returnDescription
+- (NSString *) returnDescription
 {
-  return [self getStringFor: @"@return"];
+	return [self getStringFor: @"@return"];
 }
 
-- (NSString*) descriptionForParameter: (NSString*) aName
+- (NSString *) descriptionForParameter: (NSString*) aName
 {
-  NSMutableDictionary* params = [self getDictionaryFor: @"params"];
-  return [params objectForKey: aName];
+	return [[self getDictionaryFor: @"params"] objectForKey: aName];
 }
 
 @end
@@ -370,13 +371,9 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 
 - (void) parse: (NSString *)corpus
 {
-	if ([corpus rangeOfString: @"@group Weaving"].location != NSNotFound)
-	{
-		NSLog(@"bla");
-	}
 	[super parse: corpus];
-	NSLog(@"Parsed group: %@", [self group]);
-	NSLog(@"Parsed abstract: %@", [self abstract]);
+	/*NSLog(@"Parsed group: %@", [self group]);
+	NSLog(@"Parsed abstract: %@", [self abstract]);*/
 }
 
 - (NSArray *) validTagsBeforeMainDescription

@@ -343,11 +343,6 @@
 {
 	NSMutableString *description = [NSMutableString stringWithString: [self filteredDescription]];
 
-	if ([description rangeOfString: @"<example>"].location != NSNotFound)
-	{
-		NSLog(@"bla");	
-	}
-
 	[self replaceBasicDocMarkupWithHTMLInString: description];
 	[self replaceDocSectionsWithHTMLInString: description];
 
@@ -374,6 +369,8 @@
 
 @implementation DocSubroutine
 
+@synthesize returnDescription, returnType;
+
 - (id) init
 {
 	SUPERINIT;
@@ -385,7 +382,20 @@
 {
 	[parameters release];
 	[returnType release];
+	[returnDescription release];
 	[super dealloc];
+}
+
+- (void) setDescription: (NSString *)aDescription forParameter: (NSString *)aName
+{
+	FOREACH([self parameters], p, DocParameter *)
+	{
+		if ([[p name] isEqualToString: aName])
+		{
+			[p setDescription: aDescription];
+			return;
+		}
+	}
 }
 
 - (void) addInformationFrom: (DocDescriptionParser *)aParser
@@ -396,12 +406,7 @@
 	{
 		[p setDescription: [aParser descriptionForParameter: [p name]]];
 	}
-	//NSLog (@"Parser return description <%@>", [aParser returnDescription]);
-}
-
-- (void) setReturnType: (NSString *) aReturnType
-{
-	ASSIGN(returnType, aReturnType);
+	[self setReturnDescription: [aParser returnDescription]];
 }
 
 - (DocParameter *) returnParameter
@@ -419,6 +424,38 @@
 	return [NSArray arrayWithArray: parameters];
 }
 
+- (H) HTMLAddendumRepresentation
+{
+	H hParamBlock = [DIV class: @"paramsList"];
+	H hParamList = UL;
+	BOOL hasDescribedParam = NO;
+
+	for (DocParameter *param in [self parameters])
+	{
+		if ([param description] == nil)
+			continue;
+
+		H hParam = [LI with: [I with: [param name]]];
+		[hParam and: [param description]];
+		[hParamList and: hParam];
+		hasDescribedParam = YES;
+	}
+
+	if (hasDescribedParam)
+	{
+		[hParamBlock and: [H3 with: @"Parameters"]];
+	}
+	[hParamBlock and: hParamList];
+	
+	if ([[self returnDescription] length] > 0)
+	{
+		[hParamBlock and: [H3 with: @"Return"]];
+		[hParamBlock and: [self returnDescription]];
+	}
+
+	return hParamBlock;
+}
+
 @end
 
 
@@ -426,7 +463,7 @@
 
 @synthesize header, subgroupKey;
 
-- (id) initWithHeader: (DocHeader *)aHeader subgroupKey: (NSString *)aKey;
+- (id) initWithHeader: (DocHeader *)aHeader subgroupKey: (NSString *)aKey
 {
 	SUPERINIT;
 	elements = [[NSMutableArray alloc] init];
@@ -460,9 +497,9 @@
 	[array addObject: anElement];
 }
 
-- (NSArray *) elements
+- (NSArray *) elementsBySubgroup
 {
-	return AUTORELEASE([elements copy]);
+	return [NSArray arrayWithArray: elements];
 }
 
 - (void) addElement: (DocElement *)anElement
