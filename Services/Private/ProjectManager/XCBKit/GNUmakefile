@@ -1,3 +1,4 @@
+PACKAGE_NAME = XCBKit
 ETOILE_CORE_MODULE = YES
 
 include $(GNUSTEP_MAKEFILES)/common.make
@@ -68,4 +69,4 @@ ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lxcb -lxcb-event \
 	-lxcb-shape
 
 include $(GNUSTEP_MAKEFILES)/framework.make
--include ../../../../../etoile.make
+-include ../../../../etoile.make
