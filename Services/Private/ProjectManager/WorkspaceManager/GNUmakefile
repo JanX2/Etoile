@@ -1,3 +1,4 @@
+ETOILE_CORE_MODULE = YES
 include $(GNUSTEP_MAKEFILES)/common.make
 
 DEPENDENCIES = EtoileUI XCBKit XWindowServerKit
@@ -9,10 +10,10 @@ $(APP_NAME)_OBJC_FILES = \
 	PMImpermanentView.m \
 	PMWorkspaceManager.m \
 
+
 CC=clang
 $(APP_NAME)_PRINCIPAL_CLASS = ETApplication
 $(APP_NAME)_GUI_LIBS = -lEtoileUI -lXCBKit -lXWindowServerKit
-ADDITIONAL_CPPFLAGS = -std=c99
-ADDITIONAL_OBJCFLAGS = -I.
 
 include $(GNUSTEP_MAKEFILES)/application.make
+include ../../../../etoile.make

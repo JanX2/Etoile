@@ -32,8 +32,6 @@
 #import <XCBKit/XCBDamage.h>
 #import <XCBKit/ICCCM.h>
 #import <XCBKit/EWMH.h>
-#import <XWindowServerKit/XWindowImageRep.h>
-#import <XWindowServerKit/XFunctions.h>
 
 NSString* PMProjectWindowProperty = @"__ETOILE_PROJECT_ID";
 NSString* PMViewWindowProperty = @"__ETOILE_VIEW_ID";
