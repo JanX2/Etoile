@@ -45,7 +45,7 @@ You can write a similar code skeleton in Smalltalk. In that case, you usually fi
 	
 		"edlc looks for this -run method to start the program"
 		run [ 
-	           ETApplication sharedApplication setDelegate: self.
+			ETApplication sharedApplication setDelegate: self.
 			ETApplication sharedApplication run.
 		]
 	
@@ -97,7 +97,7 @@ TODO: Write more about ETLayoutItem and ETLayoutItemFactory
 		ETLayoutItemFactory *itemFactory = [ETLayoutItemFactory factory];
 		ETLayoutItem *helloItem = [itemFactory labelWithTitle: @"Hello World!"];
 	
-		[itemFactory windowGroup] addItem: helloItem];
+		[[itemFactory windowGroup] addItem: helloItem];
 	}
 	
 	@end
@@ -118,14 +118,14 @@ Here is the same example now in Smalltalk and in a single file.
 	NSObject subclass: HelloWorld [
 	
 		run [ 
- 	           ETApplication sharedApplication setDelegate: self.
+ 			ETApplication sharedApplication setDelegate: self.
 			ETApplication sharedApplication run.
 		]
 	
 		applicationDidFinishLaunching: notif  [ | itemFactory helloItem |
 			itemFactory := ETLayoutItemFactory factory.
-			helloItem := factory itemWithValue: ‘Hello World!’.
-			factory windowGroup addItem:  helloItem.
+			helloItem := itemFactory itemWithValue: 'Hello World!'.
+			itemFactory windowGroup addItem:  helloItem.
 		]
 	]
 
