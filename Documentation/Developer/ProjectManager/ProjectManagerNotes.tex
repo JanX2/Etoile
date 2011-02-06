@@ -9,6 +9,7 @@
 \usepackage{xspace}
 \newcommand{\etoile}{\'Etoil\'e\xspace}
 \newcommand{\proman}{Project Manager\xspace}
+\newcommand{\gnustep}{GNUstep\xspace}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \title{Project Manager Notes}
@@ -29,13 +30,17 @@ This document is not an official guide to \etoile concepts, imagined usage scena
 \item[Active project] The open project that is currently selected in the user interface and which is displaying its open views. There is one active project at a time.
 \item[Document] A document is a top-level object in the \etoile workspace. It belongs to a project, and may be represented by multiple views in the workspace. Documents can be created by the \proman or through some action in another application.
 \item[Inactive project] A project that is open and running but is not currently selected. 
+\item[Object Manager] A service within \proman that lets a user manage the objects within their workspace.
 \item[Open project] A project that has all its views opened and running.
-\item[Project] A container for holding a set of views. The project remembers the position and stacking order of views on the screen.
+\item[Private Service] A service that is not under the direct control of the user but that provides a underlying system function. Might also be called a System Service.
+\item[Project]  A project is the repository for a set of related objects, including views, contacts, documents, discussions, music, video, lists and other pieces.
 \item[Project Overlay] A window that is temporarily displayed over the top of the workspace to allow the user the select a view to open.
 \item[Project Switcher] An onscreen toolbar for switching between projects and closing active projects.
-\item[Service] A service is a GNUstep application that displays the contents of documents in views on the screen. A service has one instance in the user's workspace, but may be displaying multiple documents and views.
+\item[Service] A tool or application in the \etoile environment.
+\item[User Service] A service is a GNUstep application that displays the contents of documents in views on the screen. A service has one instance in the user's workspace, but may be displaying multiple documents and views.
 \item[View] A window on the screen. These are called views in \etoile because they are more than just windows: a view in Etoile remembers where on the screen it was placed, the internal layout and the data being edited.
 \end{description}
+
 \section{Introduction}
 Project Manager is the \etoile service for managing your workspace.
 
@@ -52,7 +57,11 @@ The user clicks the projects icon and the projects overlay appears, displaying a
 The user switches to an open project by clicking on its icon in project switcher. Before switching, \proman will hide all the views of the currently active project. \proman will then restore all the active views of the selected project and make the project's icon active on the project switcher.
 
 \subsection{Close a project}
-The user holds their mouse over the representation of the project in the project switcher until the close button appears. They then click the close button to make the project close. All of its open views will be closed and the project representation will be removed from the project switcher. If this was the active project, \proman will switch to the last active project.
+The user holds their mouse over the representation of the project in the project switcher until the close button appears. They then click the close button to make the project close.
+
+Alternatively, the user selects Close Project from the Project menu.
+
+All of its open views will be closed and the project representation will be removed from the project switcher. If this was the active project, \proman will switch to the last active project.
 
 \subsection{Create a new view}
 A new view can materialise in a few ways:
@@ -85,10 +94,13 @@ The user clicks the close button on the active view. The view disappears from th
 \subsection{Minimise or restore a view}
 The user clicks the minimise button on the active view
 
-\section{User Interface}
-
 \chapter{Architecture}
+
+The runtime architecture of Project Manager is split into two parts. The first part is a window manager, which offers tight integration with \etoile and GNUstep to integrate both closely in an X11 environment. The second part is a private service that displays the user interface used for managing projects and views and facilitates some auxiliary environment tasks.
+
 \section{Concepts}
+\subsection{Project}
+
 \subsection{Views}
 The concept of a view in \etoile, and especially in Project Manager, is the ability for the environment to remember the placement and internal layout of a window. The responsibility for remembering this is split between different parts of the environment.
 
@@ -96,14 +108,38 @@ A view is essentially a window from the perspective of \proman. From a visual pe
 
 A view is not actually created by \proman even if it initiates the process of instantiating a new view. Instead, an \etoile service will create a view in response to some kind of user command. This means that \proman is not responsible for loading the view, but only tracking when it is created or restored, moved around on the screen and when it is closed. So that \proman can track the window corresponding to that view, the view needs to uniquely identify itself. The process of restoring views and tracking them on the screen is described in section \ref{sec:x11_integration} (p.\pageref{sec:x11_integration}) on X11 integration.
 
-The runtime architecture of Project Manager is split into two parts. The first part is a window manager, which offers tight integration with \etoile and GNUstep to integrate both closely in an X11 environment. The second part is a private service that displays the user interface used for managing projects and views and facilitates some auxiliary environment tasks.
-
 \subsection{Services}
-Each service is a GNUstep application. We use the name service to distinguish them from ordinary applications because users don't interact with them in the traditional sense of an application. Instead of starting up an application as a direct user action, the user does something in the environment like creating a new document or opening a view that might cause a service to begin running.
+Each service is a GNUstep application or tool. We use the name `service' to distinguish them from ordinary applications because users don't interact with them in the traditional sense of an application. Instead of starting up an application as a direct user action, the user does something in the environment like creating a new document or opening a view that might cause a service to begin running. A service doesn't have to interact with the user either: some services provide a background function such as converting data into another format which doesn't require user interaction (much along the lines of the traditional concept of a \gnustep service).
 
-Because a service is a GNUstep application, and in turn, a GNUstep application is a programme, the lifetime of a service is just that of an ordinary application i.e. it is started as a new process, it can be tracked using its process identifier, we can communicate with it using inter-process communication primitives like sockets and shared memory, and it will die when it is closed. Almost every operating system support these fundamental ideas in essentially the same way that GNUstep is portable and can maintain the same Application Programming Interface on each OS without much difficulty.  
+Because a service is a GNUstep application or a tool, and in turn a programme, the lifetime of a service is just that of an ordinary application i.e. it is started as a new process, it can be tracked using its process identifier, we can communicate with it using inter-process communication primitives like sockets and shared memory, and it will die when it is closed. Almost every operating system support these fundamental ideas in essentially the same way that GNUstep is portable and can maintain the same Application Programming Interface on each OS without much difficulty.  
+
+\section{Private Services}
+
+The services within \proman and within the \etoile environment which are not directly accessible to the user are private or system services. The details of some of these are given in the following subsections
+
+\subsection{Anatomy}
+
+A service is a \gnustep tool or application. The main difference is that users don't invoke them directly. 
+
+Each service is bound to a name and one more data types. For example:
+
+	'spellchecker' bound to /path/to/a/spellchecker.bundle and public.text 
+	'musicmanager' bound to /path/to/melodie.app and org.etoile-project.music-library
+
+\subsection{Object Manager}
+
+This service helps the user manage the objects in their project and (more widely) their workspace.
+
+Objects could be organised along the following lines:
+
+\subsubsection{Type} 
+The type of an object specifies the nature of the data it contains. The idea of a type could be very specific, such as an MPEG-1 file that contains an MPEG-1 Layer III audio stream, to something more general, such as a "music file", which may not be easily distinguished by its file format.
 
 \chapter{Operating System Integration}
+\section{Services}
+We can track the lifetime of a service using NSTask.
+
+For the instances where we need to start up a user-interactive service we can track the process of the service starting up to ensure that it doesn't die before it renders a view. Furthermore, we can check if a process is hung or died by using Distributed Objects to ping or query the process upon startup and periodically.
 \section{X11 Integration}
 \label{sec:x11_integration}
 \subsection{Events}
