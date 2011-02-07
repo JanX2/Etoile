@@ -15,6 +15,9 @@
 		 with: (NSString*) value
 		   on: (NSString*) node;
 - (void) layout;
+/*
+ * File formats: png, cmapx for image maps
+ */
 - (void) generateFile: (NSString*) path withFormat: (NSString*) format;
 - (NSString*) generateWithFormat: (NSString*) format;
 @end
