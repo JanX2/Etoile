@@ -16,4 +16,5 @@
 		   on: (NSString*) node;
 - (void) layout;
 - (void) generateFile: (NSString*) path withFormat: (NSString*) format;
+- (NSString*) generateWithFormat: (NSString*) format;
 @end

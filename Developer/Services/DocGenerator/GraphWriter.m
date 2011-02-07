@@ -1,4 +1,7 @@
+#include <stdio.h>
+#include <unistd.h>
 #include "GraphWriter.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation GraphWriter
 
@@ -38,6 +41,23 @@
 		(char*) [format cString], (char*) [path cString]);
 }
 
+- (NSString*) generateWithFormat: (NSString*) format
+{
+	NSPipe* pipe = [NSPipe pipe];
+	NSFileHandle* handle = [[NSFileManager defaultManager] tempFile];
+
+	FILE* file = fdopen([handle fileDescriptor], "w+");
+	gvRender(mGraphContext, mGraph,
+		(char*) [format cString], file);
+
+	[handle seekToFileOffset: 0];
+	NSData* data = [handle readDataToEndOfFile];
+	NSString* str = [[NSString alloc] initWithData: data
+				encoding: NSUTF8StringEncoding];
+
+	return [str autorelease];
+}
+
 - (NSValue*) addNode: (NSString*) node
 {
 	NSValue* pointer = [mNodes objectForKey: node];
@@ -66,5 +86,5 @@
 		 (char*) [attribute cString],
 		 (char*) [value cString], "");
 }
-	
+
 @end
