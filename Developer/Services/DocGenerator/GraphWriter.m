@@ -38,7 +38,7 @@
 - (void) generateFile: (NSString*) path withFormat: (NSString*) format
 {
 	gvRenderFilename(mGraphContext, mGraph,
-		(char*) [format cString], (char*) [path cString]);
+		(char*) [format UTF8String], (char*) [path UTF8String]);
 }
 
 - (NSString*) generateWithFormat: (NSString*) format
@@ -48,7 +48,7 @@
 
 	FILE* file = fdopen([handle fileDescriptor], "w+");
 	gvRender(mGraphContext, mGraph,
-		(char*) [format cString], file);
+		(char*) [format UTF8String], file);
 
 	[handle seekToFileOffset: 0];
 	NSData* data = [handle readDataToEndOfFile];
@@ -64,7 +64,7 @@
 	if (pointer)
 		return pointer;
 
-	Agnode_t *n = agnode(mGraph, (char*)[node cString]);
+	Agnode_t *n = agnode(mGraph, (char*)[node UTF8String]);
 	NSValue* value = [NSValue valueWithPointer: n];
 	[mNodes setObject: value forKey: node];
 	return value;
@@ -83,8 +83,8 @@
 {
 	NSValue* n = [self addNode: node];
 	agsafeset([n pointerValue],
-		 (char*) [attribute cString],
-		 (char*) [value cString], "");
+		 (char*) [attribute UTF8String],
+		 (char*) [value UTF8String], "");
 }
 
 @end
