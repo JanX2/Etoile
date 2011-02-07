@@ -43,7 +43,6 @@
 
 - (NSString*) generateWithFormat: (NSString*) format
 {
-	NSPipe* pipe = [NSPipe pipe];
 	NSFileHandle* handle = [[NSFileManager defaultManager] tempFile];
 
 	FILE* file = fdopen([handle fileDescriptor], "w+");
