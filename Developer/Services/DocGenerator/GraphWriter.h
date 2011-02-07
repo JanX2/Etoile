@@ -1,5 +1,10 @@
 #import <Foundation/Foundation.h>
+#ifdef __APPLE__
+#undef TRUE
+#include <gvc.h>
+#else
 #include <graphviz/gvc.h>
+#endif
 
 @interface GraphWriter : NSObject
 {

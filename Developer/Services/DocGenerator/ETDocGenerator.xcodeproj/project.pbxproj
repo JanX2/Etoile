@@ -18,6 +18,7 @@
 		03FF79AF0DFCA7B4007D79D3 /* DocPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF79AE0DFCA7B4007D79D3 /* DocPage.m */; };
 		601A56A412E89AB100727DAA /* DocCategoryPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 601A56A212E89AB100727DAA /* DocCategoryPage.m */; };
 		602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */ = {isa = PBXBuildFile; fileRef = 602363D5128B3E6600C9EC82 /* DocPageWeaver.m */; };
+		60444F8912FF70B600F9E93B /* GraphWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 60444F8712FF70B600F9E93B /* GraphWriter.m */; };
 		606D338D12946F1500AA7554 /* DocIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 606D338C12946F1500AA7554 /* DocIndex.m */; };
 		608A56ED12C61ED7007CD303 /* DocDeclarationReorderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 608A56EC12C61ED7007CD303 /* DocDeclarationReorderer.m */; };
 		60AF049E12B788F800BAF537 /* DocMacro.m in Sources */ = {isa = PBXBuildFile; fileRef = 60AF049B12B788F800BAF537 /* DocMacro.m */; };
@@ -99,6 +100,8 @@
 		601A56A312E89AB100727DAA /* DocCategoryPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocCategoryPage.h; sourceTree = "<group>"; };
 		602363D4128B3E6600C9EC82 /* DocPageWeaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocPageWeaver.h; sourceTree = "<group>"; };
 		602363D5128B3E6600C9EC82 /* DocPageWeaver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocPageWeaver.m; sourceTree = "<group>"; };
+		60444F8712FF70B600F9E93B /* GraphWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphWriter.m; sourceTree = "<group>"; };
+		60444F8812FF70B600F9E93B /* GraphWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphWriter.h; sourceTree = "<group>"; };
 		606D338B12946F1500AA7554 /* DocIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocIndex.h; sourceTree = "<group>"; };
 		606D338C12946F1500AA7554 /* DocIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocIndex.m; sourceTree = "<group>"; };
 		608A56EB12C61ED7007CD303 /* DocDeclarationReorderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocDeclarationReorderer.h; sourceTree = "<group>"; };
@@ -176,6 +179,8 @@
 				03FF75350DF9F159007D79D3 /* DocHTMLElement.m */,
 				606D338B12946F1500AA7554 /* DocIndex.h */,
 				606D338C12946F1500AA7554 /* DocIndex.m */,
+				60444F8812FF70B600F9E93B /* GraphWriter.h */,
+				60444F8712FF70B600F9E93B /* GraphWriter.m */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -312,6 +317,7 @@
 				60AF049F12B788F800BAF537 /* DocTOCPage.m in Sources */,
 				608A56ED12C61ED7007CD303 /* DocDeclarationReorderer.m in Sources */,
 				601A56A412E89AB100727DAA /* DocCategoryPage.m in Sources */,
+				60444F8912FF70B600F9E93B /* GraphWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,7 +369,16 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/local/graphviz/include/graphviz;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/graphviz/lib,
+					/usr/local/graphviz/lib/graphviz,
+				);
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-lgraph",
+					"-lgvc",
+				);
 				PREBINDING = NO;
 				SDKROOT = macosx10.5;
 			};
@@ -376,6 +391,15 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/local/graphviz/include/graphviz;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/graphviz/lib,
+					/usr/local/graphviz/lib/graphviz,
+				);
+				OTHER_LDFLAGS = (
+					"-lgraph",
+					"-lgvc",
+				);
 				PREBINDING = NO;
 				SDKROOT = macosx10.5;
 			};

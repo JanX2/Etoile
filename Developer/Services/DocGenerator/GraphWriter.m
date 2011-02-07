@@ -12,14 +12,15 @@
 	mEdges = [NSMutableArray new];
 	mGraphContext = gvContext();
 	mGraph = agopen("g", AGDIGRAPH);
-	[self setGraphAttribute: @"rankdir" with: @"TB"];
+	[self setGraphAttribute: @"rankdir" with: @"BT"];
+	[self setGraphAttribute: @"size" with: @"2."];
 	[self setGraphAttribute: @"dpi" with: @"72"];
 	return self;
 }
 
 - (void) dealloc
 {
-        [self cleanupGraph];
+	[self cleanupGraph];
 	[mEdges release];
 	[mNodes release];
 	[super dealloc];

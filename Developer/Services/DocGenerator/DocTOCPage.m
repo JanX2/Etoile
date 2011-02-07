@@ -14,9 +14,11 @@
 #import "DocMethod.h"
 #import "GSDocParser.h"
 #import "DocHTMLElement.h"
+#import "GraphWriter.h"
 
 @interface DocPage (Private)
 - (void) addElement: (DocElement *)anElement toDictionaryNamed: (NSString *)anIvarName forKey: (NSString *)aKey;
+- (ETKeyValuePair *) firstPairWithKey: (NSString *)aKey inArray: (NSArray *)anArray;
 @end
 
 @implementation DocTOCPage
@@ -57,6 +59,45 @@ name is parsed and set. */
 		[self addElement: element toDictionaryNamed: @"subheaders" forKey: [element group]];
 	}
 	RELEASE(elements);
+}
+
+- (NSString *) graphImageLinkWithGroupName: (NSString *)aName elements: (NSArray *)elements
+{
+	GraphWriter *writer = AUTORELEASE([GraphWriter new]);
+
+	for (DocHeader *methodGroupElement in elements)
+	{
+		if ([methodGroupElement className] == nil)
+			continue;
+
+		[writer addNode: [methodGroupElement className]];
+			[writer setAttribute: @"URL" 
+			                with: [[DocHTMLIndex currentIndex] linkForClassName: [methodGroupElement className]]
+			                  on: [methodGroupElement className]];
+		if ([methodGroupElement superclassName] != nil)
+		{
+			[writer addEdge: [methodGroupElement className] to: [methodGroupElement superclassName]];
+		}
+	}
+
+	if ([aName rangeOfString: @"<p>"].location != NSNotFound)
+		return @"";
+
+	NSString *imgPath = [NSString stringWithFormat: @"graph-%@.%@", aName, @"png"];
+	imgPath = [imgPath stringByReplacingOccurrencesOfString: @" " withString: @"_"];
+	imgPath = [[[NSFileManager defaultManager] currentDirectoryPath] stringByAppendingPathComponent: imgPath];
+
+	[writer layout];
+	[writer generateFile: imgPath withFormat: @"png"];
+
+	return [NSString stringWithFormat: @"<img src=\"%@\">%@</img>", imgPath, [writer generateWithFormat: @"cmapx"]];
+}
+
+
+- (DocHTMLElement *) HTMLOverviewRepresentationForGroupNamed: (NSString *)aGroup
+{
+	return [self graphImageLinkWithGroupName: aGroup
+	                                elements: [[self firstPairWithKey: aGroup inArray: subheaders] value]];
 }
 
 - (NSArray *) mainContentHTMLRepresentations

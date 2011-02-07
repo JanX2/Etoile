@@ -110,6 +110,7 @@ By default, returns the -[DocHeader HTMLRepresentation].
 
 Can be overriden to return a custom representation. */
 - (DocHTMLElement *) HTMLRepresentationForHeader: (DocHeader *)aHeader;
+- (DocHTMLElement *) HTMLOverviewRepresentationForGroupNamed: (NSString *)aGroup;
 /** Returns the given doc elements rendered as a HTML element tree.
 
 The array argument must contain ETKeyValuePair and not DocElement objects.<br />

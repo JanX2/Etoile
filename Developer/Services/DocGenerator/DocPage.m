@@ -315,6 +315,11 @@
 	return [aHeader HTMLRepresentation];
 }
 
+- (DocHTMLElement *) HTMLOverviewRepresentationForGroupNamed: (NSString *)aGroup
+{
+	return [DocHTMLElement blankElement];
+}
+
 - (DocHTMLElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
                                      elements: (NSArray *)elementsByGroup
                    HTMLRepresentationSelector: (SEL)repSelector
@@ -345,7 +350,8 @@
 		{
 			[html add: aSeparator];
 		}
-		[html add: hGroup];
+		[html with: hGroup and: [self HTMLOverviewRepresentationForGroupNamed: group]];
+	
 		//NSLog(@"HTML Task or Group: %@", hGroup);
 
 		for (DocElement *element in elementsInGroup)
