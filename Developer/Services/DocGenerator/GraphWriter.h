@@ -14,6 +14,8 @@
 - (void) setAttribute: (NSString*) attribute
 		 with: (NSString*) value
 		   on: (NSString*) node;
+- (void) setGraphAttribute: (NSString*) attribute
+		      with: (NSString*) value;
 - (void) layout;
 /*
  * File formats: png, cmap for image maps

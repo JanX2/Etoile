@@ -12,7 +12,8 @@
 	mEdges = [NSMutableArray new];
 	mGraphContext = gvContext();
 	mGraph = agopen("g", AGDIGRAPH);
-	agsafeset(mGraph, "rankdir", "BT");
+	[self setGraphAttribute: @"rankdir" with: @"TB"];
+	[self setGraphAttribute: @"dpi" with: @"72"];
 	return self;
 }
 
@@ -83,6 +84,14 @@
 {
 	NSValue* n = [self addNode: node];
 	agsafeset([n pointerValue],
+		 (char*) [attribute UTF8String],
+		 (char*) [value UTF8String], "");
+}
+
+- (void) setGraphAttribute: (NSString*) attribute
+	              with: (NSString*) value
+{
+	agsafeset(mGraph,
 		 (char*) [attribute UTF8String],
 		 (char*) [value UTF8String], "");
 }
