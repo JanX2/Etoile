@@ -11,5 +11,9 @@
 - (void) cleanupGraph;
 - (NSValue*) addNode: (NSString*) node;
 - (void) addEdge: (NSString*) nodeA to: (NSString*) nodeB;
-- (void) generateImageFile: (NSString*) path;
+- (void) setAttribute: (NSString*) attribute
+		 with: (NSString*) value
+		   on: (NSString*) node;
+- (void) layout;
+- (void) generateFile: (NSString*) path withFormat: (NSString*) format;
 @end

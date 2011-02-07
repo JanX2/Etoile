@@ -27,10 +27,15 @@
 	gvFreeContext(mGraphContext);
 }
 
-- (void) generateImageFile: (NSString*) path
+- (void) layout
 {
 	gvLayout(mGraphContext, mGraph, "dot");
-	gvRenderFilename(mGraphContext, mGraph, "png", (char*) [path cString]);
+}
+
+- (void) generateFile: (NSString*) path withFormat: (NSString*) format
+{
+	gvRenderFilename(mGraphContext, mGraph,
+		(char*) [format cString], (char*) [path cString]);
 }
 
 - (NSValue*) addNode: (NSString*) node
@@ -50,6 +55,16 @@
 	NSValue* A = [self addNode: nodeA];
 	NSValue* B = [self addNode: nodeB];
 	agedge(mGraph, [A pointerValue], [B pointerValue]);
+}
+
+- (void) setAttribute: (NSString*) attribute
+		 with: (NSString*) value
+		   on: (NSString*) node
+{
+	NSValue* n = [self addNode: node];
+	agsafeset([n pointerValue],
+		 (char*) [attribute cString],
+		 (char*) [value cString], "");
 }
 	
 @end
