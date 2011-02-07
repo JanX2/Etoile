@@ -12,6 +12,7 @@
 	mEdges = [NSMutableArray new];
 	mGraphContext = gvContext();
 	mGraph = agopen("g", AGDIGRAPH);
+	agsafeset(mGraph, "rankdir", "BT");
 	return self;
 }
 
