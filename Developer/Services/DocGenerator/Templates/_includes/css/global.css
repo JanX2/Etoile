@@ -416,13 +416,13 @@ pre
 =========================================================*/
 .developer #masthead .first
 {
-  background-image:url("/images/developer/growth.png");
+  background-image:url("../../images/developer/growth.png");
 }
 
 .developer #masthead
 {
   background:#7dadce;
-  background:url("/images/developer/diagonals.gif");
+  background:url("../../images/developer/diagonals.gif");
   border-top-color:#7dadce;
 }
 
@@ -608,7 +608,7 @@ pre
 
 #documentation .collapsedIndicator
 {
-  background: url(file:///Users/qmathe/reps/trunkEtoile/Etoile/Developer/Services/DocGenerator/Documentation/images/collapsed.png) no-repeat;
+  background: url(../../images/collapsed.png) no-repeat;
   width: 8px;
   height: 10px;
   display: inline-block;
@@ -621,7 +621,7 @@ pre
 
 #documentation .expandedIndicator
 {
-  background: url(file:///Users/qmathe/reps/trunkEtoile/Etoile/Developer/Services/DocGenerator/Documentation/images/expanded.png) no-repeat;
+  background: url(../../images/expanded.png) no-repeat;
   width: 10px;
   height: 8px;
   display: inline-block;
