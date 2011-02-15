@@ -80,10 +80,13 @@ name is parsed and set. */
 		}
 	}
 
+	// FIXME: Ugly bug hacked around
 	if ([aName rangeOfString: @"<p>"].location != NSNotFound)
 		return @"";
 
-	NSString *imgPath = [NSString stringWithFormat: @"graph-%@.%@", aName, @"png"];
+	// FIXME: We should harcode the path but rather have a ouput directory 
+	// the page weaver uses to initialize the page
+	NSString *imgPath = [NSString stringWithFormat: @"Documentation/graph-%@.%@", aName, @"png"];
 	imgPath = [imgPath stringByReplacingOccurrencesOfString: @" " withString: @"_"];
 	imgPath = [[[NSFileManager defaultManager] currentDirectoryPath] stringByAppendingPathComponent: imgPath];
 
@@ -92,7 +95,6 @@ name is parsed and set. */
 
 	return [NSString stringWithFormat: @"<img src=\"%@\">%@</img>", imgPath, [writer generateWithFormat: @"cmapx"]];
 }
-
 
 - (DocHTMLElement *) HTMLOverviewRepresentationForGroupNamed: (NSString *)aGroup
 {
