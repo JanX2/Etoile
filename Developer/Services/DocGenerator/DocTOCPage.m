@@ -96,7 +96,7 @@ name is parsed and set. */
 
 - (DocHTMLElement *) HTMLOverviewRepresentationForGroupNamed: (NSString *)aGroup
 {
-	return [self graphImageLinkWithGroupName: aGroup
+	return (DocHTMLElement *)[self graphImageLinkWithGroupName: aGroup
 	                                elements: [[self firstPairWithKey: aGroup inArray: subheaders] value]];
 }
 
