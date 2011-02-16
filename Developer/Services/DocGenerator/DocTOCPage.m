@@ -64,19 +64,23 @@ name is parsed and set. */
 - (NSString *) graphImageLinkWithGroupName: (NSString *)aName elements: (NSArray *)elements
 {
 	GraphWriter *writer = AUTORELEASE([GraphWriter new]);
+	NSArray *visibleSuperclassNames = (id)[[elements mappedCollection] className];
 
 	for (DocHeader *methodGroupElement in elements)
 	{
-		if ([methodGroupElement className] == nil)
+		NSString *className = [methodGroupElement className];
+		NSString *superclassName = [methodGroupElement superclassName];
+
+		if (className == nil)
 			continue;
 
-		[writer addNode: [methodGroupElement className]];
+		[writer addNode: className];
 			[writer setAttribute: @"URL" 
-			                with: [[DocHTMLIndex currentIndex] linkForClassName: [methodGroupElement className]]
-			                  on: [methodGroupElement className]];
-		if ([methodGroupElement superclassName] != nil)
+			                with: [[DocHTMLIndex currentIndex] linkForClassName: className]
+			                  on: className];
+		if (superclassName != nil && [visibleSuperclassNames containsObject: superclassName])
 		{
-			[writer addEdge: [methodGroupElement className] to: [methodGroupElement superclassName]];
+			[writer addEdge: className to: superclassName];
 		}
 	}
 
