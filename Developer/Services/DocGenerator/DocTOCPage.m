@@ -61,27 +61,104 @@ name is parsed and set. */
 	RELEASE(elements);
 }
 
+- (void) addCategoryNodeNamed: (NSString *)categoryName 
+                    className: (NSString *)className
+                protocolNames: (NSArray *)adoptedProtocolNames
+                toGraphWriter: (GraphWriter *)writer 
+{
+	if (categoryName == nil)
+		return;
+
+	[writer addNode: categoryName];
+	[writer setAttribute: @"URL" 
+	                with: [[DocHTMLIndex currentIndex] linkForSymbolName: categoryName ofKind: @"categories"]
+	                  on: categoryName];
+	[writer setAttribute: @"shape" with: @"parallelogram" on: categoryName];
+	[writer addEdge: categoryName to: className];
+	for (NSString *adoptedProtocolName in adoptedProtocolNames)
+	{
+		[writer addEdge: categoryName to: adoptedProtocolName];
+	}
+}
+
+- (void) addProtocolNodeNamed: (NSString *)protocolName 
+                protocolNames: (NSArray *)adoptedProtocolNames
+                toGraphWriter: (GraphWriter *)writer 
+{
+	if (protocolName == nil)
+		return;
+
+	[writer addNode: protocolName];
+	[writer setAttribute: @"URL" 
+	                with: [[DocHTMLIndex currentIndex] linkForProtocolName: protocolName]
+	                  on: protocolName];
+	[writer setAttribute: @"shape" with: @"circle" on: protocolName];
+	/* Cluster protocols together and prevent inheritance tree distortion */
+	[writer setAttribute: @"group" with: @"protocols" on: protocolName];
+	for (NSString *adoptedProtocolName in adoptedProtocolNames)
+	{
+		[writer addEdge: protocolName to: adoptedProtocolName];
+	}
+}
+
+- (void) addClassNodeNamed: (NSString *)className 
+           superclassNames: (NSString *)superclassName
+             protocolNames: (NSArray *)protocolNames
+             toGraphWriter: (GraphWriter *)writer 
+{
+	if (className == nil)
+		return;
+
+	[writer addNode: className];
+	[writer setAttribute: @"URL" 
+	                with: [[DocHTMLIndex currentIndex] linkForClassName: className]
+	                  on: className];
+	[writer setAttribute: @"shape" with: @"box" on: className];
+	/* Cluster classes together and prevent inheritance tree distortion due to adopted protocols */
+	[writer setAttribute: @"group" with: @"classes" on: className];
+	if (superclassName != nil)
+	{
+		[writer addEdge: className to: superclassName];
+	}
+	for (NSString *protocolName in protocolNames)
+	{
+		[writer addEdge: className to: protocolName];
+	}
+}
+
 - (NSString *) graphImageLinkWithGroupName: (NSString *)aName elements: (NSArray *)elements
 {
 	GraphWriter *writer = AUTORELEASE([GraphWriter new]);
 	NSArray *visibleSuperclassNames = (id)[[elements mappedCollection] className];
+	/* Size to min width from Start Document global.css and some trial-and-error tests
+	   TODO: Find out which is the precise width based on the css. */
+	float inchWidth = 620 / 72;
+	float inchHeight = 500 / 72;
+
+	[writer setGraphAttribute: @"ratio" with: @"auto"];
+	[writer setGraphAttribute: @"size" with: [NSString stringWithFormat: @"%0.2f, %0.2f", inchWidth, inchHeight]];
 
 	for (DocHeader *methodGroupElement in elements)
 	{
-		NSString *className = [methodGroupElement className];
 		NSString *superclassName = [methodGroupElement superclassName];
+		BOOL isVisibleSuperclass = [visibleSuperclassNames containsObject: superclassName];
 
-		if (className == nil)
-			continue;
+		/* The current element can be either a class, a protocol or a category.
+                   Each node addition methods will insert a node or return immediately. */
 
-		[writer addNode: className];
-			[writer setAttribute: @"URL" 
-			                with: [[DocHTMLIndex currentIndex] linkForClassName: className]
-			                  on: className];
-		if (superclassName != nil && [visibleSuperclassNames containsObject: superclassName])
-		{
-			[writer addEdge: className to: superclassName];
-		}
+		[self addClassNodeNamed: [methodGroupElement className] 
+		        superclassNames: (isVisibleSuperclass ? superclassName : nil)
+		          protocolNames: [methodGroupElement adoptedProtocolNames]
+		          toGraphWriter: writer];
+
+		[self addProtocolNodeNamed: [methodGroupElement protocolName] 
+		             protocolNames: [methodGroupElement adoptedProtocolNames]
+		             toGraphWriter: writer];
+
+		[self addCategoryNodeNamed: [methodGroupElement categoryName] 
+		                 className: [methodGroupElement className]
+		             protocolNames: [methodGroupElement adoptedProtocolNames]
+		             toGraphWriter: writer];
 	}
 
 	// FIXME: Ugly bug hacked around
