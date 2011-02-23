@@ -17,24 +17,24 @@
 /** @group HTML Support
     @abstract HTML element class to output HTML in a concise way.
 
-DocHTMLElement is a Seaside-inspired class that provides a DSL to write compact 
+DocHTMLElement is a Seaside-inspired class that provides a DSL to write compact
 HTML generation code.
 
-DocHTMLElement comes with null-like element that doesn't emit the element markup 
+DocHTMLElement comes with null-like element that doesn't emit the element markup
 when evaluated. See +blankElement.
 
-TODO: DocHTMLElement DSL should be more clean and formalized. For example, 
--and:, -with: and -add: are the same, but it isn't entirely clear-cut when one 
+TODO: DocHTMLElement DSL should be more clean and formalized. For example,
+-and:, -with: and -add: are the same, but it isn't entirely clear-cut when one
 should be preferred to the others.<br />
-For now, a single -with: should be used per message chains. Any subsequent 
-concatenation messages should use -and:. e.g. -with:and:and: is valid but 
+For now, a single -with: should be used per message chains. Any subsequent
+concatenation messages should use -and:. e.g. -with:and:and: is valid but
 -with:with:and: is not.<br />
-The obscure point is what to do when we send a single concatenation message. 
-Should we recommend -with:, -and: or -add:? Should we take in account the type 
-of the concatened content such DocHTMLElement or NSString, then make a 
+The obscure point is what to do when we send a single concatenation message.
+Should we recommend -with:, -and: or -add:? Should we take in account the type
+of the concatened content such DocHTMLElement or NSString, then make a
 distinction between -add: and -addText:.<br />
 Is DocHTMLElement DSL really needed or the right answer to what we need? */
-@interface DocHTMLElement : NSObject 
+@interface DocHTMLElement : NSObject
 {
 	NSString *elementName;
 	NSMutableDictionary *attributes;
@@ -44,10 +44,10 @@ Is DocHTMLElement DSL really needed or the right answer to what we need? */
 
 /** @taskunit Initialization and Factory Methods */
 
-/** Returns a new HTML element whose content is not wrapped into opening and 
+/** Returns a new HTML element whose content is not wrapped into opening and
 closing tags corresponding to the receiver, but limited to the child content.
 
-When the content is evaluated, the element name and attributes are ignored, but 
+When the content is evaluated, the element name and attributes are ignored, but
 each child content is evaluated normally.
 
 When the receiver has no children, -content returns an empty string. */
@@ -74,10 +74,10 @@ When the receiver has no children, -content returns an empty string. */
 
 /** @taskunit HTML Generation */
 
-/** Returns the HTML string representation of the element tree rooted in the 
+/** Returns the HTML string representation of the element tree rooted in the
 receiver.
 
-This HTML generation is done in a recursive manner by invoking -content on the 
+This HTML generation is done in a recursive manner by invoking -content on the
 child elements.
 
 TODO: Document a bit better and when line breaks are inserted. */
@@ -115,16 +115,16 @@ TODO: Document a bit better and when line breaks are inserted. */
 
 /** @group HTML Support
 
-Category on DocHTMLElement to prevent compiler warning since DocHTMLElement 
+Category on DocHTMLElement to prevent compiler warning since DocHTMLElement
 has no fixed API but support a large number of message chaining variations.  */
 @interface DocHTMLElement (CommonUseCases)
 - (DocHTMLElement *) class: (NSString *)aClass with: (id)something;
-- (DocHTMLElement *) class: (NSString *)aClass with: (id)something and: (id) something;
-- (DocHTMLElement *) class: (NSString *)aClass with: (id)something and: (id) something and: (id)something;
-- (DocHTMLElement *) with: (id)something and: (id) something;
-- (DocHTMLElement *) with: (id)something and: (id) something and: (id)something;
-- (DocHTMLElement *) with: (id)something and: (id) something and: (id)something and: (id)something;
+- (DocHTMLElement *) class: (NSString *)aClass with: (id)something and: (id)someOtherThing;
+- (DocHTMLElement *) class: (NSString *)aClass with: (id)something and: (id) someOtherThing and: (id)someThirdThing;
+- (DocHTMLElement *) with: (id)something and: (id) someOtherThing;
+- (DocHTMLElement *) with: (id)something and: (id) someOtherThing and: (id)someThirdThing;
+- (DocHTMLElement *) with: (id)something and: (id) someOtherthing and: (id)someThirdThing and: (id)someForthThing;
 - (DocHTMLElement *) id: (NSString *)anID with: (id)something;
-- (DocHTMLElement *) id: (NSString *)anID with: (id)something and: (id)something;
-- (DocHTMLElement *) id: (NSString *)anID with: (id)something and: (id)something and: (id)something;
+- (DocHTMLElement *) id: (NSString *)anID with: (id)something and: (id)someOtherThing;
+- (DocHTMLElement *) id: (NSString *)anID with: (id)something and: (id)someOtherThing and: (id)someThirdThing;
 @end
