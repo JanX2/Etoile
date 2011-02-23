@@ -15,9 +15,9 @@
 
 static NSString *root = @"root";
 
-@implementation DocDeclarationReorderer 
+@implementation DocDeclarationReorderer
 
-- (id) initWithWeaver: (id <CodeDocWeaving>)aWeaver 
+- (id) initWithWeaver: (id <CodeDocWeaving>)aWeaver
        orderedSymbols: (NSDictionary *)symbolArraysByKind
 {
 	NILARG_EXCEPTION_TEST(aWeaver);
@@ -26,7 +26,7 @@ static NSString *root = @"root";
 	SUPERINIT;
 	ASSIGN(weaver, aWeaver);
 	ASSIGN(orderedSymbols, symbolArraysByKind);
-	accumulatedDocElements = 
+	accumulatedDocElements =
 		[[NSMutableDictionary alloc] initWithObjectsAndKeys: [NSMutableArray array], root, nil];
 	ASSIGN(currentConstructName, root);
 	return self;
@@ -68,6 +68,11 @@ static NSString *root = @"root";
 	for (NSString *symbol in [self orderedSymbolsWithinConstructNamed: aConstructName])
 	{
 		NSInteger symbolIndex = [docElementSymbols indexOfObject: symbol];
+		if (NSNotFound == symbolIndex)
+		{
+			continue;
+			//FIXME: Do some sane thing if the symbol wasn't found.
+		}
 		DocMethod *docElement = [docElements objectAtIndex: symbolIndex];
 		BOOL hasDefaultTask = [[docElement task] isEqualToString: [[docElement class] defaultTask]];
 
@@ -83,7 +88,7 @@ static NSString *root = @"root";
 
 - (void) resetAccumulatedDocElements
 {
-	ASSIGN(accumulatedDocElements, [NSMutableDictionary dictionaryWithObject: 
+	ASSIGN(accumulatedDocElements, [NSMutableDictionary dictionaryWithObject:
 		[accumulatedDocElements objectForKey: root] forKey: root]);
 }
 
@@ -113,7 +118,7 @@ static NSString *root = @"root";
 	[weaver weaveHeader: aHeader];
 }
 
-- (void) weaveClassNamed: (NSString *)aClassName 
+- (void) weaveClassNamed: (NSString *)aClassName
           superclassName: (NSString *)aSuperclassName
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
@@ -121,7 +126,7 @@ static NSString *root = @"root";
 	[weaver weaveClassNamed: aClassName superclassName: aSuperclassName];
 }
 
-- (void) weaveProtocolNamed: (NSString *)aProtocolName 
+- (void) weaveProtocolNamed: (NSString *)aProtocolName
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
 	NSString *symbol = [NSString stringWithFormat: @"(%@)", aProtocolName];
