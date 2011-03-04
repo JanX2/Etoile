@@ -4,7 +4,7 @@ DocGenerator
 :Maintainers: Quentin Mathe <quentin.mathe@gmail.com>, Nicolas Roard
 :Authors: Nicolas Roard, Quentin Mathe
 :License: Modified BSD License
-:Version: 1.0
+:Version: 0.1
 
 etdocgen (Etoile Doc Generator) is a command-line tool that can generate HTML pages from various source documents and templates.
 
@@ -30,6 +30,9 @@ The Xcode project requires:
 * EtoileFoundation Xcode project (see Frameworks/EtoileFoundation)
 * autogsdoc tool from GNUstep Base additions
 * Graphviz library
+* markdown tool (aka **Discount**)
+
+For further details, see INSTALL.
 
 
 Usage
