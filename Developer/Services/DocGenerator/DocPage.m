@@ -57,6 +57,11 @@
 		[NSException raise: NSInvalidArgumentException
 		            format: @"The input document type must be .html or .gsdoc"];
 	}
+	// NOTE: For main pages such as API Overview, Functions etc., document path is nil
+	if (aDocumentPath != nil && [fileManager fileExistsAtPath: aDocumentPath] == NO)
+	{
+		ETLog(@"WARNING: Explicit source file %@ doesn't exist", aDocumentPath);
+	}
 
 	SUPERINIT;
 
@@ -121,9 +126,10 @@
 	                                                               withString: content]);
 }
 
+/* Only the markdown template includes a etoile-document tag. */
 - (void) insertHTMLDocument
 {
-	if ([documentType isEqual: @"html"] == NO)
+	if (documentContent == nil)
 		return;
 
 	[self insert: documentContent forTag: @"<!-- etoile-document -->"];

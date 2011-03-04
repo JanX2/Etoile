@@ -183,11 +183,12 @@ int main (int argc, const char * argv[])
 
 	DocPageWeaver *weaver = [DocPageWeaver alloc];
 
-	if ([explicitSourceFiles isEmpty])
+	if (VALID(parserSourceDir) || VALID(rawSourceDir))
 	{
 		weaver = [weaver initWithParserSourceDirectory: parserSourceDir
 		                                     fileTypes: A(@"gsdoc", @"igsdoc", @"plist")
-		                            rawSourceDirectory: rawSourceDir
+		                          rawSourceDirectories: [NSArray arrayWithObject: rawSourceDir]
+		                         additionalSourceFiles: explicitSourceFiles
 		                                  templateFile: templateFile];    
 	}
 	else
@@ -210,6 +211,7 @@ int main (int argc, const char * argv[])
 		outputDir = [[NSFileManager defaultManager] currentDirectoryPath];
 	}
 
+	[[DocIndex currentIndex] setOutputDirectory: outputDir];
 	[[DocIndex currentIndex] regenerate];
 
 	FOREACH(pages, page, DocPage *)

@@ -28,19 +28,73 @@
 	return Nil;
 }
 
+
+/* Although we collect README, INSTALL and NEWS in each raw source directory 
+provided through etdocgen option. In practice, 'documentation.make' provides  
+them explicitly as arguments, mostly because getopt has no built-in support to 
+handle multiple values (e.g. array) per option. We could work around that by 
+accepting a plist enclosing in quotes, but that doesn't seem worth the investment 
+presently. */
+- (NSArray *) commonRawSourceFilesInDirectory: (NSString *)dirPath
+{
+	NSString *readMePath = [dirPath stringByAppendingPathComponent: @"README"];
+	NSString *installPath = [dirPath stringByAppendingPathComponent: @"INSTALL"];
+	NSString *newsPath = [dirPath stringByAppendingPathComponent: @"NEWS"];
+	NSFileManager *fm = [NSFileManager defaultManager];
+	NSMutableArray *files = [NSMutableArray array];
+
+	for (NSString *path in A(readMePath, installPath, newsPath))
+	{
+		if ([fm fileExistsAtPath: path] == NO)
+			continue;
+		
+		[files addObject: path];
+	}
+
+	return files;
+}
+
 - (id) initWithParserSourceDirectory: (NSString *)aParserDirPath
                            fileTypes: (NSArray *)fileExtensions
-                  rawSourceDirectory: (NSString *)otherDirPath
+                rawSourceDirectories: (NSArray *)otherDirPaths
+               additionalSourceFiles: (NSArray *)additionalSourceFiles
                         templateFile: (NSString *)aTemplatePath
 {
-	NSArray *parserPaths = [[NSFileManager defaultManager] directoryContentsAtPath: aParserDirPath];
-	NSArray *otherPaths = [[NSFileManager defaultManager] directoryContentsAtPath: otherDirPath];
+	NSArray *parserFileNames = [[NSFileManager defaultManager] directoryContentsAtPath: aParserDirPath];
+	NSArray *parserFiles = [[aParserDirPath stringsByAppendingPaths: parserFileNames] pathsMatchingExtensions: fileExtensions];
+	NSMutableArray *otherFiles = [NSMutableArray array];
 
-	parserPaths = [[aParserDirPath stringsByAppendingPaths: parserPaths] pathsMatchingExtensions: fileExtensions];
-	otherPaths = [[otherDirPath stringsByAppendingPaths: otherPaths] pathsMatchingExtensions: A(@"html", @"text")];
+	// NOTE: We are provided with a single raw source dir through etdocgen 
+	// option, which means this loop use is limited presently.
+	for (NSString *dirPath in otherDirPaths)
+	{
+		NSArray *otherFileNames = [[NSFileManager defaultManager] directoryContentsAtPath: dirPath];
 
-	return [self initWithSourceFiles: [parserPaths arrayByAddingObjectsFromArray: otherPaths]
+		if (otherFileNames == nil)
+		{
+			otherFileNames = [NSArray array];
+		}
+	
+		[otherFiles addObjectsFromArray: 
+			[[dirPath stringsByAppendingPaths: otherFileNames] pathsMatchingExtensions: A(@"html", @"text")]];
+		[otherFiles addObjectsFromArray: [self commonRawSourceFilesInDirectory: dirPath]];
+	}
+
+	NSArray *collectedSourceFiles = [[parserFiles arrayByAddingObjectsFromArray: otherFiles] 
+		arrayByAddingObjectsFromArray: additionalSourceFiles];
+
+	return [self initWithSourceFiles: collectedSourceFiles
 						templateFile: aTemplatePath];
+}
+
+- (NSArray *) validSourceFilesInFiles: (NSArray *)sourceFiles
+{
+	NSMutableArray *commonFiles = [NSMutableArray arrayWithArray: sourceFiles];
+	
+	[[commonFiles filter] hasSuffix: [A(@"README", @"INSTALL", @"NEWS") each]];
+	
+	return [commonFiles arrayByAddingObjectsFromArray: 
+		[sourceFiles pathsMatchingExtensions: A(@"gsdoc", @"html", @"text")]];
 }
 
 - (id) initWithSourceFiles: (NSArray *)paths
@@ -62,7 +116,7 @@
 	                                                     orderedSymbols: orderedSymbolDeclarations];
 	
 	/* Don't include igsdoc or plist, we don't want to turn them into a page */
-	ASSIGN(sourcePaths, [NSArray arrayWithArray: [paths pathsMatchingExtensions: A(@"gsdoc", @"html", @"text")]]);
+	ASSIGN(sourcePaths, [self validSourceFilesInFiles: paths]);
 	sourcePathQueue = [paths mutableCopy];
 	ASSIGN(templatePath, aTemplatePath);
 	ASSIGN(templateDirPath, [aTemplatePath stringByDeletingLastPathComponent]);

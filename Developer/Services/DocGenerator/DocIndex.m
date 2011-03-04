@@ -11,7 +11,7 @@
 
 @implementation DocIndex
 
-@synthesize projectName, externalRefs;
+@synthesize projectName, outputDirectory, externalRefs;
 
 static DocIndex *currentIndex = nil;
 
@@ -53,6 +53,7 @@ static DocIndex *currentIndex = nil;
 - (void) dealloc
 {
 	DESTROY(projectName);
+	DESTROY(outputDirectory);
 	DESTROY(indexContent);
 	DESTROY(externalRefs);
 	DESTROY(projectRefs);
@@ -70,6 +71,12 @@ static DocIndex *currentIndex = nil;
 	{
 		ASSIGN(projectName, aName);
 	}
+}
+
+- (NSString *) ouputDirectory
+{
+	NSAssert(outputDirectory != nil, @"A valid output directory must be set on the documentation index");
+	return outputDirectory;
 }
 
 - (BOOL) isInformalProtocolSymbolName: (NSString *)aSymbolName

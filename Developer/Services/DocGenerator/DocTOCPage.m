@@ -165,11 +165,9 @@ name is parsed and set. */
 	if ([aName rangeOfString: @"<p>"].location != NSNotFound)
 		return @"";
 
-	// FIXME: We should harcode the path but rather have a ouput directory 
-	// the page weaver uses to initialize the page
-	NSString *imgPath = [NSString stringWithFormat: @"Documentation/graph-%@.%@", aName, @"png"];
-	imgPath = [imgPath stringByReplacingOccurrencesOfString: @" " withString: @"_"];
-	imgPath = [[[NSFileManager defaultManager] currentDirectoryPath] stringByAppendingPathComponent: imgPath];
+	NSString *imgName = [NSString stringWithFormat: @"graph-%@.%@", aName, @"png"];
+	imgName = [imgName stringByReplacingOccurrencesOfString: @" " withString: @"_"];
+	NSString *imgPath = [[[DocIndex currentIndex] outputDirectory] stringByAppendingPathComponent: imgName];
 
 	[writer layout];
 	[writer generateFile: imgPath withFormat: @"png"];

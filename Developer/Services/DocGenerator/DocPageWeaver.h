@@ -153,7 +153,8 @@ TODO: Specify the argument constraints precisely and clarify the template file
 use (it is currently ignored all the time). */
 - (id) initWithParserSourceDirectory: (NSString *)aParserDirPath
                            fileTypes: (NSArray *)fileExtensions
-                  rawSourceDirectory: (NSString *)otherDirPath
+                rawSourceDirectories: (NSArray *)otherDirPaths
+               additionalSourceFiles: (NSArray *)additionalSourceFiles
                         templateFile: (NSString *)aTemplatePath;
 /** <init />
 Initializes and returns a new weaver that will attempt to process and parse the 
