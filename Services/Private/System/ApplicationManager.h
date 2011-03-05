@@ -31,7 +31,7 @@
 
 /* Server part of the session protocol */
 @protocol SCSession
-- (oneway void) replyToTerminate: (int)reply info: (NSDictionary *)info;
+- (oneway void) replyToTerminate: (int)reply info: (bycopy NSDictionary *)info;
 @end
 
 /* Client part of the session protocol */
