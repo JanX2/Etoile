@@ -494,7 +494,7 @@ BOOL XGNUstepWindowLevel(Window win, int *level)
                                   0, 0x7FFFFFFF, False, prop,
                                   &type_ret, &format_ret, &count,
                                   &after_ret, (unsigned char **)&data);
-  if ((result == Success)) 
+  if (result == Success) 
   {
     if (data[0] & GSWindowLevelAttr) 
     {
