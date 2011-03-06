@@ -20,7 +20,7 @@
 - (float) sumOfSquaredWeights;
 - (void) normalize: (float) queryNorm;
 - (LCScorer *) scorer: (LCIndexReader *) reader;
-- (LCExplanation *) explain: (LCIndexReader *) doc: (int) doc;
+- (LCExplanation *) explain: (LCIndexReader *) reader doc: (int) doc;
 - (id <LCWeight>) createWeight: (LCSearcher *) searcher;
 @end
 
