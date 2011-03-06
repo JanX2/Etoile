@@ -24,7 +24,7 @@
 }
 
 - (id) initWithWeight: (id <LCWeight>) weight termPositions: (NSArray *) tps
-			positions: (NSArray *) similarity: (LCSimilarity *) similarity;
+			positions: (NSArray *) positions similarity: (LCSimilarity *) similarity;
 - (int) document;
 - (BOOL) next;
 - (BOOL) doNext;

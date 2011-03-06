@@ -37,7 +37,7 @@
 - (int) slop;
 - (void) addTerm: (LCTerm *) term;
 - (void) addTerms: (NSArray *) terms;
-- (void) addTerm: (LCTerm *) position: (int) position;
+- (void) addTerm: (LCTerm *) term position: (int) position;
 - (NSArray *) positions;
 - (id <LCWeight>) createWeight: (LCSearcher *) searcher;
 @end
