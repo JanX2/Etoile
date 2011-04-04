@@ -138,7 +138,15 @@
 	[markdownTask setLaunchPath: @"markdown"];
 	[markdownTask setArguments: [NSArray arrayWithObject: aPath]];
 	[markdownTask setStandardOutput: pipe];
-	[markdownTask launch];
+	@try
+	{
+		[markdownTask launch];
+	}
+	@catch (NSException *e)
+	{
+		ETLog(@"WARNING: Failed to launch Discount markdown tool which might not be installed");
+		return nil;
+	}
 
 	NSData *data = nil;
 
@@ -169,7 +177,12 @@
 
 	if (isMarkdown)
 	{
-		htmlContent = [self HTMLStringWithMarkdownFile: documentPath];
+		NSString *html = [self HTMLStringWithMarkdownFile: documentPath];
+
+		if (html != nil)
+		{
+			htmlContent = html;
+		}
 	}
 
 	[self insert: htmlContent forTag: @"<!-- etoile-document -->"];
