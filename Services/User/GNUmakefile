@@ -10,14 +10,12 @@ include $(GNUSTEP_MAKEFILES)/common.make
 -include ../../modules.make
 
 export addressmanager ?= yes
-export codeeditor ?= no
 export dictionaryreader ?= yes
 export fontmanager ?= yes
 export hardware ?= yes
 export lookandbehavior ?= yes
 export melodie ?= yes
 export microblog ?= yes
-export newsstand ?= no
 export stepchat ?= yes
 export termx ?= no
 export typewriter ?= yes
@@ -33,10 +31,6 @@ endif
 
 ifeq ($(dictionaryreader), yes)
 	SUBPROJECTS += DictionaryReader
-endif
-
-ifeq ($(codeeditor), yes)
-	SUBPROJECTS += CodeEditor
 endif
 
 ifeq ($(fontmanager), yes)
@@ -57,10 +51,6 @@ endif
 
 ifeq ($(microblog), yes)
 	SUBPROJECTS += MicroblogAtom Microblogger
-endif
-
-ifeq ($(newsstand), yes)
-	SUBPROJECTS += NewsStand
 endif
 
 ifeq ($(stepchat), yes)
