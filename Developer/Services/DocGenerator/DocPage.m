@@ -126,13 +126,53 @@
 	                                                               withString: content]);
 }
 
+- (NSString *) HTMLStringWithMarkdownFile: (NSString *)aPath
+{
+	NSParameterAssert(aPath != nil);
+
+	NSPipe *pipe = [NSPipe pipe];
+	NSFileHandle *handle = [pipe fileHandleForReading];
+	NSTask *markdownTask = [[NSTask alloc] init]; 
+	NSString *html = @"";
+
+	[markdownTask setLaunchPath: @"markdown"];
+	[markdownTask setArguments: [NSArray arrayWithObject: aPath]];
+	[markdownTask setStandardOutput: pipe];
+	[markdownTask launch];
+
+	NSData *data = nil;
+
+	while ((data = [handle availableData]) != nil && [data length] > 0)
+	{
+		NSString *htmlChunk = [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
+		html = [html stringByAppendingString: htmlChunk];
+		RELEASE(htmlChunk);
+	}
+
+	ETLog(@"For %@, markdown produces HTML output:\n %@", aPath, html);
+
+	return html;
+}
+
 /* Only the markdown template includes a etoile-document tag. */
 - (void) insertHTMLDocument
 {
 	if (documentContent == nil)
 		return;
 
-	[self insert: documentContent forTag: @"<!-- etoile-document -->"];
+	ETAssert(documentType != nil);
+
+	NSString *htmlContent = documentContent;
+	BOOL isMarkdown = ([documentType isEqual: @"text"] || [documentType isEqual: @""]);
+
+	ETLog(@"Type %@ of %@", documentType, documentPath);
+
+	if (isMarkdown)
+	{
+		htmlContent = [self HTMLStringWithMarkdownFile: documentPath];
+	}
+
+	[self insert: htmlContent forTag: @"<!-- etoile-document -->"];
 }
 
 - (void) insertHeader
