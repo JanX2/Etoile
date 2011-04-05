@@ -136,6 +136,9 @@ NSString *orderedSymbolDeclarationsFileInDirectory(NSString *aDirectory)
 
 NSArray *sourceFilesByAddingSupportFilesFromDirectory(NSArray *sourceFiles, NSString *parserSourceDir)
 {
+	if (parserSourceDir == nil)
+		return [NSArray array];
+
 	if ([[sourceFiles pathsMatchingExtensions: A(@"igsdoc")] isEmpty])
 	{
 		sourceFiles = [sourceFiles arrayByAddingObject: indexFileInDirectory(parserSourceDir)];
@@ -161,11 +164,12 @@ NSArray *sourceFilesByAddingSupportFilesFromDirectory(NSArray *sourceFiles, NSSt
 int main (int argc, const char * argv[]) 
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSDictionary *options = ETGetOptionsDictionary("hn:c:r:t:m:e:p:o:", argc, (char **)argv);
+	NSDictionary *options = ETGetOptionsDictionary("hn:c:r:t:m:e:p:o:i:", argc, (char **)argv);
 	NSString *projectName = [options objectForKey: @"n"];
 	NSArray *explicitSourceFiles = [options objectForKey: @""];
 	NSString *parserSourceDir = [options objectForKey: @"c"];
 	NSString *rawSourceDir = [options objectForKey: @"r"];
+	NSString *supportDir = [options objectForKey: @"i"];
 	NSString *templateFile = [options objectForKey: @"t"];
 	NSString *menuFile = [options objectForKey: @"m"];
 	NSString *externalClassFile = [options objectForKey: @"e"];
@@ -193,7 +197,7 @@ int main (int argc, const char * argv[])
 	}
 	else
 	{
-		explicitSourceFiles = sourceFilesByAddingSupportFilesFromDirectory(explicitSourceFiles, parserSourceDir);
+		explicitSourceFiles = sourceFilesByAddingSupportFilesFromDirectory(explicitSourceFiles, supportDir);
 		weaver = [weaver initWithSourceFiles: explicitSourceFiles
 		                        templateFile: templateFile];
 	}
