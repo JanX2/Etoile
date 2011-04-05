@@ -157,7 +157,7 @@
 		RELEASE(htmlChunk);
 	}
 
-	ETLog(@"For %@, markdown produces HTML output:\n %@", aPath, html);
+	//ETLog(@"For %@, markdown produces HTML output:\n %@", aPath, html);
 
 	return html;
 }
@@ -173,7 +173,7 @@
 	NSString *htmlContent = documentContent;
 	BOOL isMarkdown = ([documentType isEqual: @"text"] || [documentType isEqual: @""]);
 
-	ETLog(@"Type %@ of %@", documentType, documentPath);
+	//ETLog(@"Type %@ of %@", documentType, documentPath);
 
 	if (isMarkdown)
 	{

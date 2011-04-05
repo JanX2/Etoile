@@ -91,12 +91,12 @@ Requires the line argument to be trimmed, no white spaces at the beginning and e
 	/* Detect multiple tags on the same line, and return the next tag and its 
 	   content on the current line through unparsedString */
 	NSInteger nextTagIndex = [desc rangeOfString: @"@"].location;
+	BOOL hasInlinedTag = (r.location != NSNotFound && nextTagIndex != NSNotFound);
 
-	if (nextTagIndex != NSNotFound)
+	if (hasInlinedTag)
 	{
 		*unparsedString = [desc substringFromIndex: nextTagIndex];
 		desc = [desc substringToIndex: nextTagIndex];
-		*isDescFinished = YES;
 	}
 	else if ([desc hasSuffix: @"</p>"])
 	{
@@ -324,6 +324,18 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 		}
 		else
 		{
+			// TODO: Move the line splitting code below elsewhere or merge it 
+			// with -descriptionFromString:isTerminated:lineRemainder:.
+			/* Detect a valid tag inlined in a main description line e.g. 
+			   <p>Displays the help</p> <p>@task Display</p> */
+			NSInteger nextTagIndex = [line rangeOfString: @"<p>@"].location;
+		
+			if (nextTagIndex != NSNotFound)
+			{
+				[lines insertObject: [line substringFromIndex: nextTagIndex] 
+				            atIndex: i + 1];
+				line = [line substringToIndex: nextTagIndex];
+			}
 			[self parseMainDescriptionLine: line 
 			                    isLastLine: (i == ([lines count] - 1))];
 			validTags = [self validTagsAfterMainDescription];
