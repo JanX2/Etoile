@@ -436,7 +436,7 @@
 			continue;
 
 		H hParam = [LI with: [I with: [param name]]];
-		[hParam and: [param description]];
+		[hParam with: @ " " and: [param description]];
 		[hParamList and: hParam];
 		hasDescribedParam = YES;
 	}
