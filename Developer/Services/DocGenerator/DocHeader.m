@@ -290,8 +290,15 @@
 		                                  ofKind: @"protocols"]];	
 	}
 
+	H hAbstract = [DocHTMLElement blankElement];
+
+	if (IS_NIL_OR_EMPTY_STR([self abstract]) == NO)
+	{
+		hAbstract = [P with: [STRONG with: [self abstract]]];
+	}
+
 	NSString *description = [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]];
-	H hEntryDesc = [DIV class: @"symbolDescription" with: [P with: description]];
+	H hEntryDesc = [DIV class: @"symbolDescription" with: hAbstract and: [P with: description]];
 
 	return [DIV class: @"symbol" with: [DL with: [DT with: hEntryName]
                                             and: [DD with: hEntryDesc]]];

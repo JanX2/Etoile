@@ -112,6 +112,8 @@ TODO: Document a bit better and when line breaks are inserted. */
 #define EM [DocHTMLElement elementWithName: @"em"]
 #define HR [DocHTMLElement elementWithName: @"hr"]
 #define BR [DocHTMLElement elementWithName: @"br"]
+#define STRONG [DocHTMLElement elementWithName: @"strong"]
+
 
 /** @group HTML Support
 
