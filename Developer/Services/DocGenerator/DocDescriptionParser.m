@@ -116,6 +116,15 @@ Requires the line argument to be trimmed, no white spaces at the beginning and e
 	                                       forKey: paramName];
 }
 
+-  (void) parseAnyParamRawDescription
+{
+	if ([parsed objectForKey: @"@param"] == nil)
+		return;
+
+	[self parseParamRawDescription: [parsed objectForKey: @"@param"]];
+	[parsed removeObjectForKey: @"@param"];
+}
+
 // TODO: Could be improved to keep the markup where it doesn't get in the way. 
 // e.g. in each parameter or return description.
 - (NSString *) removeBasicDocMarkupForString: (NSString *)desc
@@ -123,12 +132,12 @@ Requires the line argument to be trimmed, no white spaces at the beginning and e
 	if ([desc rangeOfString: @"<"].location == NSNotFound)
 		return desc;
 
- 	NSDictionary *gsdocTagRemovals = D(@"<var>", @"</var>", @"<code>", @"</code>"); 
+ 	NSArray *gsdocTagRemovals = A(@"<var>", @"</var>", @"<code>", @"</code>"); 
 
 	for (NSString *tag in gsdocTagRemovals)
 	{
 		desc = [desc stringByReplacingOccurrencesOfString: tag 
-		                                       withString: [gsdocTagRemovals objectForKey: tag]
+		                                       withString: @""
 		                                          options: NSCaseInsensitiveSearch
 		                                            range: NSMakeRange(0, [desc length])];
 	}
@@ -136,6 +145,28 @@ Requires the line argument to be trimmed, no white spaces at the beginning and e
 	return desc;
 }
 
+- (void) endTag: (NSString *)aTag
+{
+	ASSIGN(currentTag, nil);
+	/* We delay the @param description parsing, because it might be split on 
+	   several lines. The parsing might be impossible right when @param is 
+	   parsed, because the content to be parsed is on the next line... e.g.
+	   @bla A city in the sea. @param
+	   myArgument Whatever about this argument. */
+	[self parseAnyParamRawDescription];
+}
+
+- (void) startTag: (NSString *)aTag
+{
+	/* When a tag is a limited to a single line, we close it now e.g. 
+	   @bla A bird in the sky.
+	   @bli A truck on the road. */
+	if (currentTag != nil)
+	{
+		[self endTag: currentTag];
+	}
+	ASSIGN(currentTag, aTag);
+}
 
 /* Returns YES when a new tag has been parsed, whether or not the tag content 
 has been entirely parsed. 
@@ -147,31 +178,27 @@ When multiple tags are on the same line, will parse up to the next tag e.g.
 When a single tag is present on the line, unparsedString won't be touched.  */
 - (BOOL) parseTag: (NSString *)aTag  atLine: (NSString *)line lineRemainder: (NSString **)unparsedString
 {
-	/*if (currentTag != nil)
-		return NO;*/
-
 	NSString *tagWithP = [NSString stringWithFormat: @"<p>%@", aTag];
 
 	if ([line hasPrefix: tagWithP] || [line hasPrefix: aTag])
 	{
+		[self startTag: aTag];
+
 		BOOL isDescFinished;
 		NSString *desc = [self descriptionFromString: line 
 		                                isTerminated: &isDescFinished 
 		                               lineRemainder: unparsedString];
 
 		desc = [self removeBasicDocMarkupForString: desc];
+		[[self getStringFor: aTag] appendString: desc];
 
-		// TODO: Remove this ugly if
-		if ([aTag isEqual: @"@param"])
+		/* If </p> was inserted by autogsdoc as below, we have to close the tag. 
+		   @bla Somewhere in the city.</p>
+		   <p>main description</p> */
+		if (isDescFinished)
 		{
-			[self parseParamRawDescription: desc];
+			[self endTag: aTag];
 		}
-		else
-		{
-			[[self getStringFor: aTag] appendString: desc];
-		}
-
-		ASSIGN(currentTag, (isDescFinished ? nil : aTag));
 		return YES;
 	}
 
@@ -225,12 +252,18 @@ When a single tag is present on the line, unparsedString won't be touched.  */
 	{
 		trimmedLine = [trimmedLine substringToIndex: [trimmedLine length] - 4];
 	}
+
+	trimmedLine = [self removeBasicDocMarkupForString: trimmedLine];
+
 	if ([trimmedLine length] > 0)
 	{
 		[[self getStringFor: aTag] appendFormat: @" %@", trimmedLine];
 	}
 
-	ASSIGN(currentTag, (isTagEnd ? nil : aTag));
+	if (isTagEnd)
+	{
+		[self endTag: aTag];
+	}
 }
 
 - (void) parseMainDescriptionLine: (NSString *)line isLastLine: (BOOL)isLastLine
@@ -320,6 +353,16 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 	
 		if (currentTag != nil)
 		{
+			// TODO: Move the line splitting code below elsewhere or merge it 
+			// with -descriptionFromString:isTerminated:lineRemainder:.
+			NSInteger nextTagIndex = [line rangeOfString: @"@"].location;
+		
+			if (nextTagIndex != NSNotFound)
+			{
+				[lines insertObject: [line substringFromIndex: nextTagIndex] 
+				            atIndex: i + 1];
+				line = [line substringToIndex: nextTagIndex];
+			}
 			[self parseContentLine: line forTag: currentTag];
 		}
 		else
