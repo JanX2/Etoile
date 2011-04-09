@@ -75,9 +75,9 @@
 
 /* Returns the description extracted from 
 
-@tag + spaces + description + </p> + spaces
+@tag + [ spaces + description + [ </p> ] + spaces ]
 
-and where </p> is optional.
+and where sequences enclosed in square brackets are optional.
 
 Requires the line argument to be trimmed, no white spaces at the beginning and end. */ 
 - (NSString *) descriptionFromString: (NSString *)aString 
@@ -85,8 +85,15 @@ Requires the line argument to be trimmed, no white spaces at the beginning and e
                        lineRemainder: (NSString **)unparsedString
 {
 	NSRange r = [aString rangeOfCharacterFromSet: [NSCharacterSet whitespaceCharacterSet]];
+	/* When @tag is alone, we return an empty description, the remaining 
+	   description is expected to be parsed in -parseContentLine:forTag: */
+	NSString *desc = @"";
+
 	/* Skip the first word and space e.g. @task + space */
-	NSString *desc = [aString substringFromIndex: (r.location == NSNotFound ? 0 : r.location + r.length)];
+	if (r.location != NSNotFound)
+	{
+		desc = [aString substringFromIndex: r.location + r.length];
+	}
 
 	/* Detect multiple tags on the same line, and return the next tag and its 
 	   content on the current line through unparsedString */
@@ -257,7 +264,13 @@ When a single tag is present on the line, unparsedString won't be touched.  */
 
 	if ([trimmedLine length] > 0)
 	{
-		[[self getStringFor: aTag] appendFormat: @" %@", trimmedLine];
+		NSMutableString *desc = [self getStringFor: aTag];
+
+		if ([desc length] > 0)
+		{
+			[desc appendString: @" "];
+		}
+		[desc appendString: trimmedLine];
 	}
 
 	if (isTagEnd)
@@ -294,6 +307,19 @@ When a single tag is present on the line, unparsedString won't be touched.  */
 {
 	DESTROY(currentTag);
 	[parsed removeAllObjects];
+}
+
+- (void) trimSpacesAndUnclosedParagraphMarkupInMainDescription
+{
+	NSString *desc = [[self getStringFor: @"description"]
+		stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+	if ([desc hasSuffix: @"<p>"])
+	{
+		desc = [desc substringToIndex: [desc length] - 4];
+		desc = [desc stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	}
+	[[self getStringFor: @"description"] setString: desc];
 }
 
 /* Rough Grammar
@@ -379,6 +405,13 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 				            atIndex: i + 1];
 				line = [line substringToIndex: nextTagIndex];
 			}
+			/* When the main description is not preceded by any tags, we reinsert 
+			   the start line skipped <p> */
+			if (i == startLine && [self isParagraphStartTag: [lines firstObject]])
+			{
+				[self parseMainDescriptionLine: [lines firstObject] 
+				                    isLastLine: NO];
+			}
 			[self parseMainDescriptionLine: line 
 			                    isLastLine: (i == ([lines count] - 1))];
 			validTags = [self validTagsAfterMainDescription];
@@ -386,6 +419,8 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 
 		wasParagraphStartOrEnd = [self isParagraphStartOrEnd: line];
 	}
+
+	[self trimSpacesAndUnclosedParagraphMarkupInMainDescription];
 
 	/*NSLog(@"Parsed task unit: %@", [self taskUnit]);
 	NSLog(@"Parsed task: %@", [self task]);
