@@ -393,18 +393,6 @@ PARAM, RETURN and TASK declaration order doesn't matter. */
 		}
 		else
 		{
-			// TODO: Move the line splitting code below elsewhere or merge it 
-			// with -descriptionFromString:isTerminated:lineRemainder:.
-			/* Detect a valid tag inlined in a main description line e.g. 
-			   <p>Displays the help</p> <p>@task Display</p> */
-			NSInteger nextTagIndex = [line rangeOfString: @"<p>@"].location;
-		
-			if (nextTagIndex != NSNotFound)
-			{
-				[lines insertObject: [line substringFromIndex: nextTagIndex] 
-				            atIndex: i + 1];
-				line = [line substringToIndex: nextTagIndex];
-			}
 			/* When the main description is not preceded by any tags, we reinsert 
 			   the start line skipped <p> */
 			if (i == startLine && [self isParagraphStartTag: [lines firstObject]])
