@@ -45,7 +45,8 @@
 		[DocFunction class], @"function",
 		[DocMacro class], @"macro",
 		[DocCDataType class], @"type",
-		[DocConstant class], @"constant", nil];
+		[DocConstant class], @"constant",
+		[DocVariable class], @"variable", nil];
 	symbolElements = [[NSSet alloc] initWithObjects: @"head", @"class", @"protocol", @"category", 
 		@"ivariable", @"method", @"function", @"constant", @"macro", nil];
 	// NOTE: ref elements are pruned. DocIndex is used instead.

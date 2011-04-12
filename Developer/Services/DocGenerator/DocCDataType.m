@@ -130,6 +130,22 @@
 @end
 
 
+@implementation DocVariable
+
+- (NSString *) GSDocElementName
+{
+	return @"variable";
+}
+
+- (SEL) weaveSelector
+{
+	return @selector(weaveConstant:);
+}
+
+
+@end
+
+
 @implementation DocConstant
 
 - (NSString *) GSDocElementName

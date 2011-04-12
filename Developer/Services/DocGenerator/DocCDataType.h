@@ -49,6 +49,31 @@ See -[DocElement weaveSelector]. */
 
 @end
 
+/** @group Doc Element Tree
+@abstract Global variables in the doc element tree.
+
+DocVariable objects are used to represent global variables not declared as 
+constants (in that DocConstant would be used). */
+@interface DocVariable : DocCDataType
+{
+
+}
+
+/** @taskunit GSDoc Parsing */
+
+/** <override-dummy />
+Returns <em>variable</em>.
+
+See -[DocElement GSDocElementName]. */
+- (NSString *) GSDocElementName;
+/** <override-dummy />
+Returns -weaveConstant:.
+
+See -[DocElement weaveSelector]. */
+- (SEL) weaveSelector;
+
+@end
+
 
 /** @group Doc Element Tree
 @abstract C constant-like types in the doc element tree.
