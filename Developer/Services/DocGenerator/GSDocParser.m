@@ -53,7 +53,7 @@
 	// desc -> dd substitution is not added to the dictionary until we enter a 
 	// deflist, otherwise this would intercept <desc> inside <method>, <class> etc.
 	substitutionElements = [[NSMutableDictionary alloc] initWithObjectsAndKeys: @"ul", @"list", 
-		@"li", @"item", @"ol", @"enum", @"dl", @"deflist", @"dt", @"term", @"", @"ref", nil];
+		@"li", @"item", @"ol", @"enum", @"dl", @"deflist", @"dt", @"term", @"", @"ref", @"", @"uref", nil];
 	// NOTE: var corresponds to GSDoc var and not HTML var
 	etdocElements = [[NSSet alloc] initWithObjects: @"p", @"code", @"example", @"br", @"em", @"strong", @"var", @"ivar", nil]; 
 	escapedCharacters = [[NSMutableDictionary alloc] initWithObjectsAndKeys: @"&lt;", @"<", @"&gt;", @">", nil];
