@@ -151,24 +151,28 @@ static NSString *root = @"root";
 
 - (void) weaveFunction: (DocFunction *)aFunction
 {
+	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
 	ASSIGN(currentConstructName, root);
 	[weaver weaveFunction: aFunction];
 }
 
 - (void) weaveMacro: (DocMacro *)aMacro
 {
+	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
 	ASSIGN(currentConstructName, root);
 	[weaver weaveMacro: aMacro];
 }
 
 - (void) weaveConstant: (DocConstant *)aConstant
 {
+	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
 	ASSIGN(currentConstructName, root);
 	[weaver weaveConstant: aConstant];
 }
 
 - (void) weaveOtherDataType: (DocCDataType *)aDataType
 {
+	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
 	ASSIGN(currentConstructName, root);
 	[weaver weaveOtherDataType: aDataType];
 }
