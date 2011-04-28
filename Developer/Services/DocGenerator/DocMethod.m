@@ -132,8 +132,8 @@
 	                      with: [self HTMLDescriptionWithDocIndex: docIndex]
 	                       and: [self HTMLAddendumRepresentation]];
 	H hMethodBlock = [DIV class: @"method" with: [self HTMLAnchorRepresentation]
-	                                        and: [DL with: [DT with: hSignature]
-	                                                  and: [DD with: hMethodDesc]]];
+	                                        and: [DL class: @"collapsable" with: [DT with: hSignature]
+	                                                                        and: [DD with: hMethodDesc]]];
 
 	//NSLog(@"Method %@", hMethodBlock);
 	return hMethodBlock;

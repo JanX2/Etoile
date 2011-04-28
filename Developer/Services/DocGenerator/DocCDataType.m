@@ -121,8 +121,8 @@
 	H hType = [SPAN class: @"returnType" with: [SPAN class: @"type" with: [self formattedType]]];
 	H hSymbolName = [SPAN class: @"selector" with: @" " and: [self name]];
 	H hDesc = [DIV class: @"methodDescription" with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]];
-	H hDataType = [DIV class: @"method" with: [DL with: [DT with: hType and: hSymbolName]
-	                                               and: [DD with: hDesc]]];
+	H hDataType = [DIV class: @"method" with: [DL class: @"collapsable" with: [DT with: hType and: hSymbolName]
+	                                                                     and: [DD with: hDesc]]];
 
 	return hDataType;
 }

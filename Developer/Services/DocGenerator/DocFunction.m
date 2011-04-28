@@ -45,8 +45,8 @@
 	H hFunctionDesc = [DIV class: @"methodDescription" 
 	                        with: [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]]
 	                         and: [self HTMLAddendumRepresentation]];
-	H hFunctionBlock = [DIV class: @"method" with: [DL with: [DT with: hSignature]
-	                                                    and: [DD with: hFunctionDesc]]];
+	H hFunctionBlock = [DIV class: @"method" with: [DL class: @"collapsable" with: [DT with: hSignature]
+	                                                                          and: [DD with: hFunctionDesc]]];
 
 	//NSLog(@"Function %@", hFunctionBlock);
 	return hFunctionBlock;

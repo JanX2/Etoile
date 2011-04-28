@@ -90,9 +90,17 @@ function show(obj) {
 }
 
 function showAll() {
-	var dls = document.getElementsByTagName('dl');
-	document.getElementById('shower').style.display = 'none';
-	document.getElementById('hider').style.display = 'block';
+	var dls = getElementsByClass('collapsable', document, 'dl');
+
+	var shower = document.getElementById('shower');
+	if (shower != null) {
+		shower.style.display = 'none';
+	}
+	var hider = document.getElementById('hider');
+	if (hider != null) {
+		hider.style.display = 'block';
+	}
+
 	for(var i = 0; i < dls.length; i++) {
 		var oDT = dls[i].getElementsByTagName('dt');
 		for (var j = 0; j < oDT.length; j++) {
@@ -105,21 +113,29 @@ function showAll() {
 		oDT = null;
 	}
 	
-	var returnTypes = document.getElementsByClass('returnType', document, 'span');
+	var returnTypes = getElementsByClass('returnType', document, 'span');
 	for(var i = 0; i < returnTypes.length; i++) {
 		returnTypes[i].style.display = 'inline';
 	}
 	
-	var parameters = document.getElementsByClass('parameter', document, 'span');
+	var parameters = getElementsByClass('parameter', document, 'span');
 	for(var i = 0; i < parameters.length; i++) {
 		parameters[i].style.display = 'inline';
 	}
 }
 
 function hideAll() {
-	var dls = document.getElementsByTagName('dl');
-	document.getElementById('shower').style.display = 'block';
-	document.getElementById('hider').style.display = 'none';
+	var dls = getElementsByClass('collapsable', document, 'dl');
+
+	var shower = document.getElementById('shower');
+	if (shower != null) {
+		shower.style.display = 'block';
+	}
+	var hider = document.getElementById('hider');
+	if (hider != null) {
+		hider.style.display = 'none';
+	}
+
 	for(var i = 0; i < dls.length; i++) {
 		var oDT = dls[i].getElementsByTagName('dt');
 		for (var j = 0; j < oDT.length; j++) {
@@ -132,12 +148,12 @@ function hideAll() {
 		oDT = null;
 	}
 	
-	var returnTypes = document.getElementsByClass('returnType', document, 'span');
+	var returnTypes = getElementsByClass('returnType', document, 'span');
 	for(var i = 0; i < returnTypes.length; i++) {
 		returnTypes[i].style.display = 'none';
 	}
 	
-	var parameters = document.getElementsByClass('parameter', document, 'span');
+	var parameters = getElementsByClass('parameter', document, 'span');
 	for(var i = 0; i < parameters.length; i++) {
 		parameters[i].style.display = 'none';
 	}
