@@ -98,24 +98,6 @@ void generateClassMapping(NSString *classFile)
 	return;
 }
 
-/**
- * Displays a simple error message.
- *
- * @task Display
- */
-void printError()
-{
-  NSLog (@"Option(s) unrecognized, you may want to display the help (-h)!");
-}
-
-/**
- * Simple macro to check that the argument is different from NO.
- * 
- * @param arg a NSValue
- * @return YES if the argument is different from NO
- */
-#define VALID(arg) (arg != nil && ![arg isEqual: [NSNumber numberWithBool: NO]])
-
 /** @taskunit Finding Files */
 
 NSString *indexFileInDirectory(NSString *aDirectory)
@@ -150,6 +132,28 @@ NSArray *sourceFilesByAddingSupportFilesFromDirectory(NSArray *sourceFiles, NSSt
 	return sourceFiles;
 }
 
+BOOL checkOptions(NSDictionary *options)
+{
+	for (NSString *key in options)
+	{
+		BOOL isNonOptionArg = [key isEqual: @""];
+
+		if (isNonOptionArg)
+			continue;
+
+		id value = [options objectForKey: key];
+		BOOL isValidString = ([value isEqual: @""] == NO && [[value stringValue] hasPrefix: @"-"] == NO);
+		BOOL isValidNumber = [value isNumber];
+
+		if (isValidNumber == NO && isValidString == NO)
+		{
+			NSLog(@"Found invalid argument %@ for option %@", value, key);
+			return NO;
+		}
+	}
+	return YES;
+}
+
 /**
  * Main function. 
  *
@@ -165,6 +169,12 @@ int main (int argc, const char * argv[])
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSDictionary *options = ETGetOptionsDictionary("hn:c:r:t:m:e:p:o:i:", argc, (char **)argv);
+
+	if (checkOptions(options) == NO)
+	{
+		return 1;
+	}
+
 	NSString *projectName = [options objectForKey: @"n"];
 	NSArray *explicitSourceFiles = [options objectForKey: @""];
 	NSString *parserSourceDir = [options objectForKey: @"c"];
@@ -177,21 +187,21 @@ int main (int argc, const char * argv[])
 	NSString *outputDir = [options objectForKey: @"o"];;
 	NSNumber *help = [options objectForKey: @"h"];
 
-	if (VALID(help))
+	if ([help boolValue])
 	{
 		printHelp();
 		return 0;
 	}
-	// TODO: Argument checking by reusing printError(); when not handled by 
-	// WeavedDocument
 
 	DocPageWeaver *weaver = [DocPageWeaver alloc];
 
-	if (VALID(parserSourceDir) || VALID(rawSourceDir))
+	if (parserSourceDir != nil || rawSourceDir != nil)
 	{
+		NSArray *rawSourceDirs = (rawSourceDir != nil ? [NSArray arrayWithObject: rawSourceDir] : [NSArray array]);
+
 		weaver = [weaver initWithParserSourceDirectory: parserSourceDir
 		                                     fileTypes: A(@"gsdoc", @"igsdoc", @"plist")
-		                          rawSourceDirectories: [NSArray arrayWithObject: rawSourceDir]
+		                          rawSourceDirectories: rawSourceDirs
 		                         additionalSourceFiles: explicitSourceFiles
 		                                  templateFile: templateFile];    
 	}
