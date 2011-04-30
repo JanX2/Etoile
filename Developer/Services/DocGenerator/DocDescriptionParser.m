@@ -191,7 +191,7 @@ When a single tag is present on the line, unparsedString won't be touched.  */
 	{
 		[self startTag: aTag];
 
-		BOOL isDescFinished;
+		BOOL isDescFinished = NO;
 		NSString *desc = [self descriptionFromString: line 
 		                                isTerminated: &isDescFinished 
 		                               lineRemainder: unparsedString];
