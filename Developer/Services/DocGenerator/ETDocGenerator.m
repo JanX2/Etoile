@@ -228,12 +228,19 @@ int main (int argc, const char * argv[])
 	[[DocIndex currentIndex] setOutputDirectory: outputDir];
 	[[DocIndex currentIndex] regenerate];
 
-	FOREACH(pages, page, DocPage *)
+	NSMutableSet *usedPaths = [NSMutableSet set];
+
+	for (DocPage *page in pages)
 	{
 		NSString *outputPath = [outputDir stringByAppendingPathComponent: [page name]];
+		
+		// FIXME: Doesn't compile... ETAssert([usedPaths containsObject: outputPath] == NO);
+		assert([usedPaths containsObject: outputPath] == NO);
+		//NSLog(@"Write %@ to %@", page, [outputPath stringByAppendingPathExtension: @"html"]);
 
-		NSLog(@"Write %@ to %@", page, [outputPath stringByAppendingPathExtension: @"html"]);
 		[page writeToURL: [NSURL fileURLWithPath: [outputPath stringByAppendingPathExtension: @"html"]]];
+
+		[usedPaths addObject: outputPath];
 	}
 
 	[pool drain];
