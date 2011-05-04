@@ -100,7 +100,7 @@ NSString *kETPlayingProperty = @"kETPlayingProperty";
 	   
 	
 	MKMediaFile *mediaFile = [[MKMediaFile alloc] initWithURL: aURL];
-	FOREACH([self properties], property, NSString *)
+	FOREACH([self propertyNames], property, NSString *)
 	{
 		id value = [[mediaFile metadata] valueForKey: property];
 		if (value)
