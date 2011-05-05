@@ -11,6 +11,7 @@ Bugs and Small Features
 - Ensure '-weaveSelector' is an unbreakable word and won't appear cut by a newline on '-'
 - Wrap examples to prevent them from overlapping with the sidebar
 - Support @taskunit with C types (functions, constants etc.) and not just methods
+- Improved Expand all / Collapse all to include a suffix that varies with the page type (e.g. Expand all methods)
 - autogsdoc wrongly generates the paragraph markup when there is a tab on a blank line as below:
 
 	/** @group Weaving and Parsing
