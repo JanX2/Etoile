@@ -300,8 +300,8 @@
 	NSString *description = [self HTMLDescriptionWithDocIndex: [DocIndex currentIndex]];
 	H hEntryDesc = [DIV class: @"symbolDescription" with: hAbstract and: [P with: description]];
 
-	return [DIV class: @"symbol" with: [DL with: [DT with: hEntryName]
-                                            and: [DD with: hEntryDesc]]];
+	return [DIV class: @"symbol" with: [DL class: @"collapsable" with: [DT with: hEntryName]
+                                                                      and: [DD with: hEntryDesc]]];
 }
 
 - (void) parser: (GSDocParser *)parser 
