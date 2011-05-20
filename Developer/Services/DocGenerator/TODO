@@ -12,6 +12,16 @@ Bugs and Small Features
 - Wrap examples to prevent them from overlapping with the sidebar
 - Support @taskunit with C types (functions, constants etc.) and not just methods
 - Improved Expand all / Collapse all to include a suffix that varies with the page type (e.g. Expand all methods)
+- Add a h4 css style (see ETModelElementDescription class doc in EtoileFoundation)
+- Fix HTML definition lists not be expandable within a method description (see ETByteSizeFormatter main method doc)
+- @taskunit is not ignored if put just above a #ifdef (autogsdoc discards it). For example:
+
+/** @taskunit Bla */
+#ifdef
+-method1
+#endif
+-method2
+
 - autogsdoc wrongly generates the paragraph markup when there is a tab on a blank line as below:
 
 	/** @group Weaving and Parsing
