@@ -1,11 +1,11 @@
 #import "ETTextProtocols.h"
-#import <CoreObject/COObject.h>
+//#import <CoreObject/COObject.h>
 
 /**
  * A tree of structured text.  This class does not contain text directly.  Text
  * is stored in children; this class contains only children and attributes.
  */
-@interface ETTextTree : COObject <ETText,ETTextGroup,ETCollection>
+@interface ETTextTree : NSObject <ETText,ETTextGroup>
 {
 	NSMutableArray *children;
 }

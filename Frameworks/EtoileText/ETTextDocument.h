@@ -1,4 +1,5 @@
-#import <CoreObject/CoreObject.h>
+//#import <CoreObject/CoreObject.h>
+#import <EtoileFoundation/EtoileFoundation.h>
 #import "ETTextProtocols.h"
 
 @class NSMutableSet;
@@ -9,7 +10,7 @@
  * An ETTextDocument represents a text document.  This includes both structured
  * text and a set of types.
  */
-@interface ETTextDocument : COObject 
+@interface ETTextDocument : NSObject 
 {
 	NSMutableSet *types;
 }

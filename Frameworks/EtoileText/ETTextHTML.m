@@ -107,7 +107,7 @@
 @end
 
 @implementation ETXHTMLWriter
-@synthesize writer, skipToEndOfNode;
+@synthesize writer, skipToEndOfNode, writeChaptersToFiles;
 - (void)writePreamble
 {
 	[writer writeXMLHeader];
@@ -384,7 +384,7 @@
 - (void)visitTextNode: (id<ETText>)aNode
 {
 	id type = aNode.textType;
-	NSString *typeName = [typeName valueForKey: kETTextStyleName];
+	NSString *typeName = [type valueForKey: kETTextStyleName];
 	if ([ETTextLinkType isEqualToString: typeName])
 	{
 		[referenceNodes addObject: aNode];

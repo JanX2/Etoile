@@ -1,5 +1,5 @@
 #import "ETTextProtocols.h"
-#import <CoreObject/COObject.h>
+//#import <CoreObject/COObject.h>
 
 /**
  * A text fragment is a leaf node in a structured text tree.  It contains a run
@@ -10,7 +10,7 @@
  * by subclasses to store references to external resources and other things
  * that would require a special character in NSAttributedString.
  */
-@interface ETTextFragment : COObject<ETText>
+@interface ETTextFragment : NSObject<ETText>
 {
 	NSMutableString *text;
 }

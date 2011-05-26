@@ -11,6 +11,16 @@
 	self.scanner.delegate = self.parent;
 }
 @end
+@implementation ETTeXIgnoreHandler2
+- (void)endArgument
+{
+	count++;
+	if (count > 1)
+	{
+		self.scanner.delegate = self.parent;
+	}
+}
+@end
 
 @implementation ETTeXSimpleHandler
 static NSMutableDictionary *CommandTypes;
@@ -279,6 +289,35 @@ static NSDictionary *HeadingTypes;
 	[attributes setObject: aString forKey: kETTextLinkName];
 }
 @end
+@implementation ETTeXHREFHandler : ETTeXHandler
+- (void)dealloc
+{
+	[url release];
+	[buffer release];
+	[super dealloc];
+}
+- (void)beginCommand: (NSString*)aCommand {}
+- (void)endArgument
+{
+	if (nil == url)
+	{
+		url = [[NSURL alloc] initWithString: buffer];
+	}
+	else
+	{
+		[self.builder startNodeWithStyle: 
+			[self.document typeFromDictionary: D(url, kETTextLinkName)]];
+		[self.builder appendString: buffer];
+		[self.builder endNode];
+		self.scanner.delegate = self.parent;
+	}
+}
+- (void)handleText: (NSString*)aString
+{
+	ASSIGN(buffer, aString);
+}
+@end
+
 
 @implementation ETTeXIndexHandler
 - (void)beginCommand: (NSString*)aCommand

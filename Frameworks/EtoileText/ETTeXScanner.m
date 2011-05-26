@@ -2,6 +2,8 @@
 
 static NSCharacterSet *CommandEndCharacterSet;
 
+	//NSLog(@"Passing %@", [aString substringWithRange: textRange]);
+
 #define BUFFER_SIZE 64
 #define PASS_TEXT() \
 	if (textRange.length > 0)\
@@ -9,7 +11,15 @@ static NSCharacterSet *CommandEndCharacterSet;
 		[delegate handleText: [aString substringWithRange: textRange]];\
 		textRange.length = 0;\
 	}\
-	textRange.location = idx+1;
+	textRange.location = idx + 1;
+
+#define SET_INDEX(n) \
+	idx = n;\
+	i = idx - range.location - BUFFER_SIZE;\
+	if (i >= range.length)\
+	{\
+		range.location = idx + 1;\
+	}
 
 @implementation ETTeXScanner
 @synthesize delegate;
@@ -70,8 +80,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 							{
 								PASS_TEXT();
 								// Skip the slash:
-								i++;
-								idx++;
+								SET_INDEX(idx+1);
 								// We've already parsed the next character, so
 								// add it to the text range.
 								textRange.length = 1;
@@ -94,16 +103,10 @@ static NSCharacterSet *CommandEndCharacterSet;
 								r.length = r.location - start;
 								r.location = start;
 								[delegate beginCommand: [aString substringWithRange: r]];
-								idx += r.length;
-								i += r.length;
+								SET_INDEX(idx + r.length);
 								textRange.location = idx + 1;
 								//NSLog(@"Continuing from %d (%d) %c %@", idx, i, [aString characterAtIndex: idx], NSStringFromRange(textRange));
 							}
-						}
-						if (i+1 > range.length)
-						{
-							//NSLog(@"Out of buffer");
-							range.location = idx + 1;
 						}
 					}
 					break;
@@ -118,7 +121,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 							int skip = 1;
 							if (idx + 2 < end)
 							{
-								if ([aString characterAtIndex: idx+1] == '-')
+								if ([aString characterAtIndex: idx+2] == '-')
 								{
 									skip = 2;
 									dash = 8212; // em
@@ -126,17 +129,15 @@ static NSCharacterSet *CommandEndCharacterSet;
 							}
 							NSString *dashString = [NSString stringWithCharacters: &dash length: 1];
 							[delegate handleText: dashString];
-							idx += skip;
-							i += skip;
-							if (i+1 > range.length)
-							{
-								range.location = idx + 1;
-							}
+							SET_INDEX(idx + skip);
 							textRange.location = idx + 1;
 							break;
 						}
+						else
+						{
+							textRange.length++;
+						}
 					}
-					textRange.length++;
 					break;
 				}
 				case '\'':
@@ -148,12 +149,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 						if ([aString characterAtIndex: idx+1] == '\'')
 						{
 							quote = 8221; // ''
-							idx += 1;
-							i += 1;
-							if (i+1 > range.length)
-							{
-								range.location = idx + 1;
-							}
+							SET_INDEX(idx + 1);
 						}
 					}
 					NSString *quoteString = [NSString stringWithCharacters: &quote length: 1];
@@ -170,17 +166,22 @@ static NSCharacterSet *CommandEndCharacterSet;
 						if ([aString characterAtIndex: idx+1] == '`')
 						{
 							quote = 8220; // `
-							idx += 1;
-							i += 1;
-							if (i+1 > range.length)
-							{
-								range.location = idx + 1;
-							}
+							SET_INDEX(idx + 1);
 						}
 					}
 					NSString *quoteString = [NSString stringWithCharacters: &quote length: 1];
 					[delegate handleText: quoteString];
 					textRange.location = idx + 1;
+					break;
+				}
+				case '%':
+				{
+					PASS_TEXT();
+					NSRange lineEnd = [aString rangeOfCharacterFromSet: [NSCharacterSet newlineCharacterSet]
+					                                           options: 0
+					                                            range : NSMakeRange(idx, end-idx)];
+					SET_INDEX(lineEnd.location + lineEnd.length - 1);
+					textRange.location = idx;
 					break;
 				}
 				default:

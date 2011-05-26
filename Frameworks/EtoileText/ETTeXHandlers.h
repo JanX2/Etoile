@@ -1,3 +1,4 @@
+@class NSURL;
 
 @interface ETTeXSimpleHandler : ETTeXHandler
 {
@@ -11,6 +12,11 @@
 }
 @end
 @interface ETTeXIgnoreHandler : ETTeXHandler @end
+@interface ETTeXIgnoreHandler2 : ETTeXIgnoreHandler
+{
+	int count;
+}
+@end
 
 
 @interface ETTeXNestableHandler : ETTeXSimpleHandler @end
@@ -32,6 +38,12 @@
 @interface ETTeXSectionHandler : ETTeXHandler
 @end
 
+@interface ETTeXHREFHandler : ETTeXHandler
+{
+	NSURL *url;
+	NSString *buffer;
+}
+@end
 @interface ETTeXLinkHandler : ETTeXHandler
 {
 	NSMutableDictionary *attributes;
