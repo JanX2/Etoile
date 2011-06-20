@@ -54,6 +54,22 @@ pre
   padding: 5px;
 }
 
+blockquote
+{
+	left-border: 1pt;
+	border-color: red;
+	background: #eeeeee
+}
+
+dt
+{
+  font-weight: bold;	
+}
+
+dd
+{
+  margin: 10px;
+}
 
 /* START DOCUMENT
 =========================================================*/
@@ -205,14 +221,17 @@ pre
   margin: 10px auto;
 }
 
-#main li:before 
-{
-	content: "\2022  ";
-}
-
 #main li
 {
+  background-image: url("../../images/global/small_bullet.png");
+  background-repeat: no-repeat;
+  background-position: 0px 0.8em; 
+  padding: 0.4em 0 0 0.8em;
+
+  /* With list-style-image, but the image is not well vertically centered... */
+  /*list-style-image: url("/images/global/small_bullet.png");
   padding: 0.4em 0 0 0.4em;
+  text-indent: -0.5em;*/
 }
 
 #main p
@@ -222,10 +241,8 @@ pre
 
 #main ul 
 {
-	list-style: none;
 	margin: 0 0 0.9em 0;
 	padding-left: 1em;
-	text-indent: -1em;
 }
 
 #main .caption
@@ -233,6 +250,59 @@ pre
   font:normal 80% Helvetica;
 }
 
+
+/* START MAIN-INFORMATION
+=========================================================*/
+#main_information
+{
+  padding-right:10px;
+  padding-bottom: 15px;
+}
+
+#main_information a
+{
+  color:#375dc7;
+}
+
+#main_information h1 a::after,
+#main_information h2 a::after,
+#main_information h3 a::after
+{
+  content: " \203A";
+  /* http://theorem.ca/~mvcorks/code/charsets/auto.html */
+  /* http://lachy.id.au/log/2005/04/handy-css */
+}
+
+#main_information h2
+{
+  border-bottom:1px solid #ccc;
+  font:normal 105% Helvetica;
+  margin:0em 0 0.6em 0;
+  padding-bottom:5px;
+}
+
+#main_information li:before 
+{
+	content: "\2022  ";
+}
+
+#main_information li
+{
+  padding: 0.4em 0 0 0.4em;
+}
+
+#main_information p
+{
+  margin-bottom: 0.6em;
+}
+
+#main_information ul 
+{
+	list-style: none;
+	margin: 0 0 0.9em 0;
+	padding-left: 1em;
+	text-indent: -1em;
+}
 
 /* START SIDEBAR
 =========================================================*/
@@ -444,6 +514,51 @@ pre
   color:#5286aa;
 }
 
+.developer h2
+{
+  height: 15px;
+}
+
+.developer .project_title
+{
+  display: inline;
+  float: left;
+}
+
+.developer .difficulty
+{
+  float: right;
+  margin-top: -2px;
+}
+
+.developer #main .difficulty img
+{
+  display: inline;
+  text-align: left;
+  margin: 0;
+}
+
+.developer .milestones
+{
+}
+
+.developer .milestones th
+{
+  padding-top: 5px;
+  font-weight: bold;
+}
+
+.developer .milestones td
+{
+  padding-top: 5px;
+  vertical-align: top;
+}
+
+.developer .milestones .time
+{
+  width: 120px;
+}
+
 
 /* START NEWS
 =========================================================*/
@@ -617,14 +732,6 @@ pre
   margin: 10px;
 }
 
-#documentation ul 
-{
-	list-style: none;
-	margin: 0 0 10px 10px;
-	padding-left: 1em;
-	text-indent: -1em;
-}
-
 #documentation .header
 {
 
@@ -679,7 +786,7 @@ pre
 
 #documentation .collapsedIndicator
 {
-  background: url(../../images/collapsed.png) no-repeat;
+  background: url(../../images/global/collapsed.png) no-repeat;
   width: 8px;
   height: 10px;
   display: inline-block;
@@ -692,7 +799,7 @@ pre
 
 #documentation .expandedIndicator
 {
-  background: url(../../images/expanded.png) no-repeat;
+  background: url(../../images/global/expanded.png) no-repeat;
   width: 10px;
   height: 8px;
   display: inline-block;
