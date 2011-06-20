@@ -172,7 +172,7 @@ name is parsed and set. */
 	[writer layout];
 	[writer generateFile: imgPath withFormat: @"png"];
 
-	return [NSString stringWithFormat: @"<img src=\"%@\">%@</img>", imgPath, [writer generateWithFormat: @"cmapx"]];
+	return [NSString stringWithFormat: @"<img src=\"%@\">%@</img>", imgName, [writer generateWithFormat: @"cmapx"]];
 }
 
 - (DocHTMLElement *) HTMLOverviewRepresentationForGroupNamed: (NSString *)aGroup
