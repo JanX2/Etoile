@@ -1,0 +1,300 @@
+/* Mainly overwrite some rules to get the images relatively, necessary to 
+support browsing the documentation both locally or on the web site.
+
+In HTML documents, documentation.css must be included after global.css to get 
+the global rules overwritten. For example:
+
+<head>
+<link rel="stylesheet" href="../_includes/css/global.css" type="text/css" />	
+<link rel="stylesheet" href="../_includes/css/documentation.css" type="text/css" />
+</head>
+
+On the web site, we have symbolic links dev/api/_includes and dev/api/images 
+pointing on the real _includes and images directories at the root of the web 
+site, and locally we create symbolic links too inside each project 
+e.g. EtoileFoundation/_includes and EtoileFoundation/images to which 
+Documentation/*.html documents refer to.
+
+Because the css is inside <base>/_includes/css and images is located at 
+<base>/images, from the css, we can locate each image in this way:
+url("../../images/global/small_bullet.png"); */
+
+/* START DOCUMENT
+=========================================================*/
+
+/* START FOOTER
+=========================================================*/
+
+/* START NAV
+=========================================================*/
+
+/* START MASTHEAD
+=========================================================*/
+
+/* START MAIN
+=========================================================*/
+
+#main li
+{
+  background-image: url("../../images/global/small_bullet.png");
+}
+
+/* START MAIN-INFORMATION
+=========================================================*/
+
+/* START SIDEBAR
+=========================================================*/
+
+/* START DEVELOPER
+=========================================================*/
+
+.developer #masthead .first
+{
+  background-image:url("../../images/developer/growth.png");
+}
+
+.developer #masthead
+{
+  background:url("../../images/developer/diagonals.gif");
+}
+
+/* START DOCUMENTATION
+=========================================================*/
+
+/* For now, documentation rules inherit from main rules. 
+
+We wrap <div id="documentation"> inside <div id="main"> in the HTML 
+template to achieve that. */
+
+#documentation a
+{
+  color: #444;
+}
+
+#documentation dl
+{
+	margin: 0;
+	padding: 0;
+}
+
+#documentation dt
+{
+	margin: 0;
+	padding: 0;
+	font-weight: bold;
+}
+
+#documentation dd
+{
+	margin: 0 0 1em 0;
+	padding: 0;
+}
+
+/* Definition list alternative style
+
+/*#documentation dl
+{
+	float: left;
+	width: 520px;
+	margin: 1em 0;
+	padding: 0;
+	border-bottom: 1px solid #999;
+}
+
+#documentation dt
+{
+	clear: left;
+	float: left;
+	width: 200px;
+	margin: 0;
+	padding: 5px;
+	border-top: 1px solid #999;
+	font-weight: bold;
+}
+
+#documentation dd
+{
+	float: left;
+	width: 300px;
+	margin: 0;
+	padding: 5px;
+	border-top: 1px solid #999;
+}*/
+
+
+/* Definition list alternative style
+
+#documentation dl
+{
+	margin: 2em 0;
+	padding: 0;
+}
+
+#documentation dt
+{
+	position: relative;
+	left: 0;
+	top: 1.1em;
+	width: 5em;
+	font-weight: bold;
+}
+
+#documentation dd
+{
+	border-left: 1px solid #000;
+	margin: 0 0 0 6em;
+	padding: 0 0 .5em .5em;
+}*/
+
+#documentation .collapsable dd
+{
+  display: none;
+  margin: 0 18px 20px 18px;
+}
+
+#documentation .collapsable dl
+{
+  margin-bottom: 10px;
+}
+
+#documentation .collapsable dt
+{
+  color: #000;
+  margin: 10px;
+  font-weight: normal;
+}
+
+#symbol dt
+{
+  margin: 10px;
+}
+
+#documentation .header
+{
+
+}
+
+#documentation .methodGroup
+{
+  margin-top: 30px;
+}
+
+#documentation #hider
+{
+  display: none;
+}
+
+#documentation .meta
+{
+  margin-top: 10px;
+}
+
+#documentation .meta td
+{
+  padding: 5px;
+}
+
+#documentation .meta th
+{
+  font-weight: bold;
+  padding: 5px 5px 5px 0;
+}
+
+#documentation .overview
+{
+  margin-bottom: 20px;
+}
+
+#documentation .overview-rest
+{
+  display: none;
+}
+
+#documentation #toggler
+{
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+#documentation hr
+{
+  margin-bottom: 15px;
+}
+
+#documentation .collapsedIndicator
+{
+  background: url(../../images/global/collapsed.png) no-repeat;
+  width: 8px;
+  height: 10px;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  margin-left: 2px;
+  margin-right: 5px;
+  margin-bottom: 4px;
+}
+
+#documentation .expandedIndicator
+{
+  background: url(../../images/global/expanded.png) no-repeat;
+  width: 10px;
+  height: 8px;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  margin-right: 5px;
+  margin-bottom: 3px;
+}
+
+#documentation .arg
+{
+	
+}
+
+#documentation .symbol, .method 
+{
+  margin: 10px 10px 10px 5px;
+}
+
+#documentation .symbolName
+{
+
+}
+
+#documentation .symbolDescription, .methodDescription
+{
+  background-color: #f5f5f5;
+  border-left: 1px solid #ccc;
+  margin-top: -7px;
+  padding: 5px 8px;
+}
+
+#documentation .methodScope
+{
+	
+}
+
+#documentation .methodSignature
+{
+	
+}
+
+#documentation .parameter
+{
+
+}
+
+#documentation .returnType
+{
+
+}
+
+#documentation .selector
+{
+	font-weight: bold;
+}
+
+#documentation .type
+{
+	
+}
