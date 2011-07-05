@@ -1,0 +1,29 @@
+To do
+=====
+
+- Port to GNUstep
+- switch from fmdb to SQLClient
+
+Merging:
+ - move detection
+ - custom attributed string merger
+ 
+Model Objects (COObject):
+ - KVO support?
+ - copy + paste support
+ 
+History tracks
+ - implement.
+ - UI-level normal undo/redo
+ 
+Collaboration
+ - UI-level normal undo/redo using selective undo.
+ 
+Editing Context
+ -
+ 
+ProjectDemo
+ - add XMPP
+ - add drawing support
+ - text support
+ - port to ObjectMerging2
