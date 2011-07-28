@@ -70,7 +70,7 @@ ifeq ($(HAVE_CAIRO), YES)
 endif
 
 # Use C++ to link library
-CC=${CXX}
+LD=${CXX}
 
 -include GNUmakefile.preamble
 
