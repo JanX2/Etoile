@@ -1,0 +1,4 @@
+./configure --enable-optimized=yes --enable-assertions=yes --enable-debug-runtim
+e=yes --enable-debug-symbols=yes --enable-libffi=yes --enable-targets='x86' --wi
+th-c-include-dirs='/usr/lib/gcc/i486-linux-gnu/4.3.3/include:/usr/lib/gcc/i486-l
+inux-gnu/4.3.3/include-fixed:/usr/include/i486-linux-gnu:/usr/include'
