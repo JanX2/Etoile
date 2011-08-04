@@ -3,7 +3,7 @@
 export LOG_NAME=gnustep-make-build
 
 # Download, build and install GNUstep Make
-
+echo "Fetching GNUstep Make into $PWD"
 if [ "$MAKE_VERSION" = "trunk" ]; then
 
 	${SVN_ACCESS}svn.gna.org/svn/gnustep/dev-libs/make/${MAKE_VERSION} gnustep-make-${MAKE_VERSION}
@@ -45,7 +45,7 @@ fi
 if [ -n "$RUNTIME_VERSION" ]; then
 
 	cd libobjc2-${RUNTIME_VERSION}
-	($MAKE_CLEAN) && ( $MAKE_BUILD debug=no ) && ( $MAKE_INSTALL strip=yes )
+	($MAKE_CLEAN) && ( MAKEOPTS="debug=no" $MAKE_BUILD ) && ( $MAKE_INSTALL strip=yes )
 	cd ..
 
 	# Reinstall GNUstep Make to get it detect the libobjc2 just installed
@@ -85,11 +85,9 @@ if [ -n "$BASE_VERSION" ]; then
 
 fi
 echo " ++++ $PWD"
-exit
-exit
 # Download, build and install GNUstep Gui
 
-export LOG_NAME=gnustep-gui
+export LOG_NAME=gnustep-gui-build
 
 if [ "$GUI_VERSION" = "trunk" ]; then
 
@@ -113,7 +111,7 @@ fi
 
 # Download, build and install GNUstep Back
 
-export LOG_NAME=gnustep-base-build
+export LOG_NAME=gnustep-back-build
 
 if [ "$BACK_VERSION" = "trunk" ]; then
 
@@ -145,7 +143,7 @@ if [ "$GORM_VERSION" = "trunk" ]; then
 elif [ -n "$GORM_VERSION" ]; then
 
 	wget -nc ftp://ftp.gnustep.org/pub/gnustep/dev-apps/gorm-${GORM_VERSION}.tar.gz
-	tar -xzf gorm-${GSGORM_VERSION}.tar.gz
+	tar -xzf gorm-${GORM_VERSION}.tar.gz
 
 	cd gorm-${GORM_VERSION}
 	($MAKE_CLEAN) && ($MAKE_BUILD) && ($MAKE_INSTALL)

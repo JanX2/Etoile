@@ -1,9 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
-SCRIPT_DIR=$PWD
-PROFILE_SCRIPT=testbuild.config
+# Determine script path and directory
+cd $(dirname "${0}") 
+SCRIPT_DIR=$(pwd -L)
+cd - 
 
-# Process script options
+PROFILE_SCRIPT=$PWD/testbuild.config
+
+# Process script options second (so they can override build profile)
 
 while test $# != 0
 do
@@ -28,7 +32,7 @@ do
       echo "spaces."
       echo
       echo "  --profile               - Path to the build profile that describe the build "
-      echo "                            process (default: \$PWD/defaultbuild.config)"
+      echo "                            process (default: \$PWD/testbuild.config)"
       echo "  --build-dir             - Name of the directory inside which the build will "
       echo "                            happen (default: \$PWD/build)"
       echo "  --prefix                - Path where GNUstep and Etoile will be installed"
@@ -50,27 +54,45 @@ do
   esac
 
   case $option in
-    --build-profile)
-      PROFILE_SCRIPT=$optionarg;; 
+    --profile)
+      PROFILE_SCRIPT_override=$optionarg;; 
     --build-dir)
-      BUILD_DIR=$optionarg;;
+      BUILD_DIR_override=$optionarg;;
     --prefix)
-      PREFIX_DIR=$optionarg;; 
+      PREFIX_DIR_override=$optionarg;; 
     --version)
-      ETOILE_VERSION=$optionarg;; 
+      ETOILE_VERSION_override=$optionarg;; 
     *)
       ;;
   esac
   shift
 done
 
-# Load the build profile
+PROFILE_SCRIPT=${PROFILE_SCRIPT:-"$PWD/defaultbuild.config"}
+PROFILE_SCRIPT=${PROFILE_SCRIPT_override:-"$PROFILE_SCRIPT"}
+. $PROFILE_SCRIPT
 
-. $SCRIPT_DIR/$PROFILE_SCRIPT
+# Define variables if not defined on command line or in build profile
+BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
+BUILD_DIR=${BUILD_DIR_override:-"$BUILD_DIR"}
+
+PREFIX_DIR=${PREFIX_DIR:-"/"}
+PREFIX_DIR=${PREFIX_DIR_override:-"$PREFIX_DIR"}
+
+ETOILE_VERSION=${ETOILE_VERSION:-"trunk"}
+ETOILE_VERSION=${ETOILE_VERSION_override:-"$ETOILE_VERSION"}
+
+echo "PROFILE_SCRIPT = $PROFILE_SCRIPT"
+echo "BUILD_DIR = $BUILD_DIR"
+echo "PREFIX_DIR = $PREFIX_DIR"
+echo "ETOILE_VERSION = $ETOILE_VERSION"
+
+export BUILD_DIR
+export PREFIX_DIR
 
 # Create a build directory if none exists
 
-if [ ! -d $BUILD_DIR ]; then
+if [ ! -d "$BUILD_DIR" ]; then
 	mkdir $BUILD_DIR
 else
 	echo "Found existing build directory"
@@ -94,31 +116,44 @@ mkdir $LOG_DIR
 
 export LOG_NAME=llvm-build
 
+export LLVM_SOURCE_DIR=$BUILD_DIR/llvm-$LLVM_VERSION
+export LLVM_INSTALL_DIR=$PREFIX_DIR/llvm-install-$LLVM_VERSION
+
 if [ "$LLVM_VERSION" = "trunk" ]; then
-
-	echo "WARNING: Installing LLVM from svn trunk is not supported yet"
-
-elif [ -n "$LLVM_VERSION" -a ! -d llvm-$LLVMVERSION  ]; then
-
+	if [ ! -d $LLVM_SOURCE_DIR ] 
+	then
+		echo "Fetching LLVM trunk using a GIT mirror at $LLVM_URL_GIT"
+		git clone $LLVM_URL_GIT $LLVM_SOURCE_DIR
+	else
+		echo "Updating LLVM trunk using a GIT mirror at $LLVM_URL_GIT"
+		git pull $LLVM_SOURCE_DIR
+	fi
+elif [ -n "$LLVM_VERSION" -a ! -d $LLVM_SOURCE_DIR ]; then
+	echo "Fetching LLVM $LLVM_VERSION from LLVM release server"
 	wget -nc http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.tar.gz
 	tar -xzf llvm-{LLVM_VERSION}.tar.gz
+	echo "Fetching Clang $LLVM_VERSION from LLVM release server"
+	wget -nc  http://llvm.org/releases/${LLVM_VERSION}/clang-${LLVM_VERSION}.tar.gz
+	tar -xzf clang-{LLVM_VERSION}.tar.gz
 fi
 
 if [ -n "$LLVM_VERSION" ]; then
 
-	cd llvm-${LLVM_VERSION}
-	./${LLVM_CONFIGURE} && $MAKE_BUILD && $MAKE_INSTALL
+	cd $LLVM_SOURCE_DIR
+	./${LLVM_CONFIGURE} --prefix=$LLVM_INSTALL_DIR && $MAKE_BUILD && $MAKE_INSTALL
 	cd ..
+	# Put LLVM in the path
+	export PATH=$LLVM_INSTALL_DIR/bin:$PATH
 fi
 
 # Download, build and Install GNUstep
-
+echo "Building GNUstep core libraries"
 . $SCRIPT_DIR/build-gnustep.sh
 
 exit
 
 # Download, build and install Etoile
-
+echo "Building Etoile"
 export LOG_NAME=etoile-build
 
 if [ "$ETOILE_VERSION" = "stable" ]; then
