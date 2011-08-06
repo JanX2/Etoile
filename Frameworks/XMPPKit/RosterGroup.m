@@ -7,7 +7,7 @@
 //
 
 #import "RosterGroup.h"
-#import "Presence.h"
+#import "XMPPPresence.h"
 #import "CompareHack.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
@@ -45,10 +45,10 @@
 
 - (void) addIdentity:(JabberIdentity*)_identity
 {
-	JabberPerson * person = [peopleByName objectForKey:[_identity name]];
+	XMPPPerson * person = [peopleByName objectForKey:[_identity name]];
 	if(person == nil)
 	{
-		person = [JabberPerson jabberPersonWithIdentity:_identity forRoster:roster];
+		person = [XMPPPerson personWithIdentity:_identity forRoster:roster];
 		[peopleByName setObject:person forKey:[person name]];
 		NSLog(@"Adding new person %@", [person name]);
 		[people addObject:person];
@@ -62,7 +62,7 @@
 
 - (void) removeIdentity:(JabberIdentity*)_identity
 {
-	JabberPerson * person = [peopleByName objectForKey:[_identity name]];
+	XMPPPerson * person = [peopleByName objectForKey:[_identity name]];
 	[person removeIdentity:_identity];
 	if([person identities] == 0)
 	{
@@ -72,7 +72,7 @@
 	}
 }
 
-- (JabberPerson*) personNamed:(NSString*)_name
+- (XMPPPerson*) personNamed:(NSString*)_name
 {
 	return [peopleByName objectForKey:_name];
 }
@@ -95,7 +95,7 @@
 	int count = 0;
 	for(unsigned int i=0 ; i<[people count] ; i++)
 	{
-		JabberPerson* person = [people objectAtIndex:i];
+		XMPPPerson* person = [people objectAtIndex:i];
 		//NSLog(@"Person in group %@[%d]: %@ (%d)", name, i, [person name], (int)[[[person defaultIdentity] presence] show]);
 		if([[[person defaultIdentity] presence] show] < hide)
 		{
@@ -112,7 +112,7 @@
 	return [name caseInsensitiveCompare:[otherGroup groupName]];
 }
 
-- (JabberPerson*) personAtIndex:(unsigned int)_index
+- (XMPPPerson*) personAtIndex:(unsigned int)_index
 {
 	if (_index < [people count])
 		return [people objectAtIndex:_index];

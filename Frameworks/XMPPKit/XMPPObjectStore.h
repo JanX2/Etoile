@@ -9,7 +9,7 @@
 #import <EtoileXML/ETXMLNullHandler.h>
 #import <EtoileSerialize/ETObjectStore.h>
 
-@class ETXMLWriter,ETXMLParser,ETUUID,Conversation;
+@class ETXMLWriter,ETXMLParser,ETUUID,XMPPConversation;
 @protocol ETSerialObjectStore;
 
 /**
@@ -68,18 +68,18 @@
              XMLWriter: (ETXMLWriter*)aWriter
                 parent: (id<ETXMLParserDelegate>)aParent
                    key: (id)aKey
-        inConversation: (Conversation*)aConversation;
+        inConversation: (XMPPConversation*)aConversation;
 
 /**
  * Initializer to be used if the store is used only for writing.
  */
 - (id)initWithXMLWriter: (ETXMLWriter*)aWriter
-         inConversation: (Conversation*)aConversation;
+         inConversation: (XMPPConversation*)aConversation;
 
 /**
  * Starts sending out the object on the stream, indicating its UUID and the name
  * the handling application has registered with the DO nameservice.
- * NOTE: After calling this method, the Conversation cannot be used to send
+ * NOTE: After calling this method, the XMPPConversation cannot be used to send
  * other data until the requesting process has finished serializing.
  */
 - (void)beginObjectWithUUID: (ETUUID*)uuid

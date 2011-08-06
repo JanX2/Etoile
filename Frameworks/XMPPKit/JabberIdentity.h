@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "JID.h"
 #import <EtoileXML/ETXMLNullHandler.h>
-#import "Presence.h"
-#import "Dispatcher.h"
+#import "XMPPPresence.h"
+#import "XMPPDispatcher.h"
 
 /**
  * A JabberIdentity represents a unique endpoint in the Jabber network.  Each
@@ -32,7 +32,7 @@
 	NSString * ask;
 	NSString * group;
 	NSString * name;
-	Presence * presence;
+	XMPPPresence * presence;
 	int priority;
 	int basePriority;
 }
@@ -45,7 +45,7 @@
  * Set the presence of the identity.  Used whenever a presence stanza is 
  * received.
  */
-- (void) setPresence:(Presence*)_presence;
+- (void) setPresence:(XMPPPresence*)_presence;
 /**
  * Return the person with whom this identity is associated.
  */
@@ -71,7 +71,7 @@
 /**
  * Return the current presence of the identity.
  */
-- (Presence*) presence;
+- (XMPPPresence*) presence;
 /**
  * Return the priority associated with the current presence of the identity.
  */

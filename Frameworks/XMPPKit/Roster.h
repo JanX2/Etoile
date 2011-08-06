@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Dispatcher.h"
+#import "XMPPDispatcher.h"
 #import "RosterGroup.h"
-#import "JabberPerson.h"
-#import "Presence.h"
-#import "Iq.h"
+#import "XMPPPerson.h"
+#import "XMPPPresence.h"
+#import "XMPPInfoQueryStanza.h"
 
 @class ServiceDiscovery;
 /**
@@ -30,15 +30,15 @@
  * simply a collection of people.  This class maintains the list, and allows new
  * people to be added and removed.
  */
-@interface Roster : NSObject  <PresenceHandler,IqHandler> {
+@interface Roster : NSObject  <PresenceHandler,XMPPInfoQueryStanzaHandler> {
 	NSMutableDictionary * peopleByJID;
 	NSMutableDictionary * groupsByName;
 	NSMutableArray * groups;
 	NSMutableSet * queriedServers;
 	ServiceDiscovery * disco;
 	BOOL connected;
-	//TODO: Dispatcher should be in Account
-	Dispatcher * dispatcher;
+	//TODO: XMPPDispatcher should be in Account
+	XMPPDispatcher * dispatcher;
 	unsigned char initialStatus;
 	NSString * initialMessage;
 	id account;
@@ -53,7 +53,7 @@
  * Add items to the roster from an iq with type result containing one or more 
  * roster items.
  */
-- (void) addRosterFromQuery:(Iq*)rosterQuery;
+- (void) addRosterFromQuery:(XMPPInfoQueryStanza*)rosterQuery;
 
 /**
  * Sets the initial presence.  This will be the presence when connecting is
@@ -83,7 +83,7 @@
 /**
  * Returns a person for a given JID if one exists in the roster.
  */
-- (JabberPerson*) personForJID:(JID*)_jid;
+- (XMPPPerson*) personForJID:(JID*)_jid;
 /**
  * Returns the group for a given name.
  */
@@ -142,7 +142,7 @@
 /**
  * Returns the dispatcher used by this roster.
  */
-- (Dispatcher*) dispatcher;
+- (XMPPDispatcher*) dispatcher;
 /**
  * Returns the connection used by this roster.
  */

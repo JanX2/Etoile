@@ -74,7 +74,7 @@
 
 - (id) initWithTime:(NSCalendarDate*)_time reason:(NSString*)_reason
 {
-	reason = [_reason retain];
+	reason = [_reason mutableCopy];
 	time = [_time retain];
 	return [super init];
 }

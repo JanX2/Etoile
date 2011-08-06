@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
-#import "Dispatcher.h"
+#import "XMPPDispatcher.h"
 #import "Roster.h"
-#import "Presence.h"
+#import "XMPPPresence.h"
 
 /**
  * The XMPPConnection class represents a connection to an XMPP server.  It is the 
@@ -18,7 +18,7 @@
  * delegated to others by this class).  All sending of XML data goes via this 
  * class.
  */
-@interface XMPPConnection : ETXMLNullHandler <IqHandler>
+@interface XMPPConnection : ETXMLNullHandler <XMPPInfoQueryStanzaHandler>
 {
 	//Socket
 	ETSocket *socket;
@@ -38,7 +38,7 @@
 	NSString * res;
 	//Roster
 	Roster * roster;
-	Dispatcher * dispatcher;
+	XMPPDispatcher * dispatcher;
 	id account;
 	Class xmlLog;
 	//Delegates
@@ -90,7 +90,7 @@
 /**
  * Returns the dispatcher associated with the connection.
  */
-- (Dispatcher*) dispatcher;
+- (XMPPDispatcher*) dispatcher;
 /**
  * Returns the server name.
  */

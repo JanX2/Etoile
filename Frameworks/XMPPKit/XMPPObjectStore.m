@@ -8,7 +8,7 @@
 
 
 #import "XMPPObjectStore.h"
-#import "Message.h"
+#import "XMPPMessage.h"
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/ETUUID.h>
 #import <EtoileFoundation/NSData+Hash.h>
@@ -47,7 +47,7 @@ static NSDictionary *CHILD_CLASSES;
               XMLWriter: (ETXMLWriter *)aWriter
                  parent: (id <ETXMLParserDelegate>)aParent
                     key: (id)aKey
-         inConversation: (Conversation*)aConversation
+         inConversation: (XMPPConversation*)aConversation
 {
 	self = [super initWithXMLParser: aParser
 	                         parent: aParent
@@ -73,7 +73,7 @@ static NSDictionary *CHILD_CLASSES;
 }
 
 - (id)initWithXMLWriter: (ETXMLWriter *)aWriter
-         inConversation: (Conversation *)aConversation
+         inConversation: (XMPPConversation *)aConversation
 {
 	return [self initWithXMLParser: nil
                          XMLWriter: aWriter
@@ -231,7 +231,7 @@ static NSDictionary *CHILD_CLASSES;
 		// format.
 		deserializer = [[proxy deserializerWithBackend: @"ETDeserializerBackendXML" 
 		                             forObjectWithUUID: uuid
-		                                          from: [[(Message*)parent correspondent] jidString]] retain];
+		                                          from: [[(XMPPMessage*)parent correspondent] jidString]] retain];
 		id<ETDeserializerBackend> backend = [(ETDeserializer*)deserializer backend];
 		ETXMLNullHandler *handler = nil;	
 		if (nil == backend)
@@ -287,7 +287,7 @@ static NSDictionary *CHILD_CLASSES;
 			}
 			deserializer = [[proxy deserializerWithBackend: backendName
 			                             forObjectWithUUID: uuid
-			                                          from: [[(Message*)parent correspondent] jidString]] retain];
+			                                          from: [[(XMPPMessage*)parent correspondent] jidString]] retain];
 		}
 		// The XML deserializer does not strictly need setting branch and
 		// version but they are needed at least for the binary backend.
@@ -304,7 +304,7 @@ static NSDictionary *CHILD_CLASSES;
 		id theObject = [deserializer restoreObjectGraph];
 		[(id<ETDeserializerVendor>)proxy obtainedObject: theObject
 		                                       withUUID: uuid
-		                                           from: [[(Message*)parent correspondent] jidString]];
+		                                           from: [[(XMPPMessage*)parent correspondent] jidString]];
 
 		// FIXME: Setting the object as the value of this node makes it appear
 		// in the unknownAttributes dictionary of the message. The object will

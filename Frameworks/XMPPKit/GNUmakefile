@@ -15,31 +15,31 @@ ${DOCUMENT_NAME}_AGSDOC_FLAGS += -MakeFrames YES
 
 ${FRAMEWORK_NAME}_OBJC_FILES = \
 					ABPerson+merging.m\
-					ChatLog.m\
+					XMPPChatLog.m\
 					CompareHack.m\
-					Conversation.m\
-					DefaultHandler.m\
-					Dispatcher.m\
-					DiscoItems.m\
-					DiscoInfo.m\
-					GroupChat.m\
-					Iq.m\
-					IqStanzaFactory.m\
+					XMPPConversation.m\
+					XMPPDefaultHandler.m\
+					XMPPDispatcher.m\
+					XMPPDiscoItems.m\
+					XMPPDiscoInfo.m\
+					XMPPGroupChat.m\
+					XMPPInfoQueryStanza.m\
+					XMPPInfoQueryStanzaFactory.m\
 					JID.m\
 					JabberIdentity.m\
-					JabberPerson.m\
+					XMPPPerson.m\
 					JabberResource.m\
 					JabberRootIdentity.m\
-					Message.m\
-					MessageStanzaFactory.m\
+					XMPPMessage.m\
+					XMPPMessageStanzaFactory.m\
 					NSAttributedString+HTML-IM.m\
-					PresenceStanzaFactory.m\
-					Presence.m\
+					XMPPPresenceStanzaFactory.m\
+					XMPPPresence.m\
 					Query_jabber_iq_roster.m\
 					Roster.m\
 					RosterGroup.m\
 					StanzaFactory.m\
-					Stanza.m\
+					XMPPStanza.m\
 					StreamFeatures.m\
 					Timestamp.m\
 					XMPPAccount.m\
@@ -50,32 +50,32 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 					ServiceDiscovery.m\
 
 ${FRAMEWORK_NAME}_HEADER_FILES = \
-					ChatLog.h\
+					XMPPChatLog.h\
 					CompareHack.h\
-					Conversation.h\
-					DefaultHandler.h\
-					Dispatcher.h\
-					DiscoItems.h\
-					DiscoInfo.h\
-					GroupChat.h\
-					Iq.h\
-					IqStanzaFactory.h\
+					XMPPConversation.h\
+					XMPPDefaultHandler.h\
+					XMPPDispatcher.h\
+					XMPPDiscoItems.h\
+					XMPPDiscoInfo.h\
+					XMPPGroupChat.h\
+					XMPPInfoQueryStanza.h\
+					XMPPInfoQueryStanzaFactory.h\
 					JID.h\
 					JabberIdentity.h\
-					JabberPerson.h\
+					XMPPPerson.h\
 					JabberResource.h\
 					JabberRootIdentity.h\
-					Message.h\
-					MessageStanzaFactory.h\
+					XMPPMessage.h\
+					XMPPMessageStanzaFactory.h\
 					NSAttributedString+HTML-IM.h\
-					PresenceStanzaFactory.h\
-					Presence.h\
+					XMPPPresenceStanzaFactory.h\
+					XMPPPresence.h\
 					Query_jabber_iq_roster.h\
 					Roster.h\
 					RosterGroup.h\
 					ServiceDiscovery.h\
 					StanzaFactory.h\
-					Stanza.h\
+					XMPPStanza.h\
 					StreamFeatures.h\
 					Timestamp.h\
 					XMPPAccount.h\

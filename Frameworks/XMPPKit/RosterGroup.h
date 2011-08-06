@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "JabberIdentity.h"
-#import "JabberPerson.h"
+#import "XMPPPerson.h"
 	
 /**
  * The RosterGroup class represents a group in the roster.
@@ -38,7 +38,7 @@
 /**
  * Returns the person in the group with the specified name.
  */
-- (JabberPerson*) personNamed:(NSString*)_name;
+- (XMPPPerson*) personNamed:(NSString*)_name;
 /**
  * Adds a new identity to the group.  This identity will either be added to an 
  * existing person, or have a new person created for it, depending on the name.
@@ -57,7 +57,7 @@
 /**
  * Returns the person at the specified index.
  */
-- (JabberPerson*) personAtIndex:(unsigned int)_index;
+- (XMPPPerson*) personAtIndex:(unsigned int)_index;
 
 /**
  * Compares two roster groups by name.

@@ -35,7 +35,7 @@
 	{
 		return nil;
 	}
-	presence = [[Presence alloc] init];
+	presence = [[XMPPPresence alloc] init];
 	return self;
 }
 
@@ -83,7 +83,7 @@
 	group = [aGroup retain];
 }
 
-- (void) setPresence:(Presence*)_presence
+- (void) setPresence:(XMPPPresence*)_presence
 {
 	[presence release];
 	presence = [_presence retain];
@@ -121,7 +121,7 @@
 	return jid;
 }
 
-- (Presence*) presence
+- (XMPPPresence*) presence
 {
 	return presence;
 }

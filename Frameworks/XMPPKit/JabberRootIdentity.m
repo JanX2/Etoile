@@ -99,7 +99,7 @@
 	return [resources objectForKey:resource];
 }
 
-- (void) setPresence:(Presence*)_presence
+- (void) setPresence:(XMPPPresence*)_presence
 {
 	JID * presenceJID = [_presence jid];
 	//If we receive a presence stanza from the root JID, use that.
@@ -137,7 +137,7 @@
 	}
 }
 
-- (Presence*) presence
+- (XMPPPresence*) presence
 {
 	if([resourceList count] > 0)
 	{

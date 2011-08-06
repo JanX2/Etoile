@@ -8,11 +8,11 @@
 
 #import "ServiceDiscovery.h"
 #import "XMPPAccount.h"
-#import "DiscoInfo.h"
-#import "DiscoItems.h"
+#import "XMPPDiscoInfo.h"
+#import "XMPPDiscoItems.h"
 
-static NSString * xmlnsDiscoInfo = @"http://jabber.org/protocol/disco#info";
-static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
+static NSString * xmlnsXMPPDiscoInfo = @"http://jabber.org/protocol/disco#info";
+static NSString * xmlnsXMPPDiscoItems = @"http://jabber.org/protocol/disco#items";
 
 @implementation ServiceDiscovery
 - (ServiceDiscovery*) initWithAccount:(XMPPAccount*)account
@@ -29,8 +29,8 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 	featuresForCapabilities = [[NSMutableDictionary alloc] init];
 	dispatcher = [[[account roster] dispatcher] retain];
 	connection = [[account connection] retain];
-	[dispatcher addIqQueryHandler:self forNamespace:xmlnsDiscoInfo];
-	[dispatcher addIqQueryHandler:self forNamespace:xmlnsDiscoItems];
+	[dispatcher addInfoQueryHandler:self forNamespace:xmlnsXMPPDiscoInfo];
+	[dispatcher addInfoQueryHandler:self forNamespace:xmlnsXMPPDiscoItems];
 	return self;
 }
 - (void) setCapabilities:(NSString*)caps forJID:(JID*)aJid
@@ -62,7 +62,7 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 		                   attributes: D(xmlns, @"xmlns")];
 	}
 	[xmlWriter endElement]; //</iq>
-	[dispatcher addIqResultHandler: self forID: iqID];
+	[dispatcher addInfoQueryResultHandler: self forID: iqID];
 }
 - (NSDictionary*) infoForJID:(JID*)aJid node:(NSString*)aNode
 {
@@ -83,7 +83,7 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 		}
 		else
 		{
-			[self sendQueryToJID:jid node:node inNamespace:xmlnsDiscoInfo];
+			[self sendQueryToJID:jid node:node inNamespace:xmlnsXMPPDiscoInfo];
 		}
 	}
 	return result;
@@ -110,18 +110,18 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 	//If we haven't already got these values, request them
 	if(result == nil)
 	{
-		[self sendQueryToJID:jid node:node inNamespace:xmlnsDiscoItems];
+		[self sendQueryToJID:jid node:node inNamespace:xmlnsXMPPDiscoItems];
 	}
 	return result;
 }
-- (void) handleIq:(Iq*)anIQ
+- (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIQ
 {
 	NSString * jid = [[anIQ jid] jidString];
 	switch([anIQ type])
 	{
 		case IQ_TYPE_GET:
 		{
-			if([[anIQ queryNamespace] isEqualToString:xmlnsDiscoInfo])
+			if([[anIQ queryNamespace] isEqualToString:xmlnsXMPPDiscoInfo])
 			{
 				ETXMLWriter *xmlWriter = [connection xmlWriter];
 				[xmlWriter startElement: @"iq"
@@ -129,7 +129,7 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 				                           jid, @"to",
 				                           [anIQ sequenceID], @"id")];
 				[xmlWriter startElement: @"query"
-				             attributes: D(xmlnsDiscoInfo, @"xmlns")];
+				             attributes: D(xmlnsXMPPDiscoInfo, @"xmlns")];
 				//TODO: Make the type configurable
 				[xmlWriter startElement: @"identity"
 				             attributes: D(@"client", @"category",
@@ -147,8 +147,8 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 		}
 		case IQ_TYPE_RESULT:
 		{
-			DiscoInfo * info = [[anIQ children] objectForKey:@"DiscoInfo"];
-			DiscoItems * items = [[anIQ children] objectForKey:@"DiscoItems"];
+			XMPPDiscoInfo * info = [[anIQ children] objectForKey:@"DiscoInfo"];
+			XMPPDiscoItems * items = [[anIQ children] objectForKey:@"DiscoItems"];
 			if(info != nil)
 			{
 				NSDictionary * nodeInfo = D([info identities], @"identities",
@@ -191,7 +191,7 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 				}
 				[nodes setObject:nodeItems forKey:node];
 				[[NSNotificationCenter defaultCenter] 
-					postNotificationName: @"DiscoItemsFound"
+					postNotificationName: @"XMPPDiscoItemsFound"
 					              object: self
 					            userInfo: D(jid, @"jid")];
 			}

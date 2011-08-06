@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "Dispatcher.h"
+#import "XMPPDispatcher.h"
 
 @class XMPPAccount;
 @class XMPPConnection;
@@ -15,9 +15,9 @@
  * Service discovery handler class.  Handles XEP-0030 service discovery and
  * caching via XEP-0115 entity capabilities.
  */
-@interface ServiceDiscovery : NSObject <IqHandler> {
+@interface ServiceDiscovery : NSObject <XMPPInfoQueryStanzaHandler> {
 	XMPPConnection * connection;
-	Dispatcher * dispatcher;
+	XMPPDispatcher * dispatcher;
 	NSMutableDictionary * features;
 	NSMutableDictionary * children;
 	NSMutableDictionary * knownNodes;

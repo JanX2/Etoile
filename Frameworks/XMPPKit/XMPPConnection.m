@@ -18,8 +18,8 @@
 #import "XMPPConnection.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "StreamFeatures.h"
-#import "DefaultHandler.h"
-#import "Presence.h"
+#import "XMPPDefaultHandler.h"
+#import "XMPPPresence.h"
 #import "XMPPAccount.h"
 
 
@@ -57,9 +57,9 @@ static NSDictionary * STANZA_KEYS;
 {
 	//Create default handler classes
 	STANZA_CLASSES = [[NSDictionary dictionaryWithObjectsAndKeys:
-		[Message class], @"message",
-		[Presence class], @"presence",
-		[Iq class], @"iq", 
+		[XMPPMessage class], @"message",
+		[XMPPPresence class], @"presence",
+		[XMPPInfoQueryStanza class], @"iq", 
 		[StreamFeatures class], @"stream:features",
 		nil] retain];
 	STANZA_KEYS = [[NSDictionary dictionaryWithObjectsAndKeys:
@@ -108,8 +108,8 @@ static NSDictionary * STANZA_KEYS;
 	account = _account;
 	roster = [(XMPPAccount*)account roster];
 	
-	DefaultHandler * defaultHandler = [[[DefaultHandler alloc] initWithAccount:account] autorelease];
-	dispatcher = [[Dispatcher dispatcherWithDefaultIqHandler:roster
+	XMPPDefaultHandler * defaultHandler = [[[XMPPDefaultHandler alloc] initWithAccount:account] autorelease];
+	dispatcher = [[XMPPDispatcher dispatcherWithDefaultInfoQueryHandler:roster
 											 messageHandler:defaultHandler
 											presenceHandler:roster]
 		retain];
@@ -257,7 +257,7 @@ static NSDictionary * STANZA_KEYS;
 	                   attributes: D(@"urn:ietf:params:xml:ns:xmpp-session",
 	                                 @"xmlns")];
 	[xmlWriter endElement]; // </iq>
-	[dispatcher addIqResultHandler:self forID:sessionIqID];
+	[dispatcher addInfoQueryResultHandler:self forID:sessionIqID];
 }
 
 - (void) bind
@@ -272,21 +272,21 @@ static NSDictionary * STANZA_KEYS;
 	[xmlWriter startAndEndElement: @"resource"];
 	[xmlWriter endElement]; // </bind>
 	[xmlWriter endElement]; // </iq>
-	[dispatcher addIqResultHandler: self forID: bindID];
+	[dispatcher addInfoQueryResultHandler: self forID: bindID];
 }
 
 //Child stanza handlers
-- (void) addmessage:(Message*)aMessage
+- (void) addmessage:(XMPPMessage*)aMessage
 {
 	[dispatcher dispatchMessage:aMessage];
 }
 
-- (void) addiq:(Iq*)anIQ
+- (void) addiq:(XMPPInfoQueryStanza*)anIQ
 {
-	[dispatcher dispatchIq:anIQ];
+	[dispatcher dispatchInfoQuery:anIQ];
 }
 
-- (void) addpresence:(Presence*)aPresence
+- (void) addpresence:(XMPPPresence*)aPresence
 {
 	[dispatcher dispatchPresence:aPresence];
 }
@@ -321,7 +321,7 @@ static NSDictionary * STANZA_KEYS;
 	presenceDisplay = [_display retain];
 }
 
-- (void) handleIq:(Iq*)anIq {}
+- (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq {}
 
 - (NSString*) newMessageID
 {
@@ -354,7 +354,7 @@ static NSDictionary * STANZA_KEYS;
 	if (aStatus != PRESENCE_ONLINE)
 	{
 		[xmlWriter startAndEndElement: @"show"
-		                        cdata: [Presence xmppStringForPresence: aStatus]];
+		                        cdata: [XMPPPresence xmppStringForPresence: aStatus]];
 	}
 	NSDictionary * presenceDictionary;
 	if (aMessage != nil)
@@ -387,7 +387,7 @@ static NSDictionary * STANZA_KEYS;
 //Does nothing.  This should never be used, since we are the root element...
 - (void) setParent:(id) newParent {}
 
-- (Dispatcher*) dispatcher
+- (XMPPDispatcher*) dispatcher
 {
 	return dispatcher;
 }
@@ -430,7 +430,7 @@ static NSDictionary * STANZA_KEYS;
 - (void) legacyLogIn
 {
 	NSString * newMessageID = [self newMessageID];
-	[dispatcher addIqResultHandler:self forID:newMessageID];
+	[dispatcher addInfoQueryResultHandler:self forID:newMessageID];
 
 	[xmlWriter startElement: @"iq"
 				 attributes: D(newMessageID, @"id", @"set", @"type", server, @"to")];
@@ -530,12 +530,12 @@ static NSDictionary * STANZA_KEYS;
 	[stanzaDelegate startElement:aName
 					  attributes:_attributes];
 }
-- (void) handleIq:(Iq*)anIq
+- (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq
 {
 	if (([anIq type] == IQ_TYPE_RESULT))
 	{
 		NSString * newMessageID = [self newMessageID];
-		[dispatcher addIqResultHandler:roster forID:newMessageID];
+		[dispatcher addInfoQueryResultHandler:roster forID:newMessageID];
 		[xmlWriter startElement: @"iq"
 		             attributes: D(newMessageID, @"id", @"get", @"type")];
 		[xmlWriter startElement: @"query"
@@ -580,7 +580,7 @@ static NSDictionary * STANZA_KEYS;
 		SET_STATE(LoggedIn);
 	}
 }
-- (void) handleIq:(Iq*)anIq
+- (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq
 {
 	if ([streamFeatures objectForKey:@"session"] != nil)
 	{
@@ -590,7 +590,7 @@ static NSDictionary * STANZA_KEYS;
 	else
 	{
 		SET_STATE(LoggedIn);
-		[self handleIq: anIq];
+		[self handleInfoQuery: anIq];
 	}
 }
 @end
@@ -608,10 +608,10 @@ static NSDictionary * STANZA_KEYS;
 }
 @end
 @implementation XMPPLoggingInConnection 
-- (void) handleIq:(Iq*)anIq
+- (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq
 {
 	SET_STATE(LoggedIn);
-	[self handleIq: anIq];
+	[self handleInfoQuery: anIq];
 }
 
 - (void)startElement:(NSString *)aName
@@ -630,9 +630,9 @@ static NSDictionary * STANZA_KEYS;
 }
 @end
 @implementation XMPPNoSessionConnection
-- (void) handleIq:(Iq*)anIq
+- (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq
 {
 	SET_STATE(LoggedIn);
-	[self handleIq: anIq];
+	[self handleInfoQuery: anIq];
 }
 @end

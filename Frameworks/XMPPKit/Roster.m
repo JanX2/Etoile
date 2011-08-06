@@ -8,7 +8,7 @@
 
 #import "Roster.h"
 #import "XMPPAccount.h"
-#import "JabberPerson.h"
+#import "XMPPPerson.h"
 #import "JabberRootIdentity.h"
 #import "JabberResource.h"
 #import "CompareHack.h"
@@ -43,11 +43,11 @@
 
 - (void) offline
 {
-	FOREACH(peopleByJID, person, JabberPerson*)
+	FOREACH(peopleByJID, person, XMPPPerson*)
 	{
 		FOREACH([person identityList], identity, JabberIdentity*)
 		{
-			Presence * unknownPresence = [[Presence alloc] initWithJID:[identity jid]];
+			XMPPPresence * unknownPresence = [[XMPPPresence alloc] initWithJID:[identity jid]];
 			[identity setPresence:unknownPresence];
 			[unknownPresence release];
 		}
@@ -57,7 +57,7 @@
 	[delegate update:nil];
 }
 
-- (void) addRosterFromQuery:(Iq*) rosterQuery
+- (void) addRosterFromQuery:(XMPPInfoQueryStanza*) rosterQuery
 {
 	NSLog(@"Parsing roster...");
 	connection = [(XMPPAccount*)account connection];
@@ -72,7 +72,7 @@
 		JID * jid = [newIdentity jid];
 		if([[newIdentity subscription] isEqualToString:@"remove"])
 		{
-			JabberPerson * person = [self personForJID:jid];
+			XMPPPerson * person = [self personForJID:jid];
 			JabberIdentity * oldIdentity = [person identityForJID:jid];
 			RosterGroup * group = [self groupNamed:[person group]];
 			[group removeIdentity:oldIdentity];
@@ -139,7 +139,7 @@
 	[self update:nil];
 }
 
-- (void) handlePresence:(Presence*)aPresence
+- (void) handlePresence:(XMPPPresence*)aPresence
 {
 	switch([aPresence type])
 	{
@@ -177,7 +177,7 @@
 	}
 }
 
-- (void) handleIq:(Iq*)anIq
+- (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq
 {
 	//NSLog(@"Children of iq node: %@", [anIq children]);
 	if([[anIq children] objectForKey:@"RosterItems"] != nil)
@@ -296,7 +296,7 @@
 
 - (void) setName:(NSString*)aName group:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity
 {
-	JabberPerson * person = [self personForJID:[anIdentity jid]];
+	XMPPPerson * person = [self personForJID:[anIdentity jid]];
 	//Don't use this for people who aren't in our roster. 
 	if(person == nil)
 	{
@@ -309,7 +309,7 @@
 
 - (void) setGroup:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity
 {
-	JabberPerson * person = [self personForJID:[anIdentity jid]];
+	XMPPPerson * person = [self personForJID:[anIdentity jid]];
 	//Don't use this for people who aren't in our roster. 
 	if(person == nil)
 	{
@@ -320,16 +320,16 @@
 	                  forJID: [[anIdentity jid] jidString]];
 }
 
-- (JabberPerson*) personForJID:(JID*)_jid
+- (XMPPPerson*) personForJID:(JID*)_jid
 {
-	JabberPerson * person = [peopleByJID objectForKey:[_jid jidStringWithNoResource]];
+	XMPPPerson * person = [peopleByJID objectForKey:[_jid jidStringWithNoResource]];
 	if(person == nil)
 	{
 		JabberRootIdentity * identity = [[JabberRootIdentity alloc] initWithJID:[_jid rootJID]
 																   withName:[_jid node]
 																	inGroup:nil
 																  forPerson:nil];
-		person = [[JabberPerson alloc] initWithIdentity:identity
+		person = [[XMPPPerson alloc] initWithIdentity:identity
 											  forRoster:[account roster]];
 		[identity person:person];
 		if([_jid resource] != nil)
@@ -411,7 +411,7 @@
 	[delegate release];
 	delegate = [_delegate retain];
 }
-- (Dispatcher*) dispatcher
+- (XMPPDispatcher*) dispatcher
 {
 	return dispatcher;
 }
