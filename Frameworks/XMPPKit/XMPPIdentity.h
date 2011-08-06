@@ -1,5 +1,5 @@
 //
-//  JabberIdentity.h
+//  XMPPIdentity.h
 //  Jabber
 //
 //  Created by David Chisnall on 20/08/2004.
@@ -13,7 +13,7 @@
 #import "XMPPDispatcher.h"
 
 /**
- * A JabberIdentity represents a unique endpoint in the Jabber network.  Each
+ * A XMPPIdentity represents a unique endpoint in the Jabber network.  Each
  * person may have a collection of identities, corresponding to different client
  * or different means of accessing them (e.g. a pure Jabber ID and a 
  * legacy-protocol gateway Jabber ID both of which are used from the same 
@@ -25,7 +25,7 @@
  * same JID will be treated as different identities belonging to the same 
  * person.
  */
-@interface JabberIdentity : ETXMLNullHandler {
+@interface XMPPIdentity : ETXMLNullHandler {
 	id person;
 	JID * jid;
 	NSString * subscription;
@@ -88,10 +88,10 @@
  * Compare two identities by their priority.  Used to determine which should
  * be the default recipient of messages.
  */
-- (NSComparisonResult) compareByPriority:(JabberIdentity*)_other;
+- (NSComparisonResult) compareByPriority:(XMPPIdentity*)_other;
 /**
  * Compare two identities by their JID.  Commonly used to sort identities for 
  * display in a UI.
  */
-- (NSComparisonResult) compareByJID:(JabberIdentity*)_other;
+- (NSComparisonResult) compareByJID:(XMPPIdentity*)_other;
 @end

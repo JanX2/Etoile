@@ -45,7 +45,7 @@
 {
 	FOREACH(peopleByJID, person, XMPPPerson*)
 	{
-		FOREACH([person identityList], identity, JabberIdentity*)
+		FOREACH([person identityList], identity, XMPPIdentity*)
 		{
 			XMPPPresence * unknownPresence = [[XMPPPresence alloc] initWithJID:[identity jid]];
 			[identity setPresence:unknownPresence];
@@ -67,13 +67,13 @@
 		disco = (ServiceDiscovery*)[[ServiceDiscovery alloc] initWithAccount:account];		
 	}
 
-	FOREACH([[rosterQuery children] objectForKey:@"RosterItems"], newIdentity, JabberIdentity*)
+	FOREACH([[rosterQuery children] objectForKey:@"RosterItems"], newIdentity, XMPPIdentity*)
 	{
 		JID * jid = [newIdentity jid];
 		if([[newIdentity subscription] isEqualToString:@"remove"])
 		{
 			XMPPPerson * person = [self personForJID:jid];
-			JabberIdentity * oldIdentity = [person identityForJID:jid];
+			XMPPIdentity * oldIdentity = [person identityForJID:jid];
 			RosterGroup * group = [self groupNamed:[person group]];
 			[group removeIdentity:oldIdentity];
 			[peopleByJID removeObjectForKey:[jid jidStringWithNoResource]];
@@ -85,7 +85,7 @@
 		}
 		else
 		{
-			JabberIdentity * oldIdentity = [[peopleByJID objectForKey:[jid jidString]] identityForJID:jid];
+			XMPPIdentity * oldIdentity = [[peopleByJID objectForKey:[jid jidString]] identityForJID:jid];
 			if(oldIdentity != nil)
 			{
 				if([[oldIdentity name] isEqualToString:[newIdentity name]]
@@ -294,7 +294,7 @@
 }
 
 
-- (void) setName:(NSString*)aName group:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity
+- (void) setName:(NSString*)aName group:(NSString*)aGroup forIdentity:(XMPPIdentity*)anIdentity
 {
 	XMPPPerson * person = [self personForJID:[anIdentity jid]];
 	//Don't use this for people who aren't in our roster. 
@@ -307,7 +307,7 @@
 	                  forJID: [[anIdentity jid] jidString]];
 }
 
-- (void) setGroup:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity
+- (void) setGroup:(NSString*)aGroup forIdentity:(XMPPIdentity*)anIdentity
 {
 	XMPPPerson * person = [self personForJID:[anIdentity jid]];
 	//Don't use this for people who aren't in our roster. 

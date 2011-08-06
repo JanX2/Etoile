@@ -130,11 +130,11 @@
 /**
  * Renames an identity.  This will cause the identity to be assigned to a new person.
  */
-- (void) setName:(NSString*)aName group:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity;
+- (void) setName:(NSString*)aName group:(NSString*)aGroup forIdentity:(XMPPIdentity*)anIdentity;
 /**
  * Moves an identity to a new group.  This will cause the identity to be assigned to a new person.
  */
-- (void) setGroup:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity;
+- (void) setGroup:(NSString*)aGroup forIdentity:(XMPPIdentity*)anIdentity;
 /**
  * Returns the roster's delegate.
  */

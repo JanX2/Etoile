@@ -36,7 +36,7 @@ static NSString * avatarCachePath = nil;
 	}
 	[super initialize];
 }
-+ (id) personWithIdentity:(JabberIdentity*)_identity forRoster:(id)_roster
++ (id) personWithIdentity:(XMPPIdentity*)_identity forRoster:(id)_roster
 {
 	return [[[XMPPPerson alloc] initWithIdentity:_identity forRoster:(id)_roster] autorelease];
 }
@@ -44,7 +44,7 @@ static NSString * avatarCachePath = nil;
 - (void) calculateIdentityList
 {
 	[identityList removeAllObjects];
-	FOREACH(identities, identity, JabberIdentity*)
+	FOREACH(identities, identity, XMPPIdentity*)
 	{
 		[identityList addObject:identity];
 		if([identity isKindOfClass:[JabberRootIdentity class]])
@@ -66,7 +66,7 @@ static NSString * avatarCachePath = nil;
 	return self;
 }
 
-- (id) initWithIdentity:(JabberIdentity*)_identity forRoster:(id)_roster
+- (id) initWithIdentity:(XMPPIdentity*)_identity forRoster:(id)_roster
 {
 	SELFINIT
 	roster = _roster;
@@ -97,7 +97,7 @@ static NSString * avatarCachePath = nil;
 	[[roster dispatcher] addInfoQueryResultHandler:self forID:vCardRequestID];
 }
 
-- (void) addIdentity:(JabberIdentity*)anIdentity
+- (void) addIdentity:(XMPPIdentity*)anIdentity
 {
 	NSString * jidString = [[anIdentity jid] jidString];
 	[anIdentity person:self];
@@ -110,7 +110,7 @@ static NSString * avatarCachePath = nil;
 	}
 }
 
-- (void) removeIdentity:(JabberIdentity*)_identity
+- (void) removeIdentity:(XMPPIdentity*)_identity
 {
 	[identities removeObjectForKey:[[_identity jid] jidString]];
 	[self calculateIdentityList];
@@ -137,9 +137,9 @@ static NSString * avatarCachePath = nil;
 	name = [_name retain];
 }
 
-- (JabberIdentity*) identityForJID:(JID*)jid
+- (XMPPIdentity*) identityForJID:(JID*)jid
 {
-	JabberIdentity * identity = [identities objectForKey:[jid jidString]];
+	XMPPIdentity * identity = [identities objectForKey:[jid jidString]];
 	if([jid type] == resourceJID)
 	{
 		if (identity == nil)
@@ -155,7 +155,7 @@ static NSString * avatarCachePath = nil;
 	return identityCount;
 }
 
-- (JabberIdentity*) defaultIdentity
+- (XMPPIdentity*) defaultIdentity
 {
 	if(identityCount == 0)
 	{
@@ -184,7 +184,7 @@ static NSString * avatarCachePath = nil;
 {
 	NSString * from = [[aPresence jid] jidStringWithNoResource];
 	
-	JabberIdentity * identity = [identities objectForKey:from];
+	XMPPIdentity * identity = [identities objectForKey:from];
 	
 	//vCard updates
 	NSString * newPhotoHash = [[aPresence children] objectForKey:@"vCardUpdate"];

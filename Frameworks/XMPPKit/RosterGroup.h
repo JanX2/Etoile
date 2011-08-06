@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "JabberIdentity.h"
+#import "XMPPIdentity.h"
 #import "XMPPPerson.h"
 	
 /**
@@ -43,12 +43,12 @@
  * Adds a new identity to the group.  This identity will either be added to an 
  * existing person, or have a new person created for it, depending on the name.
  */
-- (void) addIdentity:(JabberIdentity*)_identity;
+- (void) addIdentity:(XMPPIdentity*)_identity;
 /**
  * Remove the specified identity from the group.  This may also remove a person 
  * from the group if the relevant person only has a single identity.
  */
-- (void) removeIdentity:(JabberIdentity*)_identity;
+- (void) removeIdentity:(XMPPIdentity*)_identity;
 /**
  * Returns the number of people in the group who are more online than the specified
  * value.

@@ -43,7 +43,7 @@
 	name = [_name retain];
 }
 
-- (void) addIdentity:(JabberIdentity*)_identity
+- (void) addIdentity:(XMPPIdentity*)_identity
 {
 	XMPPPerson * person = [peopleByName objectForKey:[_identity name]];
 	if(person == nil)
@@ -60,7 +60,7 @@
 	}
 }
 
-- (void) removeIdentity:(JabberIdentity*)_identity
+- (void) removeIdentity:(XMPPIdentity*)_identity
 {
 	XMPPPerson * person = [peopleByName objectForKey:[_identity name]];
 	[person removeIdentity:_identity];

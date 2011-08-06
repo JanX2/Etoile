@@ -94,7 +94,7 @@
 	return resourceList;
 }
 
-- (JabberIdentity*) identityForResource:(NSString*)resource
+- (XMPPIdentity*) identityForResource:(NSString*)resource
 {
 	return [resources objectForKey:resource];
 }

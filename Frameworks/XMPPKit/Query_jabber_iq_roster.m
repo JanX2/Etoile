@@ -7,7 +7,7 @@
 //
 
 #import "Query_jabber_iq_roster.h"
-#import "JabberIdentity.h"
+#import "XMPPIdentity.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation Query_jabber_iq_roster
@@ -33,7 +33,7 @@
 {
 	if ([aName isEqualToString:@"item"])
 	{
-		[[[JabberIdentity alloc] initWithXMLParser:parser
+		[[[XMPPIdentity alloc] initWithXMLParser:parser
 											parent:self
 											   key:@"identity"] startElement:aName
 																  attributes:attributes];

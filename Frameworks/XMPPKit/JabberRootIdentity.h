@@ -7,13 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JabberIdentity.h"
+#import "XMPPIdentity.h"
 
 /**
  * A root identity; one which may have additional identities for individual 
  * resources associated with it.
  */
-@interface JabberRootIdentity : JabberIdentity {
+@interface JabberRootIdentity : XMPPIdentity {
 	NSMutableDictionary * resources;
 	NSMutableArray * resourceList;
 }
@@ -28,5 +28,5 @@
 /**
  * Returns the identity associated with a specific resource.
  */
-- (JabberIdentity*) identityForResource:(NSString*)resource;
+- (XMPPIdentity*) identityForResource:(NSString*)resource;
 @end

@@ -1,17 +1,16 @@
-//
-//  JabberIdentity.m
+//  XMPPIdentity.m
 //  Jabber
 //
 //  Created by David Chisnall on 20/08/2004.
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import "JabberIdentity.h"
+#import "XMPPIdentity.h"
 #import "JabberRootIdentity.h"
 #import <EtoileXML/ETXMLString.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@implementation JabberIdentity
+@implementation XMPPIdentity
 
 
 - (id) initWithJID:(JID*)_jid withName:(NSString*)_name inGroup:(NSString*)_group forPerson:(id)_person
@@ -149,7 +148,7 @@
 	person = [_person retain];
 }
 
-- (NSComparisonResult) compareByPriority:(JabberIdentity*)_other
+- (NSComparisonResult) compareByPriority:(XMPPIdentity*)_other
 {
 	if(priority > [_other priority])
 	{
@@ -162,7 +161,7 @@
 	return NSOrderedSame;
 }
 
-- (NSComparisonResult) compareByJID:(JabberIdentity*)_other
+- (NSComparisonResult) compareByJID:(XMPPIdentity*)_other
 {
 	return NSOrderedAscending;
 }

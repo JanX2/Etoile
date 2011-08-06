@@ -8,7 +8,7 @@
 
 #import "XMPPInfoQueryStanza.h"
 #import "XMPPInfoQueryStanzaFactory.h"
-#import "JabberIdentity.h"
+#import "XMPPIdentity.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
 static NSDictionary * TYPES;

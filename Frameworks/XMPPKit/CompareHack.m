@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JabberIdentity.h"
+#import "XMPPIdentity.h"
 #import "CompareHack.h"
 
 int compareTest(id a, id  b, void* none)

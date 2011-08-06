@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JabberIdentity.h"
+#import "XMPPIdentity.h"
 
 /**
  * A JabberResource is a special kind of Jabber Identity representing an variant 
@@ -15,17 +15,17 @@
  *
  * See also JabberRootIdentity.
  */
-@interface JabberResource : JabberIdentity {
-	JabberIdentity * root;
+@interface JabberResource : XMPPIdentity {
+	XMPPIdentity * root;
 }
 /**
  * Returns the identity on which this is based.  If this is foo@example.com/bar, 
  * then this will return the identity representing foo@example.com.
  */
-- (JabberIdentity*) root;
+- (XMPPIdentity*) root;
 /**
  * Set the root identity for this identity.  The identity set here will be returned
  * when -root is called.
  */
-- (void) setRoot:(JabberIdentity*)identity;
+- (void) setRoot:(XMPPIdentity*)identity;
 @end

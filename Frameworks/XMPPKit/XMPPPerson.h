@@ -12,7 +12,7 @@
 #import "JID.h"
 #import <EtoileXML/ETXMLNode.h>
 #import "XMPPPresence.h"
-#import "JabberIdentity.h"
+#import "XMPPIdentity.h"
 
 /**
  * A XMPPPerson is an abstract interface to a person on the Jabber network.
@@ -39,22 +39,22 @@
 }
 /**
  * Instantiate a new person from an identity and associate them with a roster.
- * Note that the JabberIdentity class is used to parse roster items, and so it
+ * Note that the XMPPIdentity class is used to parse roster items, and so it
  * will duplicate the name and group for the person.  
  */
-+ (id) personWithIdentity:(JabberIdentity*)_identity forRoster:(id)_roster;
++ (id) personWithIdentity:(XMPPIdentity*)_identity forRoster:(id)_roster;
 /**
  * Initialise a new person with a specified identity and roster.
  */
-- (id) initWithIdentity:(JabberIdentity*)_identity forRoster:(id)_roster;
+- (id) initWithIdentity:(XMPPIdentity*)_identity forRoster:(id)_roster;
 /**
  * Add a new identity to an existing person.
  */
-- (void) addIdentity:(JabberIdentity*)anIdentity;
+- (void) addIdentity:(XMPPIdentity*)anIdentity;
 /**
  * Remove an identity from an existing person.
  */
-- (void) removeIdentity:(JabberIdentity*)_identity;
+- (void) removeIdentity:(XMPPIdentity*)_identity;
 /**
  * Returns the name of the roster group containing the person.
  */
@@ -75,7 +75,7 @@
  * Returns the most identity that should be used to communicate with this person
  * when none is specified by the user.
  */
-- (JabberIdentity*) defaultIdentity;
+- (XMPPIdentity*) defaultIdentity;
 /**
  * Returns all identities associated with this person.
  */
@@ -83,7 +83,7 @@
 /**
  * Returns the identity for a specified Jabber ID.
  */
-- (JabberIdentity*) identityForJID:(JID*)jid;
+- (XMPPIdentity*) identityForJID:(JID*)jid;
 /**
  * Sets the name of the person.
  */

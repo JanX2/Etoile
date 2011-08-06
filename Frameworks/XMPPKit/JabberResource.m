@@ -17,12 +17,12 @@
 	return self;
 }
 
-- (JabberIdentity*) root
+- (XMPPIdentity*) root
 {
 	return root;
 }
 
-- (void) setRoot:(JabberIdentity*)identity
+- (void) setRoot:(XMPPIdentity*)identity
 {
 	[root release];
 	root = [identity retain];

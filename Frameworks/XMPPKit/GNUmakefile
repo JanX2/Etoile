@@ -26,7 +26,7 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 					XMPPInfoQueryStanza.m\
 					XMPPInfoQueryStanzaFactory.m\
 					JID.m\
-					JabberIdentity.m\
+					XMPPIdentity.m\
 					XMPPPerson.m\
 					JabberResource.m\
 					JabberRootIdentity.m\
@@ -61,7 +61,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 					XMPPInfoQueryStanza.h\
 					XMPPInfoQueryStanzaFactory.h\
 					JID.h\
-					JabberIdentity.h\
+					XMPPIdentity.h\
 					XMPPPerson.h\
 					JabberResource.h\
 					JabberRootIdentity.h\
