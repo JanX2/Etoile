@@ -8,7 +8,7 @@
 
 #import "XMPPDefaultHandler.h"
 #import "XMPPConversation.h"
-#import "Roster.h"
+#import "XMPPRoster.h"
 //#import "MessageWindowController.h"
 
 @implementation XMPPDefaultHandler

@@ -1,12 +1,12 @@
 //
-//  Roster.m
+//  XMPPRoster.m
 //  Jabber
 //
 //  Created by David Chisnall on Sun Apr 25 2004.
 //  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import "Roster.h"
+#import "XMPPRoster.h"
 #import "XMPPAccount.h"
 #import "XMPPPerson.h"
 #import "XMPPRootIdentity.h"
@@ -15,8 +15,8 @@
 #import "ServiceDiscovery.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@implementation Roster
-- (Roster*) initWithAccount:(id)_account
+@implementation XMPPRoster
+- (XMPPRoster*) initWithAccount:(id)_account
 {
 	SUPERINIT
 	if(![_account isKindOfClass: [XMPPAccount class]])
@@ -74,7 +74,7 @@
 		{
 			XMPPPerson * person = [self personForJID:jid];
 			XMPPIdentity * oldIdentity = [person identityForJID:jid];
-			RosterGroup * group = [self groupNamed:[person group]];
+			XMPPRosterGroup * group = [self groupNamed:[person group]];
 			[group removeIdentity:oldIdentity];
 			[peopleByJID removeObjectForKey:[jid jidStringWithNoResource]];
 			if([group numberOfPeopleInGroupMoreOnlineThan:PRESENCE_UNKNOWN + 10] == 0)
@@ -111,10 +111,10 @@
 			{
 				groupName = @"None";
 			}
-			RosterGroup * group = [groupsByName objectForKey:groupName];
+			XMPPRosterGroup * group = [groupsByName objectForKey:groupName];
 			if(group == nil)
 			{
-				group = [RosterGroup groupWithRoster:self];
+				group = [XMPPRosterGroup groupWithRoster:self];
 				[group groupName:groupName];
 				[groupsByName setObject:group forKey:groupName];
 				[groups addObject:group];
@@ -261,7 +261,7 @@
 
 
 /*
- Roster updates look like this:
+ XMPPRoster updates look like this:
  <iq type='set' id='roster_3'>
  <query xmlns='jabber:iq:roster'>
  <item jid='romeo@example.net'
@@ -338,10 +338,10 @@
 		}
 		[peopleByJID setObject:person forKey:[_jid jidStringWithNoResource]];
 
-		RosterGroup * group = [groupsByName objectForKey:@"None"];
+		XMPPRosterGroup * group = [groupsByName objectForKey:@"None"];
 		if(group == nil)
 		{
-			group = [RosterGroup groupWithRoster:self];
+			group = [XMPPRosterGroup groupWithRoster:self];
 			[group groupName:@"None"];
 			[groupsByName setObject:group forKey:@"None"];
 			[groups addObject:group];
@@ -354,14 +354,14 @@
 	return person;
 }
 
-- (RosterGroup*) groupForIndex:(int)_index
+- (XMPPRosterGroup*) groupForIndex:(int)_index
 {
 	return [groups objectAtIndex:_index];
 }
-- (RosterGroup*) groupForIndex:(int)_index ignoringPeopleLessOnlineThan:(unsigned int)onlineState
+- (XMPPRosterGroup*) groupForIndex:(int)_index ignoringPeopleLessOnlineThan:(unsigned int)onlineState
 {
 	int count = -1;
-	FOREACH(groups, group, RosterGroup*)
+	FOREACH(groups, group, XMPPRosterGroup*)
 	{
 		if([group numberOfPeopleInGroupMoreOnlineThan:onlineState] > 0)
 		{
@@ -375,7 +375,7 @@
 	return nil;
 }
 
-- (RosterGroup*) groupNamed:(NSString*)_groupName
+- (XMPPRosterGroup*) groupNamed:(NSString*)_groupName
 {
 	if(_groupName == nil)
 	{
@@ -391,7 +391,7 @@
 - (int) numberOfGroupsContainingPeopleMoreOnlineThan:(unsigned int)onlineState
 {
 	int count = 0;
-	FOREACH(groups, group, RosterGroup*)
+	FOREACH(groups, group, XMPPRosterGroup*)
 	{
 		if([group numberOfPeopleInGroupMoreOnlineThan:onlineState] > 0)
 		{

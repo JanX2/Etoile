@@ -36,8 +36,8 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 					XMPPPresenceStanzaFactory.m\
 					XMPPPresence.m\
 					Query_jabber_iq_roster.m\
-					Roster.m\
-					RosterGroup.m\
+					XMPPRoster.m\
+					XMPPRosterGroup.m\
 					StanzaFactory.m\
 					XMPPStanza.m\
 					StreamFeatures.m\
@@ -71,8 +71,8 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 					XMPPPresenceStanzaFactory.h\
 					XMPPPresence.h\
 					Query_jabber_iq_roster.h\
-					Roster.h\
-					RosterGroup.h\
+					XMPPRoster.h\
+					XMPPRosterGroup.h\
 					ServiceDiscovery.h\
 					StanzaFactory.h\
 					XMPPStanza.h\

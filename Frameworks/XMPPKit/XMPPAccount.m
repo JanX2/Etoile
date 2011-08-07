@@ -12,7 +12,7 @@
 
 #import <AddressBook/AddressBook.h>
 #import "XMPPAccount.h"
-#import "Roster.h"
+#import "XMPPRoster.h"
 #import "JID.h"
 
 NSString * passwordForJID(JID * aJID)
@@ -108,7 +108,7 @@ id getDefault(NSString * dictionary, id key)
 	}
 	
 	name = [_name retain];
-	roster = (Roster*)[[Roster alloc] initWithAccount:self];
+	roster = (XMPPRoster*)[[XMPPRoster alloc] initWithAccount:self];
 	connection = (XMPPConnection*)[[XMPPConnection alloc] initWithAccount:self];
 	[connection setPresenceDisplay:[roster delegate]];
 
@@ -157,7 +157,7 @@ id getDefault(NSString * dictionary, id key)
 	return [self initWithName:@"Default"];
 }
 
-- (Roster*) roster
+- (XMPPRoster*) roster
 {
 	return roster;
 }

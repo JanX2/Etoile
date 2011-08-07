@@ -1,20 +1,20 @@
 //
-//  RosterGroup.m
+//  XMPPRosterGroup.m
 //  Jabber
 //
 //  Created by David Chisnall on Sun Jul 25 2004.
 //  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import "RosterGroup.h"
+#import "XMPPRosterGroup.h"
 #import "XMPPPresence.h"
 #import "CompareHack.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@implementation RosterGroup
+@implementation XMPPRosterGroup
 + (id) groupWithRoster:(id)_roster
 {
-	return [[[RosterGroup alloc] initWithRoster:_roster] autorelease];
+	return [[[XMPPRosterGroup alloc] initWithRoster:_roster] autorelease];
 }
 
 - (id) initWithRoster:(id)_roster
@@ -107,7 +107,7 @@
 	return count;
 }
 
-- (NSComparisonResult) compare:(RosterGroup*)otherGroup
+- (NSComparisonResult) compare:(XMPPRosterGroup*)otherGroup
 {
 	return [name caseInsensitiveCompare:[otherGroup groupName]];
 }

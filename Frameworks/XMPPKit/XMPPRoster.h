@@ -1,5 +1,5 @@
 //
-//  Roster.h
+//  XMPPRoster.h
 //  Jabber
 //
 //  Created by David Chisnall on Sun Apr 25 2004.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "XMPPDispatcher.h"
-#import "RosterGroup.h"
+#import "XMPPRosterGroup.h"
 #import "XMPPPerson.h"
 #import "XMPPPresence.h"
 #import "XMPPInfoQueryStanza.h"
@@ -30,7 +30,7 @@
  * simply a collection of people.  This class maintains the list, and allows new
  * people to be added and removed.
  */
-@interface Roster : NSObject  <PresenceHandler,XMPPInfoQueryStanzaHandler> {
+@interface XMPPRoster : NSObject  <PresenceHandler,XMPPInfoQueryStanzaHandler> {
 	NSMutableDictionary * peopleByJID;
 	NSMutableDictionary * groupsByName;
 	NSMutableArray * groups;
@@ -48,7 +48,7 @@
 /**
  * Initialise a roster for a specified account.
  */
-- (Roster*) initWithAccount:(id)_account;
+- (XMPPRoster*) initWithAccount:(id)_account;
 /**
  * Add items to the roster from an iq with type result containing one or more 
  * roster items.
@@ -87,17 +87,17 @@
 /**
  * Returns the group for a given name.
  */
-- (RosterGroup*) groupNamed:(NSString*)_groupName;
+- (XMPPRosterGroup*) groupNamed:(NSString*)_groupName;
 
 /** 
  * Returns the group at a given index.
  */
-- (RosterGroup*) groupForIndex:(int)_index;
+- (XMPPRosterGroup*) groupForIndex:(int)_index;
 /**
  * Returns the group at a specified index when only groups containing people more
  * online than the given onlineState value are counted.
  */
-- (RosterGroup*) groupForIndex:(int)_index ignoringPeopleLessOnlineThan:(unsigned int)onlineState;
+- (XMPPRosterGroup*) groupForIndex:(int)_index ignoringPeopleLessOnlineThan:(unsigned int)onlineState;
 
 /**
  * Returns the number of groups.

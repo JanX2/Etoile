@@ -8,7 +8,7 @@
 #import "XMPPRootIdentity.h"
 #import "XMPPPerson.h"
 #import "XMPPDispatcher.h"
-#import "Roster.h"
+#import "XMPPRoster.h"
 #import "CompareHack.h"
 #import "XMPPConnection.h"
 #import "ServiceDiscovery.h"

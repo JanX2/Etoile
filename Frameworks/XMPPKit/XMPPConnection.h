@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "XMPPDispatcher.h"
-#import "Roster.h"
+#import "XMPPRoster.h"
 #import "XMPPPresence.h"
 
 /**
@@ -36,8 +36,8 @@
 	NSString * user;
 	NSString * pass;
 	NSString * res;
-	//Roster
-	Roster * roster;
+	//XMPPRoster
+	XMPPRoster * roster;
 	XMPPDispatcher * dispatcher;
 	id account;
 	Class xmlLog;

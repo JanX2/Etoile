@@ -1,5 +1,5 @@
 //
-//  RosterGroup.h
+//  XMPPRosterGroup.h
 //  Jabber
 //
 //  Created by David Chisnall on Sun Jul 25 2004.
@@ -11,9 +11,9 @@
 #import "XMPPPerson.h"
 	
 /**
- * The RosterGroup class represents a group in the roster.
+ * The XMPPRosterGroup class represents a group in the roster.
  */
-@interface RosterGroup : NSObject {
+@interface XMPPRosterGroup : NSObject {
 	NSMutableDictionary * peopleByName;
 	NSString * name;
 	NSMutableArray * people;
@@ -62,6 +62,6 @@
 /**
  * Compares two roster groups by name.
  */
-- (NSComparisonResult) compare:(RosterGroup*)otherGroup;
+- (NSComparisonResult) compare:(XMPPRosterGroup*)otherGroup;
 
 @end

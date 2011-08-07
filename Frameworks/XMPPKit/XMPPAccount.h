@@ -13,7 +13,7 @@
 #define XMPPNOJIDEXCEPTION @"NoJIDinAB"
 #define XMPPNOPASSWORDEXCEPTION @"NoPasswordForJid"
 
-@class Roster;
+@class XMPPRoster;
 
 /**
  * The XMPPAccount class represents a single XMPP account.  The JID is retrieved
@@ -23,7 +23,7 @@
 @interface XMPPAccount : NSObject {
 	NSString * name;
 	JID * myJID;
-	Roster * roster;
+	XMPPRoster * roster;
 	XMPPConnection * connection;
 }
 /**
@@ -45,7 +45,7 @@
 /**
  * Returns the roster associated with the account.
  */
-- (Roster*) roster;
+- (XMPPRoster*) roster;
 /**
  * Returns the connection associated with the account.
  */
