@@ -1,5 +1,5 @@
 //
-//  JabberRootIdentity.h
+//  XMPPRootIdentity.h
 //  Jabber
 //
 //  Created by David Chisnall on 02/08/2005.
@@ -13,7 +13,7 @@
  * A root identity; one which may have additional identities for individual 
  * resources associated with it.
  */
-@interface JabberRootIdentity : XMPPIdentity {
+@interface XMPPRootIdentity : XMPPIdentity {
 	NSMutableDictionary * resources;
 	NSMutableArray * resourceList;
 }

@@ -29,7 +29,7 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 					XMPPIdentity.m\
 					XMPPPerson.m\
 					XMPPResource.m\
-					JabberRootIdentity.m\
+					XMPPRootIdentity.m\
 					XMPPMessage.m\
 					XMPPMessageStanzaFactory.m\
 					NSAttributedString+HTML-IM.m\
@@ -64,7 +64,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 					XMPPIdentity.h\
 					XMPPPerson.h\
 					XMPPResource.h\
-					JabberRootIdentity.h\
+					XMPPRootIdentity.h\
 					XMPPMessage.h\
 					XMPPMessageStanzaFactory.h\
 					NSAttributedString+HTML-IM.h\

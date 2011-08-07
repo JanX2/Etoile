@@ -1,17 +1,17 @@
 //
-//  JabberRootIdentity.m
+//  XMPPRootIdentity.m
 //  Jabber
 //
 //  Created by David Chisnall on 02/08/2005.
 //  Copyright 2005 __MyCompanyName__. All rights reserved.
 //
 
-#import "JabberRootIdentity.h"
+#import "XMPPRootIdentity.h"
 #import "XMPPResource.h"
 #import "CompareHack.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@implementation JabberRootIdentity
+@implementation XMPPRootIdentity
 - (void)findType
 {
 	NSString * serverDomain = [jid domain];

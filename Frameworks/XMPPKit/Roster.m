@@ -9,7 +9,7 @@
 #import "Roster.h"
 #import "XMPPAccount.h"
 #import "XMPPPerson.h"
-#import "JabberRootIdentity.h"
+#import "XMPPRootIdentity.h"
 #import "XMPPResource.h"
 #import "CompareHack.h"
 #import "ServiceDiscovery.h"
@@ -325,7 +325,7 @@
 	XMPPPerson * person = [peopleByJID objectForKey:[_jid jidStringWithNoResource]];
 	if(person == nil)
 	{
-		JabberRootIdentity * identity = [[JabberRootIdentity alloc] initWithJID:[_jid rootJID]
+		XMPPRootIdentity * identity = [[XMPPRootIdentity alloc] initWithJID:[_jid rootJID]
 																   withName:[_jid node]
 																	inGroup:nil
 																  forPerson:nil];

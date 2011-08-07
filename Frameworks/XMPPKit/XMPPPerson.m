@@ -5,7 +5,7 @@
 //  Created by David Chisnall on Sun Apr 25 2004.
 //  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
 //
-#import "JabberRootIdentity.h"
+#import "XMPPRootIdentity.h"
 #import "XMPPPerson.h"
 #import "XMPPDispatcher.h"
 #import "Roster.h"
@@ -47,9 +47,9 @@ static NSString * avatarCachePath = nil;
 	FOREACH(identities, identity, XMPPIdentity*)
 	{
 		[identityList addObject:identity];
-		if([identity isKindOfClass:[JabberRootIdentity class]])
+		if([identity isKindOfClass:[XMPPRootIdentity class]])
 		{
-			[identityList addObjectsFromArray:[(JabberRootIdentity*)identity resources]];
+			[identityList addObjectsFromArray:[(XMPPRootIdentity*)identity resources]];
 		}
 	}
 	//[identityList sortUsingSelector:@selector(compareByPriority:)];

@@ -6,7 +6,7 @@
 //
 
 #import "XMPPIdentity.h"
-#import "JabberRootIdentity.h"
+#import "XMPPRootIdentity.h"
 #import <EtoileXML/ETXMLString.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
