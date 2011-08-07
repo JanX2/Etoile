@@ -10,7 +10,7 @@
 #import "XMPPAccount.h"
 #import "XMPPPerson.h"
 #import "JabberRootIdentity.h"
-#import "JabberResource.h"
+#import "XMPPResource.h"
 #import "CompareHack.h"
 #import "ServiceDiscovery.h"
 #import <EtoileFoundation/EtoileFoundation.h>

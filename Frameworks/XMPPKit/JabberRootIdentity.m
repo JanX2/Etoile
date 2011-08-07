@@ -7,7 +7,7 @@
 //
 
 #import "JabberRootIdentity.h"
-#import "JabberResource.h"
+#import "XMPPResource.h"
 #import "CompareHack.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
@@ -78,7 +78,7 @@
 - (void) addResource:(JID*)_jid
 {
 	NSString * resourceName = [_jid resource];
-	JabberResource * resource = [[[JabberResource alloc] initWithJID:_jid
+	XMPPResource * resource = [[[XMPPResource alloc] initWithJID:_jid
 															withName:name
 															 inGroup:group
 														   forPerson:person] autorelease];
@@ -123,8 +123,8 @@
 		}
 		else
 		{
-			JabberResource * resource = [resources objectForKey:resourceName];
-			//Create a JabberResource for the resource if one does not exist
+			XMPPResource * resource = [resources objectForKey:resourceName];
+			//Create a XMPPResource for the resource if one does not exist
 			if(resource ==	nil)
 			{
 				[self addResource:presenceJID];

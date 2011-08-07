@@ -1,15 +1,15 @@
 //
-//  JabberResource.m
+//  XMPPResource.m
 //  Jabber
 //
 //  Created by David Chisnall on 02/08/2005.
 //  Copyright 2005 __MyCompanyName__. All rights reserved.
 //
 
-#import "JabberResource.h"
+#import "XMPPResource.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@implementation JabberResource
+@implementation XMPPResource
 - (id) init
 {
 	SUPERINIT

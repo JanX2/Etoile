@@ -1,5 +1,5 @@
 //
-//  JabberResource.h
+//  XMPPResource.h
 //  Jabber
 //
 //  Created by David Chisnall on 02/08/2005.
@@ -10,12 +10,12 @@
 #import "XMPPIdentity.h"
 
 /**
- * A JabberResource is a special kind of Jabber Identity representing an variant 
+ * A XMPPResource is a special kind of Jabber Identity representing an variant 
  * of and identity which is already stored in the system as a bare JID.  
  *
  * See also JabberRootIdentity.
  */
-@interface JabberResource : XMPPIdentity {
+@interface XMPPResource : XMPPIdentity {
 	XMPPIdentity * root;
 }
 /**

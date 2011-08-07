@@ -28,7 +28,7 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 					JID.m\
 					XMPPIdentity.m\
 					XMPPPerson.m\
-					JabberResource.m\
+					XMPPResource.m\
 					JabberRootIdentity.m\
 					XMPPMessage.m\
 					XMPPMessageStanzaFactory.m\
@@ -63,7 +63,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 					JID.h\
 					XMPPIdentity.h\
 					XMPPPerson.h\
-					JabberResource.h\
+					XMPPResource.h\
 					JabberRootIdentity.h\
 					XMPPMessage.h\
 					XMPPMessageStanzaFactory.h\
