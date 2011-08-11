@@ -13,7 +13,7 @@
 #import "XMPPPresence.h"
 #import "XMPPInfoQueryStanza.h"
 
-@class ServiceDiscovery;
+@class XMPPServiceDiscovery;
 /**
  * Protocol to be implemented by a roster UI component.
  */
@@ -35,7 +35,7 @@
 	NSMutableDictionary * groupsByName;
 	NSMutableArray * groups;
 	NSMutableSet * queriedServers;
-	ServiceDiscovery * disco;
+	XMPPServiceDiscovery * disco;
 	BOOL connected;
 	//TODO: XMPPDispatcher should be in Account
 	XMPPDispatcher * dispatcher;
@@ -150,6 +150,6 @@
 /**
  * Returns the service discovery interface.
  */
-- (ServiceDiscovery*) disco;
+- (XMPPServiceDiscovery*) disco;
 @end
 

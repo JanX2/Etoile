@@ -1,18 +1,18 @@
 //
-//  Timestamp.m
+//  XMPPTimestamp.m
 //  Jabber
 //
 //  Created by David Chisnall on 20/08/2004.
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import "Timestamp.h"
+#import "XMPPTimestamp.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@implementation Timestamp
+@implementation XMPPTimestamp
 + (id) timestampWithTime:(NSCalendarDate*)_time reason:(NSString*)_reason
 {
-	return [[[Timestamp alloc] initWithTime:_time reason:_reason] autorelease];
+	return [[[XMPPTimestamp alloc] initWithTime:_time reason:_reason] autorelease];
 }
 
 
@@ -94,7 +94,7 @@
 	return [time descriptionWithCalendarFormat:@"%Y%m%dT%H:%M:%S"];
 }
 
-- (NSComparisonResult) compare:(Timestamp*)_other
+- (NSComparisonResult) compare:(XMPPTimestamp*)_other
 {
 	return [time compare:[_other time]];
 }

@@ -1,16 +1,16 @@
 //
-//  Query_jabber_iq_roster.m
+//  XMPPQueryRosterHandler.m
 //  Jabber
 //
 //  Created by David Chisnall on 12/11/2006.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 
-#import "Query_jabber_iq_roster.h"
+#import "XMPPQueryRosterHandler.h"
 #import "XMPPIdentity.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@implementation Query_jabber_iq_roster
+@implementation XMPPQueryRosterHandler
 - (id) initWithXMLParser: (ETXMLParser*)aParser
                   parent: (id <ETXMLParserDelegate>) aParent
                      key: (id) aKey

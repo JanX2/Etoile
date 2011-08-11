@@ -22,7 +22,7 @@ static XMPPMessageStanzaFactory * sharedInstance;
 	//Insert default handlers here:
 	[sharedInstance addHandler:[ETXMLString class] forTag:@"body"];
 	[sharedInstance addHandler:[ETXMLString class] forTag:@"subject"];
-	[sharedInstance addHandler:[Timestamp class] withValue:@"timestamp" forTag:@"x" inNamespace:@"jabber:x:delay"];
+	[sharedInstance addHandler:[XMPPTimestamp class] withValue:@"timestamp" forTag:@"x" inNamespace:@"jabber:x:delay"];
 	[sharedInstance addHandler:[XMPPError class] forTag:@"error"];
 #ifndef WITHOUT_XHTML_IM
 	[sharedInstance addHandler:[ETXMLXHTML_IMParser class] forTag:@"html"];

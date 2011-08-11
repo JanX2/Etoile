@@ -1,5 +1,5 @@
 //
-//  PresenceStanzaFactory.h
+//  XMPPPresenceStanzaFactory.h
 //  Jabber
 //
 //  Created by David Chisnall on 25/05/2006.
@@ -7,13 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "StanzaFactory.h"
+#import "XMPPStanzaFactory.h"
 
 /**
- * The PresenceStanzaFactory class is used to generate classes which handle child
+ * The XMPPPresenceStanzaFactory class is used to generate classes which handle child
  * XML nodes of a presence stanza.
  */
-@interface XMPPPresenceStanzaFactory : StanzaFactory {
+@interface XMPPPresenceStanzaFactory : XMPPStanzaFactory {
 
 }
 

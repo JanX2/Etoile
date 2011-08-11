@@ -17,7 +17,7 @@
 
 #import "XMPPConnection.h"
 #import <EtoileFoundation/EtoileFoundation.h>
-#import "StreamFeatures.h"
+#import "XMPPStreamFeatures.h"
 #import "XMPPDefaultHandler.h"
 #import "XMPPPresence.h"
 #import "XMPPAccount.h"
@@ -60,7 +60,7 @@ static NSDictionary * STANZA_KEYS;
 		[XMPPMessage class], @"message",
 		[XMPPPresence class], @"presence",
 		[XMPPInfoQueryStanza class], @"iq", 
-		[StreamFeatures class], @"stream:features",
+		[XMPPStreamFeatures class], @"stream:features",
 		nil] retain];
 	STANZA_KEYS = [[NSDictionary dictionaryWithObjectsAndKeys:
 		@"message", @"message",

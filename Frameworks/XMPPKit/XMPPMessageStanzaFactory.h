@@ -1,18 +1,18 @@
 //
-//  MessageStanzaFactory.h
+//  XMPPMessageStanzaFactory.h
 //  Jabber
 //
 //  Created by David Chisnall on 24/05/2006.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 
-#import <StanzaFactory.h>
+#import <XMPPStanzaFactory.h>
 
 /**
- * The MessageStanzaFactory class is used to generate classes which handle child
+ * The XMPPMessageStanzaFactory class is used to generate classes which handle child
  * XML nodes of a message stanza.
  */
-@interface XMPPMessageStanzaFactory : StanzaFactory {
+@interface XMPPMessageStanzaFactory : XMPPStanzaFactory {
 
 }
 

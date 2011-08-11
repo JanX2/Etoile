@@ -1,16 +1,16 @@
 //
-//  StanzaFactory.m
+//  XMPPStanzaFactory.m
 //  Jabber
 //
 //  Created by David Chisnall on 24/05/2006.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 
-#import "StanzaFactory.h"
+#import "XMPPStanzaFactory.h"
 #import <EtoileXML/ETXMLNullHandler.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@implementation StanzaFactory
+@implementation XMPPStanzaFactory
 + (id) sharedStazaFactory
 {
 	return nil;

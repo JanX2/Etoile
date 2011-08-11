@@ -1,5 +1,6 @@
 //
-//  StanzaFactory.h
+//
+//  XMPPStanzaFactory.h
 //  Jabber
 //
 //  Created by David Chisnall on 24/05/2006.
@@ -9,17 +10,17 @@
 #import <Cocoa/Cocoa.h>
 
 /**
- * The StanzaFactory class is a base class, subclassed to provide iq, presence and
+ * The XMPPStanzaFactory class is a base class, subclassed to provide iq, presence and
  * message stanza factories.  When parsing an XMPP stanza, the classes used to 
  * parse the children and the keys with which they should be returned to the 
  * parent node are defined in one of these subclasses.
  *
- * The StanzaFactory class should be treated as abstract.
+ * The XMPPStanzaFactory class should be treated as abstract.
  *
  * Every occurrence of the word 'Value' in this class should be replaced with 'Key'
  * by someone who has some spare time.
  */
-@interface StanzaFactory : NSObject {
+@interface XMPPStanzaFactory : NSObject {
 	NSMutableDictionary * tagHandlers;
 	NSMutableDictionary * tagValues;
 	NSMutableDictionary * namespacedTagHandlers;

@@ -11,7 +11,7 @@
 #import "XMPPRoster.h"
 #import "CompareHack.h"
 #import "XMPPConnection.h"
-#import "ServiceDiscovery.h"
+#import "XMPPServiceDiscovery.h"
 #import "ABPerson+merging.h"
 
 static NSString * avatarCachePath = nil;

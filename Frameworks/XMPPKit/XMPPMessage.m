@@ -176,7 +176,7 @@ NSDictionary * MESSAGE_TYPES;
 {
 	return type;
 }
-- (Timestamp*) timestamp
+- (XMPPTimestamp*) timestamp
 {
 	return [timestamps lastObject];
 }
@@ -245,7 +245,7 @@ NSDictionary * MESSAGE_TYPES;
 {
 	subject = [aSubject retain];
 }
-- (void) addtimestamp:(Timestamp*)aTimestamp
+- (void) addtimestamp:(XMPPTimestamp*)aTimestamp
 {
 	[timestamps addObject:aTimestamp];
 	[timestamps sortUsingSelector:@selector(compare:)];

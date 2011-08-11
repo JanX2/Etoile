@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Timestamp.h"
+#import "XMPPTimestamp.h"
 #import "JID.h"
 #import "XMPPStanza.h"
 
@@ -69,7 +69,7 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
  * Returns the oldest timestamp associated with this message (e.g. offline
  * storage).  May be broken (TEST).
  */
-- (Timestamp*) timestamp;
+- (XMPPTimestamp*) timestamp;
 /**
  * Returns the associated error, if one exists.
  */

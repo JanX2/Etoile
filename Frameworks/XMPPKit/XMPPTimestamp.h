@@ -1,5 +1,5 @@
 //
-//  Timestamp.h
+//  XMPPTimestamp.h
 //  Jabber
 //
 //  Created by David Chisnall on 20/08/2004.
@@ -15,7 +15,7 @@
  * associated with it.  This class is used to parse such delays from the incoming
  * XML stream.
  */
-@interface Timestamp : ETXMLNullHandler {
+@interface XMPPTimestamp : ETXMLNullHandler {
 	NSMutableString * reason;
 	NSCalendarDate * time;
 }
@@ -43,5 +43,5 @@
 /**
  * Compare two timestamps by their time.
  */
-- (NSComparisonResult) compare:(Timestamp*)_other;
+- (NSComparisonResult) compare:(XMPPTimestamp*)_other;
 @end

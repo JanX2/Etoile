@@ -35,19 +35,19 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 					NSAttributedString+HTML-IM.m\
 					XMPPPresenceStanzaFactory.m\
 					XMPPPresence.m\
-					Query_jabber_iq_roster.m\
+					XMPPQueryRosterHandler.m\
 					XMPPRoster.m\
 					XMPPRosterGroup.m\
-					StanzaFactory.m\
+					XMPPStanzaFactory.m\
 					XMPPStanza.m\
-					StreamFeatures.m\
-					Timestamp.m\
+					XMPPStreamFeatures.m\
+					XMPPTimestamp.m\
 					XMPPAccount.m\
 					XMPPConnection.m\
 					XMPPError.m\
 					XMPPObjectStore.m\
 					XMPPvCard.m\
-					ServiceDiscovery.m\
+					XMPPServiceDiscovery.m\
 
 ${FRAMEWORK_NAME}_HEADER_FILES = \
 					XMPPChatLog.h\
@@ -70,14 +70,14 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 					NSAttributedString+HTML-IM.h\
 					XMPPPresenceStanzaFactory.h\
 					XMPPPresence.h\
-					Query_jabber_iq_roster.h\
+					XMPPQueryRosterHandler.h\
 					XMPPRoster.h\
 					XMPPRosterGroup.h\
-					ServiceDiscovery.h\
-					StanzaFactory.h\
+					XMPPServiceDiscovery.h\
+					XMPPStanzaFactory.h\
 					XMPPStanza.h\
-					StreamFeatures.h\
-					Timestamp.h\
+					XMPPStreamFeatures.h\
+					XMPPTimestamp.h\
 					XMPPAccount.h\
 					XMPPConnection.h\
 					XMPPError.h\

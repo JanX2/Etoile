@@ -1,12 +1,12 @@
 //
-//  ServiceDiscovery.m
+//  XMPPServiceDiscovery.m
 //  Jabber
 //
 //  Created by David Chisnall on 18/02/2005.
 //  Copyright 2005 __MyCompanyName__. All rights reserved.
 //
 
-#import "ServiceDiscovery.h"
+#import "XMPPServiceDiscovery.h"
 #import "XMPPAccount.h"
 #import "XMPPDiscoInfo.h"
 #import "XMPPDiscoItems.h"
@@ -14,8 +14,8 @@
 static NSString * xmlnsXMPPDiscoInfo = @"http://jabber.org/protocol/disco#info";
 static NSString * xmlnsXMPPDiscoItems = @"http://jabber.org/protocol/disco#items";
 
-@implementation ServiceDiscovery
-- (ServiceDiscovery*) initWithAccount:(XMPPAccount*)account
+@implementation XMPPServiceDiscovery
+- (XMPPServiceDiscovery*) initWithAccount:(XMPPAccount*)account
 {
 	SELFINIT;
 	features = [[NSMutableDictionary alloc] init];

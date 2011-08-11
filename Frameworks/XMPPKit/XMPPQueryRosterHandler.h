@@ -15,7 +15,7 @@
  * parser delegate, will create an array of identities.  The identities will then
  * be returned to the parent via the standard mechanism.
  */
-@interface Query_jabber_iq_roster : ETXMLNullHandler {
+@interface XMPPQueryRosterHandler : ETXMLNullHandler {
 	NSMutableArray * identities;
 	NSMutableArray * deletedIdentities;
 }

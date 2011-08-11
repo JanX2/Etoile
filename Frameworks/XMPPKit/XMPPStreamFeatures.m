@@ -1,16 +1,16 @@
 //
-//  StreamFeatures.m
+//  XMPPStreamFeatures.m
 //  Jabber
 //
 //  Created by David Chisnall on 05/06/2006.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 
-#import "StreamFeatures.h"
+#import "XMPPStreamFeatures.h"
 #import <EtoileXML/ETXMLString.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@implementation StreamFeatures
+@implementation XMPPStreamFeatures
 - (id) initWithXMLParser: (ETXMLParser*)aParser
                   parent: (id <ETXMLParserDelegate>)aParent
                      key: (id)aKey

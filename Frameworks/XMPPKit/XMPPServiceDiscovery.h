@@ -1,5 +1,5 @@
 //
-//  ServiceDiscovery.h
+//  XMPPServiceDiscovery.h
 //  Jabber
 //
 //  Created by David Chisnall on 18/02/2005.
@@ -15,7 +15,7 @@
  * Service discovery handler class.  Handles XEP-0030 service discovery and
  * caching via XEP-0115 entity capabilities.
  */
-@interface ServiceDiscovery : NSObject <XMPPInfoQueryStanzaHandler> {
+@interface XMPPServiceDiscovery : NSObject <XMPPInfoQueryStanzaHandler> {
 	XMPPConnection * connection;
 	XMPPDispatcher * dispatcher;
 	NSMutableDictionary * features;
@@ -25,7 +25,7 @@
 	NSMutableDictionary * featuresForCapabilities;
 	NSMutableSet * myFeatures;
 }
-- (ServiceDiscovery*) initWithAccount:(XMPPAccount*)account;
+- (XMPPServiceDiscovery*) initWithAccount:(XMPPAccount*)account;
 /**
  * Sets XEP-00115 entitiy capabilities for a specified JID.
  */

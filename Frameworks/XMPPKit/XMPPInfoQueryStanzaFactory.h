@@ -1,18 +1,18 @@
 //
-//  IqStanzaFactory.h
+//  XMPPInfoQueryStanzaFactory.h
 //  Jabber
 //
 //  Created by David Chisnall on 25/05/2006.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 
-#import <StanzaFactory.h>
+#import <XMPPStanzaFactory.h>
 
 /**
- * The IqStanzaFactory class is used to generate objects that parse children of
+ * The XMPPInfoQueryStanzaFactory class is used to generate objects that parse children of
  * an iq node.  
  */
-@interface XMPPInfoQueryStanzaFactory : StanzaFactory {
+@interface XMPPInfoQueryStanzaFactory : XMPPStanzaFactory {
 	
 }
 

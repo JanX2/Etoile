@@ -12,7 +12,7 @@
 #import "XMPPRootIdentity.h"
 #import "XMPPResource.h"
 #import "CompareHack.h"
-#import "ServiceDiscovery.h"
+#import "XMPPServiceDiscovery.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation XMPPRoster
@@ -64,7 +64,7 @@
 	dispatcher = [connection dispatcher];
 	if(disco == nil)
 	{
-		disco = (ServiceDiscovery*)[[ServiceDiscovery alloc] initWithAccount:account];		
+		disco = (XMPPServiceDiscovery*)[[XMPPServiceDiscovery alloc] initWithAccount:account];		
 	}
 
 	FOREACH([[rosterQuery children] objectForKey:@"RosterItems"], newIdentity, XMPPIdentity*)
@@ -415,7 +415,7 @@
 {
 	return dispatcher;
 }
-- (ServiceDiscovery*) disco
+- (XMPPServiceDiscovery*) disco
 {
 	return disco;
 }
