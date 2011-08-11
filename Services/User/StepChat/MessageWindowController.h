@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import <XMPPKit/Conversation.h>
-#import <XMPPKit/Message.h>
-#import <XMPPKit/Presence.h>
-#import <XMPPKit/ChatLog.h>
+#import <XMPPKit/XMPPConversation.h>
+#import <XMPPKit/XMPPMessage.h>
+#import <XMPPKit/XMPPPresence.h>
+#import <XMPPKit/XMPPChatLog.h>
 
-@interface MessageWindowController  : NSWindowController <ConversationDelegate> {
+@interface MessageWindowController  : NSWindowController <XMPPConversationDelegate> {
 	IBOutlet NSTextView * messageBox;
 	IBOutlet NSScrollView * messageBoxBox;
 	IBOutlet NSTextView * editingBox;
@@ -22,13 +22,13 @@
 	IBOutlet NSTextField * presenceIconBox;
 	IBOutlet NSPopUpButton * recipientBox;
 	IBOutlet NSImageView * avatarBox;
-	Conversation * conversation;
+	XMPPConversation * conversation;
 	unsigned int unread;
-	ChatLog * log;
+	XMPPChatLog * log;
 	unsigned char presence;
 	BOOL hack;
 }
 - (IBAction) changeRemoteJid:(id)sender;
-- (void) displayMessage:(Message*)_message incoming:(BOOL)_in;
-- (Conversation*) conversation;
+- (void) displayMessage:(XMPPMessage*)_message incoming:(BOOL)_in;
+- (XMPPConversation*) conversation;
 @end

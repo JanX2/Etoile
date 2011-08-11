@@ -6,8 +6,8 @@
 //  Copyright 2005 __MyCompanyName__. All rights reserved.
 //
 
-#import <XMPPKit/JabberPerson.h>
-#import <XMPPKit/ChatLog.h>
+#import <XMPPKit/XMPPPerson.h>
+#import <XMPPKit/XMPPChatLog.h>
 #import "ChatLogMenuController.h"
 #import "MessageWindowController.h"
 #import "RosterController.h"
@@ -16,10 +16,10 @@
 - (IBAction) openChatLog:(id)sender
 {
 	id frontWindowController = [[NSApp mainWindow] delegate];
-	NSMutableString * logFolder = [NSMutableString stringWithString:[ChatLog logPath]];
+	NSMutableString * logFolder = [NSMutableString stringWithString:[XMPPChatLog logPath]];
 	if([frontWindowController isKindOfClass:[MessageWindowController class]])
 	{
-		JabberPerson * person = [[(MessageWindowController*)frontWindowController conversation] remotePerson];
+		XMPPPerson * person = [[(MessageWindowController*)frontWindowController conversation] remotePerson];
 		if([[NSFileManager defaultManager] fileExistsAtPath:logFolder])
 		{
 			[logFolder appendFormat:@"%@/%@", [person group], [person name]];

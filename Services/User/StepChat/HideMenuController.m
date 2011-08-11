@@ -6,8 +6,8 @@
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import <XMPPKit/Presence.h>
-#import <XMPPKit/Roster.h>
+#import <XMPPKit/XMPPPresence.h>
+#import <XMPPKit/XMPPRoster.h>
 #import "HideMenuController.h"
 #import "TRUserDefaults.h"
 #import "JabberApp.h"

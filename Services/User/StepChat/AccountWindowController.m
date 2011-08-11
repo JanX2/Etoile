@@ -29,5 +29,6 @@
 {
 	[[self window] close];
 	[NSApp stopModalWithCode:-1];
+	[NSApp terminate:self];  //Slex
 }
 @end

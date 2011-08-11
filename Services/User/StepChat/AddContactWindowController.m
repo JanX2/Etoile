@@ -6,7 +6,7 @@
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import <XMPPKit/Roster.h>
+#import <XMPPKit/XMPPRoster.h>
 #import <XMPPKit/JID.h>
 #import "AddContactWindowController.h"
 #import "JabberApp.h"

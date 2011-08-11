@@ -6,7 +6,7 @@
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import <XMPPKit/Presence.h>
+#import <XMPPKit/XMPPPresence.h>
 #import "PresenceLogController.h"
 #import "TRUserDefaults.h"
 #import "NSTextView+ClickableLinks.h"
@@ -69,7 +69,7 @@ COMPARE_METHOD(statusMessage,Status)
 	   &&
 	   ![newMessage isEqualToString:myStatus]
 	   &&
-	   ![newMessage isEqualToString:[Presence displayStringForPresence:
+	   ![newMessage isEqualToString:[XMPPPresence displayStringForPresence:
 		   [[dict objectForKey:@"NewPresence"] unsignedCharValue]]]
 	   )
 	{

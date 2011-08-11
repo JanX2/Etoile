@@ -70,6 +70,7 @@ void setPasswordForAccount(NSString * password, JID * account)
 {
 	[[self window] close];
 	[NSApp stopModalWithCode:-1];
+	[NSApp terminate:self];
 }
 
 - (void) dealloc

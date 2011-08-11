@@ -6,7 +6,7 @@
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import <XMPPKit/Presence.h>
+#import <XMPPKit/XMPPPresence.h>
 #import "MessageWindowController.h"
 #import "TRUserDefaults.h"
 #import "NSTextView+ClickableLinks.h"
@@ -168,7 +168,7 @@ static NSMutableArray * messageWindowControllers = nil;
 	}
 }
 
-- (void) displayMessage:(Message*)aMessage incoming:(BOOL)_in
+- (void) displayMessage:(XMPPMessage*)aMessage incoming:(BOOL)_in
 {
 	if(_in)
 	{
@@ -229,7 +229,7 @@ static NSMutableArray * messageWindowControllers = nil;
 	NSWindow * window = [self window];
 	NSString * name = [conversation name];
 	JID * jid = [conversation remoteJID];
-	log = [[ChatLog chatLogWithPerson:[conversation remotePerson]] retain];
+	log = [[XMPPChatLog chatLogWithPerson:[conversation remotePerson]] retain];
 	[window setTitle:name];
 	[window setFrameFromString:name];
 	[window setFrameAutosaveName:name];
@@ -239,7 +239,7 @@ static NSMutableArray * messageWindowControllers = nil;
 	[messageBox display];
 	[messageBox scrollRangeToVisible:NSMakeRange([[messageBox textStorage] length],0)];
 	//Set presence and current resource
-	Presence * remotePresence = [[[conversation remotePerson] identityForJID:jid] presence];
+	XMPPPresence * remotePresence = [[[conversation remotePerson] identityForJID:jid] presence];
 	[self setPresence:[remotePresence show] withMessage:[remotePresence status]];
 	[self setPicture];
 }
@@ -247,14 +247,14 @@ static NSMutableArray * messageWindowControllers = nil;
 - (void) setPresence:(unsigned char)_status withMessage:(NSString*)_message
 {
 	presence = _status;
-	NSString * statusString = [Presence displayStringForPresence:_status];
+	NSString * statusString = [XMPPPresence displayStringForPresence:_status];
 	if(_message != nil && ![statusString isEqualToString:_message])
 	{
 		[presenceBox setStringValue:[NSString stringWithFormat:@"%@: %@",statusString, _message]];
 	}
 	else
 	{
-		[presenceBox setStringValue:[Presence displayStringForPresence:_status]];
+		[presenceBox setStringValue:[XMPPPresence displayStringForPresence:_status]];
 	}
 	[presenceBox setTextColor:[[NSUserDefaults standardUserDefaults] colourForPresence:_status]];
 	[presenceBox setToolTip:_message];
@@ -267,7 +267,7 @@ static NSMutableArray * messageWindowControllers = nil;
 	NSArray * identities = [[conversation remotePerson] identityList];
 	for(unsigned int i=0 ; i<[[conversation remotePerson] identities] ; i++)
 	{
-		JabberIdentity * identity =  [identities objectAtIndex:i];
+		XMPPIdentity * identity =  [identities objectAtIndex:i];
 		NSString * title = [[identity jid] jidString];
 		NSMutableAttributedString * colouredTitle = [NSMutableAttributedString alloc];
 		NSDictionary * colour = [NSDictionary dictionaryWithObject:[[NSUserDefaults standardUserDefaults] colourForPresence:[[identity presence] show]]
@@ -300,7 +300,7 @@ static NSMutableArray * messageWindowControllers = nil;
 	return YES;
 }
 
-- (Conversation*) conversation
+- (XMPPConversation*) conversation
 {
 	return conversation;
 }

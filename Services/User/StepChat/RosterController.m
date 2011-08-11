@@ -7,10 +7,10 @@
 //
 
 #import <EtoileFoundation/EtoileFoundation.h>
-#import <XMPPKit/RosterGroup.h>
-#import <XMPPKit/JabberPerson.h>
-#import <XMPPKit/JabberIdentity.h>
-#import <XMPPKit/Conversation.h>
+#import <XMPPKit/XMPPRosterGroup.h>
+#import <XMPPKit/XMPPPerson.h>
+#import <XMPPKit/XMPPIdentity.h>
+#import <XMPPKit/XMPPConversation.h>
 #import "RosterController.h"
 #import "JabberApp.h"
 #import "CustomPresenceWindowController.h"
@@ -74,7 +74,7 @@ NSMutableArray * rosterControllers = nil;
 - (void)windowDidLoad
 {
 	[super windowDidLoad];
-	[view registerForDraggedTypes:A(@"JabberPerson",@"JabberIdentity")];
+	[view registerForDraggedTypes:A(@"XMPPPerson",@"XMPPIdentity")];
 #ifdef GNUSTEP
 	[view setHeaderView: nil];
 	[view setCornerView: nil];
@@ -141,11 +141,11 @@ NSMutableArray * rosterControllers = nil;
 {
 	NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
 	NSString * plainText;
-	if([anObject isKindOfClass:[RosterGroup class]])
+	if([anObject isKindOfClass:[XMPPRosterGroup class]])
 	{
 		plainText = [anObject groupName];
 	}
-	else if([anObject isKindOfClass:[JabberPerson class]])
+	else if([anObject isKindOfClass:[XMPPPerson class]])
 	{
 		unsigned char onlineState = [[[anObject defaultIdentity] presence] show];
 		NSColor * foreground = [[NSUserDefaults standardUserDefaults] colourForPresence:onlineState];
@@ -156,9 +156,9 @@ NSMutableArray * rosterControllers = nil;
 		}
 		plainText = [NSString stringWithFormat:@"%C %@", 
 			PRESENCE_ICONS[(onlineState / 10) - 1], 
-			[(JabberPerson*)anObject name]];
+			[(XMPPPerson*)anObject name]];
 	}
-	else if([anObject isKindOfClass:[JabberIdentity class]])
+	else if([anObject isKindOfClass:[XMPPIdentity class]])
 	{
 		NSColor * foreground = [[NSUserDefaults standardUserDefaults] colourForPresence:[[anObject presence] show]];
 		if(foreground != nil)
@@ -240,7 +240,7 @@ NSMutableArray * rosterControllers = nil;
 	{
 		NSLog(@"Subscription request received");
 		//TODO:  Ask permission first
-		[roster authorise:[(Presence*)[_notification object] jid]];
+		[roster authorise:[(XMPPPresence*)[_notification object] jid]];
 	}
 }
 - (void) presenceChanged:(NSNotification *)notification
@@ -326,10 +326,10 @@ NSMutableArray * rosterControllers = nil;
 		[[[NSUserDefaults standardUserDefaults] soundForKey:@"OfflineSound"] play];
 	}
 	id changedObject = [_notification object];
-	if([changedObject isKindOfClass:[JabberPerson class]])
+	if([changedObject isKindOfClass:[XMPPPerson class]])
 	{
 		unsigned int hiddenPresence = [[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"];
-		RosterGroup * group = [[account roster] groupNamed:[changedObject group]];
+		XMPPRosterGroup * group = [[account roster] groupNamed:[changedObject group]];
 		//If we making a group appear
 		if(old >= hiddenPresence && 
 		    [group numberOfPeopleInGroupMoreOnlineThan:hiddenPresence])
@@ -404,7 +404,7 @@ NSMutableArray * rosterControllers = nil;
 		}
 	}
 #endif
-	if([_object isKindOfClass:[RosterGroup class]] && 
+	if([_object isKindOfClass:[XMPPRosterGroup class]] && 
 			[[NSUserDefaults standardUserDefaults] expandedGroup:[_object groupName]])
 	{
 		if([view isExpandable:_object])
@@ -434,11 +434,11 @@ NSMutableArray * rosterControllers = nil;
 	{
 		return [roster groupForIndex:_index ignoringPeopleLessOnlineThan:[[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"]];
 	}
-	if([_item isKindOfClass:[RosterGroup class]])
+	if([_item isKindOfClass:[XMPPRosterGroup class]])
 	{
 		return [_item personAtIndex:_index];
 	}
-	if([_item isKindOfClass:[JabberPerson class]])
+	if([_item isKindOfClass:[XMPPPerson class]])
 	{
 		NSArray *list = [_item identityList];
 		if ((_index > -1) && (_index < (int)[list count]))
@@ -454,29 +454,29 @@ NSMutableArray * rosterControllers = nil;
 					 item:(id)item
 			mouseLocation:(NSPoint)mouseLocation
 {
-	if([item isKindOfClass:[RosterGroup class]])
+	if([item isKindOfClass:[XMPPRosterGroup class]])
 	{
 		return [NSString stringWithFormat:@"%d/%d %@",
 			[item numberOfPeopleInGroupMoreOnlineThan:PRESENCE_OFFLINE],
 			[item numberOfPeopleInGroupMoreOnlineThan:PRESENCE_UNKNOWN + 10],
-			[Presence displayStringForPresence:PRESENCE_ONLINE]];
+			[XMPPPresence displayStringForPresence:PRESENCE_ONLINE]];
 	}
 	NSString * toolTipMessage = nil;
-	Presence * selectedPresence = nil;
-	if([item isKindOfClass:[JabberPerson class]])
+	XMPPPresence * selectedPresence = nil;
+	if([item isKindOfClass:[XMPPPerson class]])
 	{
-		selectedPresence = [[(JabberPerson*)item defaultIdentity] presence];
+		selectedPresence = [[(XMPPPerson*)item defaultIdentity] presence];
 	}
-	else if([item isKindOfClass:[JabberIdentity class]])
+	else if([item isKindOfClass:[XMPPIdentity class]])
 	{
-		selectedPresence = [(JabberIdentity*)item presence];
+		selectedPresence = [(XMPPIdentity*)item presence];
 	}
 	if(selectedPresence != nil)
 	{
 		toolTipMessage = [selectedPresence status];
 		if(toolTipMessage == nil)
 		{
-			toolTipMessage = [Presence displayStringForPresence:[selectedPresence show]];
+			toolTipMessage = [XMPPPresence displayStringForPresence:[selectedPresence show]];
 		}		
 	}
 	return toolTipMessage;
@@ -488,7 +488,7 @@ NSMutableArray * rosterControllers = nil;
 	{
 		return NO;		
 	}
-	if([_item isKindOfClass:[RosterGroup class]])
+	if([_item isKindOfClass:[XMPPRosterGroup class]])
 	{
 		if([_item numberOfPeopleInGroupMoreOnlineThan:[[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"]] > 0)
 		{
@@ -503,7 +503,7 @@ NSMutableArray * rosterControllers = nil;
 	{
 		return YES;
 	}
-	if([_item isKindOfClass:[JabberPerson class]])
+	if([_item isKindOfClass:[XMPPPerson class]])
 	{
 		if([_item identities] > 1)
 		{
@@ -516,15 +516,15 @@ NSMutableArray * rosterControllers = nil;
 {
 	if(returnCode == NSAlertFirstButtonReturn)
 	{
-		if([contact isKindOfClass:[JabberPerson class]])
+		if([contact isKindOfClass:[XMPPPerson class]])
 		{
-			FOREACH([contact identityList], identity, JabberIdentity*)
+			FOREACH([contact identityList], identity, XMPPIdentity*)
 			{
 				NSLog(@"Deleting %@", [[identity jid] jidString]);
 				[roster unsubscribe:[identity jid]];
 			}
 		}
-		else if([contact isKindOfClass:[JabberIdentity class]])
+		else if([contact isKindOfClass:[XMPPIdentity class]])
 		{
 			NSLog(@"Deleting %@", [[contact jid] jidString]);
 			[roster unsubscribe:[contact jid]];			
@@ -535,7 +535,7 @@ NSMutableArray * rosterControllers = nil;
 - (IBAction) remove:(id)sender
 {
 	id item = [view itemAtRow:[view selectedRow]];
-	if([item isKindOfClass:[JabberPerson class]])
+	if([item isKindOfClass:[XMPPPerson class]])
 	{
 		NSAlert * alert = [[NSAlert alloc] init];
 		[alert addButtonWithTitle:@"Delete Contact"];
@@ -548,7 +548,7 @@ NSMutableArray * rosterControllers = nil;
 						 didEndSelector:@selector(confirmDeleteDidEnd:returnCode:contact:)
 							contextInfo:item];		
 	}
-	else if([item isKindOfClass:[JabberIdentity class]])
+	else if([item isKindOfClass:[XMPPIdentity class]])
 	{
 		NSAlert * alert = [[NSAlert alloc] init];
 		[alert addButtonWithTitle:@"Delete Contact"];
@@ -569,11 +569,11 @@ NSMutableArray * rosterControllers = nil;
 	{
 		return [roster numberOfGroupsContainingPeopleMoreOnlineThan:[[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"]];
 	}
-	if([_item isKindOfClass:[RosterGroup class]])
+	if([_item isKindOfClass:[XMPPRosterGroup class]])
 	{
 		return [_item numberOfPeopleInGroupMoreOnlineThan:[[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"]];
 	}
-	if([_item isKindOfClass:[JabberPerson class]])
+	if([_item isKindOfClass:[XMPPPerson class]])
 	{
 		return [_item identities];
 	}
@@ -587,9 +587,9 @@ NSMutableArray * rosterControllers = nil;
 	}
 	else
 	{
-		if([_item isKindOfClass:[JabberPerson class]])
+		if([_item isKindOfClass:[XMPPPerson class]])
 		{
-			return [(JabberPerson*)_item avatar];
+			return [(XMPPPerson*)_item avatar];
 		}
 	}
 	return nil;
@@ -598,7 +598,7 @@ NSMutableArray * rosterControllers = nil;
 - (void)outlineViewItemDidExpand:(NSNotification *)notification
 {
 	id group = [[notification userInfo] objectForKey:@"NSObject"];
-	if([group isKindOfClass:[RosterGroup class]])
+	if([group isKindOfClass:[XMPPRosterGroup class]])
 	{
 		[[NSUserDefaults standardUserDefaults] setExpanded:[group groupName] to:YES];
 	}
@@ -608,17 +608,17 @@ NSMutableArray * rosterControllers = nil;
 - (void)outlineViewItemDidCollapse:(NSNotification *)notification
 {
 	id group = [[notification userInfo] objectForKey:@"NSObject"];
-	if([group isKindOfClass:[RosterGroup class]])
+	if([group isKindOfClass:[XMPPRosterGroup class]])
 	{
 		[[NSUserDefaults standardUserDefaults] setExpanded:[group groupName] to:NO];
 	}
 	RESIZE_ROSTER;
 }
 
-inline static Conversation * createChatWithPerson(id self, JabberPerson* person, XMPPAccount * account)
+inline static XMPPConversation * createChatWithPerson(id self, XMPPPerson* person, XMPPAccount * account)
 {
 	JID * destinationJID = [[person defaultIdentity] jid];
-	Conversation * conversation = [Conversation conversationForPerson:person];
+	XMPPConversation * conversation = [XMPPConversation conversationForPerson:person];
 	if(conversation != nil)
 	{
 		[conversation setJID:destinationJID];
@@ -626,7 +626,7 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 	}
 	else
 	{
-		conversation = [[Conversation conversationWithPerson:person
+		conversation = [[XMPPConversation conversationWithPerson:person
 												  forAccount:account]
 			retain];
 		
@@ -640,13 +640,13 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 - (IBAction) click:(id)sender
 {
 	id item = [view itemAtRow:[view clickedRow]];
-	if([item isKindOfClass:[JabberPerson class]])
+	if([item isKindOfClass:[XMPPPerson class]])
 	{
-		createChatWithPerson(self,(JabberPerson*) item, account);
+		createChatWithPerson(self,(XMPPPerson*) item, account);
 	}
-	else if([item isKindOfClass:[JabberIdentity class]])
+	else if([item isKindOfClass:[XMPPIdentity class]])
 	{
-		JID * destinationJID = [(JabberIdentity*)item jid];
+		JID * destinationJID = [(XMPPIdentity*)item jid];
 		[createChatWithPerson(self, [roster personForJID:destinationJID], account) setJID:destinationJID];
 	}
 }
@@ -689,7 +689,7 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 	if(presence != _status)
 	{
 		presence = _status;
-		[presenceBox selectItemWithTitle:[Presence displayStringForPresence:_status]];		
+		[presenceBox selectItemWithTitle:[XMPPPresence displayStringForPresence:_status]];		
 	}
 	if(_message == nil)
 	{
@@ -718,17 +718,17 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 - (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard
 {
 	id item = [items objectAtIndex:0];
-	if([item isKindOfClass:[JabberPerson class]])
+	if([item isKindOfClass:[XMPPPerson class]])
 	{
-		[pboard declareTypes:[NSArray arrayWithObject:@"JabberPerson"] owner:self];
+		[pboard declareTypes:[NSArray arrayWithObject:@"XMPPPerson"] owner:self];
 		[pboard setPropertyList:D([item name], @"name", [item group], @"group")
-						forType:@"JabberPerson"];
+						forType:@"XMPPPerson"];
 		return YES;	
 	}
-	if([item isKindOfClass:[JabberPerson class]])
+	if([item isKindOfClass:[XMPPPerson class]])
 	{
-		[pboard declareTypes:[NSArray arrayWithObject:@"JabberIdentity"] owner:self];
-		[pboard setString:[[item jid] jidString] forType:@"JabberIdentity"];
+		[pboard declareTypes:[NSArray arrayWithObject:@"XMPPIdentity"] owner:self];
+		[pboard setString:[[item jid] jidString] forType:@"XMPPIdentity"];
 		return YES;	
 	}
 	return NO;
@@ -738,16 +738,16 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 - (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id < NSDraggingInfo >)info proposedItem:(id)item proposedChildIndex:(int)anIndex
 {
 	NSPasteboard * pboard = [info draggingPasteboard];
-	if([item isKindOfClass:[JabberPerson class]])
+	if([item isKindOfClass:[XMPPPerson class]])
 	{
-		if([pboard availableTypeFromArray:A(@"JabberPerson", @"JabberIdentity")])
+		if([pboard availableTypeFromArray:A(@"XMPPPerson", @"XMPPIdentity")])
 		{
 			return NSDragOperationMove;
 		}
 	}
-	if([item isKindOfClass:[RosterGroup class]])
+	if([item isKindOfClass:[XMPPRosterGroup class]])
 	{
-		if([pboard availableTypeFromArray:A(@"JabberPerson")])
+		if([pboard availableTypeFromArray:A(@"XMPPPerson")])
 		{
 			return NSDragOperationMove;
 		}		
@@ -760,46 +760,46 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 	NSPasteboard * pboard = [info draggingPasteboard];
 	[pboard types];
 	BOOL dropped = NO;
-	if([item isKindOfClass:[JabberPerson class]])
+	if([item isKindOfClass:[XMPPPerson class]])
 	{
 		id object = nil;
 		NSString * newGroup = [item group];
 		NSString * newName = [item name];
-		if((object = [pboard propertyListForType:@"JabberPerson"]) != nil)
+		if((object = [pboard propertyListForType:@"XMPPPerson"]) != nil)
 		{
 			NSString * groupName = [object objectForKey:@"group"];
 			NSString * personName = [object objectForKey:@"name"];
 			//Make sure it's not dealloc'd when we remove the last identity from it
-			JabberPerson * person = [[[roster groupNamed:groupName] personNamed:personName] retain];
+			XMPPPerson * person = [[[roster groupNamed:groupName] personNamed:personName] retain];
 			NSArray * identities = [person identityList];
-			FOREACH(identities, identity, JabberIdentity*)
+			FOREACH(identities, identity, XMPPIdentity*)
 			{
 				[roster setName:newName group:newGroup forIdentity:identity];
 			}
 			dropped = YES;
 		}
-		else if((object = [pboard propertyListForType:@"JabberIdentity"]) != nil)
+		else if((object = [pboard propertyListForType:@"XMPPIdentity"]) != nil)
 		{
 			JID * jid = [JID jidWithString:object];
-			JabberIdentity * identity = [[roster personForJID:jid] identityForJID:jid];
+			XMPPIdentity * identity = [[roster personForJID:jid] identityForJID:jid];
 			//Make sure it's not dealloc'd when we remove the last identity from it
 			[roster setName:newName group:newGroup forIdentity:identity];
 			dropped = YES;
 		}
 	}
-	else if([item isKindOfClass:[RosterGroup class]])
+	else if([item isKindOfClass:[XMPPRosterGroup class]])
 	{
 		id object = nil;
 
-		if((object = [pboard propertyListForType:@"JabberPerson"]) != nil)
+		if((object = [pboard propertyListForType:@"XMPPPerson"]) != nil)
 		{
 			NSString * groupName = [object objectForKey:@"group"];
 			NSString * personName = [object objectForKey:@"name"];
 			//Make sure it's not dealloc'd when we remove the last identity from it
-			JabberPerson * person = [[[roster groupNamed:groupName] personNamed:personName] retain];
+			XMPPPerson * person = [[[roster groupNamed:groupName] personNamed:personName] retain];
 			NSArray * identities = [person identityList];
 			NSString * newGroup = [item groupName];
-			FOREACH(identities, identity, JabberIdentity*)
+			FOREACH(identities, identity, XMPPIdentity*)
 			{
 				[roster setGroup:newGroup forIdentity:identity];
 			}
@@ -814,7 +814,7 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 }
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	if([item isKindOfClass:[JabberPerson class]])
+	if([item isKindOfClass:[XMPPPerson class]])
 	{
 		return YES;
 	}
@@ -822,7 +822,7 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 }
 - (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	if([item isKindOfClass:[JabberPerson class]])
+	if([item isKindOfClass:[XMPPPerson class]])
 	{
 		NSString * group = [item group];
 		if([object length] > 2)
@@ -838,7 +838,7 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 		if(![object isEqualToString:[item name]])
 		{
 			NSArray * identities = [item identityList];
-			FOREACH(identities, identity, JabberIdentity*)
+			FOREACH(identities, identity, XMPPIdentity*)
 			{
 				[roster setName:object group:group forIdentity:identity];
 			}
@@ -847,7 +847,7 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 }
 - (void) newConversation:(NSNotification*)_notification
 {
-	Conversation * conversation = [[_notification userInfo] valueForKey:@"Conversation"];
+	XMPPConversation * conversation = [[_notification userInfo] valueForKey:@"XMPPConversation"];
 	id chatWindow = [[MessageWindowController alloc] initWithWindowNibName:@"MessageWindow"];
 		
 	[chatWindow conversation:conversation];

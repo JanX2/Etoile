@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <XMPPKit/Roster.h>
+#import <XMPPKit/XMPPRoster.h>
 #import <XMPPKit/XMPPAccount.h>
-#import <XMPPKit/Presence.h>
+#import <XMPPKit/XMPPPresence.h>
 
 @interface RosterController : NSWindowController <RosterDelegate, XMPPPresenceDisplay> {
 	unsigned char presence;
-	Roster * roster;
+	XMPPRoster * roster;
 	XMPPAccount * account;
 	IBOutlet NSOutlineView * view;
 	IBOutlet NSTableColumn * avatarColumn;

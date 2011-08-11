@@ -6,7 +6,7 @@
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import <XMPPKit/Presence.h>
+#import <XMPPKit/XMPPPresence.h>
 #import "TRUserDefaults.h"
 
 @implementation NSUserDefaults(TRJabberAdditions)
@@ -14,13 +14,13 @@
 {
 	NSMutableDictionary * colours = [NSMutableDictionary dictionaryWithDictionary:[self dictionaryForKey:@"PresenceColours"]];
 	[colours setObject:[NSArchiver archivedDataWithRootObject:_colour] 
-				forKey:[Presence displayStringForPresence:_presence]];
+				forKey:[XMPPPresence displayStringForPresence:_presence]];
 	[self setObject:colours forKey:@"PresenceColours"];
 }
 
 - (NSColor*) colourForPresence:(unsigned char)_presence;
 {
-	return [NSUnarchiver unarchiveObjectWithData:[[self dictionaryForKey:@"PresenceColours"] objectForKey:[Presence displayStringForPresence:_presence]]];
+	return [NSUnarchiver unarchiveObjectWithData:[[self dictionaryForKey:@"PresenceColours"] objectForKey:[XMPPPresence displayStringForPresence:_presence]]];
 }
 
 - (void) setColour:(NSColor *)_colour forKey:(NSString *)_key

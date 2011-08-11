@@ -6,7 +6,7 @@
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import <XMPPKit/Presence.h>
+#import <XMPPKit/XMPPPresence.h>
 #import "PresenceMenuController.h"
 #import "JabberApp.h"
 #import "CustomPresenceWindowController.h"
