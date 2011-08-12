@@ -18,7 +18,7 @@ static XMPPInfoQueryStanzaFactory * sharedInstance;
 	sharedInstance = [[XMPPInfoQueryStanzaFactory alloc] init];
 	//Insert default handlers here:
 	//Roster updates:
-	[sharedInstance addHandler:NSClassFromString(@"Query_jabber_iq_roster")
+	[sharedInstance addHandler:NSClassFromString(@"QueryRosterHandler")
 						forTag:@"query" 
 				   inNamespace:@"jabber:iq:roster"];
 	[sharedInstance addValue:@"RosterItems"
@@ -32,13 +32,13 @@ static XMPPInfoQueryStanzaFactory * sharedInstance;
 					  forTag:@"vCard" 
 				 inNamespace:@"vcard-temp"];
 	//Service Discovery:
-	[sharedInstance addHandler:NSClassFromString(@"DiscoItems")
+	[sharedInstance addHandler:NSClassFromString(@"XMPPDiscoItems")
 						forTag:@"query" 
 				   inNamespace:@"http://jabber.org/protocol/disco#items"];
 	[sharedInstance addValue:@"DiscoItems"
 					  forTag:@"query" 
 				 inNamespace:@"http://jabber.org/protocol/disco#items"];
-		[sharedInstance addHandler:NSClassFromString(@"DiscoInfo")
+		[sharedInstance addHandler:NSClassFromString(@"XMPPDiscoInfo")
 						forTag:@"query" 
 				   inNamespace:@"http://jabber.org/protocol/disco#info"];
 	[sharedInstance addValue:@"DiscoInfo"

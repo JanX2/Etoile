@@ -1,5 +1,5 @@
 //
-//  Capabilities.h
+//  XMPPCapabilities.h
 //  Jabber
 //
 //  Created by David Chisnall on 08/05/2005.
