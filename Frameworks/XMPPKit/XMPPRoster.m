@@ -203,7 +203,7 @@
 	ETXMLWriter *xmlWriter = [connection xmlWriter];
 	[xmlWriter startElement: @"iq"
 	             attributes: D(@"set", @"type",
-		                       [connection newMessageID], @"id")];
+		                       [connection nextMessageID], @"id")];
 	[xmlWriter startElement: @"query"
 	             attributes: D(@"jabber:iq:roster", @"xmlns")];
 	[xmlWriter startElement: @"item"
@@ -233,7 +233,7 @@
 	ETXMLWriter *xmlWriter = [connection xmlWriter];
 	[xmlWriter startElement: @"iq"
 	             attributes: D(@"set", @"type",
-	                           [connection newMessageID], @"id")];
+	                           [connection nextMessageID], @"id")];
 	[xmlWriter startElement: @"query" 
 	             attributes: D(@"jabber:iq:roster", @"xmlns")];
 	[xmlWriter startAndEndElement: @"item" 
@@ -280,7 +280,7 @@
 	ETXMLWriter *xmlWriter = [connection xmlWriter];
 	[xmlWriter startElement: @"iq"
 	             attributes: D(@"set", @"type",
-	                           [connection newMessageID], @"id")];
+	                           [connection nextMessageID], @"id")];
 	[xmlWriter startElement: @"query"
 	             attributes: D(@"jabber:iq:roster", @"xmlns")];
 	[xmlWriter startElement: @"item"

@@ -86,7 +86,7 @@ static NSDictionary * STANZA_KEYS;
 	{
 		connection = [XMPPConnection alloc];
 		[connections setObject:connection forKey:_account];
-		[connection initWithAccount:_account];
+		connection = [connection initWithAccount:_account];
 		[connection autorelease];
 	}
 	return connection;
@@ -250,7 +250,7 @@ static NSDictionary * STANZA_KEYS;
 
 - (void) startSession
 {
-	NSString * sessionIqID = [self newMessageID];
+	NSString * sessionIqID = [self nextMessageID];
 	[xmlWriter startElement: @"iq"
 	             attributes: D(@"set", @"type", sessionIqID, @"id")];
 	[xmlWriter startAndEndElement: @"session"
@@ -264,7 +264,7 @@ static NSDictionary * STANZA_KEYS;
 {
 	//Bind to a resource
 	//<iq type='set' id='bind_2'><bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'><resource>someresource</resource></bind></iq>
-	NSString * bindID = [self newMessageID];
+	NSString * bindID = [self nextMessageID];
 	[xmlWriter startElement: @"iq"
 	             attributes: D(@"set", @"type", bindID, @"id")];
 	[xmlWriter startElement: @"bind"
@@ -323,7 +323,7 @@ static NSDictionary * STANZA_KEYS;
 
 - (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq {}
 
-- (NSString*) newMessageID
+- (NSString*) nextMessageID
 {
 	unsigned int i = messageID++;
 	return [NSString stringWithFormat:@"ETXMPP_%d", i];
@@ -429,11 +429,11 @@ static NSDictionary * STANZA_KEYS;
 //Digest non-SASL auth.
 - (void) legacyLogIn
 {
-	NSString * newMessageID = [self newMessageID];
-	[dispatcher addInfoQueryResultHandler:self forID:newMessageID];
+	NSString * nextMessageID = [self nextMessageID];
+	[dispatcher addInfoQueryResultHandler:self forID:nextMessageID];
 
 	[xmlWriter startElement: @"iq"
-				 attributes: D(newMessageID, @"id", @"set", @"type", server, @"to")];
+				 attributes: D(nextMessageID, @"id", @"set", @"type", server, @"to")];
 	NSString * sessionPassword = [sessionID stringByAppendingString:pass];
 
 	NSData *data = [sessionPassword dataUsingEncoding: NSUTF8StringEncoding];
@@ -534,10 +534,10 @@ static NSDictionary * STANZA_KEYS;
 {
 	if (([anIq type] == IQ_TYPE_RESULT))
 	{
-		NSString * newMessageID = [self newMessageID];
-		[dispatcher addInfoQueryResultHandler:roster forID:newMessageID];
+		NSString * nextMessageID = [self nextMessageID];
+		[dispatcher addInfoQueryResultHandler:roster forID:nextMessageID];
 		[xmlWriter startElement: @"iq"
-		             attributes: D(newMessageID, @"id", @"get", @"type")];
+		             attributes: D(nextMessageID, @"id", @"get", @"type")];
 		[xmlWriter startElement: @"query"
 					 attributes: D(@"jabber:iq:roster", @"xmlns")];
 

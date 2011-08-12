@@ -75,11 +75,7 @@ static NSMutableArray * filters;
 }
 + (void) releaseAllXMPPConversations
 {
-	NSEnumerator * enumerator = [conversations objectEnumerator];
-	for(id conversation = [enumerator nextObject] ; conversation != nil ; conversation = [enumerator nextObject])
-	{
-		[conversation release];
-	}
+	[conversations removeAllObjects];
 }
 
 - (void) handleMessage:(XMPPMessage*)aMessage

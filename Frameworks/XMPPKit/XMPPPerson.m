@@ -90,7 +90,7 @@ static NSString * avatarCachePath = nil;
 - (void) requestvCard:(NSString*)jidString
 {
 	XMPPConnection * connection = (id)[roster connection];
-	NSString * vCardRequestID = [connection newMessageID];
+	NSString * vCardRequestID = [connection nextMessageID];
 	[connection XMPPSend:
 	 [NSString stringWithFormat:@"<iq to='%@' type='get' id='%@'><vCard xmlns='vcard-temp'/></iq>"
 	  , jidString, vCardRequestID]];

@@ -45,7 +45,7 @@ static NSString * xmlnsXMPPDiscoItems = @"http://jabber.org/protocol/disco#items
 - (void) sendQueryToJID:(const NSString*)jid node:(const NSString*)node inNamespace:(const NSString*)xmlns
 {
 	ETXMLWriter *xmlWriter = [connection xmlWriter];
-	NSString * iqID = [connection newMessageID];
+	NSString * iqID = [connection nextMessageID];
 	[xmlWriter startElement: @"iq"
 	             attributes: D(@"get", @"type",
 	                           jid, @"to",

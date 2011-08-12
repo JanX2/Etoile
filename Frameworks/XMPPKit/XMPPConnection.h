@@ -73,7 +73,7 @@
 /**
  * Returns a new connection-unique ID to be used with iq set/get stanzas.
  */
-- (NSString*) newMessageID;
+- (NSString*) nextMessageID;
 /**
  * Returns YES if connected to the server.
  */
