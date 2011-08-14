@@ -5,7 +5,7 @@ CC = clang
 TOOL_NAME = etdocgen
 
 $(TOOL_NAME)_OBJCFLAGS += -Wparentheses #-fblocks
-$(TOOL_NAME)_TOOL_LIBS = -lEtoileFoundation -lgvc
+$(TOOL_NAME)_TOOL_LIBS = -lEtoileFoundation `pkg-config libgvc --libs`
 
 $(TOOL_NAME)_OBJC_FILES = $(wildcard *.m)
 
