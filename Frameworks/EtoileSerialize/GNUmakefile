@@ -34,7 +34,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 ${DOCUMENT_NAME}_AGSDOC_FILES = $(addprefix Headers/, ${EtoileSerialize_HEADER_FILES})
 ${DOCUMENT_NAME}_AGSDOC_FLAGS += -MakeFrames YES
 
-OBJCFLAGS += -std=c99 -Wall -W -Wunreachable-code -Winline -Werror -Wno-unused -Wno-format -g
+OBJCFLAGS += -std=c99 -Wall -W -Wunreachable-code -Winline -Wno-unused -Wno-format -g
 LDFLAGS += -g
 
 -include GNUmakefile.preamble

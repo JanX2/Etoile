@@ -1,3 +1,4 @@
+#define EXPOSE_NSURL_IVARS
 #import "ETSerializer.h"
 #import "ETSerializerBackend.h"
 #import "ETDeserializer.h"

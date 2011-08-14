@@ -1,3 +1,4 @@
+#define EXPOSE_NSInvocation_IVARS
 #import <Foundation/Foundation.h>
 #import "ETSerializer.h"
 #import "ETSerializerBackend.h"
