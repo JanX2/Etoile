@@ -59,8 +59,8 @@
 	    NinePatch = YES;
 	};
 	GSProgressIndicatorBarDeterminate = {
-	    FileName = "Progress-horizontal.9.png";
-	    NinePatch = YES;
+	    FileName = Progress-horizontal-fill.tiff;
+	    FillStyle = Repeat;
 	};
 	GSScrollerDownArrow = {
 	    FileName = GSScrollerDownArrow.9.png;
