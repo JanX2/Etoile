@@ -85,7 +85,7 @@
 		}
 		NSLog (@"A CLASS ! <%@>", [class classname]);
 		[aClass setAST: class];
-		NSArray* ivars = [class ivars];
+		NSArray* ivars = [class instanceVariables];
 		for (int i=0; i<[ivars count]; i++)
 		{
 			NSString* ivar = [ivars objectAtIndex: i];

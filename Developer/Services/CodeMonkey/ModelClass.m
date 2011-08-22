@@ -176,6 +176,7 @@ static int CLASS_VIEW = 1;
 	NSLog (@"representation: <%@>", [self representation]);
 	NSLog (@"representation ast: <%@>", [parser parseString: [self representation]]);
 	LKSubclass* classAST = (LKSubclass*) [parser parseString: [self representation]];
+	[classAST check];
 	[self setAST: classAST];
 }
 

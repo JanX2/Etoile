@@ -24,7 +24,7 @@
 	{
 		[writer selectorToken: [sel objectAtIndex: 0]];
 	}
-	NSLog (@"<%@>(%d)", selector, [arguments count]);
+	//NSLog (@"<%@>(%d)", selector, [arguments count]);
 	if ([arguments count])
 	{
 		[writer selectorToken: @": "];

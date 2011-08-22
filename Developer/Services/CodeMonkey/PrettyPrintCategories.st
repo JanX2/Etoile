@@ -119,16 +119,19 @@ LKMethod extend [
     ]
 
     prettyprintToWriter: writer [
+	'Printing method!' log.
 	"Print local variables"
 	(symbols locals count > 0) ifTrue: [
 	    writer localVariableToken: '| '.
 	    symbols locals do: [ :symbol |
-		writer localVariableToken: symbol; append: ' '.
+		writer localVariableToken: (symbol name); append: ' '.
 	    ].
 	    writer localVariableToken: '|'; cr.
 	].
 	"Print statements"
 	statements do: [ :stmt |
+		'Recursing into statement' log.
+		stmt log.
 	    stmt prettyprintToWriter: writer.
 	    (stmt isKindOfClass: (LKComment class)) ifTrue: [
 		writer cr.
@@ -140,11 +143,11 @@ LKMethod extend [
 ]
 
 LKMessageSend extend [
-    xxprettyprintToWriter: writer [
+    prettyprintToWriter: writer [
 	| sel |
 	target prettyprintToWriter: writer.
 	writer append: ' '.
-	sel = selector componentsSeparatedByString: ':'.
+	sel := selector componentsSeparatedByString: ':'.
 	(sel count == 1) ifTrue: [
 		writer red: selector.
 	] ifFalse: [
@@ -184,6 +187,8 @@ LKMessageCascade extend [
 
 LKAssignExpr extend [
     prettyprintToWriter: writer [
+	'TARGET' log.
+	target log.
 	target prettyprintToWriter: writer.
 	writer append: ' := '.
 	expr prettyprintToWriter: writer.
@@ -196,18 +201,29 @@ LKStringLiteral extend [
     ]
 ]
 
+LKBuiltinSymbol extend
+[
+	prettyprintToWriter: writer
+	[
+		'Printing built in symbol' log.
+		symbol stringValue log.
+		writer append: (symbol stringValue)
+	]
+]
 LKDeclRef extend [
-    prettyprintToWriter: writer [
-	 ((symbols scopeOfSymbol: symbol) > 4) ifTrue: [
-		"ivar and cvar"
-		writer bold: self description.
-	] ifFalse: [
-	 	((symbols scopeOfSymbol: symbol) = 4) ifTrue: [
-			writer localVariableToken: self description.
+	prettyprintToWriter: writer [
+		| s |
+		s := symbols symbolForName: (symbol stringValue).
+		((s scope) > 4) ifTrue: [
+			"ivar and cvar"
+			writer bold: symbol stringValue
 		] ifFalse: [
-			writer append: self description.
-		]
-	].
+			((s scope) = 4) ifTrue: [
+				writer localVariableToken: symbol stringValue
+			] ifFalse: [
+				writer append: symbol stringValue
+			]
+		].
     ]
 ]
 

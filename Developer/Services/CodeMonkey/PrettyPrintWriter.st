@@ -135,11 +135,11 @@ NSObject subclass: PrettyPrintWriter [
 	self appendString: s.
     ]
     
-    indent: block [
-	indent := indent + 1.
-	block value.
-	indent := indent - 1.
-    ]
+	indent: block [
+		indent := indent + 1.
+		block value.
+		indent := indent - 1.
+	]
     
     value [
 	^ buffer

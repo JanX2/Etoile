@@ -228,7 +228,7 @@ static id <GormServer> GormProxy = nil;
 - (void) updateGorm
 {
     if (GormProxy == nil) {
-        GormProxy = [[NSConnection rootProxyForConnectionWithRegisteredName:@"GormServer" host:nil] retain];
+        GormProxy = (id)[[NSConnection rootProxyForConnectionWithRegisteredName:@"GormServer" host:nil] retain];
 	//[GormProxy setProtocolForProxy:@protocol(GormServer)];
     }
 
@@ -619,6 +619,7 @@ static id <GormServer> GormProxy = nil;
 			NSLog(@"to parse: <%@>", toParse);
 			NS_DURING
 			LKAST* methodAST = [parser parseMethod: toParse];
+			[methodAST check];
 			NSLog (@"method AST: %@", methodAST);
 			NSLog (@"pretty print: %@", [[methodAST prettyprint] stringValue]);
 
