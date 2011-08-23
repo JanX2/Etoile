@@ -4,7 +4,6 @@
 //
 //  Created by David Chisnall on 17/12/2006.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
-//  Slex: This file and relative implementation seems not used by neither
 
 /**
  * A hack required to avoid a bug in NSMutableArray's -sortUsingSelector: method
