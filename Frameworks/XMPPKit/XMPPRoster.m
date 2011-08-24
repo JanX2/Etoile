@@ -16,15 +16,15 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation XMPPRoster
-- (XMPPRoster*) initWithAccount:(id)_account
+- (XMPPRoster*) initWithAccount:(id)anAccount
 {
 	SUPERINIT
-	if(![_account isKindOfClass: [XMPPAccount class]])
+	if(![anAccount isKindOfClass: [XMPPAccount class]])
 	{
 		[self release];
 		return nil;
 	}
-	account = _account;
+	account = anAccount;
 	peopleByJID = [[NSMutableDictionary alloc] init];
 	groups = [[NSMutableArray alloc] init];
 	groupsByName = [[NSMutableDictionary alloc] init];
@@ -34,11 +34,11 @@
 	return self;
 }
 
-- (void) setInitialStatus:(unsigned char)_status withMessage:(NSString*)_message
+- (void) setInitialStatus:(unsigned char)aStatus withMessage:(NSString*)aMessage
 {
 	[initialMessage release];
-	initialMessage = [_message retain];
-	initialStatus = _status;
+	initialMessage = [aMessage retain];
+	initialStatus = aStatus;
 }
 
 - (void) offline
@@ -186,7 +186,7 @@
 	}
 }
 
-- (void) subscribe:(JID*)_jid withName:(NSString*)_name inGroup:(NSString*)_group
+- (void) subscribe:(JID*)aJid withName:(NSString*)aName inGroup:(NSString*)aGroup
 {
 	/*
 	 <iq type="set" id="anID" >
@@ -199,7 +199,7 @@
 	 
 	 <presence type="subscribe" to="theraven@theravensnest.org" />
 	 */
-	NSString * jidString = [_jid jidString];
+	NSString * jidString = [aJid jidString];
 	ETXMLWriter *xmlWriter = [connection xmlWriter];
 	[xmlWriter startElement: @"iq"
 	             attributes: D(@"set", @"type",
@@ -207,11 +207,11 @@
 	[xmlWriter startElement: @"query"
 	             attributes: D(@"jabber:iq:roster", @"xmlns")];
 	[xmlWriter startElement: @"item"
-	             attributes: D(_name, @"name", jidString, @"jid")];
-	if(_group != nil && ![_group isEqualToString:@""])
+	             attributes: D(aName, @"name", jidString, @"jid")];
+	if(aGroup != nil && ![aGroup isEqualToString:@""])
 	{
 		[xmlWriter startAndEndElement: @"group"
-		                        cdata: _group];
+		                        cdata: aGroup];
 	}
 
 	[xmlWriter endElement]; //</item>
@@ -223,7 +223,7 @@
 	                   attributes: D(@"subscribe", @"type", jidString, @"to")];
 }
 
-- (void) unsubscribe:(JID*)_jid
+- (void) unsubscribe:(JID*)aJid
 {
 	/*<iq type="set" id="aab7a" >
 	<query xmlns="jabber:iq:roster">
@@ -238,25 +238,25 @@
 	             attributes: D(@"jabber:iq:roster", @"xmlns")];
 	[xmlWriter startAndEndElement: @"item" 
 	                   attributes: D(@"remove", @"subscription",
-	                                 [_jid jidString], @"jid")];
+	                                 [aJid jidString], @"jid")];
 	[xmlWriter endElement]; //</query>
 	[xmlWriter endElement]; //</iq>
 }
-- (void) authorise:(JID*)_jid
+- (void) authorise:(JID*)aJid
 {
 	ETXMLWriter *xmlWriter = [connection xmlWriter];
 	[xmlWriter startAndEndElement: @"presence" 
 	                   attributes: D(@"subscribed", @"type",
-	                                 [_jid jidString], @"to")];
+	                                 [aJid jidString], @"to")];
 }
 
 
-- (void) unauthorise:(JID*)_jid
+- (void) unauthorise:(JID*)aJid
 {
 	ETXMLWriter *xmlWriter = [connection xmlWriter];
 	[xmlWriter startAndEndElement: @"presence" 
 	                   attributes: D(@"unsubscribed", @"type", 
-	                                 [_jid jidString], @"to")];
+	                                 [aJid jidString], @"to")];
 }
 
 
@@ -320,23 +320,23 @@
 	                  forJID: [[anIdentity jid] jidString]];
 }
 
-- (XMPPPerson*) personForJID:(JID*)_jid
+- (XMPPPerson*) personForJID:(JID*)aJid
 {
-	XMPPPerson * person = [peopleByJID objectForKey:[_jid jidStringWithNoResource]];
+	XMPPPerson * person = [peopleByJID objectForKey:[aJid jidStringWithNoResource]];
 	if(person == nil)
 	{
-		XMPPRootIdentity * identity = [[XMPPRootIdentity alloc] initWithJID:[_jid rootJID]
-																   withName:[_jid node]
+		XMPPRootIdentity * identity = [[XMPPRootIdentity alloc] initWithJID:[aJid rootJID]
+																   withName:[aJid node]
 																	inGroup:nil
 																  forPerson:nil];
 		person = [[XMPPPerson alloc] initWithIdentity:identity
 											  forRoster:[account roster]];
 		[identity person:person];
-		if([_jid resource] != nil)
+		if([aJid resource] != nil)
 		{
-			[identity addResource:_jid];
+			[identity addResource:aJid];
 		}
-		[peopleByJID setObject:person forKey:[_jid jidStringWithNoResource]];
+		[peopleByJID setObject:person forKey:[aJid jidStringWithNoResource]];
 
 		XMPPRosterGroup * group = [groupsByName objectForKey:@"None"];
 		if(group == nil)
@@ -354,11 +354,11 @@
 	return person;
 }
 
-- (XMPPRosterGroup*) groupForIndex:(int)_index
+- (XMPPRosterGroup*) groupForIndex:(int)anIndex
 {
-	return [groups objectAtIndex:_index];
+	return [groups objectAtIndex:anIndex];
 }
-- (XMPPRosterGroup*) groupForIndex:(int)_index ignoringPeopleLessOnlineThan:(unsigned int)onlineState
+- (XMPPRosterGroup*) groupForIndex:(int)anIndex ignoringPeopleLessOnlineThan:(unsigned int)onlineState
 {
 	int count = -1;
 	FOREACH(groups, group, XMPPRosterGroup*)
@@ -366,7 +366,7 @@
 		if([group numberOfPeopleInGroupMoreOnlineThan:onlineState] > 0)
 		{
 			count++;
-			if(count == _index)
+			if(count == anIndex)
 			{
 				return group;
 			}
@@ -375,13 +375,13 @@
 	return nil;
 }
 
-- (XMPPRosterGroup*) groupNamed:(NSString*)_groupName
+- (XMPPRosterGroup*) groupNamed:(NSString*)aGroupName
 {
-	if(_groupName == nil)
+	if(aGroupName == nil)
 	{
-		_groupName = @"None";
+		aGroupName = @"None";
 	}
-	return [groupsByName objectForKey:_groupName];
+	return [groupsByName objectForKey:aGroupName];
 }
 - (int) numberOfGroups
 {
@@ -406,10 +406,10 @@
 	return delegate;
 }
 
-- (void) setDelegate:(id <RosterDelegate, NSObject>)_delegate
+- (void) setDelegate:(id <RosterDelegate, NSObject>)aDelegate
 {
 	[delegate release];
-	delegate = [_delegate retain];
+	delegate = [aDelegate retain];
 }
 - (XMPPDispatcher*) dispatcher
 {
@@ -423,9 +423,9 @@
 {
 	return connection;
 }
-- (void) update:(id)_object
+- (void) update:(id)anObject
 {
-	[delegate update:_object];
+	[delegate update:anObject];
 }
 - (void) dealloc
 {

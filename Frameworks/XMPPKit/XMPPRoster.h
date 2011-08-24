@@ -21,7 +21,7 @@
 /**
  * Update the display of the specified object.
  */
-- (void) update:(id)_object;
+- (void) update:(id) anObject;
 //- (void) authorisationRequestedFor:(JID*)_jid;
 @end
 
@@ -48,7 +48,7 @@
 /**
  * Initialise a roster for a specified account.
  */
-- (XMPPRoster*) initWithAccount:(id)_account;
+- (XMPPRoster*) initWithAccount:(id)anAccount;
 /**
  * Add items to the roster from an iq with type result containing one or more 
  * roster items.
@@ -61,7 +61,7 @@
  * XMPPAccount.  It is currently here so that the client can set itself as online
  * once the latest copy of the roster has been received.
  */
-- (void) setInitialStatus:(unsigned char)_status withMessage:(NSString*)_message;
+- (void) setInitialStatus:(unsigned char)aStatus withMessage:(NSString*)aMessage;
 /**
  * Takes the roster offline.  This sets the presence of all identities to 
  * unknown (since we can not be certain of any online states while we are not on 
@@ -72,32 +72,32 @@
 /**
  * Sets the delegate.
  */
-- (void) setDelegate:(id <RosterDelegate, NSObject>)_delegate;
+- (void) setDelegate:(id <RosterDelegate, NSObject>)aDelegate;
 
 /**
  * Triggers an update of the specified object in the roster.  This would be better
  * handled by notifications.
  */
-- (void) update:(id)_object;
+- (void) update:(id)anObject;
 
 /**
  * Returns a person for a given JID if one exists in the roster.
  */
-- (XMPPPerson*) personForJID:(JID*)_jid;
+- (XMPPPerson*) personForJID:(JID*)aJid;
 /**
  * Returns the group for a given name.
  */
-- (XMPPRosterGroup*) groupNamed:(NSString*)_groupName;
+- (XMPPRosterGroup*) groupNamed:(NSString*)aGroupName;
 
 /** 
  * Returns the group at a given index.
  */
-- (XMPPRosterGroup*) groupForIndex:(int)_index;
+- (XMPPRosterGroup*) groupForIndex:(int)anIndex;
 /**
  * Returns the group at a specified index when only groups containing people more
  * online than the given onlineState value are counted.
  */
-- (XMPPRosterGroup*) groupForIndex:(int)_index ignoringPeopleLessOnlineThan:(unsigned int)onlineState;
+- (XMPPRosterGroup*) groupForIndex:(int)anIndex ignoringPeopleLessOnlineThan:(unsigned int)onlineState;
 
 /**
  * Returns the number of groups.
@@ -113,20 +113,20 @@
 /**
  * Adds the specified JID to the roster, with the given name in the given group.
  */
-- (void) subscribe:(JID*)_jid withName:(NSString*)_name inGroup:(NSString*)_group;
+- (void) subscribe:(JID*)aJid withName:(NSString*)aName inGroup:(NSString*)aGroup;
 /**
  * Removes the specified JID from the roster.
  */
-- (void) unsubscribe:(JID*)_jid;
+- (void) unsubscribe:(JID*)aJid;
 /**
  * Authorises the specified JID to add the user to their roster.
  */
-- (void) authorise:(JID*)_jid;
+- (void) authorise:(JID*)aJid;
 /**
  * Remove the authorisation granted to the specified JID.  This JID will no longer
  * receive presence stanzas from you.
  */
-- (void) unauthorise:(JID*)_jid;
+- (void) unauthorise:(JID*)aJid;
 /**
  * Renames an identity.  This will cause the identity to be assigned to a new person.
  */
