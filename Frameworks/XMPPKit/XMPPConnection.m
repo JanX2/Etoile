@@ -93,9 +93,9 @@ static NSDictionary * STANZA_KEYS;
 }
 
 
-- (id) initWithAccount:(id)_account
+- (id) initWithAccount:(id)anAccount
 {
-	if (![_account isKindOfClass:[XMPPAccount class]])
+	if (![anAccount isKindOfClass:[XMPPAccount class]])
 	{
 		[self release];
 		return nil;
@@ -105,7 +105,7 @@ static NSDictionary * STANZA_KEYS;
 	ASSIGN(res, [[NSHost currentHost] name]);
 	//Get the log class, if it has been built
 	xmlLog = NSClassFromString(@"XMLLog");
-	account = _account;
+	account = anAccount;
 	roster = [(XMPPAccount*)account roster];
 	
 	XMPPDefaultHandler * defaultHandler = [[[XMPPDefaultHandler alloc] initWithAccount:account] autorelease];

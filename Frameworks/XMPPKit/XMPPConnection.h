@@ -47,7 +47,7 @@
 /**
  * Initialise the connection for a specified account.
  */
-- (id) initWithAccount:(id)_account;
+- (id) initWithAccount:(id)anAccount;
 /**
  * Connect to the specified Jabber server as the specified user, with the given
  * password.  
@@ -81,12 +81,12 @@
 /**
  * Set the current status.  
  */
-- (void) setStatus:(unsigned char)_status withMessage:(NSString*)_message;
+- (void) setStatus:(unsigned char)aStatus withMessage:(NSString*)aMessage;
 /**
  * Sets the UI component used to display the presence.  This should definitely be 
  * replaced with a notification based system.
  */
-- (void) setPresenceDisplay:(id<XMPPPresenceDisplay,NSObject>)_display; 
+- (void) setPresenceDisplay:(id<XMPPPresenceDisplay,NSObject>)aDisplay; 
 /**
  * Returns the dispatcher associated with the connection.
  */
