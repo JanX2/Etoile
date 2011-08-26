@@ -31,15 +31,16 @@
  * This method should not be called after the creation of any 
  * XMPPChatLog objects.  The behaviour in this case is undefined.  
 */
-+ (void) setLogBasePath:(NSString*)_path;
++ (void) setLogBasePath:(NSString*)aPath;
+
 /**
  * Returns a XMPPChatLog for the specified person.
  */
-+ (id) chatLogWithPerson:(XMPPPerson*)person;
++ (id) chatLogWithPerson:(XMPPPerson*)aPerson;
 /**
  * Initialises the chat log for a specific person.
  */
-- (id) initWithPerson:(XMPPPerson*)person;
+- (id) initWithPerson:(XMPPPerson*)aPerson;
 /**
  * Logs the given message.
  */

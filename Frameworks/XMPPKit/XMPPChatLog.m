@@ -43,22 +43,22 @@ static NSDictionary * ERROR_STYLE;
 		nil] retain];
 }
 
-+ (void) setLogBasePath:(NSString*)_path
++ (void) setLogBasePath:(NSString*)aPath
 {
 	[logBasePath release];
-	if([_path characterAtIndex:[_path length]-1] == '/')
+	if([aPath characterAtIndex:[aPath length]-1] == '/')
 	{
-		logBasePath = [_path retain];
+		logBasePath = [aPath retain];
 	}
 	else
 	{
-		logBasePath = [[_path stringByAppendingString:@"/"] retain];
+		logBasePath = [[aPath stringByAppendingString:@"/"] retain];
 	}
 }
 
-+ (id) chatLogWithPerson:(XMPPPerson*)person
++ (id) chatLogWithPerson:(XMPPPerson*)aPerson
 {
-	return [[[XMPPChatLog alloc] initWithPerson:person] autorelease];
+	return [[[XMPPChatLog alloc] initWithPerson:aPerson] autorelease];
 }
 - (void) initLog
 {
@@ -139,7 +139,7 @@ static NSDictionary * ERROR_STYLE;
 	return  [[[XMPPChatLog alloc] initWithPerson:person useXMLFormatLog:_xml] autorelease];
 }
 
-- (id) initWithPerson:(XMPPPerson*)person
+- (id) initWithPerson:(XMPPPerson*)aPerson
 {
 	return [self initWithPerson:(XMPPPerson*)person useXMLFormatLog:NO];
 }
