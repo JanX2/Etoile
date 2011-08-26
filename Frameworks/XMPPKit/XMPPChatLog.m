@@ -141,7 +141,7 @@ static NSDictionary * ERROR_STYLE;
 
 - (id) initWithPerson:(XMPPPerson*)aPerson
 {
-	return [self initWithPerson:(XMPPPerson*)person useXMLFormatLog:NO];
+	return [self initWithPerson:(XMPPPerson*)aPerson useXMLFormatLog:NO];
 }
 
 - (id) init
