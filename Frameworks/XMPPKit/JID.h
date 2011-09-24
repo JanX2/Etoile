@@ -36,11 +36,11 @@ typedef enum {invalidJID = 0, serverJID, serverResourceJID, userJID, resourceJID
 /**
  * Creates a new JID from the given string.
  */
-+ (id) jidWithString:(NSString*)_jid;
++ (id) jidWithString:(NSString*)aJid;
 /**
  * Initialises a new JID with a specified string
  */
-- (id) initWithString:(NSString*)_jid;
+- (id) initWithString:(NSString*)aJid;
 /**
  * Returns the amount of information provided by this JID.
  *
@@ -58,13 +58,13 @@ typedef enum {invalidJID = 0, serverJID, serverResourceJID, userJID, resourceJID
 /**
  * Compare two JIDs.
  */
-- (NSComparisonResult) compare:(JID*)_other;
+- (NSComparisonResult) compare:(JID*)anAnotherJid;
 /**
  * Compare two JIDs excluding their resource component.  Any combination of
  * user@example.com/foo, user@example.com/bar and user@example.com will return
  * NSOrderedSame when used as receiver and argument for this comparison.
  */
-- (NSComparisonResult) compareWithNoResource:(JID*)_other;
+- (NSComparisonResult) compareWithNoResource:(JID*)anAnotherJid;
 /**
  * Test for JID equality.  Returns YES if both JIDs have the same components and
  * all components are the same.
