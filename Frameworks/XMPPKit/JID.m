@@ -10,9 +10,9 @@
 
 
 @implementation JID
-+ (id) jidWithString:(NSString*)_jid
++ (id) jidWithString:(NSString*)aJid
 {
-	return [[[JID alloc] initWithString:_jid] autorelease];
+	return [[[JID alloc] initWithString:aJid] autorelease];
 } 
 
 - (id)copyWithZone:(NSZone *)zone
@@ -70,14 +70,14 @@
 	return self;
 }
 
-- (id) initWithString:(NSString*)_jid
+- (id) initWithString:(NSString*)aJid
 {
 	[self init];
 	//JID's are not case sensitive.  This is irritating, but what can you do?
-	_jid = [_jid lowercaseString];
+	aJid = [aJid lowercaseString];
 	
-	NSRange at = [_jid rangeOfString:@"@"];
-	NSRange slash = [_jid rangeOfString:@"/"];
+	NSRange at = [aJid rangeOfString:@"@"];
+	NSRange slash = [aJid rangeOfString:@"/"];
 	[server release];
 	[user release];
 	[resource release];
@@ -90,30 +90,30 @@
 		if(slash.location == NSNotFound)
 		{
 			type = serverJID;
-			server = [_jid retain];
+			server = [aJid retain];
 		}
 		else
 		{
 			type = serverResourceJID;
-			server = [[_jid substringToIndex:slash.location] retain];
-			resource = [[_jid substringFromIndex:slash.location + 1] retain];
+			server = [[aJid substringToIndex:slash.location] retain];
+			resource = [[aJid substringFromIndex:slash.location + 1] retain];
 		}
 	}
 	else
 	{
-		user = [[_jid substringToIndex:at.location] retain];
+		user = [[aJid substringToIndex:at.location] retain];
 		if(slash.location == NSNotFound)
 		{
 			type = userJID;
-			server = [[_jid substringFromIndex:at.location + 1] retain];
+			server = [[aJid substringFromIndex:at.location + 1] retain];
 		}
 		else
 		{
 			type = resourceJID;
 			at.location++;
 			at.length = slash.location - at.location;
-			server = [[_jid substringWithRange:at] retain];
-			resource = [[_jid substringFromIndex:slash.location + 1] retain];
+			server = [[aJid substringWithRange:at] retain];
+			resource = [[aJid substringFromIndex:slash.location + 1] retain];
 		}
 	}
 	stringRepresentation = [[self getJIDString] retain];
@@ -126,9 +126,9 @@
 	return type;
 }
 
-- (NSComparisonResult) compare:(JID*)_other
+- (NSComparisonResult) compare:(JID*)anAnotherJid
 {
-	return [stringRepresentation compare:[_other getJIDString]];
+	return [stringRepresentation compare:[anAnotherJid getJIDString]];
 }
 
 - (BOOL) isEqual:(id)anObject
@@ -164,9 +164,9 @@
 	return [JID jidWithString:stringRepresentationWithNoResource];
 }
 
-- (NSComparisonResult) compareWithNoResource:(JID*)_other
+- (NSComparisonResult) compareWithNoResource:(JID*)anAnotherJid
 {
-	return [stringRepresentationWithNoResource compare:[_other getJIDStringWithNoResource]];
+	return [stringRepresentationWithNoResource compare:[anAnotherJid getJIDStringWithNoResource]];
 }
 
 - (NSString*) jidString
