@@ -18,7 +18,7 @@ static XMPPInfoQueryStanzaFactory * sharedInstance;
 	sharedInstance = [[XMPPInfoQueryStanzaFactory alloc] init];
 	//Insert default handlers here:
 	//Roster updates:
-	[sharedInstance addHandler:NSClassFromString(@"QueryRosterHandler")
+	[sharedInstance addHandler:NSClassFromString(@"XMPPQueryRosterHandler")
 						forTag:@"query" 
 				   inNamespace:@"jabber:iq:roster"];
 	[sharedInstance addValue:@"RosterItems"

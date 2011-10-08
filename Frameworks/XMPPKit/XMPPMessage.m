@@ -39,7 +39,7 @@ NSDictionary * MESSAGE_TYPES;
 	NSLog(@"Body (%@) %@", [_body class], _body);
 	if([_body isKindOfClass:[NSString class]])
 	{
-		body = [[_body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];		
+		body = [[_body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
 	}
 	else if([_body isKindOfClass:[NSAttributedString class]])
 	{
@@ -200,7 +200,7 @@ NSDictionary * MESSAGE_TYPES;
 		depth++;
 		correspondent = [[JID jidWithString:[attributes objectForKey:@"from"]] retain];
 		direction = in;
-		type = [[MESSAGE_TYPES objectForKey:[attributes objectForKey:@"type"]] intValue];		
+		type = [[MESSAGE_TYPES objectForKey:[attributes objectForKey:@"type"]] intValue];
 	}
 	else 
 	{

@@ -545,8 +545,8 @@ static NSDictionary * STANZA_KEYS;
 		[xmlWriter endElement];
 		
 		SET_STATE(LoggedIn);
-		
-		[self XMPPSend:unsentBuffer];
+		if(unsentBuffer!=nil && [unsentBuffer isEqualToString:@""] == NO )
+			[self XMPPSend:unsentBuffer];
 		[unsentBuffer setString:@""];
 	}
 }
