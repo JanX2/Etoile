@@ -1,0 +1,5 @@
+@chapter Introduction
+
+This document is a reference for developers who want to develop applications and libraries using Etoile.
+
+

@@ -1,0 +1,26 @@
+\input texinfo
+@setfilename EtoileDeveloperGuide.texi
+@settitle Etoile Developers Guide
+@afourpaper
+@copying 
+Copyright Christopher Armstrong 2011. 
+
+Licensed under the GNU Free Documentation License.
+
+@end copying
+
+@titlepage
+@title Etoile Developers Guide
+@author Christopher Armstrong
+@end titlepage
+
+@insertcopying
+
+@contents
+
+@include Introduction.texi
+@include ObjectMerging.texi
+
+@include License.texi 
+
+@bye

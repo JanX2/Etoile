@@ -88,6 +88,9 @@ A view isn't necessarily the same as a document. For example, a user may create 
 
 \subsection{Search}
 
+The user opens the project overlay. In the search box, they begin typing some text that they wish to search for in their workspace. The Object Manager shows a list of results that are filtered for the current project.
+
+In another scenario, the user creates a new Object Manager view. They click on the Documents type tag, which searches all the documents in their workspace.
 
 \subsection{Open a view within the project}
 The user double-clicks on an empty portion of the desktop to open the Project Overlay. Inside the project overlay is the views that are part of the current project but are not currently open. The user double-clicks on a view and it drops down to the desktop and open. 
@@ -102,7 +105,7 @@ The \proman user interface could provide a few ways to select and switch between
 \end{itemize}
 
 \subsection{Close a view}
-The user clicks the close button on the active view. The view disappears from the screen, but is still available in the project switcher to be opened again.
+The user clicks the close button on the active view. The view disappears from the screen, but is still available in the project overlay to be opened again.
 
 \subsection{Minimise or restore a view}
 The user clicks the minimise button on the active view
@@ -138,19 +141,43 @@ Each service is a GNUstep application or tool. We use the name `service' to dist
 
 Because a service is a GNUstep application or a tool, and in turn a programme, the lifetime of a service is just that of an ordinary application i.e. it is started as a new process, it can be tracked using its process identifier, we can communicate with it using inter-process communication primitives like sockets and shared memory, and it will die when it is closed. Almost every operating system support these fundamental ideas in essentially the same way that GNUstep is portable and can maintain the same Application Programming Interface on each OS without much difficulty.  
 
-\subsection{Filters, Tags and Groups}
+\subsection{Searches, Tags and Groups}
 Filters, tags and groups form the basis of finding and organising objects in the user interface.
 
-A group is an user-defined entity that references a set of other objects. It is not a container, as objects are not limited to being stored in one group (they can be referenced by many groups). Groups can be referenced by each other, but it is just a reference, and not a "nesting" behaviour.
+A group is an user-defined entity that references a set of other objects. It is not a container, as objects are not limited to being stored in one group (they can be referenced by many groups). Groups can be referenced by each other, but it is just a reference, and not a "nesting" behaviour. The result is a non-hierarchical graph with lines pointing from a group to another object or group.
 
-A filter is a search on one property of objects, such as name, date of creation, type, etc. A filter is applied to a set of objects e.g. all the objects in the workspace; all the objects returned by this tag, etc. Its aim to to restrict the results in the query by only one meaningful attribute e.g. all the objects created in the last day, all the object thats name begins with "ach", etc.
+Search is a feature provided in the environment that is used to locate objects and views. A search acts like a filter on the objects in the environment. Its results are shown as a set of objects that match the filter criteria in the environment.
+
+Search is provided by the Object Manager.  It appears in the project overlay, already filtered to the current project, or in an Object Manager view that the user activated in their project.
+
+A search may be constructed on the following aspects of objects:
+\begin{itemize}
+\item Type
+\item Last Access Date
+\item Keyword search on Contents
+\item Location (which object database it appears in)
+\end{itemize}
+
+A tag is a saved search. An instance of Object Manager may be created with a number of pre-defined tags that search on (usually) one aspect of objects, such as their type or last access date.
+
+\subsection{Types}
+
+Each object has a type. The concept of "type" can be very specific, and refer to a template of an object, upto very general type definitions, such as that of "Music" or "Documents". Types are primarily used to identify which service should be used to open up a root object, display a view or instantiate in a EtoileUI controller.
+
+The assortment of types includes:
+\begin {description}
+\item[Object Types] Each class defines an object type that is defined by the class that created the object.
+\item[Aggregate Types] An aggregate type is a general type like "Document" or "Music" that contains a specific group of other more specific types. For example, an aggregate type "Document" would contain a list of all the "Document" types that are available in the system.
+\item[Template Sub Types] Users/Developers can create new types out of object types that consist of an instance of that object type which is used as a "template" for a more specific custom  type. For example, a user may setup a word processor document with a set of specific styles and page watermarks that is intended for use as a template. It could be defined as a template type in the environment.
+\end{description}
+
 \section{Private Services}
 
 The services within \proman and within the \etoile environment which are not directly accessible to the user are private or system services. The details of some of these are given in the following subsections
 
-\subsection{Anatomy}
+\subsection{Internal structure of services}
 
-A service is a \gnustep tool or application. The main difference is that users don't invoke them directly. 
+A service is a \gnustep tool or application. The main difference between a \gnustep application and an \etoile service is that users don't invoke services directly. 
 
 Each service is bound to a name and one more data types. For example:
 \begin{verbatim}
@@ -195,6 +222,22 @@ A string containing the identifier of the project. It is placed on a view's top-
 The \proman will place this property on the root window of the workspace to indicate the current project. When it changes this property, the window manager should re-map the windows on the display so that only the views of the newly selected project are shown.
 
 \subsection{Messages}
+
+\section{Core Object}
+Core Object is the persistence framework in \etoile. It is used by \proman to locate objects and store information about the project workspace. Each object in a user's workspace is stored in a CoreObject database.
+
+The CoreObject database needs to support \proman functions such as:
+\begin{itemize}
+\item Searching for objects
+\item Storing information about the user's workspace, such as views and projects
+\item Finding template (user-defined) types
+\end{itemize}
+
+Each document in \etoile is stored by CoreObject as an object graph. It has history that records each and every change that is made to the object, including to objects inside that object tree.  The document is versioned as a whole, and each document has its own revision history.
+
+An object inside a document can refer to another object at the root or inside another document. This link does not mean that the object in the referred tree becomes a part of the history of the referring tree. It's just a pointer to the other object inside the separate document tree. The user interface must make clear when a object is a reference to another document, not an object inside the current document.
+
+Every object inside a document object tree has its own identifier that uniquely identifies it. As all the objects are stored together in the same database, it is important that we can distinguish the roots of an object graph that forms a document. The identity of an object helps with comparing revisions in order to perform difference and merging operations, and it is needed in order to link from an object in one document to an object in another document.
 
 \end{document}  
 

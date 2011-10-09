@@ -1,0 +1,172 @@
+@chapter ObjectMerging Framework
+
+ObjectMerging is Etoile's persistence framework. It provides object-level persistence that stores the entire history of changes made to an object graph. It is designed to be used in user applications to provide an easy-to-use layer for persisting documents with full undo/redo support across the document's lifetime. Importantly, it also provides full-text indexing of objects so that documents can be searched for quickly by a user.
+
+This framework supercedes CoreObject, which was an earlier attempt to provide a similar level of functionality.
+
+@section Background
+
+ObjectMerging provides object-level persistence. A persistent object in ObjectMerging has COObject as its base class. Every persistent object also has a unique identifier, which is represented as a UUID.@footnote{UUID stands for Universally Unique Identifer. It is a method for generating identifiers that are guaranteed to be unique in a distributed computing setting. See @cite{ITU-T Rec. X.667}, @cite{ISO/IEC 9834-8:2005} or @cite{RFC 4122} for more details} These are objects in the traditional OOP sense, so they have properties and inter-object relationships.
+
+The framework stores the history of each object. Each set of changes made across a group of objects is broken down into a @dfn{revision}. A revision is much the same as a commit in source code control systems, where a commit is a set of changes made against a group of files; we use the same terminology in ObjectMerging.
+
+Each object is persisted to an on-disk store. Etoile typically creates one object store per user, but custom applications can create their own object stores. The intention is that a user stores all their documents and settings in the same persistent store on disk.
+
+Because every object is saved in the same store, so it is necessary to provide some sort of separation between groups of related objects. Each object has a root object, which acts as a sort of container for a set of objects. Each revision applies only to one root object; changes to objects that have a different @emph{root} will have multiple revisions, one per root object. In this way, a root object acts like the base object of a document.
+
+Without this separation, unrelated objects that were changed at the same time could participate in the same revision. This would make it difficult to revert the changes on a particular document without involving objects from unrelated documents. Merely switching to a previous revision to undo would undo all the changes to all the other objects involved in the revision. Creating a new revision that just undoes the changes to a particular document still doesn't help: an undo becomes a new commit in itself, so it becomes complex very quickly to distinguish new commits from undo and redo commits, and to track all the way back through the revision line.
+
+@section Getting Started
+
+@subsection Dependencies
+ObjectMerging depends upon the gnustep-base library and EtoileFoundation. Information on how to set these up is given earlier in this document. Additionally, you will need the UnitKit framework if you wish to run the test cases.
+
+@subsection Project GNUmakefile
+
+After installing ObjectMerging into your GNUstep environment, you will just need to include the ObjectMerging framework as a library dependency. For the following example project called @file{CalendarApp}, we define the GNUmakefile as such:
+@example
+include $(GNUSTEP_MAKEFILES)/common.make
+
+APPLICATION_NAME = CalendarApp
+
+$(APPLICATION_NAME)_OBJC_FILES = ...
+$(APPLICATION_NAME)_OBJC_LIBS = -lObjectMerging
+
+...
+
+include $(GNUSTEP_MAKEFILES)/application.make
+@end example
+
+@section Creating new core object class
+
+An object that can be persisted with ObjectMerging is one that inherits from the @code{COObject} class. Additionally, it has a model defined for it in the default model repository. For example, imagine we have a new type called @code{Calendar} which stores a set of @code{Appointment} instances. We need to first define the interface for such a class:
+@example
+@@interface Calendar : COObject
+@{
+        NSMutableArray *appointments;
+        NSDate *today;
+@}
+
+- (NSArray*)appointments;
+- (NSDate*)today;
+@@end
+@end example
+
+@subsection Defining the Model
+ObjectMerging needs a model for this new class in order to know how to persist it and retrieve it again. The model is stored in default model description repository, which is retrieved by calling @code{+[ETModelDescriptionRepository mainRepository]}. 
+
+We define the model by overriding the @code{+(ETEntityDescription*)newEntityDescription} method to create our own model. This method must call @code{+newBasicEntityDescription} to retrieve a new entity description for this class. It must also set the model properties if our @code{[self class]} value is equal to the current class (like what is done in an @code{+initialize} method), otherwise, we could accidentally augment the model for classes further down the model tree.
+
+In the following example, we define the model for the @code{Calendar} class above, which has two properties: @code{-today} and @code{-appointments}. The first property is just a simple scalar value storing today's date as an @code{NSDate} instance, while @code{-appointments} stores a list of @code{Appointment} instances in an array.
+
+@example
+@@implementation Calendar
++ (ETEntityDescription*)newEntityDescription
+@{
+  ETEntityDescription *desc = [self newBasicEntityDescription];
+  if ([[desc name] isEqual: [Calendar className]])
+  @{
+    ETModelDescriptionRepository *repo = [ETModelDescriptionRepository mainRepository];
+    [desc setParent: (id)@@"Anonymous.COObject"];
+
+    ETPropertyDescription *today = [ETPropertyDescription
+      descriptionWithName: @@"today"
+                     type: [repo descriptionForName: @@"Anonymous.NSDate"]];
+    
+    ETPropertyDescription *appointments = [ETPropertyDescription
+      descriptionWithName: @@"appointments"
+                     type: (id)@@"Anonymous.Appointment"];
+    [appointments setMultivalued: YES];
+    [appointments setOrdered: YES];
+    
+    [desc setPropertyDescriptions: A(appointments, today)];
+    [[[desc propertyDescriptions] mappedCollection] setPersistent: YES];
+  @}
+  return desc;
+@}
+
+...
+@@end
+@end example
+
+There are two things to notice about the @code{-appointments} property when we set its type by typecasting the string @code{@@"Anonymous.Appointment"} as an @code{id}. The first is the @code{Anonymous} part of the name string: it refers to the @code{Appointment} entity in the default package. This prefix is needed for a class's generic entity description in the model repository. You can retrieve the entity description for any class with this prefix.@footnote{EtoileFoundation permits the creation of new "entity" descriptions that are derived from existing entity descriptions for classes, and allows you to put them into different packages. The Anonymous package is the default.} 
+
+The second part to notice is the typecast. Typically you provide an instance of @code{ETEntityDescription} loaded from the repository. In this case, we have used a mechanism in EtoileFoundation that resolves an entity by name if we specify a string instead of a @code{ETEntityDescription}.  It's a useful shortcut, but more importantly, it means we don't need to try and load the entity description for another class that we need. The model description repository will try and resolve the entity description for the @code{Appointment} class at some later stage.
+
+Also notice that we called @code{-setMultivalued:} and @code{-setOrdered:}. This indicates that @code{-appointments} is a collection property that is ordered (i.e. an array) as opposed to unordered (i.e. a set).
+
+The @code{A()} macro used in the @code{-setPropertyDescriptions:} call is a shortcut for @code{-[NSArray arrayWithObjects: , ...]} provided by EtoileFoundation.
+
+The last line uses EtoileFoundation's Higher Order Messaging (HOM) feature to retrieve the list of properties we just defined and call @code{-setPersistent} against each one so that ObjectMerging will recognise it as a property it needs to persist.
+
+For more information about defining models or anything about EtoileFoundation, see the chapter on EtoileFoundation or consult the API documentation for @code{ETModelDescriptionRepository}.
+
+@subsection Designing and implementing the core object
+
+Your persistent object does not need to have a particularly different design in order to use ObjectMerging. The main issues to check for are property implementation and object initialisation.
+
+@subsubsection Property implementation
+The properties you define need to be reflected in the API of your class as setter and getter methods that are compatible with Property Value Coding (PVC). For all intents and purposes, PVC is the same as Key Value Coding (KVC), except that it allows things not typically considered attributes of a class to be retrieved.
+
+PVC is used to both save and restore the values of your class; you don't need to write any special persistence code. You need to make sure that any @dfn{persistent} properties you defined in your model have both setter and getter methods. If you don't provide setter methods, the underlying KVC implementation will attempt to retrieve the values of instance variables with the same name (unless you overrode @code{+accessInstanceVariablesDirectly} to return @code{NO}).
+
+Nor is there is no need to add special code to your getters or setters to inform the editing context that your object has changed: ObjectMerging uses Key Value Observing to monitor changes made to your object when it is inserted into an editing context. You just need to ensure you play by the normal KVO rules when accessing instance variables @emph{directly}, ensuring that you call @code{-willChangeValueForKey:} and @code{-didChangeValueForKey:} appropriately.
+
+@subsubsection Initialisation
+
+You should also take care as to how your default @code{-init} method is used to initialise your class. You can have consumers of your class call a custom init method, in which case you can initialise the default values of your class according to their input, but they must call @code{-becomePersistentInContext: rootObject} afterwards. On the other hand, if your class is instantiated through the @code{-[COEditingContext insertObjectWithEntityName:} method, your @code{-init} method will not be called. 
+
+If you still want to perform some initialisation every time your class is instantiated (regardless of whether they use a custom initialiser or the COEditingContext), you should override the @code{-didCreate} notifier, which is called the very first time an object is created. It isn't called when an object is retrieved againt from the persistent store.
+
+@section Instantiating a new object
+
+As described earlier, each object is stored in a persistent store. You don't access the store directly, but through an @dfn{editing context}. The editing context tracks the set of changes made to each object and persists them when the @code{-commit} method is called. 
+
+In ObjectMerging, the store is represented by a @code{COStore} object. Unless your application has its own store, you will rarely need to interact with it. The editing context is accessed through a @code{COEditingContext} object, which you instantiate yourself or through @code{-[COObject editingContext]} from an already loaded object.
+
+An new root object is created for the first time by calling @code{-[COEditingContext insertObjectWithEntityName:]}. This creates the object with a default initialiser and registers it for persistence in the context. Alternatively, you can instantiate the object through a normal @code{-alloc} and @code{-init} sequence and then call @code{-becomePersistentInContext:rootObject:} to make it available for persistence.
+
+In the following example, we show the instantiation through both means. 
+@example
+	COStore *store = [[COStore alloc]
+                initWithURL: [NSURL fileURLWithPath: @@"TestStore.db"]];
+
+        // Create the editing context
+        COEditingContext *ctx = [[COEditingContext alloc]
+                initWithStore: store];
+
+	// Create a new root object of type Calendar
+        Calendar *calendar = [ctx insertObjectWithEntityName: @@"Anonymous.Calendar"];
+
+	// Create a new Appointment object and attach it to the context
+        Appointment *firstAppt = [[Appointment alloc]
+                initWithStartDate: [NSDate date]
+                          endDate: [NSDate dateWithTimeIntervalSinceNow: 3600]];
+        [firstAppt becomePersistentInContext: ctx
+                                  rootObject: calendar];
+        [calendar addObject: firstAppt forProperty: @@"appointments"];
+ 
+	// Commit the changes
+	[ctx commit];
+@end example
+
+The first object (of type @code{Calendar}) doesn't specify a root object, so it becomes a root object in the store. The second object is instantiated with @code{calendar} as its root object. We then use the PVC method @code{-addObject:forProperty:} to add the new appointment to the calendar's @code{-appointments} property.
+
+The last part is to commit the changes to the editing context, which saves them to the store as part of a revision. This revision can be accessed through the @code{-[COObject revision]} object on the object. At this point, the objects are still usable and can be modified and committed again as part of a new revision through the same means.
+
+@section Undo and Redo with Commit Tracks
+
+Undo and redo in the framework is achieved through the use of @dfn{commit tracks}. As mentioned before, each object is stored as part of a revision. The revision is the set of changes made to an root object compared to the previous revision of the same root object. The previous revision is known as as the @dfn{base revision}.
+
+In normal usage scenarios, each revision is only the base revision for one other revision; in other words, there is a linear commit history, with no branches or forks in the history of the object. In this linear model, an undo would be implemented as a new commit, which contains the reverse of the changes to apply to the object to get it back to a previous state.
+
+Another model, which is exposed as commit tracks in ObjectMerging, is to implement undo as a history of switching between revisions. In this model, an undo simply switches the revision of a root object to a previous object. All the objects under the root object will be reloaded so that they reflect their state under the previous revision.
+
+In order to perform an undo, it is just a matter of accessing an object's commit track and calling @code{-undo} against it. The following example shows performing undo against the @code{calendar} object defined in the previous example:
+@example
+	[[calendar commitTrack] undo];
+@end example
+
+Similarly, a redo is performed by switching to the revision of a root object that was in store before the undo. It is perfomed by calling @code{-redo} against the commit track.
+
+
