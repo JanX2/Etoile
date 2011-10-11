@@ -3,7 +3,6 @@
 ObjectMerging is Etoile's persistence framework. It provides object-level persistence that stores the entire history of changes made to an object graph. It is designed to be used in user applications to provide an easy-to-use layer for persisting documents with full undo/redo support across the document's lifetime. Importantly, it also provides full-text indexing of objects so that documents can be searched for quickly by a user.
 
 This framework supercedes CoreObject, which was an earlier attempt to provide a similar level of functionality.
-
 @section Background
 
 ObjectMerging provides object-level persistence. A persistent object in ObjectMerging has COObject as its base class. Every persistent object also has a unique identifier, which is represented as a UUID.@footnote{UUID stands for Universally Unique Identifer. It is a method for generating identifiers that are guaranteed to be unique in a distributed computing setting. See @cite{ITU-T Rec. X.667}, @cite{ISO/IEC 9834-8:2005} or @cite{RFC 4122} for more details} These are objects in the traditional OOP sense, so they have properties and inter-object relationships.
@@ -12,9 +11,7 @@ The framework stores the history of each object. Each set of changes made across
 
 Each object is persisted to an on-disk store. Etoile typically creates one object store per user, but custom applications can create their own object stores. The intention is that a user stores all their documents and settings in the same persistent store on disk.
 
-Because every object is saved in the same store, so it is necessary to provide some sort of separation between groups of related objects. Each object has a root object, which acts as a sort of container for a set of objects. Each revision applies only to one root object; changes to objects that have a different @emph{root} will have multiple revisions, one per root object. In this way, a root object acts like the base object of a document.
-
-Without this separation, unrelated objects that were changed at the same time could participate in the same revision. This would make it difficult to revert the changes on a particular document without involving objects from unrelated documents. Merely switching to a previous revision to undo would undo all the changes to all the other objects involved in the revision. Creating a new revision that just undoes the changes to a particular document still doesn't help: an undo becomes a new commit in itself, so it becomes complex very quickly to distinguish new commits from undo and redo commits, and to track all the way back through the revision line.
+Because every object is saved in the same store, so it is necessary to provide some sort of separation between groups of related objects. Each object has a root object, which acts as a sort of container for a set of objects. Each revision applies only to one root object; changes to objects that have a different @emph{root} will have multiple revisions, one per root object. In this way, a root object acts like the base object of a document and provides clear separation between unrelated documents. This separation makes the behaviour of undo/redo more predictable and easier to understand.
 
 @section Getting Started
 
@@ -154,13 +151,17 @@ The first object (of type @code{Calendar}) doesn't specify a root object, so it 
 
 The last part is to commit the changes to the editing context, which saves them to the store as part of a revision. This revision can be accessed through the @code{-[COObject revision]} object on the object. At this point, the objects are still usable and can be modified and committed again as part of a new revision through the same means.
 
-@section Undo and Redo with Commit Tracks
+@section Undo and Redo
 
-Undo and redo in the framework is achieved through the use of @dfn{commit tracks}. As mentioned before, each object is stored as part of a revision. The revision is the set of changes made to an root object compared to the previous revision of the same root object. The previous revision is known as as the @dfn{base revision}.
+ObjectMerging supports undo and redo at the persistence framework level. It is implemented by means of a @dfn{commit track}, which is persistent metadata that supports a undo redo stack. The mechanics of revisions and commit tracks is discussed in @xref{Understanding the revision model}.
 
-In normal usage scenarios, each revision is only the base revision for one other revision; in other words, there is a linear commit history, with no branches or forks in the history of the object. In this linear model, an undo would be implemented as a new commit, which contains the reverse of the changes to apply to the object to get it back to a previous state.
+An @dfn{undo} in ObjectMerging reverts the object to the revision that was in place before this one. Performing undo again will revert to the revision that was in place before that. By that definition, @dfn{redo} will revert the undo i.e. the later revision will be restored.
 
-Another model, which is exposed as commit tracks in ObjectMerging, is to implement undo as a history of switching between revisions. In this model, an undo simply switches the revision of a root object to a previous object. All the objects under the root object will be reloaded so that they reflect their state under the previous revision.
+Undo and Redo only applies to one root object. All the objects that reference the root object as their root will participate in the undo/redo. 
+
+The model of undo in ObjectMerging is designed to be reasonably consistent with that in advanced user interfaces, which have full undo/redo stacks. Multiple undos will step back through the history of changes until they reach the beginning again, while multiple redos will follow the changes up until the latest point. This is where the word @emph{track} comes in, in that undo and redo follow the commit track, restoring one consecutive commit at a time.
+
+Also like in a GUI, making a new commit after performing one or more undos will make those revisions inaccessible to a redo. However, the revisions are not lost, and can be switched to manually if they are known. The @code{COCommitTrack} does not support this explicitly yet, but enough metadata is stored that such an implementation is virutally trivial.
 
 In order to perform an undo, it is just a matter of accessing an object's commit track and calling @code{-undo} against it. The following example shows performing undo against the @code{calendar} object defined in the previous example:
 @example
@@ -169,4 +170,28 @@ In order to perform an undo, it is just a matter of accessing an object's commit
 
 Similarly, a redo is performed by switching to the revision of a root object that was in store before the undo. It is perfomed by calling @code{-redo} against the commit track.
 
+@example
+	[[calendar commitTrack] redo];
+@end example
+@section Understanding the revision model
+
+In the @ref{Background}, we discussed the idea of root objects and revisions. Just to recap, each root object represents a group of related objects. Each change to those group of objects (including the original state of the object when it was created) are stored in one or more commits or revisions. Those revisions are exclusive to that root object; root objects cannot share revisions, even if they reference each other.
+
+This separation is important. Without it, unrelated objects that were changed at the same time could participate in the same revision. This would make it difficult to undo the changes on a particular document without involving objects from unrelated documents. 
+
+This means that revisions are related to each other in the way that they @emph{build} upon each other to form the history of the object. The @dfn{base revision} is the revision that comes before another revision. If you were to follow the base revision back recursively, you would arrive at the first revision for an object. You could imagine graphing this @dfn{revision track} with circles representing each revision, and an arrow from one revision to another representing the link between a revision and its base revision.
+  
+In normal usage scenarios, this revision track just looks like a straight line of circles pointing to one other circle, forming a linear revision history for a root object. However, this model is too simplistic to support undo and redo in a simple way. It is simple enough to support undo by moving back to a previous revision. In this way, you would store a simple pointer to the @dfn{current revision}. Supporting redo would just increment that pointer.  In this model, an undo simply switches the revision of a root object to a previous object. All the objects under the root object will be reloaded so that they reflect their state under the previous revision.
+
+However, this model suffers from the not-so-obvious (and quite limiting) flaw that means that you cannot create a new revision, except at the very top of the revision track. This useless from a user point of view, as it means the user cannot undo some of their changes and then continue editing from that point onwards.
+
+Another model, which is expressed as history tracks, is to implement undo by creating a difference between two revisions, and applying this difference as a @emph{new revision} on top of the revision track. Redo is implemented in the same way. However, repeatedly undoing becomes more and more complex, as you suddenly have to track the point in the revision track from which you began undoing and point at which the next undo (if it should occur) would commence. Multiple sets of undo, new commits and redo have to track parts of the line on which they can undo and which parts they cannot. This seems to become unwieldly very quickly.
+
+ObjectMerging uses a conceptually simpler model to implement commit tracks. As we mentioned before, each revision has a base revision. However, there is no need for a revision track to be a straight line. A particular revision might be, in fact, a base revision for more than one other revision. In this model, the history of revisions is less of a track, and more of a tree.
+
+That is still not sufficient to support an undo stack. We still need to know what revision we are at. We also need to know what revisions we can move forward and backward along. Just storing the base revision is not enough, as it prevents a redo from just moving forward. 
+
+What happens internally is that we create a @dfn{commit track node}, which is a node with a pointer to another revision. It also has a backwards and forwards pointer to other commit track nodes. We then store a pointer to the current commit track node in the commit track. A new revision also creates a new commit track node, pointing to the previous one. Undo will move the commit track pointer to the previous node, restoring an older revision. Redo works in reverse, by moving the pointer forward. In addition, we rewrite the forward pointers of the current commit track node before we make a new commit, so that the commit track reflects the new path that is created when a user undoes a revision and then makes a new change.
+
+This means that the user can undo all the way back to the beginning of their document, or redo all the way back along the current commit track. It also means that there is orphan commit track nodes that point to revisions which are no longer accessible along the main line of the commit track.
 
