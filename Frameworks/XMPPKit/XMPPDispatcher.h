@@ -64,7 +64,7 @@
 }
 /**
  * Create a new dispatcher with default handlers.  In the current implementation
- * all of these will be set to DefaultHander objects.
+ * all of these will be set to DefaultHandler objects.
  */
 + (id) dispatcherWithDefaultInfoQueryHandler:(id <XMPPInfoQueryStanzaHandler>)iq 
 					   messageHandler:(id <MessageHandler>)message 

@@ -46,7 +46,7 @@
 												 forAccount:account];
 	//Notify the app that a new conversation has been created
 	NSNotificationCenter * local = [NSNotificationCenter defaultCenter];
-	[local postNotificationName:@"NewXMPPConversationStartedNotification"
+	[local postNotificationName:@"XMPPNewConversationStartedNotification"
 	                      object:account
 	                    userInfo:[NSDictionary dictionaryWithObject:conversation forKey:@"XMPPConversation"]];
 	}

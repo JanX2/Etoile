@@ -35,13 +35,13 @@ static XMPPInfoQueryStanzaFactory * sharedInstance;
 	[sharedInstance addHandler:NSClassFromString(@"XMPPDiscoItems")
 						forTag:@"query" 
 				   inNamespace:@"http://jabber.org/protocol/disco#items"];
-	[sharedInstance addValue:@"DiscoItems"
+	[sharedInstance addValue:@"XMPPDiscoItems"
 					  forTag:@"query" 
 				 inNamespace:@"http://jabber.org/protocol/disco#items"];
 		[sharedInstance addHandler:NSClassFromString(@"XMPPDiscoInfo")
 						forTag:@"query" 
 				   inNamespace:@"http://jabber.org/protocol/disco#info"];
-	[sharedInstance addValue:@"DiscoInfo"
+	[sharedInstance addValue:@"XMPPDiscoInfo"
 					  forTag:@"query" 
 				 inNamespace:@"http://jabber.org/protocol/disco#info"];
 }
