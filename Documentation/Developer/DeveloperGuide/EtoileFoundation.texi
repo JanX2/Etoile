@@ -1,0 +1,44 @@
+@chapter EtoileFoundation
+
+EtoileFoundation is a set of extensions to Objective-C and the gnustep-base (Foundation) library that enhance its functionality. It is used to support many features in other Etoile libraries, such as ObjectMerging and EtoileUI.
+
+@section Property Value Coding
+
+@section Model Description Repository
+
+The @dfn{Model Description Repository} is a runtime metadata repository of entities available in an application or tool. It is used to discover the entities that can be instantiated, and the properties (through Property Value Coding) on objects of those entities that are available for accessing and changing.
+
+Each application has a main repository, that is accessed through the @code{+[ETModelDescriptionRepository mainRepository]} method. In a repository, you can find descriptions of:
+@itemize
+@item @dfn{entities}, which are types that can be instantiated
+@item @dfn{packages}, which are groups of related entities 
+@item @dfn{properties}, which are attributes of a entity that can be accessed
+@end itemize
+
+@section Higher Order Messaging
+@subsection Introduction
+@dfn{Higher Order Messaging (HOM)} is a utility that relies on second-chance messaging to abstract away the details of iteration, callbacks, delegation and other common tasks that require very similar code to work. A Higher Order Message is a message (in the object-oriented sense of @emph{sending a message}) that takes another message as its argument. Because Objective-C and Smalltalk don't exactly support taking a message send as an argument, it has to be implemented in slightly more round-about way, but that is still intuitive and concise.
+
+The key concept behind HOM is the idea of sending a @dfn{prefix} message to an object, before sending the specific message to the proxy object returned by that prefix message. The prefix message specifies what sort of general operation you want to perform, while the followup specifies the operation to be repeated or performed in some other context (e.g. inside an exception handler or on another thread). For example, if you want to send a message to each object in a collection, and put the results into another collection, you would need to do something like:
+@example
+NSArray *originalCollection;
+NSArray *collectedResults = [NSMutableArray array];
+
+for (int i = 0; i < [originalCollection count]; i++)
+@{
+	id myObj = [originalCollection objectAtIndex: i];
+	[collectedResults addObject: [myObj retrieveSomeProperty]];
+@}
+@end example
+
+Most of what occurs above is boilerplate, but without extra language constructs (such as those found in functional programming), its difficult to abstract the iteration details and make it easier to read. With HOM, the same result is achieved through the following code:
+@example
+NSArray *originalCollection;
+NSArray *collectedResults;
+
+collectedResults = [[originalCollection mappedCollection] retrieveSomeProperty];
+@end example
+
+In this case, the @code{-mappedCollection} method will return a sort of proxy object. When it receives its next message, it will catch it through the second-chance Objective-C mechanism via the @code{-forwardInvocation:} method and relay the message to each object in the collection. It effectively implements the for loop for you. On each iteration, it takes the result of the @code{-retreiveSomeProperty} operation and adds it to a new collection. At the end of the method, it will return the new collection.
+
+@section ETCollection Protocol and Implementation

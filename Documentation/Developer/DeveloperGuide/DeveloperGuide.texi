@@ -19,6 +19,7 @@ Licensed under the GNU Free Documentation License.
 @contents
 
 @include Introduction.texi
+@include EtoileFoundation.texi
 @include ObjectMerging.texi
 
 @include License.texi 
