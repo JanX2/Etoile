@@ -4,6 +4,41 @@ EtoileFoundation is a set of extensions to Objective-C and the gnustep-base (Fou
 
 @section Property Value Coding
 
+@dfn{Property Value Coding} is a simple extension to Key Value Coding (KVC) that supports reading and writing properties in a slightly different and more extensible way. 
+
+You retrieve the value of a property through the @code{-valueForProperty:} method by specifying the property name in the same way as KVC. Similarly, you can change the value of a property through the @code{-setValue:forProperty:} method. In most cases, you will not use these; they exist to support other frameworks, and to be overriden in your own classes to improve their flexibility.
+
+You retrieve the value of a property using the name of the property in the same manner that you specify a key for KVC. For example, with a class that has a @code{-setAddress:} method and a @code{-address} method, you would retrieve and set the property @code{address} using the following type of code:
+
+@example
+Address *homeAddress;
+Contact * myContact;
+...
+homeAddress = [myContact valueForProperty: @@"address"];
+businessAddress = [Address addressWithString: [@@"89 Broadway, Manchester Hill 28372"];
+[myContact setValue: businessAddress forProperty: @@"address"];
+@end example 
+
+@subsection Declaring and determining available properties
+
+PVC expects the properties that are available on an object to be declared by overriding the @code{-propertyNames} method, and extending the result of the superclass to include the properties that are accessible in the implementing subclass. Conversely, you can determine the properties that are accessible on an object by calling its @code{-propertyNames} method. It always returns an array of the available properties for that object. It is important that any implementation of this method is stable for the same object, otherwise exceptions will be generated when observing changes in an object's properties (see Observing Properties).
+
+This method is is also used by the PVC methods @code{-valueForProperty:} and @code{-setValue:forProperty:} to determine which properties are available . If a property name that is passed to the latter of these methods is not in the list, the value @code{NO} is returned. 
+@subsection Extending KVC
+PVC lets us access properties that are not usually accessible to Key Value Coding. For example, the @code{-count} method of NSArray and NSDictionary are both not typically accessible to KVC, but they are accessible to PVC.
+
+When a property value is not found on a @code{-setValue:forProperty:} call, PVC does not throw an exception. As mentioned in the previous section, it instead just returns a @code{BOOL} value indicating whether or not the property was successfully set.
+
+The main PVC methods, @code{-valueForProperty:} and @code{-setValue:forProperty:} are able to be overridden to extend the functionality of an object. For example, ObjectMerging uses them to control changes in a COObject instance for persisting object changes. EtoileUI's ETLayoutItem uses them to first check a represented object contains the specified property, and if the represented object doesn't support it, it will store or retrieve the property value from itself.
+
+@subsection Observing Properties
+
+It is possible to register yourself as an observer of property changes in an object by calling the @code{-addObserver:} method with a reference to the object that should receive the notifications. The set of properties that is observed is determined by the set returned from the @code{-observableKeyPaths} method. 
+
+This feature is just an extension to Key Value Observing (KVO) and uses the same mechanisms to register and unregister and notify your observer object. Your observer will receive notifications through the normal @code{-observeValue:forKeyPath:change:context:} callback.
+
+Similarly, an object can un-register from change notifications with the @code{-removeObserver:} method.
+
 @section Model Description Repository
 
 The @dfn{Model Description Repository} is a runtime metadata repository of entities available in an application or tool. It is used to discover the entities that can be instantiated, and the properties (through Property Value Coding) on objects of those entities that are available for accessing and changing.
@@ -14,6 +49,13 @@ Each application has a main repository, that is accessed through the @code{+[ETM
 @item @dfn{packages}, which are groups of related entities 
 @item @dfn{properties}, which are attributes of a entity that can be accessed
 @end itemize
+
+@subsection Defining new Entity Descriptions
+Entity descriptions for classes that you define are best declared by overriding the @code{+newEntityDescription} method for your class. You can obtain a new entity description instantiated for your class by calling @code{+newBasicEntityDescription} and then by filling it out with details of your entity's properties. 
+
+However, you should only fill it out if the returned entity description's class is equal to your class name. You need this check to prevent accidentally extending the entity description for a subclass where the subclass has not overridden @code{+newEntityDescription}. If the returned entity description does not match your class, you should return the entity description that you received so that the subclass has its own entity description.
+
+In your implementation, you need to set the parent entity and set the properties that your subclass exposes (not those inherited from a parent class).
 
 @section Higher Order Messaging
 @subsection Introduction
