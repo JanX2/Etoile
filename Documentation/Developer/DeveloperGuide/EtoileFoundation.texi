@@ -1,10 +1,22 @@
 @chapter EtoileFoundation
 
-EtoileFoundation is a set of extensions to Objective-C and the gnustep-base (Foundation) library that enhance its functionality. It is used to support many features in other Etoile libraries, such as ObjectMerging and EtoileUI.
+EtoileFoundation is a set of extensions to Objective-C and the gnustep-base (Foundation) library that enhance its functionality. It is used to support many features in other Etoile libraries, such as ObjectMerging and EtoileUI. It extends the functionality that is available in gnustep-base or Foundation (as its known in Cocoa). We assume that in the following you are familiar with the concepts in Foundation, especially Key Value Coding and Key Value Observing.
+
+@section Overview
+
+A key concept in EtoileFoundation is Property Value Coding (PVC). A @dfn{property} is similar to a key-path in KVC, in that it is an extension that similarly supports calling setter and getter methods indirectly by specifying strings. EtoileFoundation adds the ability to specify methods which are not normally KVC compliant but are PVC compliant and it supports better metadata than KVC in which properties are available to be changed or observed.
+
+EtoileFoundation also introduces a model description repository, which is a runtime metadata system for describing @dfn{entities} that are available to be instantiated and used in a programme. An entity is like a class, and closely corresponds to a class in Objective-C. It has properties which can be described by their name and type and relationship to other entities. It is used to support frameworks like ObjectMerging to more easily persist a class without custom serialisation code. EtoileUI uses it to quickly build a GUI based around the model of an object. It will eventually be integrated with PVC so that the model of an entity is available through PVC to determine the available property names.
+
+Higher Order Messaging adds an API for manipulating objects through proxies by allowing methods that take a message send as its parameter, but without the special syntax or paridigms of a functional language. It that make it simple to do things like send the same message to all the objects in a collection or start a method on a new thread. This is all done by sending objects a special prefix message, to which in turn you send the message you want to be treated in a special way. 
+
+The collection API extensions (known collectively by the @dfn{ETCollection} protocol) makes it easier to treat disparate collections in the same way in terms of access and observing changes (through KVO). This is used by EtoileUI to streamline the display of collections through ETLayoutItemGroups and in ObjectMerging to simplify the persistence of collection properties and relationships to other objects. It also makes it possible to use Higher Order Messaging to quickly manipulate collections of objects.
 
 @section Property Value Coding
 
-@dfn{Property Value Coding} is a simple extension to Key Value Coding (KVC) that supports reading and writing properties in a slightly different and more extensible way. 
+@dfn{Property Value Coding} is a simple extension to Key Value Coding (KVC) that supports reading and writing properties in a slightly different and more extensible way. It extends the behaviour of KVC to make more methods compatible and also adds functionality to KVO to automatically observe an object's properties.
+
+@subsection Accessing properties 
 
 You retrieve the value of a property through the @code{-valueForProperty:} method by specifying the property name in the same way as KVC. Similarly, you can change the value of a property through the @code{-setValue:forProperty:} method. In most cases, you will not use these; they exist to support other frameworks, and to be overriden in your own classes to improve their flexibility.
 
@@ -19,19 +31,34 @@ businessAddress = [Address addressWithString: [@@"89 Broadway, Manchester Hill 2
 [myContact setValue: businessAddress forProperty: @@"address"];
 @end example 
 
-@subsection Declaring and determining available properties
+@subsection Determining available properties
 
-PVC expects the properties that are available on an object to be declared by overriding the @code{-propertyNames} method, and extending the result of the superclass to include the properties that are accessible in the implementing subclass. Conversely, you can determine the properties that are accessible on an object by calling its @code{-propertyNames} method. It always returns an array of the available properties for that object. It is important that any implementation of this method is stable for the same object, otherwise exceptions will be generated when observing changes in an object's properties (see Observing Properties).
+The properties that are available on an object are returned by the @code{-propertyNames} method. It is not usually necessary to call this method directly. Rather, it is used primarily by the PVC methods @code{-valueForProperty:} and @code{-setValue:forProperty:} to determine which properties are available . If a property name that is passed to the latter of these methods is not in the list, the value @code{NO} is returned.
+ 
+The method @code{-observableKeyPaths} is similar to @code{-propertyNames}, but it is the list of KVC-compliant properties that can be observed. @ref{Observing property changes} for more details.
 
-This method is is also used by the PVC methods @code{-valueForProperty:} and @code{-setValue:forProperty:} to determine which properties are available . If a property name that is passed to the latter of these methods is not in the list, the value @code{NO} is returned. 
+It is therefore more important to make sure that your implementations of these methods is correct so that consumers of your class can use PVC with it. This process is discussed in @xref{Making a class compliant}
+
+@subsection Making a class compliant
+
+Property Value Coding expects the properties that are available on an object to be declared by overriding the @code{-propertyNames} method. Your implementation should extend the array returned from the result of the superclass operation to include the properties that are added by the subclass. Conversely, you can determine the properties that are accessible on an object by calling its @code{-propertyNames} method. It always returns an array of the available properties for that object. It is important that any implementation of this method is stable for the same object, otherwise exceptions will be generated when observing changes in an object's properties (@ref{Observing Properties}).
+
+For example, the following class has the properties @code{address}, @code{phoneNumber} and @code{name}. We show a class declaration and an example of implementing the @code{-propertyNames} method.
+
+@example
+@interface Contact : Person
+...
+- (NSString*)name;
+- (NS
+@end example
+
 @subsection Extending KVC
-PVC lets us access properties that are not usually accessible to Key Value Coding. For example, the @code{-count} method of NSArray and NSDictionary are both not typically accessible to KVC, but they are accessible to PVC.
-
-When a property value is not found on a @code{-setValue:forProperty:} call, PVC does not throw an exception. As mentioned in the previous section, it instead just returns a @code{BOOL} value indicating whether or not the property was successfully set.
 
 The main PVC methods, @code{-valueForProperty:} and @code{-setValue:forProperty:} are able to be overridden to extend the functionality of an object. For example, ObjectMerging uses them to control changes in a COObject instance for persisting object changes. EtoileUI's ETLayoutItem uses them to first check a represented object contains the specified property, and if the represented object doesn't support it, it will store or retrieve the property value from itself.
 
-@subsection Observing Properties
+In addition, PVC lets us access properties that are not usually accessible to Key Value Coding. For example, the @code{-count} method of NSArray and NSDictionary are both not typically accessible to KVC, but they are accessible to PVC. It also does not throw an exception when when a property value is not found on a @code{-setValue:forProperty:} call. As mentioned in the previous section, it instead just returns a @code{BOOL} value indicating whether or not the property was successfully set.
+
+@subsection Observing property changes
 
 It is possible to register yourself as an observer of property changes in an object by calling the @code{-addObserver:} method with a reference to the object that should receive the notifications. The set of properties that is observed is determined by the set returned from the @code{-observableKeyPaths} method. 
 
@@ -61,7 +88,7 @@ In your implementation, you need to set the parent entity and set the properties
 @subsection Introduction
 @dfn{Higher Order Messaging (HOM)} is a utility that relies on second-chance messaging to abstract away the details of iteration, callbacks, delegation and other common tasks that require very similar code to work. A Higher Order Message is a message (in the object-oriented sense of @emph{sending a message}) that takes another message as its argument. Because Objective-C and Smalltalk don't exactly support taking a message send as an argument, it has to be implemented in slightly more round-about way, but that is still intuitive and concise.
 
-The key concept behind HOM is the idea of sending a @dfn{prefix} message to an object, before sending the specific message to the proxy object returned by that prefix message. The prefix message specifies what sort of general operation you want to perform, while the followup specifies the operation to be repeated or performed in some other context (e.g. inside an exception handler or on another thread). For example, if you want to send a message to each object in a collection, and put the results into another collection, you would need to do something like:
+The key concept behind HOM is the idea of sending a @dfn{prefix} message to an object, before sending the specific message to the proxy object returned by that prefix message. The prefix message specifies what sort of general operation you want to perform, while the @dfn{followup message} specifies the operation to be repeated or performed in some other context (e.g. inside an exception handler or on another thread). For example, if you want to send a message to each object in a collection, and put the results into another collection, you would need to do something like:
 @example
 NSArray *originalCollection;
 NSArray *collectedResults = [NSMutableArray array];
@@ -81,6 +108,26 @@ NSArray *collectedResults;
 collectedResults = [[originalCollection mappedCollection] retrieveSomeProperty];
 @end example
 
-In this case, the @code{-mappedCollection} method will return a sort of proxy object. When it receives its next message, it will catch it through the second-chance Objective-C mechanism via the @code{-forwardInvocation:} method and relay the message to each object in the collection. It effectively implements the for loop for you. On each iteration, it takes the result of the @code{-retreiveSomeProperty} operation and adds it to a new collection. At the end of the method, it will return the new collection.
+In this case, the @code{-mappedCollection} method will return a sort of proxy object. When it receives its next message, it will catch it through the second-chance Objective-C mechanism via the @code{-forwardInvocation:} method, and then relay the followup message to each object in the collection. It effectively implements the for loop for you. On each iteration, it takes the result of the @code{-retreiveSomeProperty} operation and adds it to a new collection. At the end of the method, it will return the new collection.
+
+@subsection Manipulating collections
+
+
+
+@subsection Sending a message only if the target responds to it
+
+Typically when implementing delegates that have informal protocols, you want to make sure that if you send it a message, that the delegate responds to that message. This is typically implemented by code such as the following:
+
+@example
+if ([delegate respondsToSelector: @@selector(object:didReceiveNotification:)])
+	[delegate object: self didReceiveNotification: YES];
+
+@end example
+
+The @code{-ifResponds} higher order method will only send the subsequent message if the target of the method responds to it. It lets you simplify the above code to the following:
+@example
+[[delegate ifResponds] object: self didReceiveNotification: YES];
+@end example
+
 
 @section ETCollection Protocol and Implementation
