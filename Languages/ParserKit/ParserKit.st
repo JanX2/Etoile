@@ -1,3 +1,26 @@
+"
+============================================================================
+  ParserKit.st -- OMeta like parser implementation
+
+  Copyright (C) 2011 Mathieu Suen <mathieu@nebu.li>
+
+  The parser have the same syntax that the OMeta one. Although the semantic 
+  could differ. For the time being to write expression use the 
+  PKParseExpression class. See example at the bottom of the file.
+
+  ChangeLogs
+    2011/09/21 Beginning of the expression tree
+      - Get the expression tree implementation inspire from OMGrammar
+ 
+    2011/10/20 Beginning of the OMeta implementation
+      - Adding the PKParserBase PKRules class
+
+  TODO: Continue with the parseList:for: implementation.
+    The idea is that expression, when match success, store the result
+    in the memoize list.
+
+============================================================================
+"
 
 NSString extend [
 	
@@ -76,12 +99,19 @@ NSObject subclass: PKParseFail [
 		describ := string.
 		tail := list
 	]
+
+	initWithTail [
+		super init.
+		tail := ''.
+		describ := 'Fail match to avoid recursive call'
+	]
+	
 	tail [ ^tail]
 	isFailure [ ^true ]
 	isSuccess [ ^false ]
 
 	description [ 
-		^'PKMatchFailure  ( Tail: ''',  tail description, ''')\n' 
+		^'PKMatchFailure  ( Tail: ''',  tail description, ''') ', describ, '\n' 
 	]
 ]
 
@@ -112,6 +142,14 @@ NSObject subclass: PKParseExpression [
 		^PKSequenceExpression alloc initWithFirst: self second: exp
 	]
 
+	seq: exp1 seq: exp2 [
+		^(self seq: exp1) seq: exp2
+	]
+
+	seq: exp1 seq: exp2 seq: exp3 [
+		^(self seq: exp1 seq: exp2) seq: exp3
+	]
+
 	 parseList: sequence [
 		 ^self subclassResponsibility
 	 ]
@@ -139,13 +177,35 @@ PKParseExpression subclass: PKTerminalExpression [
 			return := PKParseMatch alloc initWithMatch: (list head: match matchSize) 
 								tail: (list tailFrom: match matchSize).
 		] ifFalse: [
-			return := PKParseFail alloc initWithTail: list description: 'Unexpected token, expected ', match  
+			return := PKParseFail alloc initWithTail: list description: 'Unexpected token'
 		].
 		^return
 	]
 
 	description [
-		^'Terminal (', match description, ')'
+		^ match description
+	]
+]
+
+PKParseExpression subclass: PKEmptyExpression [
+	| +instance |
+
+	+initialize [
+        instance := self new.
+	]
+
+	+uniqueInstance [
+        ^instance
+	]
+
+	parseList: list [
+		^list isEmpty 
+            ifTrue: [PKParseMatch alloc initWithMatch: '' tail: list]
+			ifFalse: [PKParseFail alloc initWithTail: list description:  'Expected an empty string'] 
+	]
+
+	description [
+		^ '$ '
 	]
 ]
 
@@ -165,12 +225,12 @@ PKParseExpression subclass: PKSequenceExpression [
 			match2 := (e2 parseList: match1 tail).
 			match2 isSuccess 
                 ifTrue: [ match1 sequenceWith: match2 ]
-				ifFalse: [ ]
+				ifFalse: [ match2 ]
 		] ifFalse: [ match1 ]
 	]
 
 	description [
-		^e1 description,  ',', e2 description
+		^e1 description, e2 description
 	]
 ]
 
@@ -183,11 +243,17 @@ PKParseExpression subclass: PKAlternateExpression [
 	]
 
 	 parseList: list [
-		 ^first parseList: list ifFailed: [ second parseList: list ]		
+		 ^first parseList: list ifFailed: [
+			 | match |
+			 match := second parseList: list.
+			 match isFailure 
+                 ifTrue:[ PKParseFail alloc initWithTail: list description: 'Expected ', self description]
+				 ifFalse: [match]
+		 ]		
 	 ]
 
 	description [
-		^first description, '|', second description
+		^'(', first description, ' or ', second description, ')'
 	]
 ]
 
@@ -224,25 +290,127 @@ NSString extend [
 	]
 ]
 
+NSObject subclass: PKInputStream [
+    | memo originalStream currentStream|
+
+    initWithStream: input [
+        orignialStream := input.
+        memo := NSMutableDictionary alloc init.
+
+	]
+
+    setValue: object forKey: key [
+        memo setValue: object forKey: key
+	]
+
+    objectForKey: key [
+         ^memo objectForKey: key
+	]
+
+    stream [
+        ^originalStream
+	]
+]
+
+NSOBject subclass: PKRules [
+	| parent rules name |
+
+	initWithName: string [
+		super init.
+		name := string.
+		parent := nil.
+		rules := NSMutableDictionary new.
+	 	
+	]
+
+	addRule: name expression: exp [
+		rules setValue: exp forKey: name
+	]
+
+	lookup: rule ifFaild: aBlock [
+		| return |
+		(return := rules objectForKey: rule == nil) ifTrue:[
+			return := (parent == nil) 
+                ifTrue: aBlock
+				ifFalse: [	
+					return := parent lookup: rule ifFaild: aBlock
+				]
+		].
+		^return	
+	]
+		
+	initWithParent: pkRules name: string [
+		self initWithName: string.
+		parent := pkRules
+	]
+		
+	subclass: string [
+		^slef class alloc initWithParent: self
+	]
+]
+
+
+NSObject subclass: PKParserBase [
+	| input +rulesRepo rules  |
+
+	+derivate: parent subclass: name [
+		| rule |
+		(rule := rulesRepo objectForKey: parent) == nil ifTrue: [
+			^ETTranscript show: 'Can not found parent grammar ''', parent, ''''; cr
+		].
+		rules setValue: (rule subclass: name) forKey: name
+	]
+
+	+getGrammar: name [
+		^rulesRepo objectForKey: name
+	]
+	
+
+    initWithGrammar: name [
+		rules := self class getGrammar: name.
+	]
+	
+	apply: rule [
+		| exp return |
+		(return := input objectForKey: rule) == nil ifTrue: [
+			input setValue: PKParseFail alloc initWithTail forKey: rule.
+			exp := rules lookup: rule ifNotFound: [
+				ETTranscript show: 'Invalid rule'
+			].
+		    return := exp parseList: input stream for: self
+		].
+		^return
+	]
+	
+	match: inputStream rule: rule [
+		input := PKInputStream alloc initWithStream: inputStream.
+		self apply: rule
+	]
+   
+]
+
 NSObject subclass: SmalltalkTool [
 	
 	run [
-		| parser abStar abStar b c tExp |
-
+		| dict parser abStar abStar b c tExp |
+		dict := NSMutableDictionary new.
+		dict setValue: 4 forKey: 'foo' .
+		ETTranscript show: (dict objectForKey: 'foo' ); cr.
+		ETTranscript show: (dict objectForKey: 5 ); cr.
 		abStar := PKRepetitionExpression alloc
 					 initWithExpression: 'ab' asExp
 					 canBeEmpty: false; yourself.
 
 		parser := abStar or: 'a' asExp.
 
-		parser := ('c' asExp repeat) seq: parser.
+		parser := ('c' asExp repeat) seq: parser seq: PKEmptyExpression uniqueInstance.
 
 	"	ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
 		ETTranscript show: NSObject alloc; cr."
 		ETTranscript show: (parser parseList: 'ccccccccabaab'); cr.
 
-		ETTranscript show: parser.
+		ETTranscript show: parser;cr.
 		ETTranscript show: (parser parseList: 'c'); cr.
 
 		"ETTranscript show: (C sqrt: 4)."
