@@ -117,9 +117,9 @@ NSObject subclass: PKParseExpression [
 	 ]
 
 	 parseList: list ifFailed: aBlock [
-		 | match |
+		| match |
 		 match := (self parseList: list).
-		 ^match isFailure ifTrue: [ aBlock value ]
+		 ^match isFailure ifTrue: [aBlock value]
 			 ifFalse: [ match ]
 	 ]
 
@@ -143,6 +143,10 @@ PKParseExpression subclass: PKTerminalExpression [
 		].
 		^return
 	]
+
+	description [
+		^'Terminal (', match description, ')'
+	]
 ]
 
 PKParseExpression subclass: PKSequenceExpression [
@@ -158,11 +162,15 @@ PKParseExpression subclass: PKSequenceExpression [
 		match1 := e1 parseList: list.
 		^match1 isSuccess ifTrue: [
 			| match2 |
-			match2 := (e2 parseList: match tail).
-			match2 ifSuccess 
+			match2 := (e2 parseList: match1 tail).
+			match2 isSuccess 
                 ifTrue: [ match1 sequenceWith: match2 ]
 				ifFalse: [ ]
-		] ifFalse: [ match ]
+		] ifFalse: [ match1 ]
+	]
+
+	description [
+		^e1 description,  ',', e2 description
 	]
 ]
 
@@ -177,6 +185,10 @@ PKParseExpression subclass: PKAlternateExpression [
 	 parseList: list [
 		 ^first parseList: list ifFailed: [ second parseList: list ]		
 	 ]
+
+	description [
+		^first description, '|', second description
+	]
 ]
 
 PKParseExpression subclass: PKRepetitionExpression [
@@ -199,6 +211,10 @@ PKParseExpression subclass: PKRepetitionExpression [
             ifTrue: [PKParseFail new initWithTail: list description: 'Unexpected token, expected ...']
 			ifFalse: [match]
 	]
+
+	description [
+		^e description , (canBeEmpty ifTrue: ['*'] ifFalse: ['+'])
+	]
 ]
 
 "--- Ecursive Extend ---"
@@ -217,14 +233,16 @@ NSObject subclass: SmalltalkTool [
 					 initWithExpression: 'ab' asExp
 					 canBeEmpty: false; yourself.
 
-		parser := 'a' asExp or: abStar.
+		parser := abStar or: 'a' asExp.
 
 		parser := ('c' asExp repeat) seq: parser.
 
 	"	ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
 		ETTranscript show: NSObject alloc; cr."
-		ETTranscript show: (parser parseList: 'ccccccccabab'); cr.
+		ETTranscript show: (parser parseList: 'ccccccccabaab'); cr.
+
+		ETTranscript show: parser.
 		ETTranscript show: (parser parseList: 'c'); cr.
 
 		"ETTranscript show: (C sqrt: 4)."
