@@ -13,11 +13,15 @@
 @interface ETCompoundDocumentTemplate : ETItemTemplate
 @end
 
+@interface ETAspectTemplateActionHandler : ETActionHandler
+@end
+
 @implementation DocumentEditorController
 
 - (void) setUpMenus
 {
 	[[ETApp mainMenu] addItem: [ETApp documentMenuItem]];
+	[[ETApp mainMenu] addItem: [ETApp editMenuItem]];
 	[[ETApp mainMenu] addItem: [ETApp insertMenuItem]];
 	[[ETApp mainMenu] addItem: [ETApp arrangeMenuItem]];
 }
@@ -45,9 +49,14 @@
 	[itemFactory beginRootObject];
 	mainItem = [itemFactory itemGroup];
 	[mainItem setSize: NSMakeSize(500, 400)];
-	[mainItem setLayout: [ETFixedLayout layout]];
+	[mainItem setLayout: [ETFreeLayout layout]];
 	[itemFactory endRootObject];
-										 
+
+	/*[mainItem addItem: [[itemFactory rectangle] copy]];
+	// FIXME:[[itemFactory windowGroup] addItem: [mainItem copy]];
+	[[itemFactory windowGroup] addItem: [mainItem deepCopy]];
+	return;*/
+
 	[self setTemplate: [ETCompoundDocumentTemplate templateWithItem: mainItem objectClass: Nil]
 	          forType: mainType];
 
@@ -57,6 +66,30 @@
 	//[self newDocument: nil];
 	//[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"kETOpenedDocumentUUIDs"];
 	[self showPreviouslyOpenedDocuments];
+	return;
+	ETLayoutItemGroup *picker = [itemFactory itemGroupWithRepresentedObject: [ETAspectRepository mainRepository]];
+	ETController *controller = AUTORELEASE([[ETController alloc] init]);
+	ETItemTemplate *template = [controller templateForType: [controller currentObjectType]];
+	ETSelectTool *tool = [ETSelectTool tool];
+
+	[tool setAllowsMultipleSelection: YES];
+	[tool setAllowsEmptySelection: NO];
+	[tool setShouldRemoveItemsAtPickTime: NO];
+
+	[[template item] setActionHandler: [ETAspectTemplateActionHandler sharedInstance]];
+	[controller setAllowedPickTypes: A([ETUTI typeWithClass: [NSObject class]])];
+
+	[picker setActionHandler: [ETAspectTemplateActionHandler sharedInstance]];
+	[picker setSize: NSMakeSize(300, 400)];
+	[picker setController: controller];
+	[picker setSource: picker];
+	[picker setLayout: [ETOutlineLayout layout]];
+	[[picker layout] setAttachedTool: tool];
+	[[picker layout] setDisplayedProperties: A(kETIconProperty, kETDisplayNameProperty)];
+	[picker setHasVerticalScroller: YES];
+	[picker reloadAndUpdateLayout];
+
+	[[itemFactory windowGroup] addItem: picker];
 
 	/*ETShape *shape = [ETShape rectangleShape];
 
@@ -70,6 +103,12 @@
 	for (ETUUID *uuid in [self openedDocumentUUIDsFromDefaults])
 	{
 		ETLayoutItemGroup *documentItem = (id)[[COEditingContext currentContext] objectWithUUID: uuid];
+		if (documentItem == nil)
+		{
+			ETLog(@"WARNING: Found no document %@", uuid);
+			[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"kETOpenedDocumentUUIDs"];
+			return;
+		}
 		[[[ETLayoutItemFactory factory] windowGroup] addItem: documentItem];
 	}
 }
@@ -154,3 +193,24 @@
 
 @end
 
+@implementation ETAspectTemplateActionHandler
+
+- (unsigned int) dragOperationMaskForDestinationItem: (ETLayoutItem *)item
+                                         coordinator: (ETPickDropCoordinator *)aPickCoordinator
+{
+	BOOL isDragInsideSource = (item != nil && [[item baseItem] isEqual: [aPickCoordinator dragSource]]);
+
+	if (isDragInsideSource)
+	{
+		return NSDragOperationMove;
+	}
+	return NSDragOperationCopy;
+}
+
+- (BOOL) boxingForcedForDroppedItem: (ETLayoutItem *)droppedItem 
+                           metadata: (NSDictionary *)metadata
+{
+	return [[metadata objectForKey: kETPickMetadataWasUsedAsRepresentedObject] boolValue];
+}
+
+@end
