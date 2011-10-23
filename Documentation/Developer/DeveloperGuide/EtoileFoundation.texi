@@ -4,17 +4,27 @@ EtoileFoundation is a set of extensions to Objective-C and the gnustep-base (Fou
 
 @section Overview
 
-A key concept in EtoileFoundation is Property Value Coding (PVC). A @dfn{property} is similar to a key-path in KVC, in that it is an extension that similarly supports calling setter and getter methods indirectly by specifying strings. EtoileFoundation adds the ability to specify methods which are not normally KVC compliant but are PVC compliant and it supports better metadata than KVC in which properties are available to be changed or observed.
+One of the first new concepts that EtoileFoundation introduces is @dfn{Property Value Coding} (PVC). A @dfn{property} is similar to a key-path in KVC, that is, it is a similar extension to the framework that supports calling setter and getter methods indirectly by specifying strings. EtoileFoundation adds the ability to specify methods which are not normally KVC-compliant (but are PVC compliant), and it supports better metadata than KVC in determining which properties are available to be changed or observed.
 
-EtoileFoundation also introduces a model description repository, which is a runtime metadata system for describing @dfn{entities} that are available to be instantiated and used in a programme. An entity is like a class, and closely corresponds to a class in Objective-C. It has properties which can be described by their name and type and relationship to other entities. It is used to support frameworks like ObjectMerging to more easily persist a class without custom serialisation code. EtoileUI uses it to quickly build a GUI based around the model of an object. It will eventually be integrated with PVC so that the model of an entity is available through PVC to determine the available property names.
+EtoileFoundation also introduces a @dfn{model description repository}, which is a runtime metadata system for describing @dfn{entities} that are available to be instantiated and used in a programme. An entity is like a class, and closely corresponds to a class in Objective-C. It has properties which can be described by their name and type and relationship to other entities. It is used to support frameworks like ObjectMerging to more easily persist a class without custom serialisation code. EtoileUI uses it to quickly build a GUI based around the model of an object. It will eventually be integrated with PVC so that the model of an entity is available through PVC to determine the available property names.
 
-Higher Order Messaging adds an API for manipulating objects through proxies by allowing methods that take a message send as its parameter, but without the special syntax or paridigms of a functional language. It that make it simple to do things like send the same message to all the objects in a collection or start a method on a new thread. This is all done by sending objects a special prefix message, to which in turn you send the message you want to be treated in a special way. 
+@dfn{Higher Order Messaging} (or HOM) adds an API for manipulating objects by introducing methods that take a message send as its parameter, but without the special syntax or paridigms of a functional language. It makes it simple to do things like send the same message to all the objects in a collection or call a method in the run loop of a new thread. This is all done by sending objects a special prefix message, to which in turn you send the message you want to be treated in a special way. 
 
-The collection API extensions (known collectively by the @dfn{ETCollection} protocol) makes it easier to treat disparate collections in the same way in terms of access and observing changes (through KVO). This is used by EtoileUI to streamline the display of collections through ETLayoutItemGroups and in ObjectMerging to simplify the persistence of collection properties and relationships to other objects. It also makes it possible to use Higher Order Messaging to quickly manipulate collections of objects.
+The collection API extensions (known collectively by the @dfn{ETCollection} protocol) makes it easier to treat disparate collections in the same way in terms of access and observing changes (through KVO). This is used by EtoileUI to streamline the display of collections through @code{ETLayoutItemGroup}s and in ObjectMerging to simplify the persistence of collection properties and relationships to other objects. It also makes it possible to use HOM to quickly manipulate collections of objects.
 
 @section Property Value Coding
 
 @dfn{Property Value Coding} is a simple extension to Key Value Coding (KVC) that supports reading and writing properties in a slightly different and more extensible way. It extends the behaviour of KVC to make more methods compatible and also adds functionality to KVO to automatically observe an object's properties.
+
+@subsection What is a property?
+
+Every object has methods that are used to retrieve attributes of the object (@dfn{"getter"} methods) and to change the attribute of an object (@code{"setter"} methods). Typically these @dfn{accessor} methods follow the same naming convention between classes, where getter methods begin with a lower case letter and use camel case to retrieve a value, and the corresponding setter method begins with @code{set} and then the uppercase-case led camel case name used in the getter.
+
+This naming convention, along with the ability to introspect objects to call their methods by name (and not just with a selector), is combined to allow accessor methods to accessed as properties. A @dfn{property} is described by just a string that contains the name of the getter method, and this method of accessing properties is called Property Value Coding in EtoileFoundation. Combined with the Property Value Coding methods that are added as a category to each class, it becomes possible to retrieve property values and observe changes in properties by specifying strings for the property and calling a consistent API.
+
+On its own, the PVC APIs don't appear to provide much usefulness. Compared to Cocoa, a property is the same as a key-path in Key-Value Coding and Key-Value Observing. It is used extensively in Cocoa's APIs and EtoileFoundation to rationalise access to model object properties from the user-interface definition so that you do not have to write extensive amounts of "glue" code that moves values between the user-interface and a model object. We also use it in ObjectMerging so that we can determine what properties are persistable.
+
+In EtoileFoundation, more than the normal accessor methods are available as properties. Additionally, it becomes possible to define which methods are available as properties for accessing and observing.
 
 @subsection Accessing properties 
 
@@ -78,12 +88,32 @@ Each application has a main repository, that is accessed through the @code{+[ETM
 @end itemize
 
 @subsection Defining new Entity Descriptions
-Entity descriptions for classes that you define are best declared by overriding the @code{+newEntityDescription} method for your class. You can obtain a new entity description instantiated for your class by calling @code{+newBasicEntityDescription} and then by filling it out with details of your entity's properties. 
+Entity descriptions for classes that you define are best declared by overriding the @code{+newEntityDescription} method for your class. You can obtain a new entity description instantiated for your class by calling @code{+newBasicEntityDescription} and then by filling it out with details of your entity's properties. Both these methods return an instance of @code{ETEntityDescription}. 
 
 However, you should only fill it out if the returned entity description's class is equal to your class name. You need this check to prevent accidentally extending the entity description for a subclass where the subclass has not overridden @code{+newEntityDescription}. If the returned entity description does not match your class, you should return the entity description that you received so that the subclass has its own entity description.
 
-In your implementation, you need to set the parent entity and set the properties that your subclass exposes (not those inherited from a parent class).
+@subsubsection Parent
+In your implementation, you need to set the parent entity and set the properties that your subclass exposes (not those inherited from a parent class). The parent entity is set through the @code{-setParent:} method, specifying the entity description of your parent retrieved from the entity description repository, or its name as a string (see the following section for more details on referring to entities by name). 
 
+@subsubsection Properties
+You can define properties by creating new instances of @code{ETPropertyDescription}. At a minimum, you need to set its name and its type (another entity description. You always need to specify the type for even simple properties like strings (@code{@@"Anonymous.NSString"}) and dates (@code{@@"Anonymous.NSDate"}). However, for multi-valued properties, you should specify the type stored in the collection, not the type of collection itself (like @code{NSArray} or @code{NSSet}).
+
+Instead, multivalued properties have some extra fields which are used to deduce:
+@itemize
+@item the type of the collection
+@item the way it is stored 
+@item how the stored objects refer back to their @dfn{owner}.
+@end itemize
+
+The first part of specifying a collection property is to set @code{-isMultivalued} to @code{YES}. 
+
+@subsection Referring to existing entity descriptions
+
+Entity descriptions are usually placed in packages. The package is specified as part of the entity name when looking it up in the model description repository using a dot (@code{.}) notation in the form of @code{Package.EntityName}. If an entity description is defined without specifying a package, it goes into a special package called @code{Anonymous}. You still need to specify this Anonymous package when referring to existing entities that are placed here. 
+
+When you define your entity description, you have the option of specifying either the corresponding entity description object, or a string containing the name of the entity. Although the API is usually typed to specify an instance of @code{ETEntityDescription}, you can use the latter option by typecasting a string containing the entity name. This option is only available when specifying property types and parent types, and only when defining new entity descriptions. The name is resolved to the real entity description at a later time on a call to the @code{-[ETModelDescriptionRepository resolveNamedObjectReferences]} method.
+
+EtoileFoundation creates entity descriptions for common scalar Foundation classes like @code{NSString} and @code{NSNumber} in the Anonymous package. You can refer to these in property descriptions by specifying their full package and entity name e.g. @code{@@"Anonymous.NSString"}.
 @section Higher Order Messaging
 @subsection Introduction
 @dfn{Higher Order Messaging (HOM)} is a utility that relies on second-chance messaging to abstract away the details of iteration, callbacks, delegation and other common tasks that require very similar code to work. A Higher Order Message is a message (in the object-oriented sense of @emph{sending a message}) that takes another message as its argument. Because Objective-C and Smalltalk don't exactly support taking a message send as an argument, it has to be implemented in slightly more round-about way, but that is still intuitive and concise.
