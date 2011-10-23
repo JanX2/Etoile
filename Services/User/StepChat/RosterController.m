@@ -41,7 +41,7 @@
 
 #ifdef GNUSTEP
 /* Ugly hack to fix a GNUstep bug */
-@implementation NSOutlineView (UglyHack)
+/*@implementation NSOutlineView (UglyHack)
 - (id)itemAtRow: (int)row
 {
 	if (row >= [_items count])
@@ -50,7 +50,7 @@
 	}
 	return [_items objectAtIndex: row];
 }
-@end
+@end*/
 #endif
 
 NSMutableArray * rosterControllers = nil;
@@ -290,7 +290,7 @@ NSMutableArray * rosterControllers = nil;
 						object:nil];
 	[defaultCenter addObserver:self
 	               selector:@selector(newConversation:)
-	                   name:@"NewConversationStartedNotification"
+	                   name:@"XMPPNewConversationStartedNotification"
 	                 object:nil];
 	
 	
@@ -303,7 +303,7 @@ NSMutableArray * rosterControllers = nil;
 	[localCenter addObserver:self
 					selector:@selector(presenceChanged:)
 						name:@"LocalPresenceChangedNotification"
-					  object:nil];	
+					  object:nil];
 	return self;
 }
 - (void) updateIdentities:(NSNotification*)aNotification
@@ -630,7 +630,7 @@ inline static XMPPConversation * createChatWithPerson(id self, XMPPPerson* perso
 												  forAccount:account]
 			retain];
 		
-		MessageWindowController * chatWindow = [[MessageWindowController alloc] initWithWindowNibName:@"MessageWindow"];		
+		MessageWindowController * chatWindow = [[MessageWindowController alloc] initWithWindowNibName:@"MessageWindow"];
 		[chatWindow conversation:conversation];
 		[conversation setDelegate:chatWindow];
 	}

@@ -149,7 +149,7 @@ static NSMutableArray * messageWindowControllers = nil;
 		}
 		else
 		{
-			[conversation sendText:[editingBox string]];			
+			[conversation sendText:[editingBox string]];
 		}
 		[editingBox setString:@""];
 		[self resizeEditingBox:self];
