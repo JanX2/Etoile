@@ -171,7 +171,7 @@ static NSString * xmlnsXMPPDiscoItems = @"http://jabber.org/protocol/disco#items
 					[featuresForCapabilities setObject:nodeInfo forKey:caps];
 				}
 				[[NSNotificationCenter defaultCenter] 
-					postNotificationName: @"DiscoFeaturesFound"
+					postNotificationName: @"XMPPDiscoFeaturesFound"
 					              object: self
 					            userInfo: D(jid, @"jid")];
 			}

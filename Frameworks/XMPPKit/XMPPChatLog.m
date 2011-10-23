@@ -275,14 +275,13 @@ static NSDictionary * ERROR_STYLE;
 		if(emote)
 		{
 			attributedMessageBody = [attributedMessageBody attributedSubstringFromRange:NSMakeRange(3,[[aMessage body] length]-3)];
-			//messageBody = [messageBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			//messageBody = [messageBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]; 
 		}
 		[messageText addAttribute:NSForegroundColorAttributeName value:headerColour range:NSMakeRange(0,[messageText length])];
 		
 		[messageText appendAttributedString:attributedMessageBody];
 		[messageText appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
-		
-		
+
 		[log appendAttributedString:messageText];
 		return messageText;
 	}

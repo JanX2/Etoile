@@ -36,6 +36,10 @@ NSDictionary * MESSAGE_TYPES;
 
 - (id) initWithBody:(id)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type
 {
+	if((self = [super init])==nil){
+		return nil;
+	}
+
 	NSLog(@"Body (%@) %@", [_body class], _body);
 	if([_body isKindOfClass:[NSString class]])
 	{
@@ -50,7 +54,7 @@ NSDictionary * MESSAGE_TYPES;
 	subject = [_subject retain];
 	type = type;
 	direction = out;
-	return [super init];
+	return self;
 }
 
 - (id) initWithXMLParser: (ETXMLParser*)aParser
@@ -66,7 +70,7 @@ NSDictionary * MESSAGE_TYPES;
 	}
 	unknownAttributes = [[NSMutableDictionary alloc] init];
 	timestamps = [[NSMutableArray alloc] init];
-	body = @"";
+	body = @"";//this make ever an empty body
 	shouldDisplay = YES;
 	return self;
 }
