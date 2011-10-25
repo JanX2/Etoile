@@ -29,29 +29,29 @@ NSDictionary * MESSAGE_TYPES;
 		nil];
 }
 	
-+ (id) messageWithBody:(id)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type
++ (id) messageWithBody:(id)aBody for:(JID*)aRecipient withSubject:(NSString*)aSubject type:(message_type_t)aType
 {
-	return [[[XMPPMessage alloc] initWithBody:_body for:_recipient withSubject:_subject type:_type] autorelease];
+	return [[[XMPPMessage alloc] initWithBody:aBody for:aRecipient withSubject:aSubject type:aType] autorelease];
 }
 
-- (id) initWithBody:(id)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type
+- (id) initWithBody:(id)aBody for:(JID*)aRecipient withSubject:(NSString*)aSubject type:(message_type_t)aType
 {
 	if((self = [super init])==nil){
 		return nil;
 	}
 
-	NSLog(@"Body (%@) %@", [_body class], _body);
-	if([_body isKindOfClass:[NSString class]])
+	NSLog(@"Body (%@) %@", [aBody class], aBody);
+	if([aBody isKindOfClass:[NSString class]])
 	{
-		body = [[_body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
+		body = [[aBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
 	}
-	else if([_body isKindOfClass:[NSAttributedString class]])
+	else if([aBody isKindOfClass:[NSAttributedString class]])
 	{
-		body = [[[_body stringValueWithExpandedLinks] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
-		html = [_body retain];
+		body = [[[aBody stringValueWithExpandedLinks] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
+		html = [aBody retain];
 	}
-	correspondent = [_recipient retain];
-	subject = [_subject retain];
+	correspondent = [aRecipient retain];
+	subject = [aSubject retain];
 	type = type;
 	direction = out;
 	return self;

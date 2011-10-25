@@ -39,11 +39,11 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
  * MESSAGE,GROUPCHAT}.  Only those of MESSAGE_TYPE_MESSAGE should (generally)
  * include a subject.
  */
-+ (id) messageWithBody:(id)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type;
++ (id) messageWithBody:(id)aBody for:(JID*)aRecipient withSubject:(NSString*)aSubject type:(message_type_t)aType;
 /**
  * Initialise a new message.
  */
-- (id) initWithBody:(id)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type;
+- (id) initWithBody:(id)aBody for:(JID*)aRecipient withSubject:(NSString*)aSubject type:(message_type_t)aType;
 /**
  * Returns the JID of the sender (for incoming messages) or the recipient (for 
  * outgoing messages).
