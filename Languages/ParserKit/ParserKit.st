@@ -23,12 +23,20 @@
 "
 
 NSString extend [
+
+	head [
+		^self head: 1
+	]
 	
 	head: size [
 		"TODO fix it with NSMakeRange"
 		^size > self count 
 			  ifTrue: [ self ]
 			  ifFalse: [ self substringWithRange: (NSValue rangeWithLocation: 0 length: size)]
+	]
+
+	tail [
+		^self tailFrom: 1
 	]
 
 	tailFrom: position [
@@ -42,6 +50,7 @@ NSString extend [
 	matchSize [ ^self length ]
 	count [ ^self length]
 	isEmpty [^self length = 0]
+	isNotEmpty [^self length > 0 ]
 ]
 
 NSObject extend [
@@ -150,17 +159,83 @@ NSObject subclass: PKParseExpression [
 		^(self seq: exp1 seq: exp2) seq: exp3
 	]
 
-	 parseList: sequence [
-		 ^self subclassResponsibility
-	 ]
+	parseList: sequence [
+		^self subclassResponsibility
+	]
 
-	 parseList: list ifFailed: aBlock [
+	parseList: list for: parser [
+		
+	]
+		
+	parseList: list ifFailed: aBlock [
 		| match |
-		 match := (self parseList: list).
-		 ^match isFailure ifTrue: [aBlock value]
-			 ifFalse: [ match ]
-	 ]
+		match := (self parseList: list).
+		^match isFailure ifTrue: [aBlock value]
+						 ifFalse: [ match ]
+	]
+	
+]
 
+PKParseExpression subclass: PKAlphabeticExpression [
+	
+	parseList: list [
+		list head isEmpty ifTrue: [^PKParseFail alloc initWithTail: list description: 'Expected alphabetic character'].
+		
+		^(list head characterAtIndex: 0) isAlphabetic
+			ifTrue: [PKParseMatch alloc initWithMatch: list head tail: list tail]
+			ifFalse: [PKParseFail alloc initWithTail: list description: 'Expected alphabetic character']
+	]
+
+	description [
+		^'[a-zA-Z]'
+	]
+]
+
+PKParseExpression subclass: PKNumericExpression [
+
+	parseList: list [
+		list head isEmpty ifTrue: [^PKParseFail alloc initWithTail: list description: 'Expected digit character'].
+		^(list head characterAtIndex: 0) isDigit
+			ifTrue: [PKParseMatch alloc initWithMatch: list head tail: list tail]
+			ifFalse: [PKParseFail alloc initWithTail: list description: 'Expected digit character']
+
+	]
+
+	description [
+		^'[0-9]'
+	]
+]
+
+"Abstract class for composing expression"
+PKParseExpression subclass: PKComposeExpression [
+	| exp |
+
+	description [
+		^exp description	
+	]
+
+	parseList: list [
+	    ^exp parseList: list	
+	]
+]
+
+PKComposeExpression subclass: PKNamedExpression [
+	| name |
+	initWithName: string exp: expression [
+		super init.
+		exp := expression.
+		name := string
+	]
+
+	parseList: list for: parser [
+	]
+]
+
+PKComposeExpression subclass: PKAlphanumericExpression [
+
+	init [
+		exp :=  PKAlphabeticExpression new or: PKNumericExpression new
+	]
 ]
 
 PKParseExpression subclass: PKTerminalExpression [
@@ -246,6 +321,7 @@ PKParseExpression subclass: PKAlternateExpression [
 		 ^first parseList: list ifFailed: [
 			 | match |
 			 match := second parseList: list.
+			 ETTranscript show: match; cr.
 			 match isFailure 
                  ifTrue:[ PKParseFail alloc initWithTail: list description: 'Expected ', self description]
 				 ifFalse: [match]
@@ -294,7 +370,7 @@ NSObject subclass: PKInputStream [
     | memo originalStream currentStream|
 
     initWithStream: input [
-        orignialStream := input.
+        originalStream := input.
         memo := NSMutableDictionary alloc init.
 
 	]
@@ -329,8 +405,10 @@ NSOBject subclass: PKRules [
 
 	lookup: rule ifFaild: aBlock [
 		| return |
-		(return := rules objectForKey: rule == nil) ifTrue:[
-			return := (parent == nil) 
+		return := rules objectForKey: rule.
+		return == nil ifTrue:[
+			return := parent.
+			return == nil
                 ifTrue: aBlock
 				ifFalse: [	
 					return := parent lookup: rule ifFaild: aBlock
@@ -344,8 +422,8 @@ NSOBject subclass: PKRules [
 		parent := pkRules
 	]
 		
-	subclass: string [
-		^slef class alloc initWithParent: self
+	subgrammar: string [
+		^self class alloc initWithParent: self
 	]
 ]
 
@@ -353,12 +431,13 @@ NSOBject subclass: PKRules [
 NSObject subclass: PKParserBase [
 	| input +rulesRepo rules  |
 
-	+derivate: parent subclass: name [
+	+derivate: parent subgrammar: name [
 		| rule |
-		(rule := rulesRepo objectForKey: parent) == nil ifTrue: [
+		rule := rulesRepo objectForKey: parent.
+		rule == nil ifTrue: [
 			^ETTranscript show: 'Can not found parent grammar ''', parent, ''''; cr
 		].
-		rules setValue: (rule subclass: name) forKey: name
+		rules setValue: (rule subgrammar: name) forKey: name
 	]
 
 	+getGrammar: name [
@@ -372,12 +451,14 @@ NSObject subclass: PKParserBase [
 	
 	apply: rule [
 		| exp return |
-		(return := input objectForKey: rule) == nil ifTrue: [
+		return := input objectForKey: rule.
+		return == nil ifTrue: [
 			input setValue: PKParseFail alloc initWithTail forKey: rule.
 			exp := rules lookup: rule ifNotFound: [
 				ETTranscript show: 'Invalid rule'
 			].
-		    return := exp parseList: input stream for: self
+		    return := exp parseList: input stream.
+			input setValue: return forKey: rule.
 		].
 		^return
 	]
@@ -392,11 +473,11 @@ NSObject subclass: PKParserBase [
 NSObject subclass: SmalltalkTool [
 	
 	run [
-		| dict parser abStar abStar b c tExp |
+		| dict parser abStar abStar b c tExp alphaNumeric |
 		dict := NSMutableDictionary new.
 		dict setValue: 4 forKey: 'foo' .
-		ETTranscript show: (dict objectForKey: 'foo' ); cr.
-		ETTranscript show: (dict objectForKey: 5 ); cr.
+	"	ETTranscript show: (dict objectForKey: 'foo' ); cr.
+		ETTranscript show: (dict objectForKey: 5 ); cr."
 		abStar := PKRepetitionExpression alloc
 					 initWithExpression: 'ab' asExp
 					 canBeEmpty: false; yourself.
@@ -405,11 +486,14 @@ NSObject subclass: SmalltalkTool [
 
 		parser := ('c' asExp repeat) seq: parser seq: PKEmptyExpression uniqueInstance.
 
+		alphaNumeric  := PKAlphanumericExpression new repeat.
+
 	"	ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
 		ETTranscript show: NSObject alloc; cr."
 		ETTranscript show: (parser parseList: 'ccccccccabaab'); cr.
-
+		ETTranscript show: alphaNumeric; cr.
+		ETTranscript show: (alphaNumeric parseList: 'Good34'); cr.
 		ETTranscript show: parser;cr.
 		ETTranscript show: (parser parseList: 'c'); cr.
 
