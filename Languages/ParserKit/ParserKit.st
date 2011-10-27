@@ -159,15 +159,11 @@ NSObject subclass: PKParseExpression [
 		^(self seq: exp1 seq: exp2) seq: exp3
 	]
 
-	parseList: sequence [
+	parseInput: sequence [
 		^self subclassResponsibility
 	]
-
-	parseList: list for: parser [
 		
-	]
-		
-	parseList: list ifFailed: aBlock [
+	parseInput: list ifFailed: aBlock [
 		| match |
 		match := (self parseList: list).
 		^match isFailure ifTrue: [aBlock value]
@@ -178,7 +174,7 @@ NSObject subclass: PKParseExpression [
 
 PKParseExpression subclass: PKAlphabeticExpression [
 	
-	parseList: list [
+	parseInput: list [
 		list head isEmpty ifTrue: [^PKParseFail alloc initWithTail: list description: 'Expected alphabetic character'].
 		
 		^(list head characterAtIndex: 0) isAlphabetic
@@ -227,7 +223,13 @@ PKComposeExpression subclass: PKNamedExpression [
 		name := string
 	]
 
-	parseList: list for: parser [
+	parseList: list  [
+		| match |
+		list
+		match := exp parseList: list.
+		parser addMatch: match at: list position named: name.
+		match 
+		
 	]
 ]
 
@@ -367,24 +369,62 @@ NSString extend [
 ]
 
 NSObject subclass: PKInputStream [
-    | memo originalStream currentStream|
+    | memo stream position positionStack positionStack |
 
     initWithStream: input [
         originalStream := input.
-        memo := NSMutableDictionary alloc init.
-
+        memo := NSMutableDictionary new.
+		positionStack := NSMutableArray new
 	]
 
-    setValue: object forKey: key [
-        memo setValue: object forKey: key
+    addMatch: parserMatch at: position named: aString [
+		| matchList |
+		(memo objectForKey: posisition)
+			isNil ifTrue: [memo setValue: NSMutableDictionary new forKey: position].
+		matchList := memo objectForKey: posisition.
+		matchList setValue: parseMatch forKey: aString
 	]
 
-    objectForKey: key [
-         ^memo objectForKey: key
+	matchAt: position named: aString [
+		| matchList |
+		matchList := memo objectForKey: position.
+		^matchList isNil 
+            ifTrue: [nil]
+			ifFalse: [matchList objectForKey: aString]
+	]
+
+	pushPosition: anInt [
+		stream length >= anInt ifTrue: [self error: 'Posistion is out of boud ', anInt description ].
+		posistion := anInt.
+		positionStack addObject: anInt
+	]
+
+	popPosiotion [
+		position := positionStack removeLastObject
 	]
 
     stream [
-        ^originalStream
+        ^stream tailFrom: position
+	]
+
+	head [
+		^self head: 1
+	]
+	
+	head: size [
+		^stream  substringWithRange: (NSValue rangeWithLocation: position length: size)
+	]
+
+	tail [
+		self tailFrom: 1
+	]
+
+	tailFrom: pos [
+		self pushPosition: (stream length min: (position + pos)).
+	]
+
+	position [
+		^position
 	]
 ]
 
@@ -400,7 +440,9 @@ NSOBject subclass: PKRules [
 	]
 
 	addRule: name expression: exp [
-		rules setValue: exp forKey: name
+		| rule |
+		rule := PKNamedExpression alloc initWithName: name exp: exp.
+		rules setValue: rule forKey: name
 	]
 
 	lookup: rule ifFaild: aBlock [
@@ -457,7 +499,7 @@ NSObject subclass: PKParserBase [
 			exp := rules lookup: rule ifNotFound: [
 				ETTranscript show: 'Invalid rule'
 			].
-		    return := exp parseList: input stream.
+		    return := exp parseInput: input.
 			input setValue: return forKey: rule.
 		].
 		^return
@@ -491,11 +533,11 @@ NSObject subclass: SmalltalkTool [
 	"	ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
 		ETTranscript show: NSObject alloc; cr."
-		ETTranscript show: (parser parseList: 'ccccccccabaab'); cr.
+		ETTranscript show: (parser parseInput: 'ccccccccabaab'); cr.
 		ETTranscript show: alphaNumeric; cr.
-		ETTranscript show: (alphaNumeric parseList: 'Good34'); cr.
+		ETTranscript show: (alphaNumeric parseInput: 'Good34'); cr.
 		ETTranscript show: parser;cr.
-		ETTranscript show: (parser parseList: 'c'); cr.
+		ETTranscript show: (parser parseInput: 'c'); cr.
 
 		"ETTranscript show: (C sqrt: 4)."
 	    "ETTranscript show: (C NSMakeRange: {0 . 1})"
