@@ -15,21 +15,19 @@
     2011/10/20 Beginning of the OMeta implementation
       - Adding the PKParserBase PKRules class
 
-  TODO: Continue with the parseList:for: implementation.
-    The idea is that expression, when match success, store the result
-    in the memoize list.
+ 
 
 ============================================================================
 "
 
 NSString extend [
 
-	head [
+"	head [
 		^self head: 1
 	]
 	
 	head: size [
-		"TODO fix it with NSMakeRange"
+		TODO fix it with NSMakeRange
 		^size > self count 
 			  ifTrue: [ self ]
 			  ifFalse: [ self substringWithRange: (NSValue rangeWithLocation: 0 length: size)]
@@ -41,10 +39,14 @@ NSString extend [
 
 	tailFrom: position [
 		^self substringWithRange: (NSValue rangeWithLocation: position length: (self count - position))
-	]
+	]"
 	
 	concat: other [
 		^self stringByAppendingString: other
+	]
+
+	asInputStream [
+		^PKInputStream alloc initWithStream: self
 	]
 
 	matchSize [ ^self length ]
@@ -106,7 +108,8 @@ NSObject subclass: PKParseFail [
 	initWithTail: list description: string [
 		super init.
 		describ := string.
-		tail := list
+		tail := list.
+		list popPosition
 	]
 
 	initWithTail [
@@ -189,7 +192,7 @@ PKParseExpression subclass: PKAlphabeticExpression [
 
 PKParseExpression subclass: PKNumericExpression [
 
-	parseList: list [
+	parseInput: list [
 		list head isEmpty ifTrue: [^PKParseFail alloc initWithTail: list description: 'Expected digit character'].
 		^(list head characterAtIndex: 0) isDigit
 			ifTrue: [PKParseMatch alloc initWithMatch: list head tail: list tail]
@@ -210,8 +213,8 @@ PKParseExpression subclass: PKComposeExpression [
 		^exp description	
 	]
 
-	parseList: list [
-	    ^exp parseList: list	
+	parseInput: list [
+	    ^exp parseInput: list	
 	]
 ]
 
@@ -223,13 +226,14 @@ PKComposeExpression subclass: PKNamedExpression [
 		name := string
 	]
 
-	parseList: list  [
+	parseInput: list  [
 		| match |
-		list
-		match := exp parseList: list.
-		parser addMatch: match at: list position named: name.
-		match 
-		
+		match := list matchRule: name.
+		match isNul ifTrue: [
+			match := exp parseInput: list.
+			list  addMatch: match at: list position named: name.
+		].
+		^match
 	]
 ]
 
@@ -240,7 +244,7 @@ PKComposeExpression subclass: PKAlphanumericExpression [
 	]
 ]
 
-PKParseExpression subclass: PKTerminalExpression [
+PKParseExpression subclass: PKTokenExpression [
 	| match |
 
 	initWithPattern: matchPattern [
@@ -248,7 +252,7 @@ PKParseExpression subclass: PKTerminalExpression [
 		match := matchPattern
 	]
 	
-	parseList: list [
+	parseInput: list [
 		| return |
 		((list head: match matchSize) isEqual: match) ifTrue: [ 
 			return := PKParseMatch alloc initWithMatch: (list head: match matchSize) 
@@ -275,7 +279,7 @@ PKParseExpression subclass: PKEmptyExpression [
         ^instance
 	]
 
-	parseList: list [
+	parseInput: list [
 		^list isEmpty 
             ifTrue: [PKParseMatch alloc initWithMatch: '' tail: list]
 			ifFalse: [PKParseFail alloc initWithTail: list description:  'Expected an empty string'] 
@@ -294,12 +298,12 @@ PKParseExpression subclass: PKSequenceExpression [
 		e2 := exp2
 	] 
 
-	parseList: list [
+	parseInput: list [
 		| match1 |
-		match1 := e1 parseList: list.
+		match1 := e1 parseInput: list.
 		^match1 isSuccess ifTrue: [
 			| match2 |
-			match2 := (e2 parseList: match1 tail).
+			match2 := (e2 parseInput: match1 tail).
 			match2 isSuccess 
                 ifTrue: [ match1 sequenceWith: match2 ]
 				ifFalse: [ match2 ]
@@ -319,10 +323,10 @@ PKParseExpression subclass: PKAlternateExpression [
 		second := exp2
 	]
 
-	 parseList: list [
-		 ^first parseList: list ifFailed: [
+	 parseInput: list [
+		 ^first parseInput: list ifFailed: [
 			 | match |
-			 match := second parseList: list.
+			 match := second parseInput: list.
 			 ETTranscript show: match; cr.
 			 match isFailure 
                  ifTrue:[ PKParseFail alloc initWithTail: list description: 'Expected ', self description]
@@ -344,11 +348,11 @@ PKParseExpression subclass: PKRepetitionExpression [
 		canBeEmpty := aBool
 	]
 	
-	parseList: list [
+	parseInput: list [
 		| match currentMatch |
 		match := PKParseMatch emptyMatch: list.
 		[
-			currentMatch := (e parseList: (match tail)).
+			currentMatch := (e parseInput: (match tail)).
 			currentMatch isSuccess
 		] whileTrue: [match sequenceWith: currentMatch].
 		^(match isEmpty and: canBeEmpty not) 
@@ -364,7 +368,7 @@ PKParseExpression subclass: PKRepetitionExpression [
 "--- Ecursive Extend ---"
 NSString extend [
 	asExp [
-		^PKTerminalExpression new initWithPattern: self
+		^PKTokenExpression new initWithPattern: self
 	]
 ]
 
@@ -372,20 +376,24 @@ NSObject subclass: PKInputStream [
     | memo stream position positionStack positionStack |
 
     initWithStream: input [
-        originalStream := input.
+        stream := input.
         memo := NSMutableDictionary new.
 		positionStack := NSMutableArray new
 	]
 
     addMatch: parserMatch at: position named: aString [
 		| matchList |
-		(memo objectForKey: posisition)
+		(memo objectForKey: position)
 			isNil ifTrue: [memo setValue: NSMutableDictionary new forKey: position].
-		matchList := memo objectForKey: posisition.
-		matchList setValue: parseMatch forKey: aString
+		matchList := memo objectForKey: position.
+		matchList setValue: parserMatch forKey: aString
 	]
 
-	matchAt: position named: aString [
+	matchRule: string [
+		^self matchAt: position rule: string
+	]
+
+	matchAt: position rule: aString [
 		| matchList |
 		matchList := memo objectForKey: position.
 		^matchList isNil 
@@ -394,12 +402,12 @@ NSObject subclass: PKInputStream [
 	]
 
 	pushPosition: anInt [
-		stream length >= anInt ifTrue: [self error: 'Posistion is out of boud ', anInt description ].
-		posistion := anInt.
+		stream length >= anInt ifTrue: [self error: 'Position is out of boud ', anInt description ].
+		position := anInt.
 		positionStack addObject: anInt
 	]
 
-	popPosiotion [
+	popPosition [
 		position := positionStack removeLastObject
 	]
 
@@ -533,11 +541,11 @@ NSObject subclass: SmalltalkTool [
 	"	ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
 		ETTranscript show: NSObject alloc; cr."
-		ETTranscript show: (parser parseInput: 'ccccccccabaab'); cr.
-		ETTranscript show: alphaNumeric; cr.
+		ETTranscript show: (parser parseInput: 'ccccccccabaab' asInputStream); cr.
+		"ETTranscript show: alphaNumeric; cr.
 		ETTranscript show: (alphaNumeric parseInput: 'Good34'); cr.
 		ETTranscript show: parser;cr.
-		ETTranscript show: (parser parseInput: 'c'); cr.
+		ETTranscript show: (parser parseInput: 'c'); cr."
 
 		"ETTranscript show: (C sqrt: 4)."
 	    "ETTranscript show: (C NSMakeRange: {0 . 1})"
