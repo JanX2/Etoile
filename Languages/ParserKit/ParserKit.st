@@ -59,71 +59,58 @@ NSObject extend [
 	matchSize [ ^1 ]
 ]
 
-NSArray extend [
-	head: size [
-		"TODO fix it with NSMakeRange"
-		^size > self count 
-			  ifTrue: [ self ]
-			  ifFalse: [ self substringWithRange: (NSValue rangeWithLocation: 0 length: size)]
-	]
-
-	tailFrom: position [
-		^self subarrayWithRange: (NSValue rangeWithLocation: position length: (self count - position))
-	]
-
-]
 
 NSObject subclass: PKParseMatch [
-	| matchList tail |
+	| input range |
 
-	+emptyMatch: tail [
-        ^self new initWithMatch: tail class new tail: tail; 
+	+emptyMatch: input [
+        ^self new initWithInput: input length: 0; 
 			yourself
 	]
 
-	initWithMatch: list tail: tailList [
+	initWithInput: list length: length [
 		super init.
-		matchList := list.
-		tail := tailList
+		input := list.
+		range := (NSValue rangeWithLocation: input position length: length) 
 	]
 
 	sequenceWith: match [
-		matchList := matchList concat: match matchList.
-		tail := match tail.
+		(range location + range length) = match range location
+			ifFalse: [| e | 
+						e := NSException alloc  initWithName: 'PKParseMatch' reason: 'Can not add the range, it is not contigus' userInfo: nil.  
+						ETTranscript show:e callStackSymbols; cr. 
+						e raise.].
+		range := NSValue rangeWithLocation: range location length: (range length + match  range length).
+		ETTranscript show: range.
 	]
 
-	tail [ ^tail ]
-	matchList [ ^matchList ]
-	isEmpty [ ^matchList isEmpty]
+	tail [ ^input tail ]
+	match  [ ^input fromRange: range ]
+	isEmpty [ ^range length = 0]
 	isSuccess [ ^true ]
 	isFailure [ ^false ]
+	range [^range]
 	description [ 
-		^'PKMatchSuccess  ( Recognized: ''', matchList description, ''' Tail: ''',  tail description, ''')\n' 
+		^'PKMatchSuccess  ( Recognized: ''', (input fromRange: range), ''')\n' 
 	]
 ]
 
 NSObject subclass: PKParseFail [
-	| tail describ |
+	| input failedPosition describ |
 
-	initWithTail: list description: string [
+	initWithInput: list description: string [
 		super init.
 		describ := string.
-		tail := list.
+		input := list.
+		failedPosition := input position.
 		list popPosition
 	]
-
-	initWithTail [
-		super init.
-		tail := ''.
-		describ := 'Fail match to avoid recursive call'
-	]
 	
-	tail [ ^tail]
 	isFailure [ ^true ]
 	isSuccess [ ^false ]
 
 	description [ 
-		^'PKMatchFailure  ( Tail: ''',  tail description, ''') ', describ, '\n' 
+		^'PKMatchFailure  ( At: ''',  input fromRange: (NSValue rangeWithLocation: failedPosition length: input length - failedPosition ), ''') ', describ, '\n' 
 	]
 ]
 
@@ -178,11 +165,11 @@ NSObject subclass: PKParseExpression [
 PKParseExpression subclass: PKAlphabeticExpression [
 	
 	parseInput: list [
-		list head isEmpty ifTrue: [^PKParseFail alloc initWithTail: list description: 'Expected alphabetic character'].
+		list head isEmpty ifTrue: [^PKParseFail alloc initWithInput: list description: 'Expected alphabetic character'].
 		
 		^(list head characterAtIndex: 0) isAlphabetic
-			ifTrue: [PKParseMatch alloc initWithMatch: list head tail: list tail]
-			ifFalse: [PKParseFail alloc initWithTail: list description: 'Expected alphabetic character']
+			ifTrue: [PKParseMatch alloc initWithInput: list length: list head length]
+			ifFalse: [PKParseFail alloc initWithInput: list description: 'Expected alphabetic character']
 	]
 
 	description [
@@ -193,10 +180,10 @@ PKParseExpression subclass: PKAlphabeticExpression [
 PKParseExpression subclass: PKNumericExpression [
 
 	parseInput: list [
-		list head isEmpty ifTrue: [^PKParseFail alloc initWithTail: list description: 'Expected digit character'].
+		list head isEmpty ifTrue: [^PKParseFail alloc initWithInput: list description: 'Expected digit character'].
 		^(list head characterAtIndex: 0) isDigit
-			ifTrue: [PKParseMatch alloc initWithMatch: list head tail: list tail]
-			ifFalse: [PKParseFail alloc initWithTail: list description: 'Expected digit character']
+			ifTrue: [PKParseMatch alloc initWithInput: list length: list head length]
+			ifFalse: [PKParseFail alloc initWithInput: list description: 'Expected digit character']
 
 	]
 
@@ -255,10 +242,10 @@ PKParseExpression subclass: PKTokenExpression [
 	parseInput: list [
 		| return |
 		((list head: match matchSize) isEqual: match) ifTrue: [ 
-			return := PKParseMatch alloc initWithMatch: (list head: match matchSize) 
-								tail: (list tailFrom: match matchSize).
+			return := PKParseMatch alloc initWithInput: list
+								length: match matchSize.
 		] ifFalse: [
-			return := PKParseFail alloc initWithTail: list description: 'Unexpected token'
+			return := PKParseFail alloc initWithInput: list description: 'Unexpected token'
 		].
 		^return
 	]
@@ -280,9 +267,9 @@ PKParseExpression subclass: PKEmptyExpression [
 	]
 
 	parseInput: list [
-		^list isEmpty 
-            ifTrue: [PKParseMatch alloc initWithMatch: '' tail: list]
-			ifFalse: [PKParseFail alloc initWithTail: list description:  'Expected an empty string'] 
+		^list atEnd
+            ifTrue: [PKParseMatch alloc initWithInput: list length: 0]
+			ifFalse: [PKParseFail alloc initWithInput: list description:  'Expected an empty string'] 
 	]
 
 	description [
@@ -378,7 +365,8 @@ NSObject subclass: PKInputStream [
     initWithStream: input [
         stream := input.
         memo := NSMutableDictionary new.
-		positionStack := NSMutableArray new
+		positionStack := NSMutableArray new.
+		position := 0
 	]
 
     addMatch: parserMatch at: position named: aString [
@@ -402,8 +390,7 @@ NSObject subclass: PKInputStream [
 	]
 
 	pushPosition: anInt [
-		stream length >= anInt ifTrue: [self error: 'Position is out of boud ', anInt description ].
-		position := anInt.
+		position := anInt .
 		positionStack addObject: anInt
 	]
 
@@ -413,6 +400,10 @@ NSObject subclass: PKInputStream [
 
     stream [
         ^stream tailFrom: position
+	]
+
+	fromRange: range [
+		^stream substringWithRange: range
 	]
 
 	head [
@@ -433,6 +424,14 @@ NSObject subclass: PKInputStream [
 
 	position [
 		^position
+	]
+
+	length [
+		^stream length	
+	]
+
+	atEnd [
+		^self position = stream length
 	]
 ]
 
@@ -503,7 +502,7 @@ NSObject subclass: PKParserBase [
 		| exp return |
 		return := input objectForKey: rule.
 		return == nil ifTrue: [
-			input setValue: PKParseFail alloc initWithTail forKey: rule.
+"			input setValue: PKParseFail alloc initWithTail forKey: rule."
 			exp := rules lookup: rule ifNotFound: [
 				ETTranscript show: 'Invalid rule'
 			].
@@ -524,8 +523,7 @@ NSObject subclass: SmalltalkTool [
 	
 	run [
 		| dict parser abStar abStar b c tExp alphaNumeric |
-		dict := NSMutableDictionary new.
-		dict setValue: 4 forKey: 'foo' .
+
 	"	ETTranscript show: (dict objectForKey: 'foo' ); cr.
 		ETTranscript show: (dict objectForKey: 5 ); cr."
 		abStar := PKRepetitionExpression alloc
@@ -536,11 +534,13 @@ NSObject subclass: SmalltalkTool [
 
 		parser := ('c' asExp repeat) seq: parser seq: PKEmptyExpression uniqueInstance.
 
-		alphaNumeric  := PKAlphanumericExpression new repeat.
+	"	alphaNumeric  := PKAlphanumericExpression new repeat."
 
 	"	ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
 		ETTranscript show: NSObject alloc; cr."
+		ETTranscript show: ( 'f' substringWithRange: (NSValue rangeWithLocation: 1 length: 0)); cr.
+		ETTranscript show:  (NSValue rangeWithLocation: 1 length: 0) rangeValue location; cr.
 		ETTranscript show: (parser parseInput: 'ccccccccabaab' asInputStream); cr.
 		"ETTranscript show: alphaNumeric; cr.
 		ETTranscript show: (alphaNumeric parseInput: 'Good34'); cr.
