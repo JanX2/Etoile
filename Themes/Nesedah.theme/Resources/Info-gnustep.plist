@@ -191,5 +191,6 @@
 	};
     };
     GSThemeVersion = 0.1;
-    NSPrincipalClass = GSTiledTheme;
+    NSPrincipalClass = NesedahTheme;
+    NSExecutable = Nesedah;
 }
