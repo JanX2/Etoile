@@ -88,8 +88,6 @@ static IKIconTheme *activeTheme = nil;
 	NSString *themeBundleName = nil;
 	NSMutableDictionary *themeBundlePaths = [NSMutableDictionary dictionary];
 
-	NSAssert1(e != nil, @"No directory found at path %@", themeFolder);
-
 	NSDebugLLog(@"IconKit", @"Find themes in directory %@", themeFolder);
 
 	while ((themeBundleName = [e nextObject]) != nil )
