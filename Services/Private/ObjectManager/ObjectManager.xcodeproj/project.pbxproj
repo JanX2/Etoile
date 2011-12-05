@@ -1,0 +1,703 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
+		6068BE081474286400953B26 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6068BDF21474283C00953B26 /* EtoileFoundation.framework */; };
+		6068BE091474286D00953B26 /* ObjectMerging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6068BE011474284000953B26 /* ObjectMerging.framework */; };
+		6068BE301474287F00953B26 /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6068BE1B1474287900953B26 /* EtoileUI.framework */; };
+		6068BE37147429E000953B26 /* OMAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6068BE36147429E000953B26 /* OMAppController.m */; };
+		6068BE4514742B2800953B26 /* OMLayoutItemFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 6068BE4414742B2800953B26 /* OMLayoutItemFactory.m */; };
+		60E6AB15147AB5EC00AD684D /* OMBrowserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E6AB14147AB5EC00AD684D /* OMBrowserController.m */; };
+		60E6AC0D147B9B4200AD684D /* IconKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60E6AC0C147B9B3B00AD684D /* IconKit.framework */; };
+		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6068BDEF1474283C00953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073EAD10074D26007272E6;
+			remoteInfo = EtoileXML;
+		};
+		6068BDF11474283C00953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 603647AC0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
+		6068BDF31474283C00953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
+			remoteInfo = TestEtoileFoundation;
+		};
+		6068BDF51474283C00953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6072CF691360E144003256C5;
+			remoteInfo = PlugInExample;
+		};
+		6068BE001474284000953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6686BDAC12592BDA0065DE1A;
+			remoteInfo = ObjectMerging;
+		};
+		6068BE021474284000953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 791B4E2D1299C79300CCF472;
+			remoteInfo = Test;
+		};
+		6068BE041474284000953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 66D099C4129AE111006BEDC3;
+			remoteInfo = StoreTest;
+		};
+		6068BE1A1474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60EF8E9D0C5E4D0600C97C41;
+			remoteInfo = EtoileUI;
+		};
+		6068BE1C1474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 600243B90CD133420023182D;
+			remoteInfo = TestEtoileUI;
+		};
+		6068BE1E1474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073C2910074B39007272E6;
+			remoteInfo = EtoileWeb;
+		};
+		6068BE201474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60EEB9020F09457C00EBB632;
+			remoteInfo = Collage;
+		};
+		6068BE221474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60CF742A0D449A8A00B4CA3D;
+			remoteInfo = MarkupEditor;
+		};
+		6068BE241474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 605F0CCA0C0F400D003AE3E6;
+			remoteInfo = ObjectManagerExample;
+		};
+		6068BE261474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60539D940C240A7B006C57EC;
+			remoteInfo = PaneExample;
+		};
+		6068BE281474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 606B98C90C0AF831000AAA85;
+			remoteInfo = PhotoViewExample;
+		};
+		6068BE2A1474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60909CC90CB2DA42009CAD27;
+			remoteInfo = TableExample;
+		};
+		6068BE2C1474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60FC2925105C112D008D2EFF;
+			remoteInfo = FormExample;
+		};
+		6068BE2E1474287900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 605AD43A13BF8D8500755772;
+			remoteInfo = Worktable;
+		};
+		6068BE311474289900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6686BDAB12592BDA0065DE1A;
+			remoteInfo = ObjectMerging;
+		};
+		6068BE331474289900953B26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41;
+			remoteInfo = EtoileUI;
+		};
+		608AAF511479715E00DF2F57 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
+		60E6AC0B147B9B3B00AD684D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = IconKit;
+		};
+		60E6AC36147B9D0300AD684D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = IconKit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
+		6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ObjectMerging4.xcodeproj; path = ../../../Frameworks/ObjectMerging/ObjectMerging4.xcodeproj; sourceTree = SOURCE_ROOT; };
+		6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileUI.xcodeproj; path = ../../../Frameworks/EtoileUI/EtoileUI.xcodeproj; sourceTree = SOURCE_ROOT; };
+		6068BE35147429E000953B26 /* OMAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMAppController.h; sourceTree = "<group>"; };
+		6068BE36147429E000953B26 /* OMAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMAppController.m; sourceTree = "<group>"; };
+		6068BE4314742B2800953B26 /* OMLayoutItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMLayoutItemFactory.h; sourceTree = "<group>"; };
+		6068BE4414742B2800953B26 /* OMLayoutItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMLayoutItemFactory.m; sourceTree = "<group>"; };
+		60E6AB13147AB5EC00AD684D /* OMBrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMBrowserController.h; sourceTree = "<group>"; };
+		60E6AB14147AB5EC00AD684D /* OMBrowserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMBrowserController.m; sourceTree = "<group>"; };
+		60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = IconKit.xcodeproj; path = ../../../Frameworks/IconKit/IconKit.xcodeproj; sourceTree = SOURCE_ROOT; };
+		8D1107310486CEB800E47090 /* ObjectManager-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ObjectManager-Info.plist"; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* ObjectManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ObjectManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6068BE081474286400953B26 /* EtoileFoundation.framework in Frameworks */,
+				6068BE091474286D00953B26 /* ObjectMerging.framework in Frameworks */,
+				6068BE301474287F00953B26 /* EtoileUI.framework in Frameworks */,
+				60E6AC0D147B9B4200AD684D /* IconKit.framework in Frameworks */,
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				6068BE35147429E000953B26 /* OMAppController.h */,
+				6068BE36147429E000953B26 /* OMAppController.m */,
+				60E6AB13147AB5EC00AD684D /* OMBrowserController.h */,
+				60E6AB14147AB5EC00AD684D /* OMBrowserController.m */,
+				6068BE4314742B2800953B26 /* OMLayoutItemFactory.h */,
+				6068BE4414742B2800953B26 /* OMLayoutItemFactory.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* ObjectManager.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* ObjectManager */ = {
+			isa = PBXGroup;
+			children = (
+				6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */,
+				6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */,
+				6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */,
+				60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */,
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = ObjectManager;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107310486CEB800E47090 /* ObjectManager-Info.plist */,
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6068BDE91474283C00953B26 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6068BDF01474283C00953B26 /* EtoileXML.framework */,
+				6068BDF21474283C00953B26 /* EtoileFoundation.framework */,
+				6068BDF41474283C00953B26 /* TestEtoileFoundation.bundle */,
+				6068BDF61474283C00953B26 /* PlugInExample.plugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6068BDFB1474284000953B26 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6068BE011474284000953B26 /* ObjectMerging.framework */,
+				6068BE031474284000953B26 /* Test */,
+				6068BE051474284000953B26 /* StoreTest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6068BE0D1474287900953B26 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6068BE1B1474287900953B26 /* EtoileUI.framework */,
+				6068BE1D1474287900953B26 /* TestEtoileUI.bundle */,
+				6068BE1F1474287900953B26 /* EtoileWeb.framework */,
+				6068BE211474287900953B26 /* Collage.app */,
+				6068BE231474287900953B26 /* MarkupEditor.app */,
+				6068BE251474287900953B26 /* ObjectManagerExample.app */,
+				6068BE271474287900953B26 /* PaneExample.app */,
+				6068BE291474287900953B26 /* PhotoViewExample.app */,
+				6068BE2B1474287900953B26 /* TableExample.app */,
+				6068BE2D1474287900953B26 /* FormExample.app */,
+				6068BE2F1474287900953B26 /* Worktable.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		60E6AC08147B9B3B00AD684D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				60E6AC0C147B9B3B00AD684D /* IconKit.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* ObjectManager */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "ObjectManager" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6068BE321474289900953B26 /* PBXTargetDependency */,
+				6068BE341474289900953B26 /* PBXTargetDependency */,
+				608AAF521479715E00DF2F57 /* PBXTargetDependency */,
+				60E6AC37147B9D0300AD684D /* PBXTargetDependency */,
+			);
+			name = ObjectManager;
+			productInstallPath = "$(HOME)/Applications";
+			productName = ObjectManager;
+			productReference = 8D1107320486CEB800E47090 /* ObjectManager.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Étoilé";
+			};
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ObjectManager" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* ObjectManager */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 6068BDE91474283C00953B26 /* Products */;
+					ProjectRef = 6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */;
+				},
+				{
+					ProductGroup = 6068BE0D1474287900953B26 /* Products */;
+					ProjectRef = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
+				},
+				{
+					ProductGroup = 60E6AC08147B9B3B00AD684D /* Products */;
+					ProjectRef = 60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */;
+				},
+				{
+					ProductGroup = 6068BDFB1474284000953B26 /* Products */;
+					ProjectRef = 6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				8D1107260486CEB800E47090 /* ObjectManager */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		6068BDF01474283C00953B26 /* EtoileXML.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileXML.framework;
+			remoteRef = 6068BDEF1474283C00953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BDF21474283C00953B26 /* EtoileFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileFoundation.framework;
+			remoteRef = 6068BDF11474283C00953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BDF41474283C00953B26 /* TestEtoileFoundation.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileFoundation.bundle;
+			remoteRef = 6068BDF31474283C00953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BDF61474283C00953B26 /* PlugInExample.plugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = PlugInExample.plugin;
+			remoteRef = 6068BDF51474283C00953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE011474284000953B26 /* ObjectMerging.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ObjectMerging.framework;
+			remoteRef = 6068BE001474284000953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE031474284000953B26 /* Test */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = Test;
+			remoteRef = 6068BE021474284000953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE051474284000953B26 /* StoreTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = StoreTest;
+			remoteRef = 6068BE041474284000953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE1B1474287900953B26 /* EtoileUI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileUI.framework;
+			remoteRef = 6068BE1A1474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE1D1474287900953B26 /* TestEtoileUI.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileUI.bundle;
+			remoteRef = 6068BE1C1474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE1F1474287900953B26 /* EtoileWeb.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileWeb.framework;
+			remoteRef = 6068BE1E1474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE211474287900953B26 /* Collage.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Collage.app;
+			remoteRef = 6068BE201474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE231474287900953B26 /* MarkupEditor.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = MarkupEditor.app;
+			remoteRef = 6068BE221474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE251474287900953B26 /* ObjectManagerExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = ObjectManagerExample.app;
+			remoteRef = 6068BE241474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE271474287900953B26 /* PaneExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = PaneExample.app;
+			remoteRef = 6068BE261474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE291474287900953B26 /* PhotoViewExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = PhotoViewExample.app;
+			remoteRef = 6068BE281474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE2B1474287900953B26 /* TableExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TableExample.app;
+			remoteRef = 6068BE2A1474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE2D1474287900953B26 /* FormExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = FormExample.app;
+			remoteRef = 6068BE2C1474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6068BE2F1474287900953B26 /* Worktable.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Worktable.app;
+			remoteRef = 6068BE2E1474287900953B26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		60E6AC0C147B9B3B00AD684D /* IconKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = IconKit.framework;
+			remoteRef = 60E6AC0B147B9B3B00AD684D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				6068BE37147429E000953B26 /* OMAppController.m in Sources */,
+				6068BE4514742B2800953B26 /* OMLayoutItemFactory.m in Sources */,
+				60E6AB15147AB5EC00AD684D /* OMBrowserController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6068BE321474289900953B26 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ObjectMerging;
+			targetProxy = 6068BE311474289900953B26 /* PBXContainerItemProxy */;
+		};
+		6068BE341474289900953B26 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileUI;
+			targetProxy = 6068BE331474289900953B26 /* PBXContainerItemProxy */;
+		};
+		608AAF521479715E00DF2F57 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileFoundation;
+			targetProxy = 608AAF511479715E00DF2F57 /* PBXContainerItemProxy */;
+		};
+		60E6AC37147B9D0300AD684D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = IconKit;
+			targetProxy = 60E6AC36147B9D0300AD684D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C165DFE840E0CC02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1DDD58140DA1D0A300B32029 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1DDD58150DA1D0A300B32029 /* English */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C01FCF4B08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				INFOPLIST_FILE = "ObjectManager-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = ObjectManager;
+			};
+			name = Debug;
+		};
+		C01FCF4C08A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				INFOPLIST_FILE = "ObjectManager-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = ObjectManager;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/../../../Frameworks/EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../../../Frameworks/EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../../../Frameworks/ObjectMerging/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../../../Frameworks/IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(BUILT_PRODUCTS_DIR)",
+				);
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/../../../Frameworks/EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/ObjectMerging/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "ObjectManager" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Debug */,
+				C01FCF4C08A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ObjectManager" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}
