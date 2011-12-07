@@ -157,7 +157,7 @@
 	ETLayoutItemGroup *itemGroup = [self itemGroup];
 	ETLayoutItem *newGroupItem = [self buttonWithIconNamed: @"list-add" 
 	                                                   target: aController
-	                                                   action: @selector(addNewGroup:)];
+	                                                   action: @selector(addNewTag:)];
 	ETLayoutItem *removeItem = [self buttonWithIconNamed: @"list-remove" 
 	                                              target: aController
 	                                              action: @selector(remove:)];

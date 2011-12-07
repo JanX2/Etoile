@@ -12,6 +12,35 @@
 #import "OMLayoutItemFactory.h"
 #import "OMAppController.h"
 
+@implementation OMController
+
+// NOTE: Could be simpler to have a method -setEditingContext as Apple does it 
+// with CoreData. But it's less clean and means we might end up in a situation 
+// where the context set on the controller is not the same than the one used by 
+// the represented object, if the controller context has not been reset.
+- (COEditingContext *) editingContext
+{
+	id repObject = [[self content] representedObject];
+	COEditingContext *ctxt = [[repObject ifResponds] editingContext];
+
+	/* All Objects smart group is not persistent, in that case we use an object 
+	   among the content to get the editing context */
+	if (ctxt == nil && [repObject isCollection])
+	{
+		for (id object in repObject)
+		{
+			ctxt = [[object ifResponds] editingContext];
+			if (ctxt != nil)
+				break;
+		}
+	}
+	ETAssert(ctxt != nil);
+
+	return ctxt;
+}
+
+@end
+
 @implementation OMBrowserController
 
 @synthesize contentViewItem, sourceListItem, viewPopUpItem, browsedGroup;
@@ -73,13 +102,6 @@
 	[self setBrowsedGroup: [[selectedItems firstObject] representedObject]];
 }
 
-- (COEditingContext *) editingContext
-{
-	COEditingContext *ctxt = [[[self content] subject] editingContext];
-	ETAssert(ctxt != nil);
-	return ctxt;
-}
-
 - (ETLayoutItem *) tagGroupItem
 {
 	COGroup *tagGroup = [[self editingContext] tagGroup];
@@ -87,7 +109,7 @@
 		[NSPredicate predicateWithFormat: @"representedObject == %@", tagGroup]] firstObject];
 }
 
-- (void) addNewTag: (id)sender
+- (IBAction) addNewTag: (id)sender
 {
 	/* First select Tags in the Source list */
 
@@ -101,7 +123,7 @@
 	[tag setName: _(@"Untitled")];
 
 	/* Will invoke -addObject: on the Tag group */
-	[[contentViewItem controller] insertObject: tag atIndex: ETUndeterminedIndex];
+	[(OMBrowserContentController *)[contentViewItem controller] addTag: tag];
 
 	[ctxt commit];
 
@@ -110,6 +132,10 @@
 	// TODO: [[contentViewItem lastItem] beginEditingForProperty: @"name"];
 }
 
+- (IBAction) remove: (id)sender
+{
+	[[contentViewItem controller] remove: sender];
+}
 
 - (IBAction) search: (id)sender
 {
@@ -223,25 +249,20 @@
 
 @implementation OMBrowserContentController
 
-- (COEditingContext *) editingContext
+- (void) addTag: (COGroup *)aTag
 {
-	id repObject = [[self content] representedObject];
-	COEditingContext *ctxt = [repObject editingContext];
-
-	/* All Objects smart group is not persistent, in that case we use an object 
-	   among the content to get the editing context */
-	if (ctxt == nil && [repObject isCollection])
-	{
-		ctxt = [[[repObject contentArray] firstObject] editingContext];
-	}
-	ETAssert(ctxt != nil);
-
-	return ctxt;
+	ETItemTemplate *template = [self templateForType: [self currentGroupType]];
+	[self insertObject: [template newItemWithRepresentedObject: aTag options: nil] 
+	           atIndex: ETUndeterminedIndex];
 }
 
-- (void) remove: (id)sender
+- (IBAction) remove: (id)sender
 {
 	NSArray *selectedItems = [[self content] selectedItemsInLayout];
+
+	if ([selectedItems isEmpty])
+		return;
+
 	NSArray *coreObjects =  [[selectedItems mappedCollection] representedObject];
 
 	for (COObject *object in coreObjects)
@@ -253,7 +274,7 @@
 
 - (void) objectDidBeginEditing: (ETLayoutItem *)anItem
 {
-	ETLog(@"Did beging editing in %@", anItem);
+	ETLog(@"Did begin editing in %@", anItem);
 }
 
 - (void) objectDidEndEditing: (ETLayoutItem *)anItem

@@ -40,8 +40,8 @@
 {
 	[self setUpMenus];
 
-	[[NSFileManager defaultManager] 
-		removeFileAtPath: [@"~/TestObjectStore" stringByExpandingTildeInPath] handler: nil];
+	//[[NSFileManager defaultManager] 
+	//	removeFileAtPath: [@"~/TestObjectStore" stringByExpandingTildeInPath] handler: nil];
 	COEditingContext *ctxt = [COEditingContext contextWithURL: 
 		[NSURL fileURLWithPath: [@"~/TestObjectStore" stringByExpandingTildeInPath]]];
 

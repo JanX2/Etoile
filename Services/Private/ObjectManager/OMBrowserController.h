@@ -16,8 +16,13 @@
 #import <ObjectMerging/COGroup.h>
 #import <EtoileUI/EtoileUI.h>
 
+/** An abstract controller class that provides access to the editing context. */
+@interface OMController : ETController
+- (COEditingContext *) editingContext;
+@end
+
 /** The controller to supervise the whole ObjectManager window */
-@interface OMBrowserController : ETController
+@interface OMBrowserController : OMController
 {
 	ETLayoutItemGroup *contentViewItem;
 	ETLayoutItemGroup *sourceListItem;
@@ -39,8 +44,12 @@
 
 /** @taskunit Actions */
 
+- (IBAction) addNewTag: (id)sender;
+- (IBAction) remove: (id)sender;
+
 - (IBAction) doubleClick: (id)sender;
 - (IBAction) changePresentationViewFromPopUp: (id)sender;
+
 - (IBAction) search: (id)sender;
 - (IBAction) open: (id)sender;
 - (IBAction) openSelection: (id)sender;
@@ -54,9 +63,11 @@
 
 /** The subcontroller to supervise the view where the source list selection 
 content is presented in an ObjectManager window */
-@interface OMBrowserContentController : ETController
+@interface OMBrowserContentController : OMController
 {
 
 }
+
+- (void) addTag: (COGroup *)aTag;
 
 @end
