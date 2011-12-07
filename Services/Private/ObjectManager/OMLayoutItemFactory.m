@@ -165,6 +165,8 @@
 	                                                     action: @selector(search:)];
 	//ETLayoutItemGroup *searchItemGroup = [self itemGroupWithItem: searchFieldItem];
 
+	[(NSSearchFieldCell *)[[searchFieldItem view] cell] setSendsSearchStringImmediately: YES];
+
 	[itemGroup setWidth: [self defaultBrowserSize].width];
 	[itemGroup setHeight: [self defaultIconAndLabelBarHeight]];
 	[itemGroup setLayout: [ETLineLayout layout]];
