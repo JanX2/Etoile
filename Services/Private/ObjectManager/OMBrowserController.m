@@ -75,7 +75,9 @@
 
 - (COEditingContext *) editingContext
 {
-	return [[self content] editingContext];
+	COEditingContext *ctxt = [[[self content] subject] editingContext];
+	ETAssert(ctxt != nil);
+	return ctxt;
 }
 
 - (ETLayoutItem *) tagGroupItem
@@ -223,7 +225,18 @@
 
 - (COEditingContext *) editingContext
 {
-	return [[self content] editingContext];
+	id repObject = [[self content] representedObject];
+	COEditingContext *ctxt = [repObject editingContext];
+
+	/* All Objects smart group is not persistent, in that case we use an object 
+	   among the content to get the editing context */
+	if (ctxt == nil && [repObject isCollection])
+	{
+		ctxt = [[[repObject contentArray] firstObject] editingContext];
+	}
+	ETAssert(ctxt != nil);
+
+	return ctxt;
 }
 
 - (void) remove: (id)sender
