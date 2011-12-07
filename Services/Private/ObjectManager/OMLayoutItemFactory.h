@@ -22,7 +22,7 @@
 
 }
 
-- (ETLayoutItemGroup *) browserWithGroup: (COObject *)aGroup;
+- (ETLayoutItemGroup *) browserWithGroup: (id <ETCollection>)aGroup;
 - (ETLayoutItemGroup *) browserBodyWithGroup: (id <ETCollection>)aGroup controller: (id)aController;
 - (ETLayoutItem *) viewPopUpWithController: (OMBrowserController *)aController;
 - (ETLayoutItemGroup *) browserTopBarWithController: (id)aController;

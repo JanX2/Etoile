@@ -31,7 +31,7 @@
 @property (nonatomic, retain) id <ETCollection> browsedGroup;
 @property (nonatomic, readonly) id selectedObject;
 
-- (void) updatePresentedContent;
+//- (void) updatePresentedContent;
 
 /** @taskunit Notifications */
 

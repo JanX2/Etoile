@@ -97,7 +97,7 @@
 	return size;
 }
 
-- (ETLayoutItemGroup *) browserWithGroup: (COObject *)aGroup
+- (ETLayoutItemGroup *) browserWithGroup: (id <ETCollection>)aGroup
 {
 	OMBrowserController *controller = AUTORELEASE([[OMBrowserController alloc] init]);
 	ETLayoutItemGroup *topBar = [self browserTopBarWithController: controller];
@@ -182,6 +182,9 @@
 - (ETLayoutItemGroup *) sourceListWithGroup: (id <ETCollection>)aGroup controller: (id)aController
 {
 	ETLayoutItemGroup *itemGroup = [self itemGroupWithRepresentedObject: aGroup];
+	ETSelectTool *tool = [ETSelectTool tool];
+
+	[tool setAllowsEmptySelection: NO];
 
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleHeight];
 	[itemGroup setHeight: [self defaultBrowserBodySize].height];
@@ -190,6 +193,7 @@
 	[itemGroup setLayout: [ETTableLayout layout]];
 	[[itemGroup layout] setDisplayedProperties: A(@"displayName")];
 	[[[itemGroup layout] columnForProperty: @"displayName"] setWidth: 250];
+	[[itemGroup layout] setAttachedTool: tool];
 	[itemGroup setHasVerticalScroller: YES];
 	[itemGroup reload];
 

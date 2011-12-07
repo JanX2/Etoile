@@ -7,6 +7,7 @@
  */
 
 #import <ObjectMerging/COHistoryTrack.h>
+#import <ObjectMerging/COObject.h>
 #import "OMBrowserController.h"
 #import "OMLayoutItemFactory.h"
 #import "OMAppController.h"
@@ -14,24 +15,6 @@
 @implementation OMBrowserController
 
 @synthesize contentViewItem, sourceListItem, viewPopUpItem, browsedGroup;
-
-- (id) retain
-{
-	NSLog(@"Retain %@ %d", self, [self retainCount]);
-	return [super retain];
-}
-
-- (void) release
-{
-	NSLog(@"Release %@ %d", self, [self retainCount]);
-	[super release];
-}
-
-- (id) autorelease
-{
-	NSLog(@"Autorelease %@ %d", self, [self retainCount]);
-	return [super autorelease];
-}
 
 - (id) init
 {
@@ -99,14 +82,14 @@
 {
 	COGroup *tagGroup = [[self editingContext] tagGroup];
 	return [[[sourceListItem items] filteredArrayUsingPredicate: 
-		[NSPredicate predicateWithFormat: @"representedObject == %@", tagGroup] firstObject];
+		[NSPredicate predicateWithFormat: @"representedObject == %@", tagGroup]] firstObject];
 }
 
 - (void) addNewTag: (id)sender
 {
 	/* First select Tags in the Source list */
 
-	[[sourceListItem items] setSelectedItem: [self tagGroupItem]];
+	[sourceListItem setSelectedItems: A([self tagGroupItem])];
 
 	/* Create the new Tag */
 
@@ -122,7 +105,7 @@
 
 	/* Finally let the user edit the tag name */
 
-	[[contentViewItem lastItem] beginEditingForProperty: @"name"];
+	// TODO: [[contentViewItem lastItem] beginEditingForProperty: @"name"];
 }
 
 
@@ -139,8 +122,10 @@
 	else
 	{
 		// TODO: Improve (Full-text, SQL, more properties, Object Matching integration)
-		NSPredicate *predicate = [NSPredicate predicateWithFormat: @"name contains %@"
-			                                        argumentArray: A(searchString)]; 
+		NSString *queryString = 
+			@"(name CONTAINS %@) OR (typeDescription CONTAINS %@) OR (tagDescription CONTAINS %@)";
+		NSPredicate *predicate = [NSPredicate predicateWithFormat: queryString
+			                                        argumentArray: A(searchString, searchString, searchString)]; 
 
 		[[contentViewItem controller] setFilterPredicate: predicate];
 	}
@@ -157,7 +142,7 @@
 		// TODO: Should use -openDocument: on OMAppController
 		OMLayoutItemFactory *itemFactory = [OMLayoutItemFactory factory];
 		ETLayoutItemGroup *browser = 
-			[itemFactory browserWithGroup: [[[itemFactory windowGroup] controller] sourceListGroups]];
+			[itemFactory browserWithGroup: [(OMAppController *)[[itemFactory windowGroup] controller] sourceListGroups]];
 	
 		[(OMBrowserController *)[browser controller] setBrowsedGroup: clickedObject];
 		[[itemFactory windowGroup] addObject: browser];
