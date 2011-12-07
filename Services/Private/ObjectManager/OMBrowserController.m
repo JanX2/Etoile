@@ -252,8 +252,8 @@
 - (void) addTag: (COGroup *)aTag
 {
 	ETItemTemplate *template = [self templateForType: [self currentGroupType]];
-	[self insertObject: [template newItemWithRepresentedObject: aTag options: nil] 
-	           atIndex: ETUndeterminedIndex];
+	[self insertItem: [template newItemWithRepresentedObject: aTag options: nil] 
+	         atIndex: ETUndeterminedIndex];
 }
 
 - (IBAction) remove: (id)sender
