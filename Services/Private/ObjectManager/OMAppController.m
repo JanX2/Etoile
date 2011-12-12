@@ -53,7 +53,6 @@
 
 - (NSArray *) sourceListGroups
 {
-	COGroup *tagGroup = [[COEditingContext currentContext] tagGroup];
 	COGroup *libraryGroup = [[COEditingContext currentContext] libraryGroup];
 	COSmartGroup *mainGroup = [[COEditingContext currentContext] mainGroup];
 
@@ -64,7 +63,7 @@
 		ETAssert([mainGroup count] > 0);
 	}
 
-	return [A(mainGroup, tagGroup) arrayByAddingObjectsFromArray: [libraryGroup contentArray]];
+	return [A(mainGroup) arrayByAddingObjectsFromArray: [libraryGroup contentArray]];
 }
 
 - (IBAction) browseMainGroup: (id)sender
@@ -88,7 +87,7 @@
 	[a2 setName: @"London"];
 	[a3 setName: @"Tokyo"];
 
-	COGroup *cityGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COGroup"];
+	COLibrary *cityGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COLibrary"];
 
 	[cityGroup setName: @"Cities"];
 	[cityGroup addObjects: A(a1, a2, a3)];
@@ -105,7 +104,7 @@
 	[b3 setName: @"Cloud"];
 	[b4 setName: @"Fox"];
 
-	COGroup *pictureGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COGroup"];
+	COLibrary *pictureGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COLibrary"];
 
 	[pictureGroup setName: @"Pictures"];
 	[pictureGroup addObjects: A(b1, b2, b3, b4)];
@@ -118,7 +117,7 @@
 	[c1 setName: @"Ann"];
 	[c2 setName: @"John"];
 
-	COGroup *personGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COGroup"];
+	COLibrary *personGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COLibrary"];
 
 	[personGroup setName: @"Persons"];
 	[personGroup addObjects: A(c1, c2)];
@@ -130,28 +129,28 @@
 	
 	/* Scenery Tag */
 
-	COGroup *sceneryTag = [ctxt insertObjectWithEntityName: @"Anonymous.COGroup"];
+	COTag *sceneryTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
 
 	[sceneryTag setName: _(@"scenery")];
 	[sceneryTag addObjects: A(b1, b2)];
 
 	/* Animal Tag */
 
-	COGroup *animalTag = [ctxt insertObjectWithEntityName: @"Anonymous.COGroup"];
+	COTag *animalTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
 
 	[animalTag setName: _(@"animal")];
 	[animalTag addObject: b4];
 
 	/* Rain Tag */
 
-	COGroup *rainTag = [ctxt insertObjectWithEntityName: @"Anonymous.COGroup"];
+	COTag *rainTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
 
 	[rainTag setName: _(@"rain")];
 	[rainTag addObjects: A(a2, b3)];
 
 	/* Declare the groups used as tags and commit */
 
-	[[ctxt tagGroup] addObjects: A(rainTag, sceneryTag, animalTag)];
+	[[ctxt tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag)];
 	[ctxt commit];
 }
 

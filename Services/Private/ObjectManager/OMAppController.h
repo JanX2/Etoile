@@ -12,6 +12,7 @@
 #ifndef GNUSTEP
 #import <EtoileFoundation/GNUstep.h>
 #endif
+#import <ObjectMerging/COContainer.h>
 #import <ObjectMerging/COEditingContext.h>
 #import <ObjectMerging/COGroup.h>
 #import <EtoileUI/EtoileUI.h>

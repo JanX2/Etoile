@@ -102,18 +102,18 @@
 	[self setBrowsedGroup: [[selectedItems firstObject] representedObject]];
 }
 
-- (ETLayoutItem *) tagGroupItem
+- (ETLayoutItem *) tagLibraryItem
 {
-	COGroup *tagGroup = [[self editingContext] tagGroup];
+	COLibrary *tagLibrary = [[self editingContext] tagLibrary];
 	return [[[sourceListItem items] filteredArrayUsingPredicate: 
-		[NSPredicate predicateWithFormat: @"representedObject == %@", tagGroup]] firstObject];
+		[NSPredicate predicateWithFormat: @"representedObject == %@", tagLibrary]] firstObject];
 }
 
 - (IBAction) addNewTag: (id)sender
 {
 	/* First select Tags in the Source list */
 
-	[sourceListItem setSelectedItems: A([self tagGroupItem])];
+	[sourceListItem setSelectedItems: A([self tagLibraryItem])];
 
 	/* Create the new Tag */
 
