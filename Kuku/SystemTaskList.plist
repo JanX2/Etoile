@@ -1,0 +1,112 @@
+{
+	/etoilesystem/tool/gpbs = 
+	{
+		LaunchPath = "gpbs";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 10;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/tool/gdnc = 
+	{
+		LaunchPath = "gdnc";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 10;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/openbox =
+	{
+		LaunchPath = "openbox";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 20;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/application/menuserver =
+	{
+		LaunchPath = "EtoileMenuServer";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 30;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+    /etoilesystem/application/dock =
+	{
+		LaunchPath = "AZDock";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 30;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+    /etoilesystem/application/background =
+	{
+		LaunchPath = "AZBackground";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 30;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/application/outerspace =
+	{
+		LaunchPath = "OuterSpace";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 40;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/application/switch =
+	{
+		LaunchPath = "AZSwitch";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 40;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/tool/idle =
+	{
+		LaunchPath = "Idle";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 40;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/tool/make_services =
+	{
+		LaunchPath = "make_services";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 50;
+		OnStart = <*BY>;
+		OnDemand = <*BY>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+}
