@@ -206,8 +206,8 @@
 	[desc setPropertyDescriptions: A(allViews)];
 	return desc;
 }
-- (NSArray*)properties
+- (NSArray*)propertyNames
 {
-	return [[super properties] arrayByAddingObjectsFromArray: A(@"allViews")];
+	return [[super propertyNames] arrayByAddingObjectsFromArray: A(@"allViews")];
 }
 @end

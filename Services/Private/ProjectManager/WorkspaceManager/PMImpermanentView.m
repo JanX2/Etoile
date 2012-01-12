@@ -134,9 +134,9 @@
 	return tracker;
 }
 
-- (NSArray*)properties
+- (NSArray*)propertyNames
 {
-	return [[super properties] arrayByAddingObjectsFromArray: A(@"image", @"icon", @"name")];
+	return [[super propertyNames] arrayByAddingObjectsFromArray: A(@"image", @"icon", @"name")];
 }
 
 - (NSSet*)observableKeyPaths
