@@ -16,7 +16,6 @@ export etoilefoundation ?= yes
 export etoileui ?= yes
 export etoileserialize ?= yes
 export iconkit ?= yes
-export lucenekit ?= yes
 export mediakit ?= no
 export ogrekit ?= yes
 export opmlkit ?= no
@@ -76,11 +75,6 @@ endif
 
 ifeq ($(ogrekit), yes)
    SUBPROJECTS += OgreKit
-endif
-
-# Depends on OgreKit
-ifeq ($(lucenekit), yes)
-   SUBPROJECTS += LuceneKit
 endif
 
 ifeq ($(iconkit), yes)
