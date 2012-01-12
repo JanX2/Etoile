@@ -24,7 +24,7 @@ export popplerkit ?= yes
 export scriptkit ?= yes
 export unitkit ?= yes
 export rsskit ?= no
-export servicesbarkit ?= no
+export menukit ?= no
 export systemconfig ?= yes
 export xmppkit ?= yes
 export xwindowserverkit ?= yes
@@ -110,10 +110,10 @@ ifeq ($(scriptkit), yes)
    SUBPROJECTS += ScriptKit
 endif
 
-ifeq ($(servicesbarkit), yes)
+ifeq ($(menukit), yes)
   ifneq ($(FOUNDATION_LIB), apple)
     # Do not compile for apple
-    SUBPROJECTS += ServicesBarKit
+    SUBPROJECTS += MenuKit
   endif
 endif
 
