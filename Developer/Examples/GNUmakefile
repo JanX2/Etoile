@@ -11,7 +11,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 export bookmarkkitexample ?= no
 export coreobjectexample ?= yes
-export etoilethreadexample ?= yes
+export etoilethreadexample ?= no
 export microblogpushexample ?=yes
 export ogrekitexample ?= yes
 export opmlkitexample ?= no
