@@ -193,7 +193,7 @@
 	[itemGroup setWidth: 250];
 	[itemGroup setSource: itemGroup];
 	[itemGroup setLayout: [ETTableLayout layout]];
-	[[itemGroup layout] setDisplayedProperties: A(@"displayName")];
+	[[itemGroup layout] setDisplayedProperties: A(@"icon", @"displayName")];
 	[[[itemGroup layout] columnForProperty: @"displayName"] setWidth: 250];
 	[[itemGroup layout] setAttachedTool: tool];
 	[itemGroup setHasVerticalScroller: YES];

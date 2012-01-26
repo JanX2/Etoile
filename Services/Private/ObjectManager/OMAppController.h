@@ -13,6 +13,7 @@
 #import <EtoileFoundation/GNUstep.h>
 #endif
 #import <ObjectMerging/COContainer.h>
+#import <ObjectMerging/COCustomTrack.h>
 #import <ObjectMerging/COEditingContext.h>
 #import <ObjectMerging/COGroup.h>
 #import <EtoileUI/EtoileUI.h>
@@ -23,11 +24,14 @@
 {
 	OMLayoutItemFactory *itemFactory;
 	NSMutableSet *openedGroups;
+	COCustomTrack *mainUndoTrack;
 }
 
 - (NSArray *) sourceListGroups;
 
 - (IBAction) browseMainGroup: (id)sender;
+- (IBAction) undo: (id)sender;
+- (IBAction) redo: (id)sender;
 
 - (void) buildCoreObjectGraphDemo;
 

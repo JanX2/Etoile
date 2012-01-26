@@ -19,6 +19,7 @@
 {
 	DESTROY(itemFactory);
 	DESTROY(openedGroups);
+	DESTROY(mainUndoTrack);
 	[super dealloc];
 }
 
@@ -36,25 +37,56 @@
 	[[ETApp mainMenu] addItem: [ETApp editMenuItem]];
 }
 
-- (void) applicationDidFinishLaunching: (NSNotification *)notif
+- (void) setUpUndoTrack
 {
-	[self setUpMenus];
+	ETUUID *trackUUID = [[NSUserDefaults standardUserDefaults] UUIDForKey: @"OMMainUndoTrackUUID"];
 
+	if (trackUUID == nil)
+	{
+		trackUUID = [ETUUID UUID];
+		[[NSUserDefaults standardUserDefaults] setUUID: trackUUID 
+		                                        forKey: @"OMMainUndoTrackUUID"];
+	}
+	mainUndoTrack = [[COCustomTrack alloc] initWithUUID: trackUUID 
+	                                     editingContext: [COEditingContext currentContext]];
+
+	/* For pushing revisions on the track */
+	[[NSNotificationCenter defaultCenter] addObserver: self 
+	                                         selector: @selector(didMakeLocalCommit:) 
+	                                             name: COEditingContextDidCommitNotification 
+	                                           object: [COEditingContext currentContext]];
+}
+
+- (void) setUpEditingContext
+{
 	//[[NSFileManager defaultManager] 
 	//	removeFileAtPath: [@"~/TestObjectStore" stringByExpandingTildeInPath] handler: nil];
 	COEditingContext *ctxt = [COEditingContext contextWithURL: 
 		[NSURL fileURLWithPath: [@"~/TestObjectStore" stringByExpandingTildeInPath]]];
 
 	[COEditingContext setCurrentContext: ctxt];
+}
 
+- (void) setUpAndShowBrowserUI
+{
 	[[itemFactory windowGroup] setController: self];
 	[self browseMainGroup: nil];
+}
+
+- (void) applicationDidFinishLaunching: (NSNotification *)notif
+{
+	[self setUpMenus];
+	[self setUpEditingContext];
+	[self setUpUndoTrack];
+	[self setUpAndShowBrowserUI];
 }
 
 - (NSArray *) sourceListGroups
 {
 	COGroup *libraryGroup = [[COEditingContext currentContext] libraryGroup];
 	COSmartGroup *mainGroup = [[COEditingContext currentContext] mainGroup];
+	COGroup *whereGroup = [[COGroup alloc] init];
+	COGroup *whenGroup = [[COGroup alloc] init];
 
 	if ([[mainGroup content] isEmpty])
 	{
@@ -63,7 +95,18 @@
 		ETAssert([mainGroup count] > 0);
 	}
 
+	//[whereGroup addObjects: [A(mainGroup) arrayByAddingObjectsFromArray: [libraryGroup contentArray]]];
+	//[whenGroup add
 	return [A(mainGroup) arrayByAddingObjectsFromArray: [libraryGroup contentArray]];
+}
+
+- (void) didMakeLocalCommit: (NSNotification *)notif
+{
+	ETUUID *storeUUID = [[[COEditingContext currentContext] store] UUID];
+
+	ETAssert([[[[notif object] store] UUID] isEqual: storeUUID]);
+
+	[mainUndoTrack addRevisions: [[notif userInfo] objectForKey: kCORevisionsKey]];
 }
 
 - (IBAction) browseMainGroup: (id)sender
@@ -71,6 +114,24 @@
 	[[itemFactory windowGroup] addObject: [itemFactory browserWithGroup: [self sourceListGroups]]];
 	//[[itemFactory windowGroup] addObject: [itemFactory browserTopBarWithController: nil]];
 	[openedGroups addObject: [[COEditingContext currentContext] mainGroup]];
+}
+
+- (IBAction) undo: (id)sender
+{
+	[mainUndoTrack undo];
+}
+
+- (IBAction) redo: (id)sender
+{
+	[mainUndoTrack redo];
+}
+
+- (IBAction) browseUndoHistory: (id)sender
+{
+	ETLayoutItemGroup *browser = [[ETLayoutItemFactory factory] 
+		historyBrowserWithRepresentedObject: mainUndoTrack];
+
+	[[[ETLayoutItemFactory factory] windowGroup] addItem: browser];
 }
 
 - (void) buildCoreObjectGraphDemo
@@ -151,7 +212,9 @@
 	/* Declare the groups used as tags and commit */
 
 	[[ctxt tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag)];
-	[ctxt commit];
+	[ctxt commitWithType: @"Object Creation" 
+	    shortDescription: @"Created Initial Core Objects"
+	     longDescription: @"Created various core objects such as photos, cities etc. organized by tags and libraries"];
 }
 
 @end

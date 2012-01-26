@@ -6,6 +6,7 @@
 	License:  Modified BSD  (see COPYING)
  */
 
+#import <ObjectMerging/COCommitTrack.h>
 #import <ObjectMerging/COHistoryTrack.h>
 #import <ObjectMerging/COObject.h>
 #import "OMBrowserController.h"
@@ -210,26 +211,12 @@
 
 - (IBAction) browseHistory: (id)sender
 {
-	COHistoryTrack *track = [[COHistoryTrack alloc] initTrackWithObject: [self selectedObject]  
-	                                                   containedObjects: YES];
-	//ETLayoutItemGroup *browser = [[ETLayoutItemFactory factory] itemGroupWithRepresentedObject: track];
-	ETLayoutItemGroup *browser = [[ETLayoutItemFactory factory] itemGroupWithRepresentedObject: [[[track nodes] mappedCollection] underlyingRevision]];
-	ETOutlineLayout *layout = [ETOutlineLayout layout];
+	if ([[self selectedObject] isPersistent] == NO)
+		return;
 
-	[layout setContentFont: [NSFont controlContentFontOfSize: [NSFont smallSystemFontSize]]];
-	[layout setDisplayedProperties: A(@"revisionNumber", @"UUID", @"type", @"date", @"objectUUID", @"properties")];
-	[layout setDisplayName: @"Revision Number" forProperty: @"revisionNumber"];
-	[layout setDisplayName: @"Revision UUID" forProperty: @"UUID"];
-	[layout setDisplayName: @"Date" forProperty: @"date"];
-	[layout setDisplayName: @"Type" forProperty: @"type"];
-	[layout setDisplayName: @"Object UUID" forProperty: @"objectUUID"];
-	[layout setDisplayName: @"Properties" forProperty: @"properties"];
-	[[layout columnForProperty: @"properties"] setWidth: 200];
-
-	[browser setSource: browser];
-	[browser setLayout: layout];
-	[browser setSize: NSMakeSize(700, 400)];
-	[browser reload];
+	//COTrack *track = [COCommitTrack trackWithObject: [self selectedObject]];
+	COTrack *track = [[self selectedObject] commitTrack];
+	ETLayoutItemGroup *browser = [[ETLayoutItemFactory factory] historyBrowserWithRepresentedObject: track];
 
 	[[[ETLayoutItemFactory factory] windowGroup] addItem: browser];
 }
@@ -242,6 +229,17 @@
 - (IBAction) showInfos: (id)sender
 {
 
+}
+
+- (IBAction)undoInSelection: (id)sender
+{
+	// TODO: Support multiple selected objects by looking for the last edited 
+	// object among them.
+	// TODO: If we want to prevent undoing changes not committed by the Object Manager...
+	// Check wether the revision to be undone was written in the main custom 
+	// undo track. When it is not the case, disable Undo in Selection or skip 
+	// the checked object (then test the next selected object).
+	[[[self selectedObject] commitTrack] undo];
 }
 
 @end
@@ -280,7 +278,12 @@
 - (void) objectDidEndEditing: (ETLayoutItem *)anItem
 { 	
 	ETLog(@"Did end editing in %@", anItem);
-	[[self editingContext] commit];
+
+	NSString *shortDesc = [NSString stringWithFormat: @"Renamed to %@", [[anItem representedObject] name]];
+
+	[[self editingContext] commitWithType: @"Object Renaming" 
+	                     shortDescription: shortDesc
+	                      longDescription: nil];
 }
 
 @end
