@@ -81,6 +81,7 @@
 	[self setUpAndShowBrowserUI];
 }
 
+#if 0
 - (NSArray *) sourceListGroups
 {
 	COGroup *libraryGroup = [[COEditingContext currentContext] libraryGroup];
@@ -99,6 +100,33 @@
 	//[whenGroup add
 	return [A(mainGroup) arrayByAddingObjectsFromArray: [libraryGroup contentArray]];
 }
+#else
+- (NSArray *) sourceListGroups
+{
+	COSmartGroup *mainGroup = [[COEditingContext currentContext] mainGroup];
+
+	if ([[mainGroup content] isEmpty])
+	{
+		[self buildCoreObjectGraphDemo];
+		[mainGroup refresh];
+		ETAssert([mainGroup count] > 0);
+	}
+
+	// TODO: Turn whereGroup into a smart group that dynamically computes...
+	//[whereGroup addObjects: [A(mainGroup) arrayByAddingObjectsFromArray: [libraryGroup contentArray]]];
+	COSmartGroup *whereGroup = [[OMSmartGroup alloc] init];
+	COSmartGroup *whatGroup = [[OMSmartGroup alloc] init];
+	COGroup *whenGroup = [[OMGroup alloc] init];
+
+	[whereGroup setName: [_(@"Where") uppercaseString]];
+	[whereGroup setTargetGroup: [[COEditingContext currentContext] libraryGroup]];
+	[whatGroup setName: [_(@"What") uppercaseString]];
+	[whatGroup setTargetGroup: [[[COEditingContext currentContext] tagLibrary] tagGroups]];
+	[whenGroup setName: [_(@"When") uppercaseString]];
+
+	return A(whereGroup, whatGroup, whenGroup);
+}
+#endif
 
 - (void) didMakeLocalCommit: (NSNotification *)notif
 {
@@ -209,12 +237,51 @@
 	[rainTag setName: _(@"rain")];
 	[rainTag addObjects: A(a2, b3)];
 
+	/* Snow Tag */
+
+	COTag *snowTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
+
+	[snowTag setName: _(@"snow")];
+
+	/* Tag Groups */
+
+	COTagGroup *natureTagGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COTagGroup"];
+
+	[natureTagGroup setName: _(@"Nature")];
+	[natureTagGroup addObjects: A(sceneryTag, animalTag, rainTag, snowTag)];
+
+	COTagGroup *weatherTagGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COTagGroup"];
+
+	[weatherTagGroup setName: _(@"Weather")];
+	[weatherTagGroup addObjects: A(rainTag, snowTag)];
+
 	/* Declare the groups used as tags and commit */
 
 	[[ctxt tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag)];
+	[[[ctxt tagLibrary] tagGroups] addObjects: A(natureTagGroup, weatherTagGroup)];
+
 	[ctxt commitWithType: @"Object Creation" 
 	    shortDescription: @"Created Initial Core Objects"
 	     longDescription: @"Created various core objects such as photos, cities etc. organized by tags and libraries"];
+}
+
+@end
+
+
+@implementation OMGroup
+
+- (NSImage *) icon
+{
+	return nil;
+}
+
+@end
+
+@implementation OMSmartGroup
+
+- (NSImage *) icon
+{
+	return nil;
 }
 
 @end

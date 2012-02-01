@@ -191,13 +191,41 @@
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleHeight];
 	[itemGroup setHeight: [self defaultBrowserBodySize].height];
 	[itemGroup setWidth: 250];
-	[itemGroup setSource: itemGroup];
-	[itemGroup setLayout: [ETTableLayout layout]];
+	[itemGroup setLayout: [ETOutlineLayout layout]];
+	[[itemGroup layout] setContentFont: [NSFont controlContentFontOfSize: [NSFont smallSystemFontSize]]];
 	[[itemGroup layout] setDisplayedProperties: A(@"icon", @"displayName")];
 	[[[itemGroup layout] columnForProperty: @"displayName"] setWidth: 250];
+	[[[itemGroup layout] columnForProperty: @"icon"] setWidth: 20];
 	[[itemGroup layout] setAttachedTool: tool];
+	[[[itemGroup layout] tableView] setHeaderView: nil];
+#ifndef GNUSTEP
+	[[[itemGroup layout] tableView] setSelectionHighlightStyle: NSTableViewSelectionHighlightStyleSourceList];
+	NSSize cellSpacing = [[[itemGroup layout] tableView] intercellSpacing];
+	cellSpacing.height += 3;
+	[[[itemGroup layout] tableView] setIntercellSpacing: cellSpacing];
+#endif
 	[itemGroup setHasVerticalScroller: YES];
-	[itemGroup reload];
+
+	//[itemGroup setSource: itemGroup];
+	//[itemGroup reload];
+
+	for (id listObject in aGroup)
+	{
+		ETLayoutItemGroup *listItem = [self itemGroupWithRepresentedObject: listObject];
+
+		[listItem setSelectable: NO];
+		[listItem setSource: listItem];
+		// TODO: Could be better to change -lookUpTemplateProvider to look up 
+		// controllers recursively upwards rather than just on the base item
+		// then we wouldn't have to set a controller on each list item (one on 
+		// the source list would be ok).
+		[listItem setController: AUTORELEASE([[ETController alloc] init])];
+		[[listItem controller] setTemplate: [ETItemTemplate templateWithItem: [self item] objectClass: Nil]
+		                           forType: [[listItem controller] currentGroupType]];
+		[listItem reload];
+
+		[itemGroup addItem: listItem];
+	}
 
 	[aController setSourceListItem: itemGroup];
 	[aController startObserveObject: itemGroup

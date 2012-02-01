@@ -36,3 +36,12 @@
 - (void) buildCoreObjectGraphDemo;
 
 @end
+
+// TODO: Allow icon customization without subclassing... For COCollection at least.
+@interface OMGroup : COGroup
+- (NSImage *) icon;
+@end
+
+@interface OMSmartGroup : COSmartGroup
+- (NSImage *) icon;
+@end
