@@ -21,4 +21,7 @@
 - (void) afterParse;
 - (void) copyText;
 - (void) applyAttributesFrom: (NSTextStorage*) a to: (NSTextStorage*) b;
+- (NSUInteger) indentationForPosition: (NSUInteger) aPosition;
+- (NSUInteger) tabsBeforePosition: (NSUInteger) aPosition;
+- (NSString*) stringWithNumberOfTabs: (NSUInteger) tabs;
 @end

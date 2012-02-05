@@ -35,6 +35,83 @@
 	version = 0;
 }
 
+- (NSUInteger) indentationForPosition: (NSUInteger) aPosition
+{
+	// FIXME: rather less than efficient approach
+	NSString* str = [textStorage string];
+	NSUInteger index = aPosition;
+	if (index > [str length]) {
+		return 0;
+	}
+	int indent = 0;
+	index--;
+	while (index > 0) {
+		unichar car = [str characterAtIndex: index];
+		if (car == '{')
+			indent++;
+		else if (car == '}')
+			indent--;
+		index--;
+	}
+	return indent < 0 ? 0 : indent;
+}
+
+- (NSUInteger) tabsBeforePosition: (NSUInteger) aPosition
+{
+	NSUInteger tabs = 0;
+	NSString* str = [textStorage string];
+	if (!aPosition || aPosition > [str length])
+		return 0;
+	NSUInteger index = aPosition - 1;
+	while (index > 0) {
+		unichar car = [str characterAtIndex: index];
+		if (car == '\t')
+			tabs++;
+		else
+			break;
+		index--;
+	}
+	return tabs;
+}
+
+- (NSString*) stringWithNumberOfTabs: (NSUInteger) tabs
+{
+	NSMutableString* str = [NSMutableString stringWithString: @""];
+	for (int i=0; i<tabs; i++) {
+		[str appendString: @"\t"];
+	}
+	return str;
+}
+
+- (BOOL) textView: (NSTextView*) textView shouldChangeTextInRange: (NSRange) aRange replacementString: (NSString*) aString
+{
+	if ([aString isEqualToString: @"\n"]) {
+		NSUInteger indent = [self indentationForPosition: aRange.location];
+		if (indent > 0) {
+	  	    NSString* str = [self stringWithNumberOfTabs: indent]; 
+		    NSAttributedString* astr = [[NSAttributedString alloc] initWithString: str];
+		    [textStorage replaceCharactersInRange: aRange withAttributedString: astr];
+		    [astr release];
+		}
+	}
+
+        if ([aString isEqualToString: @"}"]) {
+		NSUInteger tabs = [self tabsBeforePosition: aRange.location];	
+		NSUInteger indent = [self indentationForPosition: aRange.location];
+		if (indent >= 1) {
+			indent --;
+			if (indent != tabs) {
+	  	            NSString* str = [self stringWithNumberOfTabs: indent]; 
+			    NSAttributedString* astr = [[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%@}", str]];
+			    [textStorage replaceCharactersInRange: NSMakeRange(aRange.location - tabs, tabs) withAttributedString: astr];
+		            return NO;
+			}
+		}
+	} 
+
+	return YES;
+}
+
 - (void) textDidChange: (NSNotification*) notification
 {
 //	[NSObject cancelPreviousPerformRequestsWithTarger: self selector: @selector(parse) object: nil];
@@ -75,7 +152,7 @@
 - (void) copyText
 {
 	[copiedText release];
-	copiedText = [[NSMutableAttributedString alloc] initWithString: [[textStorage string] copy]];
+	copiedText = [[NSTextStorage alloc] initWithString: [[textStorage string] copy]];
 	queuedVersion = version;
 }
 
