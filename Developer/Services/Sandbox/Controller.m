@@ -144,7 +144,11 @@
 		needParsing = YES;
 	} 
 
-        if ([aString isEqualToString: @" "] || ([aString isEqualToString: @"\t"]) || ([aString isEqualToString: @";"]))
+        if ([aString isEqualToString: @" "] || [aString isEqualToString: @"\t"]
+		|| [aString isEqualToString: @";"]
+		|| [aString isEqualToString: @"{"]
+		|| [aString isEqualToString: @"["]
+		|| [aString isEqualToString: @"]"])
                 needParsing = YES;
 
 	if (needParsing) {
