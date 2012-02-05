@@ -16,6 +16,7 @@
     unsigned queuedVersion;
 }
 
+- (void) setHighlighterColors;
 - (void) parse;
 - (void) llvmParsing;
 - (void) afterParse;

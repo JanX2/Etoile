@@ -27,11 +27,40 @@
 
 	project = [SCKSourceCollection new];
 	highlighter = [SCKSyntaxHighlighter new];
+	[self setHighlighterColors];
+
 	//sourceFile = [SCKSourceFile new];
 	sourceFile = [[project sourceFileForPath: @"temp.m"] retain];
 
 	queuedParsing = false;
 	version = 0;
+}
+
+- (void) setHighlighterColors
+{
+	NSDictionary *comment = D([NSColor blueColor], NSForegroundColorAttributeName);
+	NSDictionary *keyword = D([NSColor yellowColor], NSForegroundColorAttributeName);
+	NSDictionary *literal = D([NSColor redColor], NSForegroundColorAttributeName);
+	NSDictionary *noAttributes = [NSDictionary new];
+
+	highlighter.tokenAttributes = [D(
+			comment, SCKTextTokenTypeComment,
+			noAttributes, SCKTextTokenTypePunctuation,
+			keyword, SCKTextTokenTypeKeyword,
+			literal, SCKTextTokenTypeLiteral)
+				mutableCopy];
+
+	[noAttributes release];
+
+	highlighter.semanticAttributes = [D(
+			D([NSColor blueColor], NSForegroundColorAttributeName), SCKTextTypeDeclRef,
+			D([NSColor brownColor], NSForegroundColorAttributeName), SCKTextTypeMessageSend,
+			//D([NSColor greenColor], NSForegroundColorAttributeName), SCKTextTypeDeclaration,
+			D([NSColor magentaColor], NSForegroundColorAttributeName), SCKTextTypeMacroInstantiation,
+			D([NSColor magentaColor], NSForegroundColorAttributeName), SCKTextTypeMacroDefinition,
+			D([NSColor orangeColor], NSForegroundColorAttributeName), SCKTextTypePreprocessorDirective,
+			D([NSColor purpleColor], NSForegroundColorAttributeName), SCKTextTypeReference)
+				mutableCopy];
 }
 
 - (NSUInteger) indentationForPosition: (NSUInteger) aPosition
@@ -159,6 +188,7 @@
 	[sourceFile reparse];
 	[sourceFile syntaxHighlightFile];
 	[sourceFile collectDiagnostics];
+
 	[highlighter transformString: copiedText];
 }
 
