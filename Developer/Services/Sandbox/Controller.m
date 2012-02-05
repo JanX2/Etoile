@@ -25,11 +25,10 @@
 	[textView setDelegate: self];
 	[textView release];
 
-	// sourceFile = [[project sourceFileForPath: @"main.m"] retain];
 	project = [SCKSourceCollection new];
 	highlighter = [SCKSyntaxHighlighter new];
 	//sourceFile = [SCKSourceFile new];
-	sourceFile = [[project sourceFileForPath: @"main.m"] retain];
+	sourceFile = [[project sourceFileForPath: @"temp.m"] retain];
 
 	queuedParsing = false;
 	version = 0;
@@ -85,13 +84,18 @@
 
 - (BOOL) textView: (NSTextView*) textView shouldChangeTextInRange: (NSRange) aRange replacementString: (NSString*) aString
 {
+	BOOL allow = true;
+        BOOL needParsing = false;
+
 	if ([aString isEqualToString: @"\n"]) {
 		NSUInteger indent = [self indentationForPosition: aRange.location];
 		if (indent > 0) {
 	  	    NSString* str = [self stringWithNumberOfTabs: indent]; 
-		    NSAttributedString* astr = [[NSAttributedString alloc] initWithString: str];
+		    NSAttributedString* astr = [[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"\n%@", str]];
 		    [textStorage replaceCharactersInRange: aRange withAttributedString: astr];
 		    [astr release];
+        	    allow = NO;
+	    	    needParsing = YES;
 		}
 	}
 
@@ -104,12 +108,25 @@
 	  	            NSString* str = [self stringWithNumberOfTabs: indent]; 
 			    NSAttributedString* astr = [[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%@}", str]];
 			    [textStorage replaceCharactersInRange: NSMakeRange(aRange.location - tabs, tabs) withAttributedString: astr];
-		            return NO;
+			    [astr release];
+		            allow = NO;
+			    needParsing = YES;
 			}
 		}
 	} 
 
-	return YES;
+        if ([aString isEqualToString: @" "] || ([aString isEqualToString: @"\t"]) || ([aString isEqualToString: @";"]))
+                needParsing = YES;
+
+	if (needParsing) {
+		// We queue a parsing
+		if (!queuedParsing) {
+			queuedParsing = true;
+			[self performSelector: @selector(parse) withObject: nil afterDelay: 0.5];
+		}
+        }
+
+	return allow;
 }
 
 - (void) textDidChange: (NSNotification*) notification
@@ -117,10 +134,6 @@
 //	[NSObject cancelPreviousPerformRequestsWithTarger: self selector: @selector(parse) object: nil];
 	version++;
 
-	if (!queuedParsing) {
-		queuedParsing = true;
-		[self performSelector: @selector(parse) withObject: nil afterDelay: 0.5];
-	}
 }
 
 - (void) parse
@@ -171,13 +184,33 @@
 - (void) afterParse
 {
 	queuedParsing = false;
-	if (queuedVersion == version) {
+	if (copiedText != nil && queuedVersion == version) {
 		[textStorage removeAttribute: NSForegroundColorAttributeName range: NSMakeRange(0, [textStorage length])];
 		[textStorage removeAttribute: NSBackgroundColorAttributeName range: NSMakeRange(0, [textStorage length])];
 		[self applyAttributesFrom: copiedText to: textStorage];
+
+/*
+		NSLog(@"current functions:");
+		NSDictionary* functions = [project functions];
+		for (SCKFunction* function in [functions objectEnumerator]) {
+			if ([[[function definition] file] isEqualToString: [sourceFile fileName]]) {
+				NSLog(@"function: %@", function);
+			}
+		}	
+
+		NSLog(@"current classes:");
+		NSDictionary* classes = [project classes];
+		for (SCKClass* aClass in [classes objectEnumerator]) {
+			if ([[[aClass definition] file] isEqualToString: [sourceFile fileName]]) {
+				NSLog(@"class def: %@", aClass);
+			}
+			if ([[[aClass declaration] file] isEqualToString: [sourceFile fileName]]) {
+				NSLog(@"class decl: %@", aClass);
+			}
+		}	
+*/
 	} else {
 		queuedParsing = true;
-		queuedVersion = version;
 		[self performSelector: @selector(parse) withObject: nil afterDelay: 0.5];
 	}	
 }
