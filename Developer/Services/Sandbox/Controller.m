@@ -95,8 +95,8 @@
 		    [textStorage replaceCharactersInRange: aRange withAttributedString: astr];
 		    [astr release];
         	    allow = NO;
-	    	    needParsing = YES;
 		}
+	    	needParsing = YES;
 	}
 
         if ([aString isEqualToString: @"}"]) {
@@ -110,9 +110,9 @@
 			    [textStorage replaceCharactersInRange: NSMakeRange(aRange.location - tabs, tabs) withAttributedString: astr];
 			    [astr release];
 		            allow = NO;
-			    needParsing = YES;
 			}
 		}
+		needParsing = YES;
 	} 
 
         if ([aString isEqualToString: @" "] || ([aString isEqualToString: @"\t"]) || ([aString isEqualToString: @";"]))
