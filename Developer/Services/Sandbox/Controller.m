@@ -39,7 +39,7 @@
 - (void) setHighlighterColors
 {
 	NSDictionary *comment = D([NSColor blueColor], NSForegroundColorAttributeName);
-	NSDictionary *keyword = D([NSColor yellowColor], NSForegroundColorAttributeName);
+	NSDictionary *keyword = D([NSColor darkGrayColor], NSForegroundColorAttributeName);
 	NSDictionary *literal = D([NSColor redColor], NSForegroundColorAttributeName);
 	NSDictionary *noAttributes = [NSDictionary new];
 
