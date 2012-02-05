@@ -41,9 +41,8 @@
 	version++;
 
 	if (!queuedParsing) {
-			queuedParsing = true;
-			queuedVersion = version;
-			[self performSelector: @selector(parse) withObject: nil afterDelay: 0.5];
+		queuedParsing = true;
+		[self performSelector: @selector(parse) withObject: nil afterDelay: 0.5];
 	}
 }
 
@@ -77,6 +76,7 @@
 {
 	[copiedText release];
 	copiedText = [[NSMutableAttributedString alloc] initWithString: [[textStorage string] copy]];
+	queuedVersion = version;
 }
 
 - (void) applyAttributesFrom: (NSTextStorage*) a to: (NSTextStorage*) b
