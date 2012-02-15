@@ -4,7 +4,10 @@ APP_NAME = Sandbox
 
 $(APP_NAME)_OBJC_FILES = \
 	main.m \
-	Controller.m
+	Controller.m \
+	IDETextView.m \
+	NoodleLineNumberMarker.m \
+	NoodleLineNumberView.m
 
 $(APP_NAME)_PRINCIPAL_CLASS = ETApplication
 

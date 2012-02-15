@@ -3,44 +3,58 @@
 #include <AppKit/AppKit.h>
 #import <SourceCodeKit/SourceCodeKit.h>
 #include "Controller.h"
+#import "NoodleLineNumberView.h"
+#import "NoodleLineNumberMarker.h"
 
 @implementation Controller
 
 - (void) awakeFromNib
 {
-	textStorage = [[NSTextStorage alloc] init];
-	NSLayoutManager* layoutManager;
-	layoutManager = [[NSLayoutManager alloc] init];
-	[textStorage addLayoutManager: layoutManager];
-	[layoutManager release];
-	NSRect frame = [[window contentView] frame];
-	NSTextContainer* container;
-	container = [[NSTextContainer alloc] initWithContainerSize: frame.size];
-	[layoutManager addTextContainer: container];
-	[container release];
-
-	NSTextView* textView = [[NSTextView alloc] initWithFrame: frame textContainer: container];
-	[window setContentView: textView];
-	[window makeKeyAndOrderFront: nil];
 	[textView setDelegate: self];
-	[textView release];
+	[textView setFont:
+		[NSFont userFixedPitchFontOfSize: [NSFont systemFontSize]]];
+	textStorage = [textView textStorage];
+
+     	NoodleLineNumberView* lineNumberView = [[NoodleLineNumberView alloc] initWithScrollView: scrollView];
+	[scrollView setHasHorizontalRuler: NO];
+	[scrollView setHasVerticalRuler: YES];
+	[scrollView setVerticalRulerView: lineNumberView];
+	[scrollView setRulersVisible: YES];
 
 	project = [SCKSourceCollection new];
 	highlighter = [SCKSyntaxHighlighter new];
 	[self setHighlighterColors];
 
-	//sourceFile = [SCKSourceFile new];
 	sourceFile = [[project sourceFileForPath: @"temp.m"] retain];
+	parsedSourceFile = [[project sourceFileForPath: @"temp.m"] retain];
+	NSString* content = [NSString stringWithContentsOfFile: [sourceFile fileName]];
+	NSMutableAttributedString* astr = [[NSMutableAttributedString alloc] initWithString: content];
+	[textStorage setAttributedString: astr];
+	[textStorage addAttribute: @"NSFontAttributeName"
+		value: [NSFont userFixedPitchFontOfSize: [NSFont systemFontSize]]
+		range: NSMakeRange(0, [textStorage length])];
+
+	[astr release];
+
+	[textView setSourceFile: sourceFile];
+//	[self performSelector: @selector(parse) withObject: nil afterDelay: 0];
+	[NSThread detachNewThreadSelector: @selector(parse) toTarget: self withObject: nil];
 
 	queuedParsing = false;
-	version = 0;
+	lock = [NSLock new];
+}
+
+- (void) dealloc
+{
+	[super dealloc];
+	[lock release];
 }
 
 - (void) setHighlighterColors
 {
 	NSDictionary *comment = D([NSColor blueColor], NSForegroundColorAttributeName);
 	NSDictionary *keyword = D([NSColor darkGrayColor], NSForegroundColorAttributeName);
-	NSDictionary *literal = D([NSColor redColor], NSForegroundColorAttributeName);
+	NSDictionary *literal = D([NSColor grayColor], NSForegroundColorAttributeName);
 	NSDictionary *noAttributes = [NSDictionary new];
 
 	highlighter.tokenAttributes = [D(
@@ -53,7 +67,7 @@
 	[noAttributes release];
 
 	highlighter.semanticAttributes = [D(
-			D([NSColor blueColor], NSForegroundColorAttributeName), SCKTextTypeDeclRef,
+			D([NSColor redColor], NSForegroundColorAttributeName), SCKTextTypeDeclRef,
 			D([NSColor brownColor], NSForegroundColorAttributeName), SCKTextTypeMessageSend,
 			//D([NSColor greenColor], NSForegroundColorAttributeName), SCKTextTypeDeclaration,
 			D([NSColor magentaColor], NSForegroundColorAttributeName), SCKTextTypeMacroInstantiation,
@@ -111,19 +125,22 @@
 	return str;
 }
 
-- (BOOL) textView: (NSTextView*) textView shouldChangeTextInRange: (NSRange) aRange replacementString: (NSString*) aString
+- (BOOL) textView: (NSTextView*) aTextView shouldChangeTextInRange: (NSRange) aRange
+                                                replacementString: (NSString*) aString
 {
+	[lock lock];
 	BOOL allow = true;
         BOOL needParsing = false;
 
 	if ([aString isEqualToString: @"\n"]) {
 		NSUInteger indent = [self indentationForPosition: aRange.location];
 		if (indent > 0) {
-	  	    NSString* str = [self stringWithNumberOfTabs: indent]; 
-		    NSAttributedString* astr = [[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"\n%@", str]];
-		    [textStorage replaceCharactersInRange: aRange withAttributedString: astr];
-		    [astr release];
-        	    allow = NO;
+			NSString* str = [self stringWithNumberOfTabs: indent]; 
+			NSAttributedString* astr = [[NSAttributedString alloc] initWithString:
+				[NSString stringWithFormat: @"\n%@", str]];
+			[textStorage replaceCharactersInRange: aRange withAttributedString: astr];
+			[astr release];
+			allow = NO;
 		}
 	    	needParsing = YES;
 	}
@@ -134,11 +151,13 @@
 		if (indent >= 1) {
 			indent --;
 			if (indent != tabs) {
-	  	            NSString* str = [self stringWithNumberOfTabs: indent]; 
-			    NSAttributedString* astr = [[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%@}", str]];
-			    [textStorage replaceCharactersInRange: NSMakeRange(aRange.location - tabs, tabs) withAttributedString: astr];
-			    [astr release];
-		            allow = NO;
+	  	        	NSString* str = [self stringWithNumberOfTabs: indent]; 
+				NSAttributedString* astr = [[NSAttributedString alloc] initWithString:
+								   [NSString stringWithFormat: @"%@}", str]];
+			 	[textStorage replaceCharactersInRange:
+			 		NSMakeRange(aRange.location - tabs, tabs) withAttributedString: astr];
+				[astr release];
+		        	allow = NO;
 			}
 		}
 		needParsing = YES;
@@ -148,59 +167,114 @@
 		|| [aString isEqualToString: @";"]
 		|| [aString isEqualToString: @"{"]
 		|| [aString isEqualToString: @"["]
-		|| [aString isEqualToString: @"]"])
+		|| [aString isEqualToString: @"]"]
+		|| [aString isEqualToString: @">"])
                 needParsing = YES;
 
-	if (needParsing) {
-		// We queue a parsing
-		if (!queuedParsing) {
-			queuedParsing = true;
-			[self performSelector: @selector(parse) withObject: nil afterDelay: 0.5];
-		}
-        }
-
+	[textView changeText];
+	if (!allow)
+		[lock unlock];
 	return allow;
 }
 
 - (void) textDidChange: (NSNotification*) notification
 {
-//	[NSObject cancelPreviousPerformRequestsWithTarger: self selector: @selector(parse) object: nil];
-	version++;
-
+	[lock unlock];
 }
 
 - (void) parse
 {
-	[self performSelectorOnMainThread: @selector(copyText) withObject: nil waitUntilDone: YES];
+	int preversion = -1;
+	while (true) {
+		NSAutoreleasePool* pool = [NSAutoreleasePool new];
 
-	@try{
+		BOOL doParsing = NO;
 
-	[self llvmParsing];
+		[lock lock];
+		int currentVersion = [textView version];
+		if (preversion != currentVersion)
+			doParsing = YES;
+		[lock unlock];
 
-	} @catch(NSException* e) {
-//		NSLog(@" exc: %@", e);
-		[copiedText release];
-		copiedText = nil;
+		if (doParsing) {
+			[self performSelectorOnMainThread: @selector(copyText)
+				               withObject: nil waitUntilDone: YES];
+
+			if ([self isValidVersion: currentVersion]) {
+				@try{
+					[self llvmParsing: copiedText
+                                              withVersion: currentVersion];
+				} @catch(NSException* e) {
+					[copiedText release];
+					copiedText = nil;
+				}
+			}
+
+			if (copiedText && [self isValidVersion: currentVersion]) {
+				BOOL applyNewText = NO;
+				[lock lock];
+				if (currentVersion == [textView version]) {
+					applyNewText = YES;
+					preversion = currentVersion;
+				}
+				[lock unlock];
+
+				if (applyNewText) {
+					[self performSelectorOnMainThread: @selector(afterParse)
+                                                               withObject: nil waitUntilDone: YES];
+				}
+			}
+		} else {
+			usleep(1000);
+		}
+		
+		[pool release];
 	}
-
-	[self performSelectorOnMainThread: @selector(afterParse) withObject: nil waitUntilDone: YES];
 }
 
-- (void) llvmParsing
+- (BOOL) isValidVersion: (unsigned int) aVersion
 {
-	sourceFile.source = copiedText;
-	[sourceFile reparse];
-	[sourceFile syntaxHighlightFile];
-	[sourceFile collectDiagnostics];
+	BOOL ret = YES;
+	[lock lock];
+	if (aVersion != [textView version])
+		ret = NO;
+	[lock unlock];
+	return ret;
+}
 
-	[highlighter transformString: copiedText];
+- (void) llvmParsing: (NSTextStorage*) storage withVersion: (unsigned int) currentVersion
+{
+	parsedSourceFile.source = storage;
+	[parsedSourceFile reparse];
+
+	if ([self isValidVersion: currentVersion])
+		[parsedSourceFile syntaxHighlightFile];
+	else
+		return;
+
+	if ([self isValidVersion: currentVersion])
+		[parsedSourceFile collectDiagnostics];
+	else
+		return;
+
+	if ([self isValidVersion: currentVersion])
+		[highlighter transformString: storage];
+	else
+		return;
+
+	NSDictionary* dictionary = [NSDictionary dictionaryWithObject: [NSFont userFixedPitchFontOfSize: [NSFont systemFontSize]]
+					forKey: @"NSFontAttributeName"];
+
+	[storage addAttribute: @"NSFontAttributeName"
+		value: [NSFont userFixedPitchFontOfSize: [NSFont systemFontSize]]
+		range: NSMakeRange(0, [storage length])];
 }
 
 - (void) copyText
 {
 	[copiedText release];
 	copiedText = [[NSTextStorage alloc] initWithString: [[textStorage string] copy]];
-	queuedVersion = version;
+	queuedVersion = [textView version];
 }
 
 - (void) applyAttributesFrom: (NSTextStorage*) a to: (NSTextStorage*) b
@@ -217,10 +291,12 @@
 
 - (void) afterParse
 {
-	queuedParsing = false;
-	if (copiedText != nil && queuedVersion == version) {
-		[textStorage removeAttribute: NSForegroundColorAttributeName range: NSMakeRange(0, [textStorage length])];
-		[textStorage removeAttribute: NSBackgroundColorAttributeName range: NSMakeRange(0, [textStorage length])];
+	//queuedParsing = false;
+	if (copiedText != nil && queuedVersion == [textView version]) {
+		[textStorage removeAttribute: NSForegroundColorAttributeName range:
+			 NSMakeRange(0, [textStorage length])];
+		[textStorage removeAttribute: NSBackgroundColorAttributeName range:
+			 NSMakeRange(0, [textStorage length])];
 		[self applyAttributesFrom: copiedText to: textStorage];
 
 /*
@@ -244,8 +320,9 @@
 		}	
 */
 	} else {
-		queuedParsing = true;
-		[self performSelector: @selector(parse) withObject: nil afterDelay: 0.5];
+		//queuedParsing = true;
+		// [self performSelector: @selector(parse) withObject: nil afterDelay: 0.5];
+//		[NSThread detachNewThreadSelector: @selector(parse) toTarget: self withObject: nil];
 	}	
 }
 

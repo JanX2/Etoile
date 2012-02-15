@@ -4,8 +4,17 @@
 	Actions = (
 	);
 	Outlets = (
-	    window
+	    window,
+	    textView,
+	    scrollView
 	);
 	Super = NSObject;
+    };
+    IDETextView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSTextView;
     };
 }
