@@ -213,6 +213,16 @@ static PlaceholderAttachmentCell* gDrawingCell = 0;
 		[currentString appendFormat: @"%c", c];
 	}
 
+	{
+		CompletionElement* e = [CompletionElement new];
+		e.placeHolder = NO;
+		e.text = [currentString stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];	
+		[completionsElements addObject: e];
+		[e release];
+		[currentString release];
+		currentString = [NSMutableString new];
+	}
+
 	// now let's build the attributed string
 	NSMutableAttributedString* astr = [NSMutableAttributedString new];
 
