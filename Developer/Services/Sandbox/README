@@ -1,1 +1,7 @@
-Simple text editor with llvm syntax highlighting
+Simple text editor using llvm for syntax highlighting, code completion.
+
+How to use it
+=============
+
+Code completion: press <esc> then use the arrow to choose the completion you want, then press enter.
+

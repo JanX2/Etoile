@@ -83,20 +83,72 @@ static PlaceholderAttachmentCell* gDrawingCell = 0;
 
 @implementation IDETextView
 
-@synthesize sourceFile, version;
+@synthesize sourceFile, version, delegate;
 
-- (id) initWithFrame: (NSRect) frame textContainer: (NSTextContainer*) container
+#define NO_TEXT 0
+#define NEW_TEXT 1
+
+- (void) awakeFromNib
 {
-	self = [super initWithFrame: frame textContainer: container];
 	popup = nil;
+	queuedVersion = -1;
 	version = 0;
-	return self;
+	conditionLock = [[NSConditionLock alloc] initWithCondition: NO_TEXT];
+	highlighter = [SCKSyntaxHighlighter new];
+	[self setHighlighterColors];
+	[self setFont:
+		[NSFont userFixedPitchFontOfSize: [NSFont systemFontSize]]];
+
+	SCKSourceCollection* tmpProject = [SCKSourceCollection new];
+	parsedSourceFile = [[tmpProject sourceFileForPath: @"/tmp/temp.m"] retain];
+	[tmpProject release];
+	queuedParsing = false;
+	[super setDelegate: self];
+	[NSThread detachNewThreadSelector: @selector(parseThread) toTarget: self withObject: nil];
 }
 
 - (void) dealloc
 {
 	[super dealloc];
 	[popup release];
+	[conditionLock release];
+	[highlighter release];
+	[parsedSourceFile release];
+}
+
+- (void) setSourceFile: (SCKSourceFile*) aSourceFile
+{
+	[aSourceFile retain];
+	[sourceFile release];
+	sourceFile = aSourceFile;
+	[self queueParsingNow: YES];
+}
+
+- (void) setHighlighterColors
+{
+	NSDictionary *comment = D([NSColor blueColor], NSForegroundColorAttributeName);
+	NSDictionary *keyword = D([NSColor darkGrayColor], NSForegroundColorAttributeName);
+	NSDictionary *literal = D([NSColor grayColor], NSForegroundColorAttributeName);
+	NSDictionary *noAttributes = [NSDictionary new];
+
+	highlighter.tokenAttributes = [D(
+			comment, SCKTextTokenTypeComment,
+			noAttributes, SCKTextTokenTypePunctuation,
+			keyword, SCKTextTokenTypeKeyword,
+			literal, SCKTextTokenTypeLiteral)
+				mutableCopy];
+
+	[noAttributes release];
+
+	highlighter.semanticAttributes = [D(
+			D([NSColor redColor], NSForegroundColorAttributeName), SCKTextTypeDeclRef,
+			D([NSColor brownColor], NSForegroundColorAttributeName), SCKTextTypeMessageSend,
+			//D([NSColor greenColor], NSForegroundColorAttributeName), SCKTextTypeDeclaration,
+			D([NSColor magentaColor], NSForegroundColorAttributeName), SCKTextTypeMacroInstantiation,
+			D([NSColor magentaColor], NSForegroundColorAttributeName), SCKTextTypeMacroDefinition,
+			D([NSColor orangeColor], NSForegroundColorAttributeName), SCKTextTypePreprocessorDirective,
+			D([NSColor purpleColor], NSForegroundColorAttributeName), SCKTextTypeReference)
+				mutableCopy];
 }
 
 - (void) showCompletionMenuAtPosition: (NSPoint) position
@@ -255,12 +307,8 @@ static PlaceholderAttachmentCell* gDrawingCell = 0;
 		[self setSelectedRange: selectionRange];
 	}
 	[astr release];
-	[self changeText];
-}
 
-- (void) changeText
-{
-	version++;
+	[self setVersion: [self version] + 1];
 }
 
 - (void) keyDown: (NSEvent*) theEvent
@@ -407,6 +455,272 @@ static PlaceholderAttachmentCell* gDrawingCell = 0;
 	NSPoint cursorPosition = rects[0].origin;
 	[self showCompletionMenuAtPosition: cursorPosition
 				 withArray: completions];
+}
+
+- (NSUInteger) indentationForPosition: (NSUInteger) aPosition
+{
+	// FIXME: rather less than efficient approach
+	NSString* str = [[self textStorage] string];
+	NSUInteger index = aPosition;
+	if (index > [str length]) {
+		return 0;
+	}
+	int indent = 0;
+	index--;
+	while (index > 0) {
+		unichar car = [str characterAtIndex: index];
+		if (car == '{')
+			indent++;
+		else if (car == '}')
+			indent--;
+		index--;
+	}
+	return indent < 0 ? 0 : indent;
+}
+
+- (NSUInteger) tabsBeforePosition: (NSUInteger) aPosition
+{
+	NSUInteger tabs = 0;
+	NSString* str = [[self textStorage] string];
+	if (!aPosition || aPosition > [str length])
+		return 0;
+	NSUInteger index = aPosition - 1;
+	while (index > 0) {
+		unichar car = [str characterAtIndex: index];
+		if (car == '\t')
+			tabs++;
+		else
+			break;
+		index--;
+	}
+	return tabs;
+}
+
+- (NSString*) stringWithNumberOfTabs: (NSUInteger) tabs
+{
+	NSMutableString* str = [NSMutableString stringWithString: @""];
+	for (int i=0; i<tabs; i++) {
+		[str appendString: @"\t"];
+	}
+	return str;
+}
+
+- (BOOL) textView: (NSTextView*) aTextView shouldChangeTextInRange: (NSRange) aRange
+                                                replacementString: (NSString*) aString
+{
+	BOOL allow = true;
+        BOOL needParsing = false;
+
+	if ([aString isEqualToString: @"\n"]) {
+		NSUInteger indent = [self indentationForPosition: aRange.location];
+		if (indent > 0) {
+			NSString* str = [self stringWithNumberOfTabs: indent]; 
+			NSAttributedString* astr = [[NSAttributedString alloc] initWithString:
+				[NSString stringWithFormat: @"\n%@", str]];
+			[[self textStorage] replaceCharactersInRange: aRange withAttributedString: astr];
+			[astr release];
+			allow = NO;
+		}
+	    	needParsing = YES;
+	}
+
+        if ([aString isEqualToString: @"}"]) {
+		NSUInteger tabs = [self tabsBeforePosition: aRange.location];	
+		NSUInteger indent = [self indentationForPosition: aRange.location];
+		if (indent >= 1) {
+			indent --;
+			if (indent != tabs) {
+	  	        	NSString* str = [self stringWithNumberOfTabs: indent]; 
+				NSAttributedString* astr = [[NSAttributedString alloc] initWithString:
+								   [NSString stringWithFormat: @"%@}", str]];
+			 	[[self textStorage] replaceCharactersInRange:
+			 		NSMakeRange(aRange.location - tabs, tabs) withAttributedString: astr];
+				[astr release];
+		        	allow = NO;
+			}
+		}
+		needParsing = YES;
+	} 
+
+        if ([aString isEqualToString: @" "] || [aString isEqualToString: @"\t"]
+		|| [aString isEqualToString: @";"]
+		|| [aString isEqualToString: @"{"]
+		|| [aString isEqualToString: @"["]
+		|| [aString isEqualToString: @"]"]
+		|| [aString isEqualToString: @">"])
+                needParsing = YES;
+
+	if (delegate && delegate != self
+		 && [delegate respondsToSelector:
+			 @selector(textView:shouldChangeTextInRange:replacementString:)]) {
+		allow = [delegate textView: aTextView
+			  shouldChangeTextInRange: aRange
+			        replacementString: aString];
+	}
+
+	if (allow)
+		[self setVersion: [self version] + 1];
+
+	[self queueParsingNow: needParsing];
+
+	return allow;
+}
+
+- (void) queueParsing
+{
+	[conditionLock lock];
+	[copiedText release];
+	copiedText = [[NSTextStorage alloc] initWithString: [[self textStorage] string]];
+	queuedVersion = version;
+	// signal the parsing thread that we have new content to parse...
+	[conditionLock unlockWithCondition: NEW_TEXT];
+}
+
+- (void) queueParsingNow: (BOOL) immediate
+{
+	if (queuedVersion == version)
+		return;
+
+	if (immediate) {
+		[self queueParsing];
+	} else {
+		// let's queue a parsing in the future
+		[NSObject cancelPreviousPerformRequestsWithTarget: self
+					  	         selector: @selector(queueParsing)
+						           object: nil];
+		[self performSelector: @selector(queueParsing)
+			   withObject: nil
+			   afterDelay: 0.2];
+	}
+}
+
+// This method runs in its own thread
+- (void) parseThread
+{
+	int preversion = -1;
+	while (true) {
+		NSAutoreleasePool* pool = [NSAutoreleasePool new];
+
+		// New content, let's grab it!
+		[conditionLock lockWhenCondition: NEW_TEXT];
+		NSTextStorage* text = copiedText;
+		int textVersion = queuedVersion;
+		[text retain];
+		[conditionLock unlockWithCondition: NO_TEXT];
+
+		@try{
+			// we parse...
+			BOOL doneParsing = [self llvmParsing: text
+			      withVersion: textVersion];
+			if (!doneParsing) {
+				[text release];
+				text = nil;
+			}
+		} @catch(NSException* e) {
+			[text release];
+			text = nil;
+		}
+
+		if (text) {
+			// send back the parsed text to the UI
+			[self performSelectorOnMainThread: @selector(applyParsedContent:)
+					       withObject: D(text, @"text",
+						 [NSNumber numberWithInt: textVersion], @"version")
+					    waitUntilDone: YES];
+		}
+		[text release];
+		
+		[pool release];
+	}
+}
+
+- (BOOL) llvmParsing: (NSTextStorage*) storage withVersion: (unsigned int) currentVersion
+{
+	[parsedSourceFile setSource: storage];
+	[parsedSourceFile reparse];
+
+	if ([self version] != currentVersion)
+		return NO;
+
+	[parsedSourceFile syntaxHighlightFile];
+	if ([self version] != currentVersion)
+		return NO;
+
+	[parsedSourceFile collectDiagnostics];
+	if ([self version] != currentVersion)
+		return NO;
+
+	[highlighter transformString: storage];
+	if ([self version] != currentVersion)
+		return NO;
+
+	NSDictionary* dictionary = [NSDictionary dictionaryWithObject:
+		[NSFont userFixedPitchFontOfSize: [NSFont systemFontSize]]
+	  	forKey: @"NSFontAttributeName"];
+
+	[storage addAttribute: @"NSFontAttributeName"
+		value: [NSFont userFixedPitchFontOfSize: [NSFont systemFontSize]]
+		range: NSMakeRange(0, [storage length])];
+
+	if ([self version] != currentVersion)
+		return NO;
+
+	return YES;
+}
+
+- (void) applyAttributesFrom: (NSTextStorage*) a to: (NSTextStorage*) b
+{
+	unsigned index = 0;
+	while (index < [a length]) 
+	{
+		NSRange range;
+		NSDictionary* dict = [a attributesAtIndex: index effectiveRange: &range];
+		[b setAttributes: dict range: range];
+		index += range.length;
+	}
+}
+
+// Running on the UI thread
+- (void) applyParsedContent: (NSDictionary*) content
+{
+	BOOL applyParse = NO;
+	NSTextStorage* text = [content objectForKey: @"text"];
+	int textVersion = [[content objectForKey: @"version"] intValue];
+
+	if (text != nil && textVersion == version)
+		applyParse = YES;
+
+	if (applyParse) {
+		[[self textStorage] removeAttribute: NSForegroundColorAttributeName range:
+			 NSMakeRange(0, [[self textStorage] length])];
+		[[self textStorage] removeAttribute: NSBackgroundColorAttributeName range:
+			 NSMakeRange(0, [[self textStorage] length])];
+		[self applyAttributesFrom: text to: [self textStorage]];
+	} else {
+		// queue a parsing in the future
+		[self queueParsingNow: NO];
+	}
+
+/*
+		NSLog(@"current functions:");
+		NSDictionary* functions = [project functions];
+		for (SCKFunction* function in [functions objectEnumerator]) {
+			if ([[[function definition] file] isEqualToString: [sourceFile fileName]]) {
+				NSLog(@"function: %@", function);
+			}
+		}	
+
+		NSLog(@"current classes:");
+		NSDictionary* classes = [project classes];
+		for (SCKClass* aClass in [classes objectEnumerator]) {
+			if ([[[aClass definition] file] isEqualToString: [sourceFile fileName]]) {
+				NSLog(@"class def: %@", aClass);
+			}
+			if ([[[aClass declaration] file] isEqualToString: [sourceFile fileName]]) {
+				NSLog(@"class decl: %@", aClass);
+			}
+		}	
+*/
 }
 
 @end
