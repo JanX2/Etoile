@@ -195,9 +195,11 @@
 	[[itemGroup layout] setContentFont: [NSFont controlContentFontOfSize: [NSFont smallSystemFontSize]]];
 	[[itemGroup layout] setDisplayedProperties: A(@"icon", @"displayName")];
 	[[[itemGroup layout] columnForProperty: @"displayName"] setWidth: 250];
-	[[[itemGroup layout] columnForProperty: @"icon"] setWidth: 20];
+	[[[itemGroup layout] columnForProperty: @"icon"] setWidth: 32]; // 20 if not two levels deep
 	[[itemGroup layout] setAttachedTool: tool];
 	[[[itemGroup layout] tableView] setHeaderView: nil];
+	//float indent = [[[itemGroup layout] outlineView] indentationPerLevel];
+	//[[[itemGroup layout] outlineView] setIndentationPerLevel: 0];
 #ifndef GNUSTEP
 	[[[itemGroup layout] tableView] setSelectionHighlightStyle: NSTableViewSelectionHighlightStyleSourceList];
 	NSSize cellSpacing = [[[itemGroup layout] tableView] intercellSpacing];
@@ -222,10 +224,21 @@
 		[listItem setController: AUTORELEASE([[ETController alloc] init])];
 		[[listItem controller] setTemplate: [ETItemTemplate templateWithItem: [self item] objectClass: Nil]
 		                           forType: [[listItem controller] currentGroupType]];
+		if ([[listObject name] isEqual: @"WHAT"])
+		{
+			[[listItem controller] setTemplate: [ETItemTemplate templateWithItem: [self itemGroup] objectClass: Nil]
+		                           forType: [ETUTI typeWithClass: [COTagGroup class]]];	
+		}
 		[listItem reload];
 
 		[itemGroup addItem: listItem];
 	}
+
+	// FIXME: We ought to reload outline views transparently (even with no 
+	// source on the source list)
+	/*NSOutlineView *ov = (NSOutlineView *)[[itemGroup layout] tableView];
+	[ov reloadData];
+	[ov expandItem: [itemGroup firstItem]];*/
 
 	[aController setSourceListItem: itemGroup];
 	[aController startObserveObject: itemGroup

@@ -117,11 +117,12 @@
 	COSmartGroup *whereGroup = [[OMSmartGroup alloc] init];
 	COSmartGroup *whatGroup = [[OMSmartGroup alloc] init];
 	COGroup *whenGroup = [[OMGroup alloc] init];
+	COGroup *libGroup = [[COEditingContext currentContext] libraryGroup];
 
 	[whereGroup setName: [_(@"Where") uppercaseString]];
-	[whereGroup setTargetGroup: [[COEditingContext currentContext] libraryGroup]];
+	[whereGroup setTargetCollection: [A(mainGroup) arrayByAddingObjectsFromArray: [libGroup contentArray]]];
 	[whatGroup setName: [_(@"What") uppercaseString]];
-	[whatGroup setTargetGroup: [[[COEditingContext currentContext] tagLibrary] tagGroups]];
+	[whatGroup setTargetCollection: [[[COEditingContext currentContext] tagLibrary] tagGroups]];
 	[whenGroup setName: [_(@"When") uppercaseString]];
 
 	return A(whereGroup, whatGroup, whenGroup);
@@ -140,7 +141,6 @@
 - (IBAction) browseMainGroup: (id)sender
 {
 	[[itemFactory windowGroup] addObject: [itemFactory browserWithGroup: [self sourceListGroups]]];
-	//[[itemFactory windowGroup] addObject: [itemFactory browserTopBarWithController: nil]];
 	[openedGroups addObject: [[COEditingContext currentContext] mainGroup]];
 }
 
@@ -189,7 +189,7 @@
 	COObject *b4 = [ctxt insertObjectWithEntityName: @"Anonymous.COObject"];
 
 	[b1 setName: @"Sunset"];
-	[b2 setName: @"Beach"];
+	[b2 setName: @"Eagle on a snowy Beach"];
 	[b3 setName: @"Cloud"];
 	[b4 setName: @"Fox"];
 
@@ -228,20 +228,21 @@
 	COTag *animalTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
 
 	[animalTag setName: _(@"animal")];
-	[animalTag addObject: b4];
+	[animalTag addObjects: A(b4, b2)];
 
 	/* Rain Tag */
 
 	COTag *rainTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
 
 	[rainTag setName: _(@"rain")];
-	[rainTag addObjects: A(a2, b3)];
+	[rainTag addObjects: A(a2, a3, b3, b4)];
 
 	/* Snow Tag */
 
 	COTag *snowTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
 
 	[snowTag setName: _(@"snow")];
+	[rainTag addObjects: A(a1, b2)];
 
 	/* Tag Groups */
 
@@ -255,10 +256,14 @@
 	[weatherTagGroup setName: _(@"Weather")];
 	[weatherTagGroup addObjects: A(rainTag, snowTag)];
 
+	COTagGroup *unclassifiedTagGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COTagGroup"];
+
+	[unclassifiedTagGroup setName: _(@"Unclassified")];
+
 	/* Declare the groups used as tags and commit */
 
-	[[ctxt tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag)];
-	[[[ctxt tagLibrary] tagGroups] addObjects: A(natureTagGroup, weatherTagGroup)];
+	[[ctxt tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag, snowTag)];
+	[[[ctxt tagLibrary] tagGroups] addObjects: A(natureTagGroup, weatherTagGroup, unclassifiedTagGroup)];
 
 	[ctxt commitWithType: @"Object Creation" 
 	    shortDescription: @"Created Initial Core Objects"

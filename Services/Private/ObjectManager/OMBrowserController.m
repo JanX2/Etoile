@@ -15,29 +15,9 @@
 
 @implementation OMController
 
-// NOTE: Could be simpler to have a method -setEditingContext as Apple does it 
-// with CoreData. But it's less clean and means we might end up in a situation 
-// where the context set on the controller is not the same than the one used by 
-// the represented object, if the controller context has not been reset.
 - (COEditingContext *) editingContext
 {
-	id repObject = [[self content] representedObject];
-	COEditingContext *ctxt = [[repObject ifResponds] editingContext];
-
-	/* All Objects smart group is not persistent, in that case we use an object 
-	   among the content to get the editing context */
-	if (ctxt == nil && [repObject isCollection])
-	{
-		for (id object in repObject)
-		{
-			ctxt = [[object ifResponds] editingContext];
-			if (ctxt != nil)
-				break;
-		}
-	}
-	ETAssert(ctxt != nil);
-
-	return ctxt;
+	return [COEditingContext currentContext];
 }
 
 @end
@@ -96,11 +76,119 @@
 	return selectedObject;
 }
 
+- (BOOL) isSameKindAmongObjects: (NSArray *)objects
+{
+	Class kind = [[objects firstObject] class];
+
+	for (id obj in objects)
+	{
+		if ([obj isKindOfClass: kind] == NO && [kind isSubclassOfClass: [obj class]] == NO)
+		{
+			return NO;
+		}
+	}
+	return YES;
+}
+
+- (COGroup *) whereGroup
+{
+	return [[sourceListItem firstItem] representedObject];
+}
+
+- (ETLayoutItemGroup *) whatGroupItem
+{
+	return [sourceListItem itemAtIndex: 1];
+}
+
+- (COGroup *) whenGroup
+{
+	return [[sourceListItem lastItem] representedObject];
+}
+
+- (NSSet *) selectedTags
+{
+	NSMutableSet *tags = [NSMutableSet set];
+	ETLayoutItemGroup *whatGroupItem = [self whatGroupItem];
+
+	for (NSIndexPath *indexPath in [whatGroupItem selectionIndexPaths])
+	{
+		COObject *selectedObject = [[whatGroupItem itemAtIndexPath: indexPath] representedObject];
+	
+		if ([selectedObject isTag])
+		{
+			[tags addObject: selectedObject];
+		}
+		else
+		{
+			ETAssert([selectedObject isKindOfClass: [COTagGroup class]]);
+			[tags addObjectsFromArray: [selectedObject contentArray]];
+		}
+	}
+	return tags;
+}
+
+- (COSmartGroup *) whereUnionGroup
+{
+	COSmartGroup *selectionGroup = AUTORELEASE([[COSmartGroup alloc] init]);
+	COContentBlock block = ^() {
+		NSMutableSet *objects = [NSMutableSet set];
+
+		for (COCollection *collection in [self whereGroup])
+		{
+			[objects addObjectsFromArray: [collection contentArray]];
+		}
+
+		return [objects contentArray];
+	};
+
+	[selectionGroup setContentBlock: block];
+	return selectionGroup;
+}
+
 - (void) sourceListSelectionDidChange: (NSNotification *)aNotif
 {
 	ETLog(@"Did change selection in %@", [aNotif object]);
 	NSArray *selectedItems = [[aNotif object] selectedItemsInLayout];
-	[self setBrowsedGroup: [[selectedItems firstObject] representedObject]];
+	NSArray *selectedObjects = [[selectedItems mappedCollection] representedObject];
+	BOOL isSingleSelection = ([selectedObjects count] == 1);
+	BOOL isMultipleSelectionInSingleCategory = ([selectedObjects count] > 1 
+		&& [self isSameKindAmongObjects: selectedObjects]);
+
+	if (isSingleSelection)
+	{
+		[self setBrowsedGroup: [selectedObjects firstObject]];
+	}
+	else if (isMultipleSelectionInSingleCategory)
+	{
+		COSmartGroup *selectionGroup = AUTORELEASE([[COSmartGroup alloc] init]);
+
+		COContentBlock block = ^() {
+			NSMutableSet *objects = [NSMutableSet set];
+
+			for (COCollection *collection in selectedObjects)
+			{
+				[objects addObjectsFromArray: [collection contentArray]];
+			}
+
+			return [objects contentArray];
+		};
+
+		[selectionGroup setContentBlock: block];
+		[self setBrowsedGroup: selectionGroup];
+	}
+	else
+	{
+		// TODO: Finish filtering on whenPredicate & whatPredicate & searchPredicate
+		NSPredicate *predicate =
+            [NSPredicate predicateWithFormat: @"ALL %@ IN tags", [self selectedTags]];
+		COSmartGroup *tagFilteredGroup = AUTORELEASE([[COSmartGroup alloc] init]);
+
+		[tagFilteredGroup setTargetCollection: [self whereUnionGroup]];
+
+		[tagFilteredGroup setQuery: [COQuery queryWithPredicate: predicate]];
+
+		[self setBrowsedGroup: tagFilteredGroup];
+	}
 }
 
 - (ETLayoutItem *) tagLibraryItem
@@ -112,21 +200,39 @@
 
 - (IBAction) addNewTag: (id)sender
 {
-	/* First select Tags in the Source list */
+	/* Ensure the What item group is expanded */
+	
+	[(NSOutlineView *)[[[self sourceListItem] layout] tableView] 
+		expandItem: [self whatGroupItem] expandChildren: NO];
 
-	[sourceListItem setSelectedItems: A([self tagLibraryItem])];
+	/* First select the right Tag Group in the Source list */
+
+	NSArray *selectedTagGroupItems = [[self whatGroupItem] selectedItems];
+
+	/* Deselect everything in the source list */
+	[[self sourceListItem] setSelectionIndexPaths: [NSArray array]];
+
+	if ([selectedTagGroupItems isEmpty])
+	{
+		ETLayoutItem *unclassifiedTagGroupItem = [[self whatGroupItem] lastItem];
+		[[self whatGroupItem] setSelectedItems: A(unclassifiedTagGroupItem)];
+	}
+	else
+	{
+		[[self whatGroupItem] setSelectedItems: A([selectedTagGroupItems firstObject])];
+	}
 
 	/* Create the new Tag */
 
 	COEditingContext *ctxt = [self editingContext];
-	COGroup *tag = [ctxt insertObjectWithEntityName: @"Anonymous.COGroup"];
+	COGroup *tag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
 
 	[tag setName: _(@"Untitled")];
 
 	/* Will invoke -addObject: on the Tag group */
 	[(OMBrowserContentController *)[contentViewItem controller] addTag: tag];
 
-	[ctxt commit];
+	[ctxt commitWithType: @"Tag Creation" shortDescription: @"Created Tag"];
 
 	/* Finally let the user edit the tag name */
 
