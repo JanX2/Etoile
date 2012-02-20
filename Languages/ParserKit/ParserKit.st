@@ -15,32 +15,13 @@
     2011/10/20 Beginning of the OMeta implementation
       - Adding the PKParserBase PKRules class
 
- 
+     2011/11/09 Todo merge PKRules with PKParserBase
 
 ============================================================================
 "
 
 NSString extend [
 
-"	head [
-		^self head: 1
-	]
-	
-	head: size [
-		TODO fix it with NSMakeRange
-		^size > self count 
-			  ifTrue: [ self ]
-			  ifFalse: [ self substringWithRange: (NSValue rangeWithLocation: 0 length: size)]
-	]
-
-	tail [
-		^self tailFrom: 1
-	]
-
-	tailFrom: position [
-		^self substringWithRange: (NSValue rangeWithLocation: position length: (self count - position))
-	]"
-	
 	concat: other [
 		^self stringByAppendingString: other
 	]
@@ -71,20 +52,18 @@ NSObject subclass: PKParseMatch [
 	initWithInput: list length: length [
 		super init.
 		input := list.
-		range := (NSValue rangeWithLocation: input position length: length) 
+		range := (NSValue rangeWithLocation: input position length: length).
+		^self
 	]
 
 	sequenceWith: match [
+	
 		(range location + range length) = match range location
-			ifFalse: [| e | 
-						e := NSException alloc  initWithName: 'PKParseMatch' reason: 'Can not add the range, it is not contigus' userInfo: nil.  
-						ETTranscript show:e callStackSymbols; cr. 
-						e raise.].
+			ifFalse: [ NSException raise: 'PKParseMatch' format: 'Can not add the range, it is not contigus'].
 		range := NSValue rangeWithLocation: range location length: (range length + match  range length).
-		ETTranscript show: range.
 	]
 
-	tail [ ^input tail ]
+	tail [ ^input pushPosition: range length + range location]
 	match  [ ^input fromRange: range ]
 	isEmpty [ ^range length = 0]
 	isSuccess [ ^true ]
@@ -103,7 +82,7 @@ NSObject subclass: PKParseFail [
 		describ := string.
 		input := list.
 		failedPosition := input position.
-		list popPosition
+		^self
 	]
 	
 	isFailure [ ^true ]
@@ -155,7 +134,7 @@ NSObject subclass: PKParseExpression [
 		
 	parseInput: list ifFailed: aBlock [
 		| match |
-		match := (self parseList: list).
+		match := (self parseInput: list).
 		^match isFailure ifTrue: [aBlock value]
 						 ifFalse: [ match ]
 	]
@@ -210,13 +189,14 @@ PKComposeExpression subclass: PKNamedExpression [
 	initWithName: string exp: expression [
 		super init.
 		exp := expression.
-		name := string
+		name := string.
+		^self
 	]
 
 	parseInput: list  [
 		| match |
 		match := list matchRule: name.
-		match isNul ifTrue: [
+		(match == nil) ifTrue: [
 			match := exp parseInput: list.
 			list  addMatch: match at: list position named: name.
 		].
@@ -236,7 +216,8 @@ PKParseExpression subclass: PKTokenExpression [
 
 	initWithPattern: matchPattern [
 		super init.
-		match := matchPattern
+		match := matchPattern.
+		^self
 	]
 	
 	parseInput: list [
@@ -282,7 +263,8 @@ PKParseExpression subclass: PKSequenceExpression [
 
 	initWithFirst: exp1 second: exp2 [
 		e1 := exp1.
-		e2 := exp2
+		e2 := exp2.
+		^self
 	] 
 
 	parseInput: list [
@@ -310,13 +292,12 @@ PKParseExpression subclass: PKAlternateExpression [
 		second := exp2
 	]
 
-	 parseInput: list [
+	 parseInput: 
 		 ^first parseInput: list ifFailed: [
 			 | match |
 			 match := second parseInput: list.
-			 ETTranscript show: match; cr.
 			 match isFailure 
-                 ifTrue:[ PKParseFail alloc initWithTail: list description: 'Expected ', self description]
+                 ifTrue:[ PKParseFail alloc initWithInput: list description: 'Expected ', self description]
 				 ifFalse: [match]
 		 ]		
 	 ]
@@ -332,7 +313,8 @@ PKParseExpression subclass: PKRepetitionExpression [
 	initWithExpression: exp canBeEmpty: aBool [
 		super init.
 		e := exp.
-		canBeEmpty := aBool
+		canBeEmpty := aBool.
+		^self
 	]
 	
 	parseInput: list [
@@ -352,7 +334,7 @@ PKParseExpression subclass: PKRepetitionExpression [
 	]
 ]
 
-"--- Ecursive Extend ---"
+"--- Recursive Extend ---"
 NSString extend [
 	asExp [
 		^PKTokenExpression new initWithPattern: self
@@ -366,13 +348,18 @@ NSObject subclass: PKInputStream [
         stream := input.
         memo := NSMutableDictionary new.
 		positionStack := NSMutableArray new.
-		position := 0
+		position := 0.
+		^self
+	]
+
+	description [
+		^stream substringWithRange: (NSValue rangeWithLocation: position length: stream length - position)
 	]
 
     addMatch: parserMatch at: position named: aString [
 		| matchList |
-		(memo objectForKey: position)
-			isNil ifTrue: [memo setValue: NSMutableDictionary new forKey: position].
+		((memo objectForKey: position) == nil)
+			 ifTrue: [memo setValue: NSMutableDictionary new forKey: position].
 		matchList := memo objectForKey: position.
 		matchList setValue: parserMatch forKey: aString
 	]
@@ -384,18 +371,19 @@ NSObject subclass: PKInputStream [
 	matchAt: position rule: aString [
 		| matchList |
 		matchList := memo objectForKey: position.
-		^matchList isNil 
+		^(matchList == nil)
             ifTrue: [nil]
 			ifFalse: [matchList objectForKey: aString]
 	]
 
 	pushPosition: anInt [
-		position := anInt .
-		positionStack addObject: anInt
+		positionStack addObject: position.
+		position := anInt
 	]
 
 	popPosition [
-		position := positionStack removeLastObject
+		position := positionStack lastObject.
+		positionStack removeLastObject.
 	]
 
     stream [
@@ -410,7 +398,9 @@ NSObject subclass: PKInputStream [
 		^self head: 1
 	]
 	
-	head: size [
+	head: size [			
+		(position + size) > stream length 
+			ifTrue: [^''].
 		^stream  substringWithRange: (NSValue rangeWithLocation: position length: size)
 	]
 
@@ -427,7 +417,7 @@ NSObject subclass: PKInputStream [
 	]
 
 	length [
-		^stream length	
+		^stream length
 	]
 
 	atEnd [
@@ -435,7 +425,7 @@ NSObject subclass: PKInputStream [
 	]
 ]
 
-NSOBject subclass: PKRules [
+NSObject subclass: PKRules [
 	| parent rules name |
 
 	initWithName: string [
@@ -443,7 +433,7 @@ NSOBject subclass: PKRules [
 		name := string.
 		parent := nil.
 		rules := NSMutableDictionary new.
-	 	
+		^self
 	]
 
 	addRule: name expression: exp [
@@ -452,7 +442,7 @@ NSOBject subclass: PKRules [
 		rules setValue: rule forKey: name
 	]
 
-	lookup: rule ifFaild: aBlock [
+	lookup: rule ifFailed: aBlock [
 		| return |
 		return := rules objectForKey: rule.
 		return == nil ifTrue:[
@@ -460,7 +450,7 @@ NSOBject subclass: PKRules [
 			return == nil
                 ifTrue: aBlock
 				ifFalse: [	
-					return := parent lookup: rule ifFaild: aBlock
+					return := parent lookup: rule ifFailed: aBlock
 				]
 		].
 		^return	
@@ -478,43 +468,62 @@ NSOBject subclass: PKRules [
 
 
 NSObject subclass: PKParserBase [
-	| input +rulesRepo rules  |
+	| input +rulesRepo rules |
 
 	+derivate: parent subgrammar: name [
-		| rule |
-		rule := rulesRepo objectForKey: parent.
-		rule == nil ifTrue: [
-			^ETTranscript show: 'Can not found parent grammar ''', parent, ''''; cr
-		].
-		rules setValue: (rule subgrammar: name) forKey: name
+		| rule newRule |
+		rule := self getGrammar: parent.
+		newRule := rule subgrammar: name.
+		rulesRepo setValue: newRule forKey: name.
+		^newRule
 	]
 
 	+getGrammar: name [
-		^rulesRepo objectForKey: name
+		| rule |
+		rule := rulesRepo objectForKey: name
+		rule == nil ifTrue: [
+			^ETTranscript show: 'Can not found grammar ''', name, ''''; cr
+		].
+		^rule	
+	]
+
+	+getNewGrammar: name [
+		| rule |
+		rule := PKRules alloc initWithName: name.
+		rulesRepo setValue: rule forKey: name.
+		^rule	
 	]
 	
 
-    initWithGrammar: name [
-		rules := self class getGrammar: name.
+    initWithGrammar: grammarName [
+		rules := self class getGrammar: grammarName.
+		^self
+	]
+
+	initWithNewGrammar: grammarName [
+		rules := self class getNewGrammar: grammarName.
+		^self
+	]
+
+	subgrammar: name [
+		rules := self class derivate: rules subgrammar: name.
+	]
+
+	addRule: name expression: exp [
+		rules addRule: name expression: exp
 	]
 	
 	apply: rule [
-		| exp return |
-		return := input objectForKey: rule.
-		return == nil ifTrue: [
-"			input setValue: PKParseFail alloc initWithTail forKey: rule."
-			exp := rules lookup: rule ifNotFound: [
-				ETTranscript show: 'Invalid rule'
-			].
-		    return := exp parseInput: input.
-			input setValue: return forKey: rule.
+		| exp |
+		exp := rules lookup: rule ifFailed: [
+			ETTranscript show: 'Invalid rule'
 		].
-		^return
+		^exp parseInput: input.
 	]
 	
 	match: inputStream rule: rule [
 		input := PKInputStream alloc initWithStream: inputStream.
-		self apply: rule
+		^self apply: rule
 	]
    
 ]
@@ -522,7 +531,7 @@ NSObject subclass: PKParserBase [
 NSObject subclass: SmalltalkTool [
 	
 	run [
-		| dict parser abStar abStar b c tExp alphaNumeric |
+		| dict parser abStar abStar b c tExp alphaNumeric oMeta |
 
 	"	ETTranscript show: (dict objectForKey: 'foo' ); cr.
 		ETTranscript show: (dict objectForKey: 5 ); cr."
@@ -534,20 +543,69 @@ NSObject subclass: SmalltalkTool [
 
 		parser := ('c' asExp repeat) seq: parser seq: PKEmptyExpression uniqueInstance.
 
-	"	alphaNumeric  := PKAlphanumericExpression new repeat."
-
+		alphaNumeric  := PKAlphanumericExpression new repeat.
+		oMeta := PKParserBase alloc initWithNewGrammar: 'Test'.
+		oMeta addRule: 'alphaNum'  expression: alphaNumeric.
 	"	ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
 		ETTranscript show: NSObject alloc; cr."
-		ETTranscript show: ( 'f' substringWithRange: (NSValue rangeWithLocation: 1 length: 0)); cr.
-		ETTranscript show:  (NSValue rangeWithLocation: 1 length: 0) rangeValue location; cr.
-		ETTranscript show: (parser parseInput: 'ccccccccabaab' asInputStream); cr.
-		"ETTranscript show: alphaNumeric; cr.
-		ETTranscript show: (alphaNumeric parseInput: 'Good34'); cr.
-		ETTranscript show: parser;cr.
+		ETTranscript show: (parser parseInput: 'cab' asInputStream); cr.
+		ETTranscript show: alphaNumeric; cr.
+		ETTranscript show: (alphaNumeric parseInput: 'Good34'  asInputStream); cr.
+		ETTranscript show: (alphaNumeric parseInput: 'testing4'  asInputStream); cr.
+		ETTranscript show: (oMeta match: 'testing4' rule: 'alphaNum'); cr.
+		"ETTranscript show: parser;cr.
 		ETTranscript show: (parser parseInput: 'c'); cr."
 
 		"ETTranscript show: (C sqrt: 4)."
 	    "ETTranscript show: (C NSMakeRange: {0 . 1})"
 	]
+
+	pegGrammar [
+		| oMeta endOfLine |
+		oMeta := PKParserBase alloc initWithNewGrammar: 'PEG'.
+		endOfLine := '\r\n' asExp.
+		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: endOfLine)
+	]
 ]
+
+"Basic PEG parser:
+
+# Hierarchical syntax
+Grammar <- Spacing Definition+ EndOfFile
+Definition <- Identifier LEFTARROW Expression
+Expression <- Sequence (SLASH Sequence)*
+Sequence <- Prefix*
+Prefix <- (AND / NOT)? Suffix
+Suffix <- Primary (QUESTION / STAR / PLUS)?
+Primary <- Identifier !LEFTARROW
+/ OPEN Expression CLOSE
+/ Literal / Class / DOT
+# Lexical syntax
+Identifier <- IdentStart IdentCont* Spacing
+IdentStart <- [a-zA-Z_]
+IdentCont <- IdentStart / [0-9]
+Literal <- [’] (![’] Char)* [’] Spacing
+/ ["] (!["] Char)* [""] Spacing
+Class <- ’[’ (!’]’ Range)* ’]’ Spacing
+Range <- Char ’-’ Char / Char
+Char <- ’\\’ [nrt’""\[\]\\]
+/ ’\\’ [0-2][0-7][0-7]
+/ ’\\’ [0-7][0-7]?
+/ !’\\’ .
+LEFTARROW <- ’<-’ Spacing
+SLASH <- ’/’ Spacing
+AND <- ’&’ Spacing
+NOT <- ’!’ Spacing
+QUESTION <- ’?’ Spacing
+STAR <- ’*’ Spacing
+PLUS <- ’+’ Spacing
+OPEN <- ’(’ Spacing
+CLOSE <- ’)’ Spacing
+DOT <- ’.’ Spacing
+Spacing <- (Space / Comment)*
+Comment <- ’#’ (!EndOfLine .)* EndOfLine
+Space <- ’ ’ / ’\t’ / EndOfLine
+EndOfLine <- ’\r\n’
+
+"
