@@ -9,13 +9,16 @@
   PKParseExpression class. See example at the bottom of the file.
 
   ChangeLogs
+
+    2012/02/22 Many bug fix and start to implement a OMeta parser.
+
     2011/09/21 Beginning of the expression tree
       - Get the expression tree implementation inspire from OMGrammar
  
     2011/10/20 Beginning of the OMeta implementation
       - Adding the PKParserBase PKRules class
 
-     2011/11/09 Todo merge PKRules with PKParserBase
+    2011/11/09 Todo merge PKRules with PKParserBase
 
 ============================================================================
 "
@@ -34,6 +37,16 @@ NSString extend [
 	count [ ^self length]
 	isEmpty [^self length = 0]
 	isNotEmpty [^self length > 0 ]
+
+	asSymbol [ ^ Symbol SymbolForString: self ]
+]
+
+Symbole extend [
+	asSymbol [^self]
+
+	copyWithZone: aZone [
+		^self
+	]
 ]
 
 NSObject extend [
@@ -175,6 +188,12 @@ PKParseExpression subclass: PKNumericExpression [
 PKParseExpression subclass: PKComposeExpression [
 	| exp |
 
+	initWithExp: expression [ 
+		self := super init.
+		exp := expression. 
+		^self 
+	]
+
 	description [
 		^exp description	
 	]
@@ -187,7 +206,7 @@ PKParseExpression subclass: PKComposeExpression [
 PKComposeExpression subclass: PKNamedExpression [
 	| name |
 	initWithName: string exp: expression [
-		super init.
+		self := super init.
 		exp := expression.
 		name := string.
 		^self
@@ -207,7 +226,7 @@ PKComposeExpression subclass: PKNamedExpression [
 PKComposeExpression subclass: PKAlphanumericExpression [
 
 	init [
-		exp :=  PKAlphabeticExpression new or: PKNumericExpression new
+		self initWithExp: (  PKAlphabeticExpression new or: PKNumericExpression new )
 	]
 ]
 
@@ -284,6 +303,23 @@ PKParseExpression subclass: PKSequenceExpression [
 	]
 ]
 
+PKComposeExpression subclass: PKLookAhead [
+
+	
+	parseInput: list [
+		| match |
+		match := exp parseInput: list.
+		^match isFailure 
+           ifTrue: [match]]
+	       ifFalse: [list popPosition. match]
+	]
+]
+
+PKComposeExpression subclass: PKNegate [
+
+	parseInpupt: list []
+]
+
 PKParseExpression subclass: PKAlternateExpression [
      | first second |
 
@@ -292,7 +328,7 @@ PKParseExpression subclass: PKAlternateExpression [
 		second := exp2
 	]
 
-	 parseInput: 
+	parseInput: list [
 		 ^first parseInput: list ifFailed: [
 			 | match |
 			 match := second parseInput: list.
@@ -435,16 +471,22 @@ NSObject subclass: PKRules [
 		rules := NSMutableDictionary new.
 		^self
 	]
+	
+	at: rule [
+		^self lookup: rule ifFailed: [
+			NSException raise: 'PKParser' format: 'Rule not found: ', rule
+		]
+	]
 
 	addRule: name expression: exp [
 		| rule |
-		rule := PKNamedExpression alloc initWithName: name exp: exp.
-		rules setValue: rule forKey: name
+		rule := PKNamedExpression alloc initWithName: name asSymbol exp: exp.
+		rules setValue: rule forKey: name asSymbol
 	]
 
 	lookup: rule ifFailed: aBlock [
 		| return |
-		return := rules objectForKey: rule.
+		return := rules objectForKey: rule asSymbol.
 		return == nil ifTrue:[
 			return := parent.
 			return == nil
@@ -509,6 +551,10 @@ NSObject subclass: PKParserBase [
 		rules := self class derivate: rules subgrammar: name.
 	]
 
+	at: rule [
+		^rules at: rule
+	]
+
 	addRule: name expression: exp [
 		rules addRule: name expression: exp
 	]
@@ -532,9 +578,9 @@ NSObject subclass: SmalltalkTool [
 	
 	run [
 		| dict parser abStar abStar b c tExp alphaNumeric oMeta |
-
-	"	ETTranscript show: (dict objectForKey: 'foo' ); cr.
-		ETTranscript show: (dict objectForKey: 5 ); cr."
+		dict := NSDictionary new.
+		dict setValue: 'foo' forKey: #e.
+		ETTranscript show: 'I' asSymbol; cr.
 		abStar := PKRepetitionExpression alloc
 					 initWithExpression: 'ab' asExp
 					 canBeEmpty: false; yourself.
@@ -545,7 +591,7 @@ NSObject subclass: SmalltalkTool [
 
 		alphaNumeric  := PKAlphanumericExpression new repeat.
 		oMeta := PKParserBase alloc initWithNewGrammar: 'Test'.
-		oMeta addRule: 'alphaNum'  expression: alphaNumeric.
+		oMeta addRule: #alphaNum  expression: alphaNumeric.
 	"	ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
 		ETTranscript show: NSObject alloc; cr."
@@ -554,6 +600,8 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (alphaNumeric parseInput: 'Good34'  asInputStream); cr.
 		ETTranscript show: (alphaNumeric parseInput: 'testing4'  asInputStream); cr.
 		ETTranscript show: (oMeta match: 'testing4' rule: 'alphaNum'); cr.
+		oMeta := self pegGrammar.
+		ETTranscript show: oMeta; cr.
 		"ETTranscript show: parser;cr.
 		ETTranscript show: (parser parseInput: 'c'); cr."
 
@@ -562,10 +610,12 @@ NSObject subclass: SmalltalkTool [
 	]
 
 	pegGrammar [
-		| oMeta endOfLine |
+		| oMeta  |
 		oMeta := PKParserBase alloc initWithNewGrammar: 'PEG'.
-		endOfLine := '\r\n' asExp.
-		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: endOfLine)
+		oMeta addRule: #EndOfLine expression: '\r\n' asExp.
+		oMeta addRule: #Space expression: (' ' asExp or: '\t' asExp or: (oMeta at: #EndOfLine )).
+		oMeta addRule: #Comment expression: ()
+		^oMeta
 	]
 ]
 
@@ -586,7 +636,7 @@ Identifier <- IdentStart IdentCont* Spacing
 IdentStart <- [a-zA-Z_]
 IdentCont <- IdentStart / [0-9]
 Literal <- [’] (![’] Char)* [’] Spacing
-/ ["] (!["] Char)* [""] Spacing
+/ [""] (![""] Char)* [""] Spacing
 Class <- ’[’ (!’]’ Range)* ’]’ Spacing
 Range <- Char ’-’ Char / Char
 Char <- ’\\’ [nrt’""\[\]\\]
