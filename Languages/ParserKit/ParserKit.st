@@ -39,12 +39,9 @@ NSString extend [
 	count [ ^self length]
 	isEmpty [^self length = 0]
 	isNotEmpty [^self length > 0 ]
-
-	asSymbol [ ^ Symbol SymbolForString: self ]
 ]
 
 Symbole extend [
-	asSymbol [^self]
 
 	copyWithZone: aZone [
 		^self
@@ -124,7 +121,7 @@ NSObject subclass: PKParseExpression [
 	]
 	
 	not [
-		^PKNeagateExpression alloc initWithExp: self
+		^PKNegateExpression alloc initWithExp: self
 	]
 
 	repeat [
@@ -324,7 +321,7 @@ PKComposeExpression subclass: PKLookAheadExpression [
 		| match |
 		match := exp parseInput: list.
 		^match isFailure 
-           ifTrue: [match]]
+           ifTrue: [match]
 	       ifFalse: [list popPosition. match]
 	]
 ]
@@ -332,7 +329,7 @@ PKComposeExpression subclass: PKLookAheadExpression [
 PKComposeExpression subclass: PKNegateExpression [
 
 	initWithExp: expression [
-		self := super initWithExp: (PKLookAhead alloc initWithExp: expression).
+		self := super initWithExp: (PKLookAheadExpression alloc initWithExp: expression).
 		^self
 	]
 
@@ -508,13 +505,13 @@ NSObject subclass: PKRules [
 
 	addRule: name expression: exp [
 		| rule |
-		rule := PKNamedExpression alloc initWithName: name asSymbol exp: exp.
-		rules setValue: rule forKey: name asSymbol
+		rule := PKNamedExpression alloc initWithName: name exp: exp.
+		rules setValue: rule forKey: name
 	]
 
 	lookup: rule ifFailed: aBlock [
 		| return |
-		return := rules objectForKey: rule asSymbol.
+		return := rules objectForKey: rule.
 		return == nil ifTrue:[
 			return := parent.
 			return == nil
@@ -640,9 +637,9 @@ NSObject subclass: SmalltalkTool [
 	pegGrammar [
 		| oMeta  |
 		oMeta := PKParserBase alloc initWithNewGrammar: 'PEG'.
-		oMeta addRule: #EndOfLine expression: '\r\n' asExp.
-		oMeta addRule: #Space expression: (' ' asExp or: '\t' asExp or: (oMeta at: #EndOfLine )).
-		oMeta addRule: #Comment expression: ('#' asExp and: ((oMeta at: #EndOfLine) not and: (PKDotExpression new) ) repeat.
+		oMeta addRule: 'EndOfLine' expression: '\r\n' asExp.
+		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: (oMeta at: 'EndOfLine' )).
+		oMeta addRule: 'Comment' expression: ('#' asExp and: ((oMeta at: 'EndOfLine') not and: (PKDotExpression new) ) repeat).
 		^oMeta
 	]
 ]
