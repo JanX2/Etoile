@@ -8,9 +8,11 @@
   could differ. For the time being to write expression use the 
   PKParseExpression class. See example at the bottom of the file.
 
-  ChangeLogs
 
-    2012/02/22 Many bug fix and start to implement a OMeta parser.
+    2012/02/22 Many bug fix and start to implement a OMeta parser. 
+      - Todo fix the way we walk throw the input. When to consume or not
+    the input etc.
+      - Some PK*Expression should be simgleton
 
     2011/09/21 Beginning of the expression tree
       - Get the expression tree implementation inspire from OMGrammar
@@ -120,6 +122,10 @@ NSObject subclass: PKParseExpression [
 	or: exp1 or: exp2 or: exp3 [
 		^((self or: exp1) or: exp2) or: exp3
 	]
+	
+	not [
+		^PKNeagateExpression alloc initWithExp: self
+	]
 
 	repeat [
 		^PKRepetitionExpression alloc initWithExpression: self canBeEmpty: true
@@ -152,6 +158,14 @@ NSObject subclass: PKParseExpression [
 						 ifFalse: [ match ]
 	]
 	
+]
+
+PKParseExpression subclass: PKDotExpression [
+	parseInput: list [
+		^list atEnd 
+            ifTrue: [PKParseFail alloc initWithInput: list description: 'Unexpected end of stream']
+			ifFalse: [PKParseMatch alloc initWithInput: list length: list head length]
+	]
 ]
 
 PKParseExpression subclass: PKAlphabeticExpression [
@@ -303,7 +317,7 @@ PKParseExpression subclass: PKSequenceExpression [
 	]
 ]
 
-PKComposeExpression subclass: PKLookAhead [
+PKComposeExpression subclass: PKLookAheadExpression [
 
 	
 	parseInput: list [
@@ -315,9 +329,23 @@ PKComposeExpression subclass: PKLookAhead [
 	]
 ]
 
-PKComposeExpression subclass: PKNegate [
+PKComposeExpression subclass: PKNegateExpression [
 
-	parseInpupt: list []
+	initWithExp: expression [
+		self := super initWithExp: (PKLookAhead alloc initWithExp: expression).
+		^self
+	]
+
+	description [
+		^'!(',exp description,')'
+	]
+
+	parseInpupt: list [
+		| match |
+		match := exp parseInput: list.
+		^match isSuccess ifTrue: [PKParseFail alloc initWithInput: list description: 'Should not match ', exp] 
+						 ifFalse: [PKParseMatch alloc initWithInput: list lenth: 0]
+	]
 ]
 
 PKParseExpression subclass: PKAlternateExpression [
@@ -614,7 +642,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta := PKParserBase alloc initWithNewGrammar: 'PEG'.
 		oMeta addRule: #EndOfLine expression: '\r\n' asExp.
 		oMeta addRule: #Space expression: (' ' asExp or: '\t' asExp or: (oMeta at: #EndOfLine )).
-		oMeta addRule: #Comment expression: ()
+		oMeta addRule: #Comment expression: ('#' asExp and: ((oMeta at: #EndOfLine) not and: (PKDotExpression new) ) repeat.
 		^oMeta
 	]
 ]
