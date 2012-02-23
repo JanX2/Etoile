@@ -200,7 +200,7 @@ PKParseExpression subclass: PKComposeExpression [
 	| exp |
 
 	initWithExp: expression [ 
-		self := super init.
+		super init.
 		exp := expression. 
 		^self 
 	]
@@ -217,7 +217,7 @@ PKParseExpression subclass: PKComposeExpression [
 PKComposeExpression subclass: PKNamedExpression [
 	| name |
 	initWithName: string exp: expression [
-		self := super init.
+		super init.
 		exp := expression.
 		name := string.
 		^self
@@ -329,7 +329,7 @@ PKComposeExpression subclass: PKLookAheadExpression [
 PKComposeExpression subclass: PKNegateExpression [
 
 	initWithExp: expression [
-		self := super initWithExp: (PKLookAheadExpression alloc initWithExp: expression).
+		super initWithExp: (PKLookAheadExpression alloc initWithExp: expression).
 		^self
 	]
 
