@@ -165,11 +165,12 @@ PKParseExpression subclass: PKDotExpression [
 PKParseExpression subclass: PKAlphabeticExpression [
 	
 	parseInput: list [
-		list head isEmpty ifTrue: [^PKParseFail alloc initWithInput: list description: 'Expected alphabetic character'].
-		
-		^(list head characterAtIndex: 0) isAlphabetic
-			ifTrue: [PKParseMatch alloc initWithInput: list length: list head length]
-			ifFalse: [PKParseFail alloc initWithInput: list description: 'Expected alphabetic character']
+		^list head isEmpty 
+			ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected alphabetic character']
+			ifFalse: [
+				(list head characterAtIndex: 0) isAlphabetic
+			        ifTrue: [PKParseMatch alloc initWithInput: list length: list head length]
+			        ifFalse: [PKParseFail alloc initWithInput: list description: 'Expected alphabetic character']]
 	]
 
 	description [
@@ -177,13 +178,40 @@ PKParseExpression subclass: PKAlphabeticExpression [
 	]
 ]
 
+PKParseExpression subclass: PKRangeExpression [
+	| from to |
+
+	initFrom: fromChar to: toChar [
+		self init.
+		from := fromChar.
+		to := toChar.
+		^self
+	]
+
+	parseInput: list [
+		^list head isEmpty 
+            ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected character [', from, '-', to, ']']
+			ifFalse: [
+		         (((list head charachterAtIndex: 0) >= from) or: ((list head charachterAtIndex: 0) <= to))
+	                   ifTrue: [PKParseMatch alloc initWithInput: list length: list head length]
+		               ifFalse: [PKParseFail alloc initWithInput: list description: 'Expected character [', from, '-', to, ']']]
+		
+	]
+
+	description [
+		^'[', from, '-', to, ']'
+	]
+	
+]
+
 PKParseExpression subclass: PKNumericExpression [
 
 	parseInput: list [
-		list head isEmpty ifTrue: [^PKParseFail alloc initWithInput: list description: 'Expected digit character'].
-		^(list head characterAtIndex: 0) isDigit
-			ifTrue: [PKParseMatch alloc initWithInput: list length: list head length]
-			ifFalse: [PKParseFail alloc initWithInput: list description: 'Expected digit character']
+		^list head isEmpty ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected digit character']
+			ifFalse: [
+				(list head characterAtIndex: 0) isDigit
+			        ifTrue: [PKParseMatch alloc initWithInput: list length: list head length]
+			        ifFalse: [PKParseFail alloc initWithInput: list description: 'Expected digit character']]
 
 	]
 
@@ -456,10 +484,10 @@ NSObject subclass: PKInputStream [
 		^self head: 1
 	]
 	
-	head: size [			
-		(position + size) > stream length 
-			ifTrue: [^''].
-		^self fromRange: (NSValue rangeWithLocation: position length: size)
+	head: size [
+		"Todo non local return seems broken"
+		^(position + size) > stream length ifTrue: ['']
+			ifFalse: [self fromRange: (NSValue rangeWithLocation: position length: size)]
 	]
 
 	tail [
@@ -600,7 +628,6 @@ NSObject subclass: SmalltalkTool [
 	
 	run [
 		| dict parser abStar abStar b c tExp alphaNumeric oMeta |
-	
 		abStar := PKRepetitionExpression alloc
 					 initWithExpression: 'ab' asExp
 					 canBeEmpty: false; yourself.
@@ -612,9 +639,9 @@ NSObject subclass: SmalltalkTool [
 		alphaNumeric  := PKAlphanumericExpression new repeat.
 		oMeta := PKParserBase alloc initWithNewGrammar: 'Test'.
 		oMeta addRule: 'alphaNum'  expression: alphaNumeric.
-	"	ETTranscript show: 'This is a test\n'.
+		ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
-		ETTranscript show: NSObject alloc; cr."
+		ETTranscript show: NSObject alloc; cr.
 		ETTranscript show: (parser parseInput: 'cab' asInputStream); cr.
 		ETTranscript show: alphaNumeric; cr.
 		ETTranscript show: (alphaNumeric parseInput: 'Good34'  asInputStream); cr.
@@ -633,8 +660,19 @@ NSObject subclass: SmalltalkTool [
 		| oMeta  |
 		oMeta := PKParserBase alloc initWithNewGrammar: 'PEG'.
 		oMeta addRule: 'EndOfLine' expression: '\r\n' asExp.
-		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: (oMeta at: 'EndOfLine' )).
-		oMeta addRule: 'Comment' expression: ('#' asExp and: ((oMeta at: 'EndOfLine') not and: (PKDotExpression new) ) repeat).
+		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: (oMeta at: 'EndOfLine')).
+		oMeta addRule: 'Comment' expression: ('#' asExp seq: ((oMeta at: 'EndOfLine') not seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
+		oMeta addRule: 'Spacing' expression: ((oMeta at: 'Space') or: (oMeta at: 'Comment')).
+		oMeta addRule: 'DOT' expression: ('.' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'CLOSE' expression: ( ')' asExp seq: (oMeta at: 'Spacing')). 
+		oMeta addRule: 'OPEN' expression: ( '(' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'PLUS' expression: ( '+' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'STAR' expression: ( '*' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'QUESTION' expression: ( '?' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'NOT' expression: ( '!' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'SLASH' expression: ( '&' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'AND' expression: ( '/' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'LEFTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
 		^oMeta
 	]
 ]
