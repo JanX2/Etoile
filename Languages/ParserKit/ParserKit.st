@@ -43,9 +43,6 @@ NSString extend [
 
 Symbole extend [
 
-	copyWithZone: aZone [
-		^self
-	]
 ]
 
 NSObject extend [
@@ -462,7 +459,7 @@ NSObject subclass: PKInputStream [
 	head: size [			
 		(position + size) > stream length 
 			ifTrue: [^''].
-		^stream  substringWithRange: (NSValue rangeWithLocation: position length: size)
+		^self fromRange: (NSValue rangeWithLocation: position length: size)
 	]
 
 	tail [
@@ -603,9 +600,7 @@ NSObject subclass: SmalltalkTool [
 	
 	run [
 		| dict parser abStar abStar b c tExp alphaNumeric oMeta |
-		dict := NSDictionary new.
-		dict setValue: 'foo' forKey: #e.
-		ETTranscript show: 'I' asSymbol; cr.
+	
 		abStar := PKRepetitionExpression alloc
 					 initWithExpression: 'ab' asExp
 					 canBeEmpty: false; yourself.
@@ -616,7 +611,7 @@ NSObject subclass: SmalltalkTool [
 
 		alphaNumeric  := PKAlphanumericExpression new repeat.
 		oMeta := PKParserBase alloc initWithNewGrammar: 'Test'.
-		oMeta addRule: #alphaNum  expression: alphaNumeric.
+		oMeta addRule: 'alphaNum'  expression: alphaNumeric.
 	"	ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
 		ETTranscript show: NSObject alloc; cr."
