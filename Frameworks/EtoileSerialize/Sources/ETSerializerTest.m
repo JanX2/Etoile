@@ -269,6 +269,7 @@ id testRoundTrip(NSString * tempfile, id object)
 	[mutable addObject:[NSNumber numberWithInt:59]];
 	[mutable addObject:@"another string"];
 	NSMutableArray * mutableCopy = testRoundTrip(@"mutablearraytestfile", mutable);
+	NSLog(@"%@ == %@?", mutable, mutableCopy);
 	UKTrue([mutable isEqual:mutableCopy]);
 }
 

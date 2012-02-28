@@ -30,13 +30,12 @@
 - (id) init
 {
 	self = [super initWithXMLParser: [[ETXMLParser alloc] initWithContentHandler: nil]
-	                         parent: nil
 	                            key: @"ETDeserializerBackendXML"];
 	if (nil == self)
 	{
 		return nil;
 	}
-	[parser setContentHandler: self];
+	[parser pushContentHandler: self];
 	buffer = nil;
 	principalObjectRef = 0;
 	principalObjectClass = Nil;
@@ -65,11 +64,10 @@
 	{
 		if([store xmlParserWillRead])
 		{
-			[self setParent: store];
 			// NOTE: If the parser is obtained from the store, we need to retain
 			// it.
 			[self setParser: [[(id<ETSerialXMLReading>)store xmlParser] retain]];
-			[parser setContentHandler: self];
+			[parser pushContentHandler: self];
 		}
 	}
 	return YES;
@@ -221,7 +219,6 @@
 	{
 		ETXMLDeserializationHandler *handler =
 		[[ETXMLobjectsDeserializationHandler alloc] initWithXMLParser: parser
-		                                                       parent: self
 		                                                          key: name];
 		[handler setDeserializer: deserializer];
 		[handler startElement: name attributes: attributes];

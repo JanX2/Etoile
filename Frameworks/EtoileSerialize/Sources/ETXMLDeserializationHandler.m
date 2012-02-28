@@ -31,13 +31,14 @@
 - (void) setBackendHasPrincipalRef: (BOOL) hasPrincipalRef
 {
 	backendHasPrincipalRef = hasPrincipalRef;
+	ETXMLDeserializationHandler *parent = [parser parentHandler];
 
 	// This causes the change to be broadcast down the tree if the principalRef
 	// has been set:
 	if ([parent respondsToSelector: @selector(setBackendHasPrincipalRef:)]
 	  && hasPrincipalRef)
 	{
-		[(ETXMLDeserializationHandler*)parent setBackendHasPrincipalRef: hasPrincipalRef];
+		[parent setBackendHasPrincipalRef: hasPrincipalRef];
 	}
 }
 - (void) startElement: (NSString *)nodeName
@@ -62,7 +63,6 @@
 	}
 
 	id nextHandler = [[nodeClass alloc] initWithXMLParser: parser
-	                                               parent: self
 	                                                  key: nodeName];
 	if ([nodeClass isSubclassOfClass: [ETXMLDeserializationHandler class]])
 	{
@@ -81,6 +81,7 @@
 
 - (id) rootAncestor
 {
+	ETXMLDeserializationHandler *parent = [parser parentHandler];
 	if ([parent respondsToSelector: @selector(rootAncestor)])
 	{
 		return [(ETXMLDeserializationHandler*)parent rootAncestor];
@@ -114,7 +115,7 @@ DEALLOC([deserializer release];
 			// Either <objects> is in the wrong namespace or it indicates a
 			// wrong version (or both). Thus the rest of the tree is ignored.
 			ETXMLNullHandler *nullHandler = [[[ETXMLNullHandler alloc] initWithXMLParser: parser
-			                                   parent: self key: name] autorelease];
+			                                   key: name] autorelease];
 			[nullHandler startElement: nodeName attributes: someAttributes];
 		}
 	}
@@ -131,7 +132,7 @@ DEALLOC([deserializer release];
 	{
 		// The end of the </objects> element is passed down to the deserializer
 		// because it might need to forward the end to an eventual parent.
-		[parent endElement: nodeName];
+		[[parser parentHandler] endElement: nodeName];
 	}
 }
 @end

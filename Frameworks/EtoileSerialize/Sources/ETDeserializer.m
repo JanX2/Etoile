@@ -7,6 +7,10 @@
 
 #import <EtoileFoundation/runtime.h>
 
+@interface NSInvocation (Private)
+- (id) initWithMethodSignature: (NSMethodSignature*)aSignature;
+@end
+
 /**
  * Find the address of an named instance variable for an object.  This searches
  * through the list of instance variables in the class structure's ivars field.

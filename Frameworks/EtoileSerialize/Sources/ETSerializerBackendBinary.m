@@ -86,7 +86,7 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 	}
 	SUPERINIT;
 
-	ASSIGN(store, aStore);
+	ASSIGN(store, (id)aStore);
 
 	const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
 	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};

@@ -91,7 +91,7 @@ static ESCORefTable *_sharedCORefTable;
 	return UINT_MAX;
 }
 
-- (void) release
+- (oneway void) release
 {
 	//Ignore, it's a singleton.
 }

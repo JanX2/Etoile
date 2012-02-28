@@ -26,11 +26,6 @@
 
 -(unsigned short) unsignedShortValue;
 
-// -intValue is defined by Foundation, but the GNUstep implementation does not
-// work as one would expect as per Apple's documentation (i.e. it doesn't return
-// INT_MAX or INT_MIN on overflow).
--(int) intValue;
-
 -(unsigned int) unsignedIntValue;
 
 -(long) longValue;
