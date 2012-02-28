@@ -160,6 +160,10 @@ PKParseExpression subclass: PKDotExpression [
             ifTrue: [PKParseFail alloc initWithInput: list description: 'Unexpected end of stream']
 			ifFalse: [PKParseMatch alloc initWithInput: list length: list head length]
 	]
+
+	description [
+		^'.'
+	]
 ]
 
 PKParseExpression subclass: PKAlphabeticExpression [
@@ -552,6 +556,15 @@ NSObject subclass: PKRules [
 		self initWithName: string.
 		parent := pkRules
 	]
+
+	description [
+		| desc |
+		desc := name, ' {'.
+		rules allKeys map: [:key | 
+			desc := desc, key, ' <- ', (rules objectForKey: key) description, '\n'
+		].
+		^desc, '}'	
+	]
 		
 	subgrammar: string [
 		^self class alloc initWithParent: self
@@ -586,6 +599,9 @@ NSObject subclass: PKParserBase [
 		^rule	
 	]
 	
+	description [
+		^rules description
+	]
 
     initWithGrammar: grammarName [
 		rules := self class getGrammar: grammarName.
