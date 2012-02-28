@@ -26,7 +26,7 @@ export unitkit ?= yes
 export rsskit ?= no
 export menukit ?= no
 export systemconfig ?= yes
-export xmppkit ?= yes
+export xmppkit ?= no
 export xwindowserverkit ?= yes
 
 #
