@@ -116,7 +116,11 @@ NSObject subclass: PKParseExpression [
 	or: exp1 or: exp2 or: exp3 [
 		^((self or: exp1) or: exp2) or: exp3
 	]
-	
+
+	or: exp1 or:exp2 or: exp3 or: exp4 [
+		^(((self or: exp1) or:exp2) or: exp3) or: exp4
+	]
+
 	not [
 		^PKNegateExpression alloc initWithExp: self
 	]
@@ -560,7 +564,7 @@ NSObject subclass: PKRules [
 	description [
 		| desc |
 		desc := name, ' {'.
-		rules allKeys map: [:key | 
+		rules allKeys do: [:key | 
 			desc := desc, key, ' <- ', (rules objectForKey: key) description, '\n'
 		].
 		^desc, '}'	
@@ -571,6 +575,20 @@ NSObject subclass: PKRules [
 	]
 ]
 
+
+NSArray extend [
+	joinAll [
+		| exp |
+		exp := nil.
+		self do: [ :value |
+			(exp == nil)
+                ifTrue: [
+					exp := value asExp]
+				ifFalse: [exp := exp or: value asExp].
+		].
+		^exp
+	]
+]
 
 NSObject subclass: PKParserBase [
 	| input +rulesRepo rules |
@@ -598,10 +616,6 @@ NSObject subclass: PKParserBase [
 		rulesRepo setValue: rule forKey: name.
 		^rule	
 	]
-	
-	description [
-		^rules description
-	]
 
     initWithGrammar: grammarName [
 		rules := self class getGrammar: grammarName.
@@ -623,6 +637,10 @@ NSObject subclass: PKParserBase [
 
 	addRule: name expression: exp [
 		rules addRule: name expression: exp
+	]
+
+	description [
+		^rules description
 	]
 	
 	apply: rule [
@@ -664,6 +682,7 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (alphaNumeric parseInput: 'testing4'  asInputStream); cr.
 		ETTranscript show: (oMeta match: 'testing4' rule: 'alphaNum'); cr.
 		oMeta := self pegGrammar.
+
 		ETTranscript show: oMeta; cr.
 		"ETTranscript show: parser;cr.
 		ETTranscript show: (parser parseInput: 'c'); cr."
@@ -689,6 +708,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'SLASH' expression: ( '&' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'AND' expression: ( '/' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'LEFTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'Char' expression: ({'\' . 'n' . 'r' . 't' . ''''. '"' . '[' . ']' . '\' } joinAll).
 		^oMeta
 	]
 ]
