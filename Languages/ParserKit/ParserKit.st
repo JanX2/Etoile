@@ -8,11 +8,12 @@
   could differ. For the time being to write expression use the 
   PKParseExpression class. See example at the bottom of the file.
 
+    2012/03/05 Fix way input consuming. 
 
     2012/02/22 Many bug fix and start to implement a OMeta parser. 
       - Todo fix the way we walk throw the input. When to consume or not
     the input etc.
-      - Some PK*Expression should be simgleton
+      - Some PK*Expression should be singleton
 
     2011/09/21 Beginning of the expression tree
       - Get the expression tree implementation inspire from OMGrammar
@@ -101,7 +102,7 @@ NSObject subclass: PKParseFail [
 	isSuccess [ ^false ]
 
 	description [ 
-		^'PKMatchFailure  ( At: ''',  input fromRange: (NSValue rangeWithLocation: failedPosition length: input length - failedPosition ), ''') ', describ, '\n' 
+		^'PKMatchFailure  ( At: ''',   failedPosition description, ''', ', input stream, ') ', describ, '\n' 
 	]
 ]
 
@@ -203,7 +204,7 @@ PKParseExpression subclass: PKRangeExpression [
 		^list head isEmpty 
             ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected character [', from, '-', to, ']']
 			ifFalse: [
-		         (((list head characterAtIndex: 0) >= ( from  characterAtIndex: 0)) or: ((list head characterAtIndex: 0) <= (to characterAtIndex: 0)))
+		         (((list head characterAtIndex: 0) >= ( from  characterAtIndex: 0)) and: ((list head characterAtIndex: 0) <= (to characterAtIndex: 0)))
 	                   ifTrue: [PKParseMatch alloc initWithInput: list length: list head length]
 		               ifFalse: [PKParseFail alloc initWithInput: list description: 'Expected character [', from, '-', to, ']']]
 		
@@ -376,7 +377,7 @@ PKComposeExpression subclass: PKNegateExpression [
 	parseInput: list [
 		| match |
 		match := exp parseInput: list.
-		^match isSuccess ifTrue: [PKParseFail alloc initWithInput: list description: 'Should not match ', exp] 
+		^match isSuccess ifTrue: [PKParseFail alloc initWithInput: list description: 'Should not match ', exp description] 
 						 ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
 	]
 ]
@@ -418,7 +419,7 @@ PKParseExpression subclass: PKRepetitionExpression [
 		| match currentMatch |
 		match := PKParseMatch emptyMatch: list.
 		[
-			currentMatch := (e parseInput: list ).
+			currentMatch := e parseInput: list.
 			currentMatch isSuccess
 		] whileTrue: [match sequenceWith: currentMatch].
 		^(match isEmpty and: canBeEmpty not) 
@@ -519,6 +520,10 @@ NSObject subclass: PKInputStream [
 	atEnd [
 		^self position = stream length
 	]
+
+	stream [
+		^stream
+	]
 ]
 
 NSObject subclass: PKRules [
@@ -607,7 +612,7 @@ NSObject subclass: PKParserBase [
 		| rule |
 		rule := rulesRepo objectForKey: name
 		rule == nil ifTrue: [
-			^ETTranscript show: 'Can not found grammar ''', name, ''''; cr
+			^NSException raise: 'ParserKit' format: 'Can not found grammar ''', name, ''''
 		].
 		^rule	
 	]
@@ -648,7 +653,7 @@ NSObject subclass: PKParserBase [
 	apply: rule [
 		| exp |
 		exp := rules lookup: rule ifFailed: [
-			ETTranscript show: 'Invalid rule'
+			NSException raise: 'ParserKit' format: 'Invalid rule'
 		].
 		^exp parseInput: input.
 	]
@@ -690,7 +695,14 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (oMeta match:( '\', 'n') rule: 'Char').
 		ETTranscript show: (oMeta match:('n') rule: 'Char').
 		ETTranscript show: (oMeta match:( '\', '266') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\', '268') rule: 'Char').
 		ETTranscript show: (oMeta match:( '\', '66') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\', '66') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\', '66-', '\', '234') rule: 'Range').
+		ETTranscript show: (oMeta match:( 'a-d') rule: 'Range').
+		ETTranscript show: (oMeta match:( '[a-d] ') rule: 'Class').
+		ETTranscript show: (oMeta match:( '[a-d\34] ') rule: 'Class').
+		ETTranscript show: (oMeta match:( '[a-dA-Z]\n') rule: 'Class').
 		"ETTranscript show: parser;cr.
 		ETTranscript show: (parser parseInput: 'c'); cr."
 
@@ -701,7 +713,7 @@ NSObject subclass: SmalltalkTool [
 	pegGrammar [
 		| oMeta  |
 		oMeta := PKParserBase alloc initWithNewGrammar: 'PEG'.
-		oMeta addRule: 'EndOfLine' expression: '\r\n' asExp.
+		oMeta addRule: 'EndOfLine' expression: ('\r\n' asExp or: '\n' asExp).
 		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: (oMeta at: 'EndOfLine')).
 		oMeta addRule: 'Comment' expression: ('#' asExp seq: ((oMeta at: 'EndOfLine') not seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
 		oMeta addRule: 'Spacing' expression: ((oMeta at: 'Space') or: (oMeta at: 'Comment')).
@@ -723,6 +735,8 @@ NSObject subclass: SmalltalkTool [
 				or: ('\' asExp seq: (PKRangeExpression alloc initFrom: '0' to: '7') 
 							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') )
 			    or: ('\' asExp not seq: (PKDotExpression new)  )).
+		oMeta addRule: 'Range' expression: (((oMeta at: 'Char') seq: '-' asExp seq: (oMeta at: 'Char')) or: (oMeta at: 'Char')).
+		oMeta addRule: 'Class' expression: ('[' asExp seq: (']' asExp not seq: (oMeta at: 'Range')) repeat seq: ']' asExp seq: (oMeta at: 'Space')).
 		^oMeta
 	]
 ]
