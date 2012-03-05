@@ -62,23 +62,26 @@ NSObject subclass: PKParseMatch [
 		super init.
 		input := list.
 		range := (NSValue rangeWithLocation: input position length: length).
+		input pushPosition: range length + range location.
 		^self
 	]
 
 	sequenceWith: match [
-	
-		(range location + range length) = match range location
-			ifFalse: [ NSException raise: 'PKParseMatch' format: 'Can not add the range, it is not contigus'].
+		input mergePosition.
+		input lastPosition == range location ifFalse: [
+			"Can be remove or rephrase later."
+			NSException raise: 'ParseKit' format: 'Last position is not same as the location range, something is wrong here'].
+		(range location + range length) == match range location
+			ifFalse: [ NSException raise: 'ParserKit' format: 'Can not add the range, it is not contigus'].
 		range := NSValue rangeWithLocation: range location length: (range length + match  range length).
 	]
 
-	tail [ ^input pushPosition: range length + range location]
 	match  [ ^input fromRange: range ]
 	isEmpty [ ^range length = 0]
 	isSuccess [ ^true ]
 	isFailure [ ^false ]
 	range [^range]
-	description [ 
+	description [
 		^'PKMatchSuccess  ( Recognized: ''', (input fromRange: range), ''')\n' 
 	]
 ]
@@ -200,7 +203,7 @@ PKParseExpression subclass: PKRangeExpression [
 		^list head isEmpty 
             ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected character [', from, '-', to, ']']
 			ifFalse: [
-		         (((list head charachterAtIndex: 0) >= from) or: ((list head charachterAtIndex: 0) <= to))
+		         (((list head characterAtIndex: 0) >= ( from  characterAtIndex: 0)) or: ((list head characterAtIndex: 0) <= (to characterAtIndex: 0)))
 	                   ifTrue: [PKParseMatch alloc initWithInput: list length: list head length]
 		               ifFalse: [PKParseFail alloc initWithInput: list description: 'Expected character [', from, '-', to, ']']]
 		
@@ -335,10 +338,10 @@ PKParseExpression subclass: PKSequenceExpression [
 		match1 := e1 parseInput: list.
 		^match1 isSuccess ifTrue: [
 			| match2 |
-			match2 := (e2 parseInput: match1 tail).
+			match2 := (e2 parseInput: list).
 			match2 isSuccess 
                 ifTrue: [ match1 sequenceWith: match2 ]
-				ifFalse: [ match2 ]
+				ifFalse: [ list popPosition. match2 ]
 		] ifFalse: [ match1 ]
 	]
 
@@ -354,7 +357,7 @@ PKComposeExpression subclass: PKLookAheadExpression [
 		| match |
 		match := exp parseInput: list.
 		^match isFailure 
-           ifTrue: [match]
+           ifTrue: [ match]
 	       ifFalse: [list popPosition. match]
 	]
 ]
@@ -370,11 +373,11 @@ PKComposeExpression subclass: PKNegateExpression [
 		^'!(',exp description,')'
 	]
 
-	parseInpupt: list [
+	parseInput: list [
 		| match |
 		match := exp parseInput: list.
 		^match isSuccess ifTrue: [PKParseFail alloc initWithInput: list description: 'Should not match ', exp] 
-						 ifFalse: [PKParseMatch alloc initWithInput: list lenth: 0]
+						 ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
 	]
 ]
 
@@ -415,7 +418,7 @@ PKParseExpression subclass: PKRepetitionExpression [
 		| match currentMatch |
 		match := PKParseMatch emptyMatch: list.
 		[
-			currentMatch := (e parseInput: (match tail)).
+			currentMatch := (e parseInput: list ).
 			currentMatch isSuccess
 		] whileTrue: [match sequenceWith: currentMatch].
 		^(match isEmpty and: canBeEmpty not) 
@@ -475,17 +478,19 @@ NSObject subclass: PKInputStream [
 		position := anInt
 	]
 
+	lastPosition [
+		^positionStack lastObject
+	]
+
 	popPosition [
 		position := positionStack lastObject.
 		positionStack removeLastObject.
 	]
 
-    stream [
-        ^stream tailFrom: position
-	]
-
 	fromRange: range [
-		^stream substringWithRange: range
+		^(range length == 0) ifTrue: ['']
+			ifFalse: [
+				stream substringWithRange: range]
 	]
 
 	head [
@@ -498,12 +503,9 @@ NSObject subclass: PKInputStream [
 			ifFalse: [self fromRange: (NSValue rangeWithLocation: position length: size)]
 	]
 
-	tail [
-		self tailFrom: 1
-	]
-
-	tailFrom: pos [
-		self pushPosition: (stream length min: (position + pos)).
+	mergePosition [
+		positionStack count >= 2 ifFalse: [NSException raise: 'PKParser' format: 'Not enought position to merge'].
+		positionStack removeLastObject
 	]
 
 	position [
@@ -684,6 +686,11 @@ NSObject subclass: SmalltalkTool [
 		oMeta := self pegGrammar.
 
 		ETTranscript show: oMeta; cr.
+		ETTranscript show: (oMeta at: 'Char'); cr.
+		ETTranscript show: (oMeta match:( '\', 'n') rule: 'Char').
+		ETTranscript show: (oMeta match:('n') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\', '266') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\', '66') rule: 'Char').
 		"ETTranscript show: parser;cr.
 		ETTranscript show: (parser parseInput: 'c'); cr."
 
@@ -708,7 +715,14 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'SLASH' expression: ( '&' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'AND' expression: ( '/' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'LEFTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
-		oMeta addRule: 'Char' expression: ({'\' . 'n' . 'r' . 't' . ''''. '"' . '[' . ']' . '\' } joinAll).
+		oMeta addRule: 'Char' expression: 
+			(('\' asExp seq: {'n' . 'r' . 't' . ''''. '"' . '[' . ']'} joinAll)
+				or: ('\' asExp seq: (PKRangeExpression alloc initFrom: '0' to: '2') 
+							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') 
+							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') )
+				or: ('\' asExp seq: (PKRangeExpression alloc initFrom: '0' to: '7') 
+							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') )
+			    or: ('\' asExp not seq: (PKDotExpression new)  )).
 		^oMeta
 	]
 ]
