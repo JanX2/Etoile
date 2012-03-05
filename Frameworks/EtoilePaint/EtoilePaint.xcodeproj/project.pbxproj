@@ -60,6 +60,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		609A4ED114FBBCAD0039A0D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662C413310B0D00600F060E4 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6072CF691360E144003256C5;
+			remoteInfo = PlugInExample;
+		};
+		609A4EDD14FBBCAD0039A0D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 605AD43A13BF8D8500755772;
+			remoteInfo = Worktable;
+		};
 		662C411B10B0CFF000F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C410E10B0CFF000F060E4 /* EtoileUI.xcodeproj */;
@@ -236,7 +250,6 @@
 		6697AC98104771CB00456911 /* testbrush.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testbrush.png; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* EtoilePaint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EtoilePaint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D2F7E79907B2D74100F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,7 +356,6 @@
 			isa = PBXGroup;
 			children = (
 				0867D6A5FE840307C02AAC07 /* AppKit.framework */,
-				D2F7E79907B2D74100F64583 /* CoreData.framework */,
 				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
 			);
 			name = "Other Frameworks";
@@ -387,10 +399,11 @@
 				662C412210B0CFF000F060E4 /* Collage.app */,
 				662C412410B0CFF000F060E4 /* MarkupEditor.app */,
 				662C412610B0CFF000F060E4 /* ObjectManagerExample.app */,
-				662C412810B0CFF000F060E4 /* PaneContainerExample.app */,
+				662C412810B0CFF000F060E4 /* PaneExample.app */,
 				662C412A10B0CFF000F060E4 /* PhotoViewExample.app */,
-				662C412C10B0CFF000F060E4 /* TableViewExample.app */,
+				662C412C10B0CFF000F060E4 /* TableExample.app */,
 				662C412E10B0CFF000F060E4 /* FormExample.app */,
+				609A4EDE14FBBCAD0039A0D1 /* Worktable.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -401,6 +414,7 @@
 				662C413A10B0D00600F060E4 /* EtoileXML.framework */,
 				662C413C10B0D00600F060E4 /* EtoileFoundation.framework */,
 				662C413E10B0D00600F060E4 /* TestEtoileFoundation.bundle */,
+				609A4ED214FBBCAD0039A0D1 /* PlugInExample.plugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -497,7 +511,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "EtoilePaint" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* EtoilePaint */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
@@ -520,6 +541,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		609A4ED214FBBCAD0039A0D1 /* PlugInExample.plugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = PlugInExample.plugin;
+			remoteRef = 609A4ED114FBBCAD0039A0D1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		609A4EDE14FBBCAD0039A0D1 /* Worktable.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Worktable.app;
+			remoteRef = 609A4EDD14FBBCAD0039A0D1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		662C411C10B0CFF000F060E4 /* EtoileUI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -562,10 +597,10 @@
 			remoteRef = 662C412510B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		662C412810B0CFF000F060E4 /* PaneContainerExample.app */ = {
+		662C412810B0CFF000F060E4 /* PaneExample.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
-			path = PaneContainerExample.app;
+			path = PaneExample.app;
 			remoteRef = 662C412710B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -576,10 +611,10 @@
 			remoteRef = 662C412910B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		662C412C10B0CFF000F060E4 /* TableViewExample.app */ = {
+		662C412C10B0CFF000F060E4 /* TableExample.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
-			path = TableViewExample.app;
+			path = TableExample.app;
 			remoteRef = 662C412B10B0CFF000F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -708,21 +743,10 @@
 		1DEB91AE08733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../EtoileUI/build/Debug\"",
-				);
 				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = EtoilePaint_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				PRODUCT_NAME = EtoilePaint;
@@ -733,18 +757,9 @@
 		1DEB91AF08733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../EtoileUI/build/Debug\"",
-				);
 				FRAMEWORK_VERSION = A;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = EtoilePaint_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				PRODUCT_NAME = EtoilePaint;
@@ -755,26 +770,29 @@
 		1DEB91B208733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/../EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../ObjectMerging/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+				);
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/../EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../ObjectMerging/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 			};
 			name = Debug;
 		};
 		1DEB91B308733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				SDKROOT = macosx10.6;
 			};
 			name = Release;
 		};

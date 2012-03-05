@@ -13,7 +13,7 @@
 
 - (void) applicationDidFinishLaunching: (NSNotification *)notif
 {
-	ETUIItemFactory *itemFactory = [ETUIItemFactory factory];
+	ETLayoutItemFactory *itemFactory = [ETLayoutItemFactory factory];
 
 	/* Shows the graphics editing related menu which contains commands like 
 	   'group', 'ungroup', 'send backward' etc. */

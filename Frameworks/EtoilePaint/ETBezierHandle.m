@@ -100,15 +100,16 @@
 		}
 	}
 	
-	self = [super initWithItems: handles view: nil value: nil representedObject: nil];
+	self = [super initWithView: nil coverStyle: nil actionHandler: anHandler];
 	if (self == nil)
 		return nil;
 	
 	[self setFlipped: YES];
 	[self setStyle: nil]; /* Suppress the default ETLayoutItem style */
-	[self setActionHandler: anHandler];
+	//[self setActionHandler: anHandler];
 	[self setManipulatedObject: aTarget];
-	
+	[self addItems: handles];
+
 	// FIXME: assumption
 	[self updateHandleLocations];
 	
@@ -151,12 +152,12 @@
 
 - (NSPoint) anchorPoint
 {
-	return [GET_PROPERTY(kETManipulatedObjectProperty) anchorPoint];
+	return [(ETLayoutItem *)GET_PROPERTY(kETManipulatedObjectProperty) anchorPoint];
 }
 
 - (void) setAnchorPoint: (NSPoint)anchor
 {
-	return [GET_PROPERTY(kETManipulatedObjectProperty) setAnchorPoint: anchor];
+	return [(ETLayoutItem *)GET_PROPERTY(kETManipulatedObjectProperty) setAnchorPoint: anchor];
 }
 
 - (NSPoint) position
@@ -166,7 +167,7 @@
 
 - (void) setPosition: (NSPoint)aPosition
 {
-	[GET_PROPERTY(kETManipulatedObjectProperty) setPosition: aPosition];
+	[(ETLayoutItem *)GET_PROPERTY(kETManipulatedObjectProperty) setPosition: aPosition];
 	[self updateHandleLocations];
 }
 
