@@ -66,24 +66,32 @@ NSObject subclass: PKParseMatch [
 		input pushPosition: range length + range location.
 		^self
 	]
+	
+	copyInitWith: list range: aRange [
+		input := list.
+		range := aRange
+	]
 
 	sequenceWith: match [
+		| newMatch |
 		input mergePosition.
 		input lastPosition == range location ifFalse: [
 			"Can be remove or rephrase later."
 			NSException raise: 'ParseKit' format: 'Last position is not same as the location range, something is wrong here'].
 		(range location + range length) == match range location
 			ifFalse: [ NSException raise: 'ParserKit' format: 'Can not add the range, it is not contigus'].
-		range := NSValue rangeWithLocation: range location length: (range length + match  range length).
+		newMatch := self class alloc copyInitWith: input range: (NSValue rangeWithLocation: range location length: (range length + match  range length)).
+		^newMatch
 	]
 
-	match  [ ^input fromRange: range ]
+	match  [ ^(input fromRange: range)]
 	isEmpty [ ^range length = 0]
 	isSuccess [ ^true ]
 	isFailure [ ^false ]
 	range [^range]
+    stopPosition [^range length + range location]
 	description [
-		^'PKMatchSuccess  ( Recognized: ''', (input fromRange: range), ''')\n' 
+		^'PKMatchSuccess  ( Recognized: ''', (input fromRange: range), ''' location: ', range description , ')\n' 
 	]
 ]
 
@@ -251,7 +259,7 @@ PKParseExpression subclass: PKComposeExpression [
 	]
 ]
 
-PKComposeExpression subclass: PKNamedExpression [
+PKComposeExpression subclass: PKNonTerminalExpression [
 	| name |
 	initWithName: string exp: expression [
 		super init.
@@ -264,11 +272,15 @@ PKComposeExpression subclass: PKNamedExpression [
 		| match |
 		match := list matchRule: name.
 		(match == nil) ifTrue: [
+			| position |
+			position := list position.
 			match := exp parseInput: list.
-			list  addMatch: match at: list position named: name.
-		].
+			list  addMatch: match at: position named: name.
+		] ifFalse: [list pushPosition: match stopPosition ].
 		^match
 	]
+
+	description [^name]
 ]
 
 PKComposeExpression subclass: PKAlphanumericExpression [
@@ -341,7 +353,8 @@ PKParseExpression subclass: PKSequenceExpression [
 			| match2 |
 			match2 := (e2 parseInput: list).
 			match2 isSuccess 
-                ifTrue: [ match1 sequenceWith: match2 ]
+                ifTrue: [ 
+					match1 sequenceWith: match2 ]
 				ifFalse: [ list popPosition. match2 ]
 		] ifFalse: [ match1 ]
 	]
@@ -421,7 +434,7 @@ PKParseExpression subclass: PKRepetitionExpression [
 		[
 			currentMatch := e parseInput: list.
 			currentMatch isSuccess
-		] whileTrue: [match sequenceWith: currentMatch].
+		] whileTrue: [ match := match sequenceWith: currentMatch].
 		^(match isEmpty and: canBeEmpty not) 
             ifTrue: [PKParseFail new initWithTail: list description: 'Unexpected token, expected ...']
 			ifFalse: [match]
@@ -451,7 +464,7 @@ NSObject subclass: PKInputStream [
 	]
 
 	description [
-		^stream substringWithRange: (NSValue rangeWithLocation: position length: stream length - position)
+		^(stream substringWithRange: (NSValue rangeWithLocation: position length: stream length - position)), ' pos: ', positionStack description
 	]
 
     addMatch: parserMatch at: position named: aString [
@@ -545,7 +558,7 @@ NSObject subclass: PKRules [
 
 	addRule: name expression: exp [
 		| rule |
-		rule := PKNamedExpression alloc initWithName: name exp: exp.
+		rule := PKNonTerminalExpression alloc initWithName: name exp: exp.
 		rules setValue: rule forKey: name
 	]
 
