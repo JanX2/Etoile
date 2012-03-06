@@ -257,6 +257,8 @@ PKParseExpression subclass: PKComposeExpression [
 	parseInput: list [
 	    ^exp parseInput: list	
 	]
+
+	expression [^exp]
 ]
 
 PKComposeExpression subclass: PKNonTerminalExpression [
@@ -270,6 +272,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 
 	parseInput: list  [
 		| match |
+		exp == nil ifTrue: [NSException raise: 'ParserKit' format: 'Uncomplete grammar definition for ', name].
 		match := list matchRule: name.
 		(match == nil) ifTrue: [
 			| position |
@@ -280,6 +283,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 		^match
 	]
 
+	setExpression: anExp [ exp := anExp ]
 	description [^name]
 ]
 
@@ -552,14 +556,23 @@ NSObject subclass: PKRules [
 	
 	at: rule [
 		^self lookup: rule ifFailed: [
-			NSException raise: 'PKParser' format: 'Rule not found: ', rule
+			| ruleExp |
+			ruleExp := PKNonTerminalExpression alloc initWithName: rule exp: nil.
+			rules setValue: ruleExp forKey: rule.
+			ruleExp
 		]
 	]
 
 	addRule: name expression: exp [
 		| rule |
-		rule := PKNonTerminalExpression alloc initWithName: name exp: exp.
-		rules setValue: rule forKey: name
+		rule := rules objectForKey: name.
+		rule == nil ifTrue: [
+			rule := PKNonTerminalExpression alloc initWithName: name exp: exp.
+		    rules setValue: rule forKey: name
+		] ifFalse: [
+			rule setExpression: exp
+		].
+		
 	]
 
 	lookup: rule ifFailed: aBlock [
@@ -568,7 +581,7 @@ NSObject subclass: PKRules [
 		return == nil ifTrue:[
 			return := parent.
 			return == nil
-                ifTrue: aBlock
+                ifTrue: [ return := aBlock value ]
 				ifFalse: [	
 					return := parent lookup: rule ifFailed: aBlock
 				]
@@ -585,7 +598,7 @@ NSObject subclass: PKRules [
 		| desc |
 		desc := name, ' {'.
 		rules allKeys do: [:key | 
-			desc := desc, key, ' <- ', (rules objectForKey: key) description, '\n'
+			desc := desc, key, ' <- ', (rules objectForKey: key) expression description, '\n'
 		].
 		^desc, '}'	
 	]
@@ -716,11 +729,9 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (oMeta match:( '[a-d] ') rule: 'Class').
 		ETTranscript show: (oMeta match:( '[a-d\34] ') rule: 'Class').
 		ETTranscript show: (oMeta match:( '[a-dA-Z]\n') rule: 'Class').
-		"ETTranscript show: parser;cr.
-		ETTranscript show: (parser parseInput: 'c'); cr."
+		ETTranscript show: (oMeta match:( '''foo'' bar') rule: 'Literal').
+		ETTranscript show: (oMeta match:( '"bar" foo') rule: 'Literal').
 
-		"ETTranscript show: (C sqrt: 4)."
-	    "ETTranscript show: (C NSMakeRange: {0 . 1})"
 	]
 
 	pegGrammar [
@@ -737,8 +748,8 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'STAR' expression: ( '*' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'QUESTION' expression: ( '?' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'NOT' expression: ( '!' asExp seq: (oMeta at: 'Spacing')).
-		oMeta addRule: 'SLASH' expression: ( '&' asExp seq: (oMeta at: 'Spacing')).
-		oMeta addRule: 'AND' expression: ( '/' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'SLASH' expression: ( '/' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'AND' expression: ( '&' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'LEFTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'Char' expression: 
 			(('\' asExp seq: {'n' . 'r' . 't' . ''''. '"' . '[' . ']'} joinAll)
@@ -750,6 +761,16 @@ NSObject subclass: SmalltalkTool [
 			    or: ('\' asExp not seq: (PKDotExpression new)  )).
 		oMeta addRule: 'Range' expression: (((oMeta at: 'Char') seq: '-' asExp seq: (oMeta at: 'Char')) or: (oMeta at: 'Char')).
 		oMeta addRule: 'Class' expression: ('[' asExp seq: (']' asExp not seq: (oMeta at: 'Range')) repeat seq: ']' asExp seq: (oMeta at: 'Space')).
+		oMeta addRule: 'Literal' expression: (
+			('''' asExp seq: ('''' asExp not seq: (oMeta at: 'Char')) repeat seq: '''' asExp seq: (oMeta at: 'Spacing') ) 
+			or: ('"' asExp seq: ('"' asExp not seq: (oMeta at: 'Char')) repeat seq: '"' asExp seq: (oMeta at: 'Spacing') )).
+		oMeta addRule: 'IdentStart'  expression: ((PKRangeExpression alloc initFrom: 'a' to: 'z') 
+			or: (PKRangeExpression alloc initFrom: 'A' to: 'Z')
+			or: '_' asExp).
+		oMeta addRule: 'IdentCont' expression: ((oMeta at: 'IdentStart') or: (PKRangeExpression alloc initFrom: '0' to: '9')).
+		oMeta addRule: 'Identifier' expression: ((oMeta at: 'IdentStart') seq: (oMeta at: 'IdentCont') repeat seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'Primary' expression: (((oMeta at: 'Identifier') seq: (oMeta at: 'LEFTARROW') not)
+			or: ((oMeta at: 'OPEN') seq: (oMeta at: 'Expression') seq: (oMeta at: 'CLOSE'))).
 		^oMeta
 	]
 ]
