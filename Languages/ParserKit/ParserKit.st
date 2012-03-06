@@ -157,6 +157,10 @@ NSObject subclass: PKParseExpression [
 		^(self seq: exp1 seq: exp2) seq: exp3
 	]
 
+	maybe [
+		^PKMaybeExpression alloc initWithExp: self
+	]
+
 	parseInput: sequence [
 		^self subclassResponsibility
 	]
@@ -284,7 +288,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 	]
 
 	setExpression: anExp [ exp := anExp ]
-	description [^name]
+	description [^' ', name, ' ']
 ]
 
 PKComposeExpression subclass: PKAlphanumericExpression [
@@ -397,6 +401,17 @@ PKComposeExpression subclass: PKNegateExpression [
 		^match isSuccess ifTrue: [PKParseFail alloc initWithInput: list description: 'Should not match ', exp description] 
 						 ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
 	]
+]
+
+PKComposeExpression subclass: PKMaybeExpression [
+	parseInput: list [
+		| match |
+		match := exp parseInput: list.
+		^match ifSuccess ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
+			ifTrue: [match]
+	]
+	
+	description [^'(', exp description, ')?']
 ]
 
 PKParseExpression subclass: PKAlternateExpression [
@@ -731,6 +746,8 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (oMeta match:( '[a-dA-Z]\n') rule: 'Class').
 		ETTranscript show: (oMeta match:( '''foo'' bar') rule: 'Literal').
 		ETTranscript show: (oMeta match:( '"bar" foo') rule: 'Literal').
+		ETTranscript show: (oMeta match:( '.?') rule: 'Suffix').
+		ETTranscript show: (oMeta match:( '([zf] "oo")?') rule: 'Suffix').
 
 	]
 
@@ -770,7 +787,14 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'IdentCont' expression: ((oMeta at: 'IdentStart') or: (PKRangeExpression alloc initFrom: '0' to: '9')).
 		oMeta addRule: 'Identifier' expression: ((oMeta at: 'IdentStart') seq: (oMeta at: 'IdentCont') repeat seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'Primary' expression: (((oMeta at: 'Identifier') seq: (oMeta at: 'LEFTARROW') not)
-			or: ((oMeta at: 'OPEN') seq: (oMeta at: 'Expression') seq: (oMeta at: 'CLOSE'))).
+			or: ((oMeta at: 'OPEN') seq: (oMeta at: 'Expression') seq: (oMeta at: 'CLOSE'))
+			or: (oMeta at: 'Literal')
+			or: (oMeta at: 'Class')
+			or: (oMeta at: 'DOT')).
+		oMeta addRule: 'Suffix' expression: ((oMeta at: 'Primary') seq: ((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS'))).
+		oMeta addRule: 'Prefix' expression: (((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe seq: (oMeta at: 'Suffix')).
+		oMeta addRule: 'Sequence' expression: (oMeta at: 'Prefix') repeat.
+		oMeta addRule: 'Expression' expression: ((oMeta at: 'Sequence') seq: ((oMeta at: 'SLASH') seq: (oMeta at: 'Sequence')) repeat).
 		^oMeta
 	]
 ]
