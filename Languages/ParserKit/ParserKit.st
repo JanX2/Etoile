@@ -106,6 +106,7 @@ NSObject subclass: PKParseFail [
 		^self
 	]
 	
+	stopPosition [^failedPosition]
 	isFailure [ ^true ]
 	isSuccess [ ^false ]
 
@@ -407,8 +408,8 @@ PKComposeExpression subclass: PKMaybeExpression [
 	parseInput: list [
 		| match |
 		match := exp parseInput: list.
-		^match ifSuccess ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
-			ifTrue: [match]
+		^match isSuccess ifTrue: [match]
+						 ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
 	]
 	
 	description [^'(', exp description, ')?']
@@ -733,22 +734,24 @@ NSObject subclass: SmalltalkTool [
 
 		ETTranscript show: oMeta; cr.
 		ETTranscript show: (oMeta at: 'Char'); cr.
-		ETTranscript show: (oMeta match:( '\', 'n') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\n') rule: 'Char').
 		ETTranscript show: (oMeta match:('n') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\', '266') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\', '268') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\', '66') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\', '66') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\', '66-', '\', '234') rule: 'Range').
+		ETTranscript show: (oMeta match:( '\266') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\268') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\66') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\66') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\66-\234') rule: 'Range').
 		ETTranscript show: (oMeta match:( 'a-d') rule: 'Range').
 		ETTranscript show: (oMeta match:( '[a-d] ') rule: 'Class').
 		ETTranscript show: (oMeta match:( '[a-d\34] ') rule: 'Class').
 		ETTranscript show: (oMeta match:( '[a-dA-Z]\n') rule: 'Class').
 		ETTranscript show: (oMeta match:( '''foo'' bar') rule: 'Literal').
 		ETTranscript show: (oMeta match:( '"bar" foo') rule: 'Literal').
-		ETTranscript show: (oMeta match:( '.?') rule: 'Suffix').
-		ETTranscript show: (oMeta match:( '([zf] "oo")?') rule: 'Suffix').
-
+		ETTranscript show: (oMeta match:( '. ? ') rule: 'Suffix').
+		ETTranscript show: (oMeta match:( '([zf]"oo")?') rule: 'Suffix').
+		ETTranscript show: (oMeta match: '' rule: 'Spacing').
+		ETTranscript show: (oMeta match: 'One <- .' rule: 'Grammar').
+		ETTranscript show: (oMeta match: 'EndOfLine <- ''\\r\\n''' rule: 'Grammar').
 	]
 
 	pegGrammar [
@@ -757,7 +760,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'EndOfLine' expression: ('\r\n' asExp or: '\n' asExp).
 		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: (oMeta at: 'EndOfLine')).
 		oMeta addRule: 'Comment' expression: ('#' asExp seq: ((oMeta at: 'EndOfLine') not seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
-		oMeta addRule: 'Spacing' expression: ((oMeta at: 'Space') or: (oMeta at: 'Comment')).
+		oMeta addRule: 'Spacing' expression: ((oMeta at: 'Space') or: (oMeta at: 'Comment')) repeat.
 		oMeta addRule: 'DOT' expression: ('.' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'CLOSE' expression: ( ')' asExp seq: (oMeta at: 'Spacing')). 
 		oMeta addRule: 'OPEN' expression: ( '(' asExp seq: (oMeta at: 'Spacing')).
@@ -777,7 +780,7 @@ NSObject subclass: SmalltalkTool [
 							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') )
 			    or: ('\' asExp not seq: (PKDotExpression new)  )).
 		oMeta addRule: 'Range' expression: (((oMeta at: 'Char') seq: '-' asExp seq: (oMeta at: 'Char')) or: (oMeta at: 'Char')).
-		oMeta addRule: 'Class' expression: ('[' asExp seq: (']' asExp not seq: (oMeta at: 'Range')) repeat seq: ']' asExp seq: (oMeta at: 'Space')).
+		oMeta addRule: 'Class' expression: ('[' asExp seq: (']' asExp not seq: (oMeta at: 'Range')) repeat seq: ']' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'Literal' expression: (
 			('''' asExp seq: ('''' asExp not seq: (oMeta at: 'Char')) repeat seq: '''' asExp seq: (oMeta at: 'Spacing') ) 
 			or: ('"' asExp seq: ('"' asExp not seq: (oMeta at: 'Char')) repeat seq: '"' asExp seq: (oMeta at: 'Spacing') )).
@@ -791,10 +794,12 @@ NSObject subclass: SmalltalkTool [
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
 			or: (oMeta at: 'DOT')).
-		oMeta addRule: 'Suffix' expression: ((oMeta at: 'Primary') seq: ((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS'))).
+		oMeta addRule: 'Suffix' expression: ((oMeta at: 'Primary') seq: ((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe).
 		oMeta addRule: 'Prefix' expression: (((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe seq: (oMeta at: 'Suffix')).
 		oMeta addRule: 'Sequence' expression: (oMeta at: 'Prefix') repeat.
 		oMeta addRule: 'Expression' expression: ((oMeta at: 'Sequence') seq: ((oMeta at: 'SLASH') seq: (oMeta at: 'Sequence')) repeat).
+		oMeta addRule: 'Definition' expression: ((oMeta at: 'Identifier') seq: (oMeta at: 'LEFTARROW') seq: (oMeta at: 'Expression')).
+		oMeta addRule: 'Grammar' expression: ((oMeta at: 'Spacing') seq: (oMeta at: 'Definition') repeatOneLeast seq: PKEmptyExpression uniqueInstance).
 		^oMeta
 	]
 ]
