@@ -77,7 +77,7 @@ NSObject subclass: PKParseMatch [
 		input mergePosition.
 		input lastPosition == range location ifFalse: [
 			"Can be remove or rephrase later."
-			NSException raise: 'ParseKit' format: 'Last position is not same as the location range, something is wrong here'].
+			NSException raise: 'ParseKit' format: 'Last position is not same as the location range, something is wrong here range loc: ', range location description, ' last input: ', input lastPosition description ].
 		(range location + range length) == match range location
 			ifFalse: [ NSException raise: 'ParserKit' format: 'Can not add the range, it is not contigus'].
 		newMatch := self class alloc copyInitWith: input range: (NSValue rangeWithLocation: range location length: (range length + match  range length)).
@@ -156,6 +156,10 @@ NSObject subclass: PKParseExpression [
 
 	seq: exp1 seq: exp2 seq: exp3 [
 		^(self seq: exp1 seq: exp2) seq: exp3
+	]
+
+	seq: exp1 seq: exp2 seq: exp3 seq: exp4 [
+		^(self seq: exp1 seq: exp2 seq: exp3) seq: exp4
 	]
 
 	maybe [
@@ -284,7 +288,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 			position := list position.
 			match := exp parseInput: list.
 			list  addMatch: match at: position named: name.
-		] ifFalse: [list pushPosition: match stopPosition ].
+		] ifFalse: [match isSuccess ifTrue: [list pushPosition: match stopPosition]].
 		^match
 	]
 
@@ -314,13 +318,13 @@ PKParseExpression subclass: PKTokenExpression [
 			return := PKParseMatch alloc initWithInput: list
 								length: match matchSize.
 		] ifFalse: [
-			return := PKParseFail alloc initWithInput: list description: 'Unexpected token'
+			return := PKParseFail alloc initWithInput: list description: 'Unexpected token, expected: ', match
 		].
 		^return
 	]
 
 	description [
-		^ match description
+		^'''', match description, ''''
 	]
 ]
 
@@ -379,9 +383,8 @@ PKComposeExpression subclass: PKLookAheadExpression [
 	parseInput: list [
 		| match |
 		match := exp parseInput: list.
-		^match isFailure 
-           ifTrue: [ match]
-	       ifFalse: [list popPosition. match]
+		match isFailure ifFalse: [list popPosition].
+		^match
 	]
 ]
 
@@ -434,7 +437,7 @@ PKParseExpression subclass: PKAlternateExpression [
 	 ]
 
 	description [
-		^'(', first description, ' or ', second description, ')'
+		^' ', first description, ' / ', second description, ' '
 	]
 ]
 
@@ -710,7 +713,7 @@ NSObject subclass: PKParserBase [
 NSObject subclass: SmalltalkTool [
 	
 	run [
-		| dict parser abStar abStar b c tExp alphaNumeric oMeta |
+		| dict parser abStar abStar b c tExp alphaNumeric oMeta content contentString |
 		abStar := PKRepetitionExpression alloc
 					 initWithExpression: 'ab' asExp
 					 canBeEmpty: false; yourself.
@@ -752,6 +755,11 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (oMeta match: '' rule: 'Spacing').
 		ETTranscript show: (oMeta match: 'One <- .' rule: 'Grammar').
 		ETTranscript show: (oMeta match: 'EndOfLine <- ''\\r\\n''' rule: 'Grammar').
+		ETTranscript show: (oMeta match: 'Ometa { EndOfLine <- ''\\r\\n'' }' rule: 'Ometa').
+
+		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
+		contentString := NSString alloc initWithData: content encoding: 4.
+		ETTranscript show: (oMeta match: contentString  rule: 'Ometa').
 	]
 
 	pegGrammar [
@@ -764,6 +772,8 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'DOT' expression: ('.' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'CLOSE' expression: ( ')' asExp seq: (oMeta at: 'Spacing')). 
 		oMeta addRule: 'OPEN' expression: ( '(' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'CCLOSE' expression: ( '}' asExp seq: (oMeta at: 'Spacing')). 
+		oMeta addRule: 'COPEN' expression: ( '{' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'PLUS' expression: ( '+' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'STAR' expression: ( '*' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'QUESTION' expression: ( '?' asExp seq: (oMeta at: 'Spacing')).
@@ -772,7 +782,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'AND' expression: ( '&' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'LEFTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'Char' expression: 
-			(('\' asExp seq: {'n' . 'r' . 't' . ''''. '"' . '[' . ']'} joinAll)
+			(('\' asExp seq: {'n' . 'r' . 't' . ''''. '"' . '[' . ']'. '\'} joinAll)
 				or: ('\' asExp seq: (PKRangeExpression alloc initFrom: '0' to: '2') 
 							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') 
 							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') )
@@ -799,7 +809,12 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'Sequence' expression: (oMeta at: 'Prefix') repeat.
 		oMeta addRule: 'Expression' expression: ((oMeta at: 'Sequence') seq: ((oMeta at: 'SLASH') seq: (oMeta at: 'Sequence')) repeat).
 		oMeta addRule: 'Definition' expression: ((oMeta at: 'Identifier') seq: (oMeta at: 'LEFTARROW') seq: (oMeta at: 'Expression')).
-		oMeta addRule: 'Grammar' expression: ((oMeta at: 'Spacing') seq: (oMeta at: 'Definition') repeatOneLeast seq: PKEmptyExpression uniqueInstance).
+		oMeta addRule: 'Grammar' expression: ((oMeta at: 'Spacing') seq: (oMeta at: 'Definition') repeatOneLeast).
+		oMeta addRule: 'Ometa' expression: ((oMeta at: 'Identifier') 
+            seq: (oMeta at: 'COPEN')
+			seq: (oMeta at: 'Grammar')
+			seq: (oMeta at: 'CCLOSE')
+			seq: PKEmptyExpression uniqueInstance ).
 		^oMeta
 	]
 ]
@@ -807,7 +822,8 @@ NSObject subclass: SmalltalkTool [
 "Basic PEG parser:
 
 # Hierarchical syntax
-Grammar <- Spacing Definition+ EndOfFile
+Ometa <- Identifier '{' Grammar '}' EndOfFile
+Grammar <- Spacing Definition+
 Definition <- Identifier LEFTARROW Expression
 Expression <- Sequence (SLASH Sequence)*
 Sequence <- Prefix*
@@ -838,6 +854,8 @@ PLUS <- ’+’ Spacing
 OPEN <- ’(’ Spacing
 CLOSE <- ’)’ Spacing
 DOT <- ’.’ Spacing
+COPEN <- '{' Spacing
+CCLOSE <- '}' Spacing
 Spacing <- (Space / Comment)*
 Comment <- ’#’ (!EndOfLine .)* EndOfLine
 Space <- ’ ’ / ’\t’ / EndOfLine
