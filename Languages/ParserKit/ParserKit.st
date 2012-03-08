@@ -816,14 +816,12 @@ NSObject subclass: SmalltalkTool [
 
 		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
-		ETTranscript show: (oMeta match: contentString  rule: 'Ometa').
+		ETTranscript show: (oMeta match: contentString  rule: 'OmetaList').
 	]
 
 	objcPegGrammar: parent [
 		| ocParser |
 		ocParser := parent subgrammar: 'ObjcOmeta'.
-		ocParser addRule: 'COLON' expression: (':' asExp seq: (ocParser at: 'Spacing')).
-		
 	]
 
 	pegGrammar [
@@ -834,6 +832,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'Comment' expression: ('#' asExp seq: ((oMeta at: 'EndOfLine') not seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
 		oMeta addRule: 'Spacing' expression: ((oMeta at: 'Space') or: (oMeta at: 'Comment')) repeat.
 		oMeta addRule: 'DOT' expression: ('.' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'COLON' expression: (':' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'CLOSE' expression: ( ')' asExp seq: (oMeta at: 'Spacing')). 
 		oMeta addRule: 'OPEN' expression: ( '(' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'CCLOSE' expression: ( '}' asExp seq: (oMeta at: 'Spacing')). 
@@ -877,15 +876,18 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'Sequence' expression: ((oMeta at: 'Prefix') repeat 
            seq: ((oMeta at: 'RIGHTARROW') 
                     seq: (oMeta at: 'AOPEN') 
-					seq: (oMeta at: 'Stqtements') 
+					seq: (oMeta at: 'Statements') 
 					seq: (oMeta at: 'ACLOSE') ) maybe).
 		oMeta addRule: 'Expression' expression: ((oMeta at: 'Sequence') seq: ((oMeta at: 'SLASH') seq: (oMeta at: 'Sequence')) repeat).
 		oMeta addRule: 'Definition' expression: ((oMeta at: 'Identifier') seq: (oMeta at: 'LEFTARROW') seq: (oMeta at: 'Expression')).
 		oMeta addRule: 'Grammar' expression: ((oMeta at: 'Spacing') seq: (oMeta at: 'Definition') repeatOneLeast).
-		oMeta addRule: 'Ometa' expression: ((oMeta at: 'Identifier') 
+		oMeta addRule: 'Ometa' expression: ((oMeta at: 'Identifier')
+			seq: ((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'superGrammar')) maybe
             seq: (oMeta at: 'COPEN')
 			seq: ((oMeta at: 'Grammar') bind: 'grammarList')
-			seq: (oMeta at: 'CCLOSE')
+			seq: (oMeta at: 'CCLOSE')).
+		oMeta addRule: 'OmetaList' expression: ((oMeta at: 'Spacing') 
+            seq: (oMeta at: 'Ometa') repeatOneLeast 
 			seq: PKEmptyExpression uniqueInstance ).
 		^oMeta
 	]
