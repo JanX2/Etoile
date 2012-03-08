@@ -1,12 +1,13 @@
 Ometa {
 
-Ometa <- Identifier '{' Grammar '}' EndOfFile
+Ometa <- Identifier:parserName (COLON Identifier:superGrammar)? COPEN Grammar:grammarList CCLOSE EndOfFile
 Grammar <- Spacing Definition+
 Definition <- Identifier LEFTARROW Expression
 Expression <- Sequence (SLASH Sequence)*
-Sequence <- Prefix*
+Sequence <- Prefix* (RIGHTARROW AOPEN Statements ACLOSE)?
 Prefix <- (AND / NOT)? Suffix
 Suffix <- Primary (QUESTION / STAR / PLUS)?
+NamedPrimary <- Primary (':' Identifier)?
 Primary <- Identifier !LEFTARROW
 / OPEN Expression CLOSE
 / Literal / Class / DOT
@@ -23,6 +24,7 @@ Char <- '\\' [nrt'"\[\]\\]
 / '\\' [0-7][0-7]?
 / !'\\' .
 LEFTARROW <- '<-' Spacing
+RIGHTARROW <- '->' Spacing
 SLASH <- '/' Spacing
 AND <- '&' Spacing
 NOT <- '!' Spacing
@@ -30,7 +32,10 @@ QUESTION <- '?' Spacing
 STAR <- '*' Spacing
 PLUS <- '+' Spacing
 OPEN <- '(' Spacing
+AOPEN <- '[' Spacing
+ACLOSE <- ']' Spacing
 CLOSE <- ')' Spacing
+COLON <-  ':' Spacing
 DOT <- '.' Spacing
 COPEN <- '{' Spacing
 CCLOSE <- '}' Spacing
@@ -39,4 +44,12 @@ Comment <- '#' (!EndOfLine .)* EndOfLine
 Space <- ' ' / '\t' / EndOfLine
 EndOfLine <- '\r\n'
 
+}
+
+
+
+ObjcCOmeta : Ometa {
+
+Keyword <- IdentStart IdentCont* COLON
+KeywordMessage <- (Keyword Identifier)+
 }
