@@ -8,6 +8,8 @@
   could differ. For the time being to write expression use the 
   PKParseExpression class. See example at the bottom of the file.
 
+    2012/03/08 Rule lookup can be optimize at runtime
+
     2012/03/05 Fix way input consuming. 
 
     2012/02/22 Many bug fix and start to implement a OMeta parser. 
@@ -84,6 +86,10 @@ NSObject subclass: PKParseMatch [
 		^newMatch
 	]
 
+	bind: name [
+		input bind: name range: range
+	]
+
 	match  [ ^(input fromRange: range)]
 	isEmpty [ ^range length = 0]
 	isSuccess [ ^true ]
@@ -91,7 +97,7 @@ NSObject subclass: PKParseMatch [
 	range [^range]
     stopPosition [^range length + range location]
 	description [
-		^'PKMatchSuccess  ( Recognized: ''', (input fromRange: range), ''' location: ', range description , ')\n' 
+		^'PKMatchSuccess  ( Recognized: ''', (input fromRange: range), ''' location: ', range description , ', binds: ', input environment description,')\n' 
 	]
 ]
 
@@ -117,6 +123,10 @@ NSObject subclass: PKParseFail [
 
 
 NSObject subclass: PKParseExpression [
+
+	bind: name [
+		^PKBindExpression alloc initWithExp: self name: name
+	]
 
 	or: exp [
 		^PKAlternateExpression alloc initWithExp: self or: exp.
@@ -281,14 +291,16 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 
 	parseInput: list  [
 		| match |
-		exp == nil ifTrue: [NSException raise: 'ParserKit' format: 'Uncomplete grammar definition for ', name].
-		match := list matchRule: name.
-		(match == nil) ifTrue: [
-			| position |
-			position := list position.
-			match := exp parseInput: list.
-			list  addMatch: match at: position named: name.
-		] ifFalse: [match isSuccess ifTrue: [list pushPosition: match stopPosition]].
+		list inEnvironmentDo: [
+			exp == nil ifTrue: [NSException raise: 'ParserKit' format: 'Uncomplete grammar definition for ', name].
+			match := list matchRule: name.
+			(match == nil) ifTrue: [
+				| position |
+				position := list position.
+				match := exp parseInput: list.
+				list  addMatch: match at: position named: name.
+			] ifFalse: [match isSuccess ifTrue: [list pushPosition: match stopPosition]].
+		].
 		^match
 	]
 
@@ -374,6 +386,22 @@ PKParseExpression subclass: PKSequenceExpression [
 
 	description [
 		^e1 description, e2 description
+	]
+]
+
+PKComposeExpression subclass: PKBindExpression [
+	| name |
+
+	initWithExp: exp name: aName [
+		super initWithExp: exp.
+		name := aName
+	]
+
+	parseInput: list [
+		| match |
+		match := exp parseInput: list.
+		match isSuccess ifTrue: [match bind: name].
+		^match
 	]
 ]
 
@@ -468,6 +496,20 @@ PKParseExpression subclass: PKRepetitionExpression [
 	]
 ]
 
+PKParseExpression subclass: PKNonTerminalLookup [
+	| grammar name |
+	initWithGrammar: aGrammar name: aName [
+		grammar := aGrammar.
+		name := aName
+	]
+
+	parseInput: list [
+		^grammar apply: name
+	]
+
+	description [ ^' ', name, ' '	]
+]
+
 "--- Recursive Extend ---"
 NSString extend [
 	asExp [
@@ -476,19 +518,34 @@ NSString extend [
 ]
 
 NSObject subclass: PKInputStream [
-    | memo stream position positionStack positionStack |
+    | memo stream position positionStack positionStack currentEnvironment |
 
     initWithStream: input [
         stream := input.
         memo := NSMutableDictionary new.
 		positionStack := NSMutableArray new.
 		position := 0.
+		currentEnvironment := NSMutableDictionary new.
 		^self
 	]
 
 	description [
 		^(stream substringWithRange: (NSValue rangeWithLocation: position length: stream length - position)), ' pos: ', positionStack description
 	]
+
+	inEnvironmentDo: aBlock [
+		| previousEnvironment |
+		previousEnvironment := currentEnvironment.
+		currentEnvironment := NSMutableDictionary new.
+		aBlock value.
+		currentEnvironment := previousEnvironment
+	]
+
+	bind: name range: aRange [
+		currentEnvironment setValue: aRange forKey: name
+	]
+
+	environment [^currentEnvironment ]
 
     addMatch: parserMatch at: position named: aString [
 		| matchList |
@@ -684,7 +741,7 @@ NSObject subclass: PKParserBase [
 	]
 
 	at: rule [
-		^rules at: rule
+		^PKNonTerminalLookup alloc initWithGrammar: self name: rule
 	]
 
 	addRule: name expression: exp [
@@ -762,6 +819,13 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (oMeta match: contentString  rule: 'Ometa').
 	]
 
+	objcPegGrammar: parent [
+		| ocParser |
+		ocParser := parent subgrammar: 'ObjcOmeta'.
+		ocParser addRule: 'COLON' expression: (':' asExp seq: (ocParser at: 'Spacing')).
+		
+	]
+
 	pegGrammar [
 		| oMeta  |
 		oMeta := PKParserBase alloc initWithNewGrammar: 'PEG'.
@@ -774,6 +838,8 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'OPEN' expression: ( '(' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'CCLOSE' expression: ( '}' asExp seq: (oMeta at: 'Spacing')). 
 		oMeta addRule: 'COPEN' expression: ( '{' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'ACLOSE' expression: ( ']' asExp seq: (oMeta at: 'Spacing')). 
+		oMeta addRule: 'AOPEN' expression: ( '[' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'PLUS' expression: ( '+' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'STAR' expression: ( '*' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'QUESTION' expression: ( '?' asExp seq: (oMeta at: 'Spacing')).
@@ -781,6 +847,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'SLASH' expression: ( '/' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'AND' expression: ( '&' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'LEFTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'RIGHTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'Char' expression: 
 			(('\' asExp seq: {'n' . 'r' . 't' . ''''. '"' . '[' . ']'. '\'} joinAll)
 				or: ('\' asExp seq: (PKRangeExpression alloc initFrom: '0' to: '2') 
@@ -804,61 +871,23 @@ NSObject subclass: SmalltalkTool [
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
 			or: (oMeta at: 'DOT')).
-		oMeta addRule: 'Suffix' expression: ((oMeta at: 'Primary') seq: ((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe).
+		oMeta addRule: 'NamedPrimary' expression: ((oMeta at: 'Primary') seq: (':' asExp seq: (oMeta at: 'Identifier')) maybe).
+		oMeta addRule: 'Suffix' expression: ((oMeta at: 'NamedPrimary') seq: ((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe).
 		oMeta addRule: 'Prefix' expression: (((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe seq: (oMeta at: 'Suffix')).
-		oMeta addRule: 'Sequence' expression: (oMeta at: 'Prefix') repeat.
+		oMeta addRule: 'Sequence' expression: ((oMeta at: 'Prefix') repeat 
+           seq: ((oMeta at: 'RIGHTARROW') 
+                    seq: (oMeta at: 'AOPEN') 
+					seq: (oMeta at: 'Stqtements') 
+					seq: (oMeta at: 'ACLOSE') ) maybe).
 		oMeta addRule: 'Expression' expression: ((oMeta at: 'Sequence') seq: ((oMeta at: 'SLASH') seq: (oMeta at: 'Sequence')) repeat).
 		oMeta addRule: 'Definition' expression: ((oMeta at: 'Identifier') seq: (oMeta at: 'LEFTARROW') seq: (oMeta at: 'Expression')).
 		oMeta addRule: 'Grammar' expression: ((oMeta at: 'Spacing') seq: (oMeta at: 'Definition') repeatOneLeast).
 		oMeta addRule: 'Ometa' expression: ((oMeta at: 'Identifier') 
             seq: (oMeta at: 'COPEN')
-			seq: (oMeta at: 'Grammar')
+			seq: ((oMeta at: 'Grammar') bind: 'grammarList')
 			seq: (oMeta at: 'CCLOSE')
 			seq: PKEmptyExpression uniqueInstance ).
 		^oMeta
 	]
 ]
 
-"Basic PEG parser:
-
-# Hierarchical syntax
-Ometa <- Identifier '{' Grammar '}' EndOfFile
-Grammar <- Spacing Definition+
-Definition <- Identifier LEFTARROW Expression
-Expression <- Sequence (SLASH Sequence)*
-Sequence <- Prefix*
-Prefix <- (AND / NOT)? Suffix
-Suffix <- Primary (QUESTION / STAR / PLUS)?
-Primary <- Identifier !LEFTARROW
-/ OPEN Expression CLOSE
-/ Literal / Class / DOT
-# Lexical syntax
-Identifier <- IdentStart IdentCont* Spacing
-IdentStart <- [a-zA-Z_]
-IdentCont <- IdentStart / [0-9]
-Literal <- [’] (![’] Char)* [’] Spacing
-/ [""] (![""] Char)* [""] Spacing
-Class <- ’[’ (!’]’ Range)* ’]’ Spacing
-Range <- Char ’-’ Char / Char
-Char <- ’\\’ [nrt’""\[\]\\]
-/ ’\\’ [0-2][0-7][0-7]
-/ ’\\’ [0-7][0-7]?
-/ !’\\’ .
-LEFTARROW <- ’<-’ Spacing
-SLASH <- ’/’ Spacing
-AND <- ’&’ Spacing
-NOT <- ’!’ Spacing
-QUESTION <- ’?’ Spacing
-STAR <- ’*’ Spacing
-PLUS <- ’+’ Spacing
-OPEN <- ’(’ Spacing
-CLOSE <- ’)’ Spacing
-DOT <- ’.’ Spacing
-COPEN <- '{' Spacing
-CCLOSE <- '}' Spacing
-Spacing <- (Space / Comment)*
-Comment <- ’#’ (!EndOfLine .)* EndOfLine
-Space <- ’ ’ / ’\t’ / EndOfLine
-EndOfLine <- ’\r\n’
-
-"
