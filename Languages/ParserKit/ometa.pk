@@ -4,10 +4,9 @@ Ometa <- Identifier:parserName (COLON Identifier:superGrammar)? COPEN Grammar:gr
 Grammar <- Spacing Definition+
 Definition <- Identifier LEFTARROW Expression
 Expression <- Sequence (SLASH Sequence)*
-Sequence <- Prefix* (RIGHTARROW AOPEN Statements ACLOSE)?
+Sequence <- Prefix* (Spacing RIGHTARROW AOPEN Statements ACLOSE)?
 Prefix <- (AND / NOT)? Suffix
-Suffix <- Primary (QUESTION / STAR / PLUS)?
-NamedPrimary <- Primary (':' Identifier)?
+Suffix <- Primary (QUESTION / STAR / PLUS)? (':' Identifier)?
 Primary <- Identifier !LEFTARROW
 / OPEN Expression CLOSE
 / Literal / Class / DOT
@@ -15,7 +14,7 @@ Primary <- Identifier !LEFTARROW
 Identifier <- IdentStart IdentCont* Spacing
 IdentStart <- [a-zA-Z_]
 IdentCont <- IdentStart / [0-9]
-Literal <- ['] (!['] Char)* ['] Spacing
+Literal <- ['] (!['] Char)*:stringLit ['] Spacing -> [makeLiteral: stringLit]
 / ["] (!["] Char)* ["] Spacing
 Class <- '[' (!']' Range)* ']' Spacing
 Range <- Char '-' Char / Char
@@ -48,8 +47,10 @@ EndOfLine <- '\r\n'
 
 
 
-ObjcCOmeta : Ometa {
+SmalltalkOmeta : Ometa {
 
 Keyword <- IdentStart IdentCont* COLON
 KeywordMessage <- (Keyword Identifier)+
+Statements <- KeywordMessage
+
 }
