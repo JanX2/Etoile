@@ -281,7 +281,7 @@ PKParseExpression subclass: PKComposeExpression [
 ]
 
 PKComposeExpression subclass: PKNonTerminalExpression [
-	| name |
+	| name action |
 	initWithName: string exp: expression [
 		super init.
 		exp := expression.
@@ -302,6 +302,10 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 			] ifFalse: [match isSuccess ifTrue: [list pushPosition: match stopPosition]].
 		].
 		^match
+	]
+
+	addAction: anAction [
+		
 	]
 
 	setExpression: anExp [ exp := anExp ]
@@ -487,7 +491,7 @@ PKParseExpression subclass: PKRepetitionExpression [
 			currentMatch isSuccess
 		] whileTrue: [ match := match sequenceWith: currentMatch].
 		^(match isEmpty and: canBeEmpty not) 
-            ifTrue: [PKParseFail new initWithTail: list description: 'Unexpected token, expected ...']
+            ifTrue: [PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', e description ]
 			ifFalse: [match]
 	]
 
@@ -504,6 +508,7 @@ PKParseExpression subclass: PKNonTerminalLookup [
 	]
 
 	parseInput: list [
+		"ETTranscript show: 'Apply ', name, ' at: '; show: list position; cr."
 		^grammar apply: name
 	]
 
@@ -629,7 +634,7 @@ NSObject subclass: PKRules [
 		rules := NSMutableDictionary new.
 		^self
 	]
-	
+
 	at: rule [
 		^self lookup: rule ifFailed: [
 			| ruleExp |
@@ -638,6 +643,13 @@ NSObject subclass: PKRules [
 			ruleExp
 		]
 	]
+
+	addRule: name expression: exp invoke: sleector args: argList [
+		|rule|
+		rule := self addRule: name expression: exp.
+		rule addAction: 'Dummy for time being' 
+	]
+	
 
 	addRule: name expression: exp [
 		| rule |
@@ -648,15 +660,14 @@ NSObject subclass: PKRules [
 		] ifFalse: [
 			rule setExpression: exp
 		].
-		
+		^rule
 	]
 
 	lookup: rule ifFailed: aBlock [
 		| return |
 		return := rules objectForKey: rule.
 		return == nil ifTrue:[
-			return := parent.
-			return == nil
+			parent == nil
                 ifTrue: [ return := aBlock value ]
 				ifFalse: [	
 					return := parent lookup: rule ifFailed: aBlock
@@ -680,7 +691,7 @@ NSObject subclass: PKRules [
 	]
 		
 	subgrammar: string [
-		^self class alloc initWithParent: self
+		^self class alloc initWithParent: self name: string
 	]
 ]
 
@@ -699,20 +710,19 @@ NSArray extend [
 	]
 ]
 
-NSObject subclass: PKParserBase [
-	| input +rulesRepo rules |
+NSObject subclass: PKParser [
+	| input +rulesRepo rules actionObject |
 
 	+derivate: parent subgrammar: name [
 		| rule newRule |
-		rule := self getGrammar: parent.
-		newRule := rule subgrammar: name.
+		newRule := parent subgrammar: name.
 		rulesRepo setValue: newRule forKey: name.
 		^newRule
 	]
 
 	+getGrammar: name [
 		| rule |
-		rule := rulesRepo objectForKey: name
+		rule := rulesRepo objectForKey: name.
 		rule == nil ifTrue: [
 			^NSException raise: 'ParserKit' format: 'Can not found grammar ''', name, ''''
 		].
@@ -736,6 +746,10 @@ NSObject subclass: PKParserBase [
 		^self
 	]
 
+	setActionObject: obj [
+		actionObject := actionObject
+	]
+
 	subgrammar: name [
 		rules := self class derivate: rules subgrammar: name.
 	]
@@ -744,7 +758,10 @@ NSObject subclass: PKParserBase [
 		^PKNonTerminalLookup alloc initWithGrammar: self name: rule
 	]
 
-	addRule: name expression: exp [
+	addRule: name expression: exp invoke: selector args: argList [
+	]
+
+	addRule: name expression: exp  [
 		rules addRule: name expression: exp
 	]
 
@@ -767,6 +784,12 @@ NSObject subclass: PKParserBase [
    
 ]
 
+NSObject subclass: PegAction [
+	makeLit: literal [
+		^literal asExp
+	]
+]
+
 NSObject subclass: SmalltalkTool [
 	
 	run [
@@ -780,7 +803,7 @@ NSObject subclass: SmalltalkTool [
 		parser := ('c' asExp repeat) seq: parser seq: PKEmptyExpression uniqueInstance.
 
 		alphaNumeric  := PKAlphanumericExpression new repeat.
-		oMeta := PKParserBase alloc initWithNewGrammar: 'Test'.
+		oMeta := PKParser alloc initWithNewGrammar: 'Test'.
 		oMeta addRule: 'alphaNum'  expression: alphaNumeric.
 		ETTranscript show: 'This is a test\n'.
 		ETTranscript show: true; cr.
@@ -813,23 +836,43 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (oMeta match: 'One <- .' rule: 'Grammar').
 		ETTranscript show: (oMeta match: 'EndOfLine <- ''\\r\\n''' rule: 'Grammar').
 		ETTranscript show: (oMeta match: 'Ometa { EndOfLine <- ''\\r\\n'' }' rule: 'Ometa').
+		oMeta := self smalltalkPegGrammar: oMeta.
 
 		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
 		ETTranscript show: (oMeta match: contentString  rule: 'OmetaList').
+
+		self testSubgrammar.
 	]
 
-	objcPegGrammar: parent [
+	testSubgrammar [
+		|grammar sub|
+		grammar := PKParser alloc initWithNewGrammar: 'PEG'.
+		grammar addRule: 'Ab' expression: ('a' asExp or: 'b' asExp).
+		ETTranscript show: (grammar match: 'b'  rule: 'Ab').
+
+		sub := grammar subgrammar: 'PEG2'.
+		sub addRule: 'Ab' expression: ('c' asExp or: 'd' asExp).
+		ETTranscript show: (sub match: 'b'  rule: 'Ab').
+		ETTranscript show: (sub match: 'c'  rule: 'Ab').
+	]
+
+	smalltalkPegGrammar: parent [
 		| ocParser |
-		ocParser := parent subgrammar: 'ObjcOmeta'.
+		ocParser := parent subgrammar: 'SmalltalkOmeta'.
+		ocParser addRule: 'Keyword' expression: ((ocParser at: 'IdentStart') seq: (ocParser at: 'IdentCont') repeat seq: (ocParser at: 'COLON')).
+		ocParser addRule: 'KeywordMessage' expression: ((ocParser at: 'Keyword') seq: (ocParser at: 'Identifier')) repeatOneLeast.
+		ocParser addRule: 'Statements' expression: (ocParser at: 'KeywordMessage').
+		^ocParser
 	]
 
 	pegGrammar [
 		| oMeta  |
-		oMeta := PKParserBase alloc initWithNewGrammar: 'PEG'.
+		oMeta := PKParser alloc initWithNewGrammar: 'PEG'.
 		oMeta addRule: 'EndOfLine' expression: ('\r\n' asExp or: '\n' asExp).
 		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: (oMeta at: 'EndOfLine')).
-		oMeta addRule: 'Comment' expression: ('#' asExp seq: ((oMeta at: 'EndOfLine') not seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
+		oMeta addRule: 'Comment' expression: ('#' asExp seq: ((oMeta at: 'EndOfLine') not 
+            seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
 		oMeta addRule: 'Spacing' expression: ((oMeta at: 'Space') or: (oMeta at: 'Comment')) repeat.
 		oMeta addRule: 'DOT' expression: ('.' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'COLON' expression: (':' asExp seq: (oMeta at: 'Spacing')).
@@ -846,7 +889,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'SLASH' expression: ( '/' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'AND' expression: ( '&' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'LEFTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
-		oMeta addRule: 'RIGHTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'RIGHTARROW' expression: ( '->' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'Char' expression: 
 			(('\' asExp seq: {'n' . 'r' . 't' . ''''. '"' . '[' . ']'. '\'} joinAll)
 				or: ('\' asExp seq: (PKRangeExpression alloc initFrom: '0' to: '2') 
@@ -870,8 +913,9 @@ NSObject subclass: SmalltalkTool [
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
 			or: (oMeta at: 'DOT')).
-		oMeta addRule: 'NamedPrimary' expression: ((oMeta at: 'Primary') seq: (':' asExp seq: (oMeta at: 'Identifier')) maybe).
-		oMeta addRule: 'Suffix' expression: ((oMeta at: 'NamedPrimary') seq: ((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe).
+		oMeta addRule: 'Suffix' expression: ((oMeta at: 'Primary') 
+            seq: ((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe 
+			seq: (':' asExp seq: (oMeta at: 'Identifier')) maybe).
 		oMeta addRule: 'Prefix' expression: (((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe seq: (oMeta at: 'Suffix')).
 		oMeta addRule: 'Sequence' expression: ((oMeta at: 'Prefix') repeat 
            seq: ((oMeta at: 'RIGHTARROW') 
