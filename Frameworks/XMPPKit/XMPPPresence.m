@@ -145,9 +145,7 @@ int PRESENCE_ICONS[] = {
 		Class handler = [factory handlerForTag:aName inNamespace:xmlns];
 		NSString * elementKey = [factory valueForTag:aName inNamespace:xmlns];
 		[[[handler alloc] initWithXMLParser:parser
-									 parent:self
-										key:elementKey] startElement:aName
-														  attributes:attributes];
+						key:elementKey] startElement:aName														         attributes:attributes];
 		
 	}
 }
@@ -181,11 +179,9 @@ int PRESENCE_ICONS[] = {
 
 
 - (id) initWithXMLParser: (ETXMLParser*)aParser
-                  parent: (id <ETXMLParserDelegate>)aParent
                      key: (id) aKey
 {
 	self = [super initWithXMLParser: aParser
-	                         parent: aParent
 	                            key: aKey];
 	if (nil == self)
 	{

@@ -58,11 +58,9 @@ NSDictionary * MESSAGE_TYPES;
 }
 
 - (id) initWithXMLParser: (ETXMLParser*)aParser
-                  parent: (id <ETXMLParserDelegate>) aParent
                      key: (id) aKey
 {
 	self = [super initWithXMLParser: aParser
-	                         parent: aParent
 	                            key: aKey];
 	if (nil == self)
 	{
@@ -201,7 +199,6 @@ NSDictionary * MESSAGE_TYPES;
 {
 	if([aName isEqualToString:@"message"])
 	{
-		depth++;
 		correspondent = [[JID jidWithString:[attributes objectForKey:@"from"]] retain];
 		direction = in;
 		type = [[MESSAGE_TYPES objectForKey:[attributes objectForKey:@"type"]] intValue];
@@ -213,32 +210,29 @@ NSDictionary * MESSAGE_TYPES;
 		Class handler = [factory handlerForTag:aName inNamespace:xmlns];
 		NSString * elementKey = [factory valueForTag:aName inNamespace:xmlns];
 		[[[handler alloc] initWithXMLParser:parser
-									 parent:self
-										key:elementKey] startElement:aName
-														  attributes:attributes];
+						key:elementKey] startElement:aName
+					 attributes:attributes];
 	}
 }
 - (void)endElement:(NSString *)aName
 {
 	if([aName isEqualToString:@"message"])
 	{
-		[parser setContentHandler:parent];
-		[(id)parent addChild:self forKey:key];
+		[[parser parentHandler] addChild:self forKey:key];
+		[parser popContentHandler];
 	}
 	else
 	{
 		NSLog(@"End of %@ tag received while parsing a message.  This probably indicates a bug.", aName);
 	}
+
+
 }
 
 
 - (void) setParser:(id) XMLParser
 {
 	parser = XMLParser;
-}
-- (void) setParent:(id) newParent
-{
-	parent = newParent;
 }
 
 - (void) addbody:(NSString*)aBody

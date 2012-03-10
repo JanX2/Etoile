@@ -12,11 +12,9 @@
 
 @implementation XMPPQueryRosterHandler
 - (id) initWithXMLParser: (ETXMLParser*)aParser
-                  parent: (id <ETXMLParserDelegate>) aParent
                      key: (id) aKey
 {
 	self = [super initWithXMLParser: aParser
-	                         parent: aParent
 	                            key: aKey];
 	if (nil == self)
 	{
@@ -33,9 +31,7 @@
 {
 	if ([aName isEqualToString:@"item"])
 	{
-		[[[XMPPIdentity alloc] initWithXMLParser:parser
-											parent:self
-											   key:@"identity"] startElement:aName
+		[[[XMPPIdentity alloc] initWithXMLParser:parser									     key:@"identity"] startElement:aName
 																  attributes:attributes];
 	}
 	else if ([aName isEqualToString:@"query"])

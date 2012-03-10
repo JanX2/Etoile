@@ -14,6 +14,7 @@
 #import <EtoileFoundation/NSData+Hash.h>
 #import <EtoileFoundation/Macros.h>
 #import <EtoileXML/ETXMLWriter.h>
+#import <EtoileXML/ETXMLParser.h>
 
 //These are needed for interface definitions only.
 #import <EtoileSerialize/ETObjectStore.h>
@@ -50,7 +51,6 @@ static NSDictionary *CHILD_CLASSES;
          inConversation: (XMPPConversation*)aConversation
 {
 	self = [super initWithXMLParser: aParser
-	                         parent: aParent
 	                            key: aKey];
 	if (nil == self)
 	{
@@ -231,7 +231,7 @@ static NSDictionary *CHILD_CLASSES;
 		// format.
 		deserializer = [[proxy deserializerWithBackend: @"ETDeserializerBackendXML" 
 		                             forObjectWithUUID: uuid
-		                                          from: [[(XMPPMessage*)parent correspondent] jidString]] retain];
+		                                          from: [[(XMPPMessage*)[parser parentHandler] correspondent] jidString]] retain];
 		id<ETDeserializerBackend> backend = [(ETDeserializer*)deserializer backend];
 		ETXMLNullHandler *handler = nil;	
 		if (nil == backend)
@@ -239,7 +239,6 @@ static NSDictionary *CHILD_CLASSES;
 			//Ignore if the deserializer backend is not available:
 			NSLog(@"No backend, not deserializing");
 			handler = [[ETXMLNullHandler alloc] initWithXMLParser: parser
-			                                               parent: self
 			                                                  key: _name];
 		}
 		else
@@ -255,11 +254,10 @@ static NSDictionary *CHILD_CLASSES;
 	}
 	else 
 	{
-		ETXMLNullHandler *handler = [(ETXMLNullHandler*)[[CHILD_CLASSES objectForKey: _name] alloc] initWithXMLParser: parser parent: self key: _name];
+		ETXMLNullHandler *handler = [(ETXMLNullHandler*)[[CHILD_CLASSES objectForKey: _name] alloc] initWithXMLParser: parser key: _name];
 		if (nil == handler)
 		{
 			handler = [[ETXMLNullHandler alloc] initWithXMLParser: parser
-			                                               parent: self
 			                                                  key: _name];
 		}
 		[handler startElement: _name attributes: _attributes];
@@ -287,7 +285,7 @@ static NSDictionary *CHILD_CLASSES;
 			}
 			deserializer = [[proxy deserializerWithBackend: backendName
 			                             forObjectWithUUID: uuid
-			                                          from: [[(XMPPMessage*)parent correspondent] jidString]] retain];
+			                                          from: [[(XMPPMessage*)[parser parentHandler] correspondent] jidString]] retain];
 		}
 		// The XML deserializer does not strictly need setting branch and
 		// version but they are needed at least for the binary backend.
@@ -304,7 +302,7 @@ static NSDictionary *CHILD_CLASSES;
 		id theObject = [deserializer restoreObjectGraph];
 		[(id<ETDeserializerVendor>)proxy obtainedObject: theObject
 		                                       withUUID: uuid
-		                                           from: [[(XMPPMessage*)parent correspondent] jidString]];
+		                                           from: [[(XMPPMessage*)[parser parentHandler] correspondent] jidString]];
 
 		// FIXME: Setting the object as the value of this node makes it appear
 		// in the unknownAttributes dictionary of the message. The object will
@@ -390,7 +388,7 @@ DEALLOC(
 {
 	if (![_name isEqualToString: @"version"])
 	{
-		ETXMLNullHandler *handler = [[ETXMLNullHandler alloc] initWithXMLParser: parser parent: self key: _name];
+		ETXMLNullHandler *handler = [[ETXMLNullHandler alloc] initWithXMLParser: parser key: _name];
 		[handler startElement: _name attributes: _attributes];
 		return;
 	}
@@ -417,7 +415,7 @@ DEALLOC(
 {
 	if (![_name isEqualToString: @"branch"])
 	{
-		ETXMLNullHandler *handler = [[ETXMLNullHandler alloc] initWithXMLParser: parser parent: self key: _name];
+		ETXMLNullHandler *handler = [[ETXMLNullHandler alloc] initWithXMLParser: parser key: _name];
 		[handler startElement: _name attributes: _attributes];
 		return;
 	}
@@ -444,13 +442,13 @@ DEALLOC(
 {
 	if (![_name isEqualToString: @"serialdata"])
 	{
-		ETXMLNullHandler *handler = [[ETXMLNullHandler alloc] initWithXMLParser: parser parent: self key: _name];
+		ETXMLNullHandler *handler = [[ETXMLNullHandler alloc] initWithXMLParser: parser key: _name];
 		[handler startElement: _name attributes: _attributes];
 		return;
 	}
-	if ([parent respondsToSelector:@selector(addChild:forKey:)])
+	if ([[parser parentHandler] respondsToSelector:@selector(addChild:forKey:)]) //occhio qui a questa modifica
 	{
-		[(id)parent addChild: [_attributes objectForKey: @"backend"] 
+		[[parser parentHandler] addChild: [_attributes objectForKey: @"backend"] 
 		              forKey: @"backendName"];
 	}
 	depth++;

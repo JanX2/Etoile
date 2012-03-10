@@ -12,11 +12,9 @@
 
 @implementation XMPPStreamFeatures
 - (id) initWithXMLParser: (ETXMLParser*)aParser
-                  parent: (id <ETXMLParserDelegate>)aParent
                      key: (id)aKey
 {
 	self = [super initWithXMLParser: aParser
-	                         parent: aParent
 	                            key: aKey];
 	if (nil == self)
 	{
@@ -24,6 +22,7 @@
 	}
 	features = [[NSMutableDictionary alloc] init];
 	[features setObject:[NSMutableArray array] forKey:@"mechanisms"];
+	NSLog(@"Key is %@", aKey);
 	[value autorelease];
 	value = features;
 	return self;
@@ -38,17 +37,17 @@
 	else if([aName isEqualToString:@"mechanism"])
 	{
 		[[[ETXMLString alloc] initWithXMLParser:parser
-										 parent:self
-											key:@"mechanism"] startElement:aName
-																attributes:attributes];
+						    key:@"mechanism"] startElement:aName
+															     attributes:attributes];
 	}
 	else
 	{
 		[features setObject:[attributes objectForKey:@"xmlns"] forKey:aName];
 		[[[ETXMLNullHandler alloc] initWithXMLParser:parser
-											  parent:self
-												 key:nil] startElement:aName
-															attributes:attributes];
+						         key:nil] startElement:aName
+						  attributes:attributes];
+		
+		
 	}
 }
 

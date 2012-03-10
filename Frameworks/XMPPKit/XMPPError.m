@@ -30,16 +30,14 @@
 	else if([aName isEqualToString:@"text"])
 	{
 		[[[ETXMLString alloc] initWithXMLParser:parser
-										 parent:self
-											key:@"text"] startElement:aName
-														   attributes:attributes];
+					            key:@"text"] startElement:aName
+					     attributes:attributes];
 	}
 	else
 	{
 		[[[ETXMLNullHandler alloc] initWithXMLParser:parser
-											  parent:self
-												 key:nil] startElement:aName
-																attributes:attributes];
+						         key:nil] startElement:aName
+						  attributes:attributes];
 	}
 }
 - (void) addtext:(NSString*)aString

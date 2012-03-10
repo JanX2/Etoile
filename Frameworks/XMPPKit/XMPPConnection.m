@@ -145,9 +145,9 @@ static NSDictionary * STANZA_KEYS;
 	
 	SET_STATE(Connecting);
 	//Initialise the parser
-	[parser release];
+	[parser autorelease];
 	parser = [[ETXMLParser alloc] init];
-	[parser setContentHandler:self];
+	[parser pushContentHandler:self];
 	[self resetKeepAlive];
 
 	[socket setDelegate: self];
@@ -220,7 +220,7 @@ static NSDictionary * STANZA_KEYS;
 	else
 	{
 		NSString * childKey = [STANZA_KEYS objectForKey:aName];
-		id <ETXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser parent:self key:childKey];
+		id <ETXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser key:childKey];
 		[stanzaDelegate startElement:aName
 						  attributes:_attributes];
 	}
@@ -526,7 +526,7 @@ static NSDictionary * STANZA_KEYS;
 		  attributes:(NSDictionary *)_attributes
 {
 	NSString * childKey = [STANZA_KEYS objectForKey:aName];
-	id <ETXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser parent:self key:childKey];
+	id <ETXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser key:childKey];
 	[stanzaDelegate startElement:aName
 					  attributes:_attributes];
 }

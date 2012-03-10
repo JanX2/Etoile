@@ -24,11 +24,9 @@
 }
 
 - (id) initWithXMLParser: (ETXMLParser*) aParser
-                  parent: (id <ETXMLParserDelegate>) aParent
                      key: (id) aKey
 {
 	self = [super initWithXMLParser: aParser
-	                         parent: aParent
 	                            key: aKey];
 	if (nil == self)
 	{
@@ -63,16 +61,14 @@
 	else if([aName isEqualToString:@"group"])
 	{
 		[[[ETXMLString alloc] initWithXMLParser:parser
-										parent:self
-										   key:@"group"] startElement:aName
+	   					    key:@"group"] startElement:aName
 														   attributes:attributes];
 	}
 	else
 	{
 		[[[ETXMLNullHandler alloc] initWithXMLParser:parser
-											  parent:self
-												 key:nil] startElement:aName
-															attributes:attributes];
+						         key:nil] startElement:aName
+															          attributes:attributes];
 	}
 }
 

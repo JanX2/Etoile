@@ -15,11 +15,9 @@
 @end
 @implementation XMPPvCardUpdate
 - (id) initWithXMLParser: (ETXMLParser*)aParser
-                  parent: (id <ETXMLParserDelegate>) aParent
                      key: (id) aKey
 {
 	self = [super initWithXMLParser: aParser
-	                         parent: aParent
 	                            key: aKey];
 	if (nil == self)
 	{
@@ -36,9 +34,8 @@
 	if([aName isEqualToString:@"photo"])
 	{
 		[[[ETXMLString alloc] initWithXMLParser:parser
-										 parent:self
-											key:aName] startElement:aName
-		 attributes:attributes];
+				             	key:aName] startElement:aName
+		                                             attributes:attributes];
 	}
 	else
 	{
@@ -53,11 +50,9 @@
 
 @implementation XMPPvCard
 - (id) initWithXMLParser: (ETXMLParser*)aParser
-                  parent: (id <ETXMLParserDelegate>) aParent
                      key: (id) aKey
 {
 	self = [super initWithXMLParser: aParser
-	                         parent: aParent
 	                            key: aKey];
 	if (nil == self)
 	{
@@ -80,9 +75,8 @@
 	{
 		NSLog(@"Parsing vCard Element: %@", aName);
 		[[[ETXMLString alloc] initWithXMLParser:parser
-										 parent:self
-											key:aName] startElement:aName
-														attributes:attributes];
+						    key:aName] startElement:aName
+							         attributes:attributes];
 	}
 }
 

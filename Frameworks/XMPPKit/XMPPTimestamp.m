@@ -21,7 +21,6 @@
                      key: (id) aKey
 {
 	self = [super initWithXMLParser: aParser
-	                         parent: aParent
 	                            key: aKey];
 	if (nil == self)
 	{
@@ -66,9 +65,8 @@
 	else
 	{
 		[[[ETXMLNullHandler alloc] initWithXMLParser:parser
-											  parent:parent
-												 key:nil] startElement:aName
-															attributes:attributes];
+						         key:nil] startElement:aName
+					          attributes:attributes];
 	}
 }
 
