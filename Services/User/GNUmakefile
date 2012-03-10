@@ -16,7 +16,7 @@ export hardware ?= yes
 export lookandbehavior ?= yes
 export melodie ?= no
 export microblog ?= yes
-export stepchat ?= no
+export stepchat ?= yes
 export termx ?= no
 export typewriter ?= yes
 export vindaloo ?= yes
@@ -26,47 +26,47 @@ export vindaloo ?= yes
 #
 
 ifeq ($(addressmanager), yes)
-	SUBPROJECTS += AddressManager
+        SUBPROJECTS += AddressManager
 endif
 
 ifeq ($(dictionaryreader), yes)
-	SUBPROJECTS += DictionaryReader
+        SUBPROJECTS += DictionaryReader
 endif
 
 ifeq ($(fontmanager), yes)
-	SUBPROJECTS += FontManager
+        SUBPROJECTS += FontManager
 endif
 
 ifeq ($(hardware), yes)
-	SUBPROJECTS += Hardware
+        SUBPROJECTS += Hardware
 endif
 
 ifeq ($(lookandbehavior), yes)
-	SUBPROJECTS += LookAndBehavior
+        SUBPROJECTS += LookAndBehavior
 endif
 
 ifeq ($(melodie), yes)
-	SUBPROJECTS += Melodie
+        SUBPROJECTS += Melodie
 endif
 
 ifeq ($(microblog), yes)
-	SUBPROJECTS += MicroblogAtom Microblogger
+        SUBPROJECTS += MicroblogAtom Microblogger
 endif
 
 ifeq ($(stepchat), yes)
-	SUBPROJECTS += StepChat
+        SUBPROJECTS += StepChat
 endif
 
 ifeq ($(termx), yes)
-	SUBPROJECTS += TermX
+        SUBPROJECTS += TermX
 endif
 
 ifeq ($(typewriter), yes)
-	SUBPROJECTS += Typewriter
+        SUBPROJECTS += Typewriter
 endif
 
 ifeq ($(vindaloo), yes)
-	SUBPROJECTS += Vindaloo
+        SUBPROJECTS += Vindaloo
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
