@@ -49,12 +49,54 @@ Symbole extend [
 ]
 
 NSObject extend [
+	canReduce [^false]
 	matchSize [ ^1 ]
 ]
 
 
+NSObject subclass: NSDelayInvocation [
+	| target selector args |
+	
+	+invocationWithTarget: aTarget selector: aSelector arguments: someArgs [
+		target := aTarget.
+		selector := aSelector.
+		args := someArgs
+	]
+	
+	canReduce [^true]
+
+	reduce [
+		| reduceArgs |
+		reduceArgs := args map: [:each | each canReduce 
+                                       ifTrue: [each reduce]
+									   ifFalse: [each]].
+		^(NSInvocation invocationWithTarget: target selector: selector arguments: reduceArgs) invoke
+		
+	]
+]
+
+NSObject subclass: PKParseAction [
+	| selector argumentsName delegate |
+	
+	initWithSelector: sel argumentsName: args delegate: anObject [
+		selector := sel.
+		argumentsName := args.
+		delegate := anObject
+	]
+
+	invocationInEnvironment: env [
+		| argsBuild |
+		argsBuild := NSMutableArray new.
+		argumentsName do: [:each |
+			argsBuild addObject: (env objectForKey: each).
+		].
+		^NSDelayInvocation invocationWithTarget: delegate selector: selector arguments: argsBuild
+	]
+]
+
+
 NSObject subclass: PKParseMatch [
-	| input range |
+	| input range action |
 
 	+emptyMatch: input [
         ^self new initWithInput: input length: 0; 
@@ -87,9 +129,12 @@ NSObject subclass: PKParseMatch [
 	]
 
 	bind: name [
-		input bind: name range: range
+		action == nil 
+            ifTrue: [input bind: name object: range]
+			ifFalse: [input bind: name object: action]
 	]
-
+	
+	attachAction: anAction ["action := anAction"]
 	match  [ ^(input fromRange: range)]
 	isEmpty [ ^range length = 0]
 	isSuccess [ ^true ]
@@ -300,12 +345,13 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 				match := exp parseInput: list.
 				list  addMatch: match at: position named: name.
 			] ifFalse: [match isSuccess ifTrue: [list pushPosition: match stopPosition]].
+			match isSucess ifTrue: [match attachAction: action invocationInEnvironment: list environment]
 		].
 		^match
 	]
 
 	addAction: anAction [
-		
+	"	action := anAction"
 	]
 
 	setExpression: anExp [ exp := anExp ]
@@ -546,8 +592,8 @@ NSObject subclass: PKInputStream [
 		currentEnvironment := previousEnvironment
 	]
 
-	bind: name range: aRange [
-		currentEnvironment setValue: aRange forKey: name
+	bind: name object: anObject [
+		currentEnvironment setValue: anObject forKey: name
 	]
 
 	environment [^currentEnvironment ]
@@ -644,10 +690,10 @@ NSObject subclass: PKRules [
 		]
 	]
 
-	addRule: name expression: exp invoke: sleector args: argList [
+	addRule: name expression: exp action: anAction [
 		|rule|
 		rule := self addRule: name expression: exp.
-		rule addAction: 'Dummy for time being' 
+		rule addAction: anAction
 	]
 	
 
@@ -711,7 +757,7 @@ NSArray extend [
 ]
 
 NSObject subclass: PKParser [
-	| input +rulesRepo rules actionObject |
+	| input +rulesRepo rules actionObject delegateee |
 
 	+derivate: parent subgrammar: name [
 		| rule newRule |
@@ -734,6 +780,10 @@ NSObject subclass: PKParser [
 		rule := PKRules alloc initWithName: name.
 		rulesRepo setValue: rule forKey: name.
 		^rule	
+	]
+
+	setDelegate: anObject [
+		delegateee := anObject
 	]
 
     initWithGrammar: grammarName [
@@ -759,6 +809,9 @@ NSObject subclass: PKParser [
 	]
 
 	addRule: name expression: exp invoke: selector args: argList [
+		| action |
+		action := PKParseAction alloc initWithSelector: selector argumentsName: argList delegate: delegateee.
+		rules addRule: name expression: exp action: action
 	]
 
 	addRule: name expression: exp  [
@@ -782,6 +835,12 @@ NSObject subclass: PKParser [
 		^self apply: rule
 	]
    
+]
+
+NSObject subclass: PKPegAstGen [
+	makeLit: literal [
+		
+	]
 ]
 
 NSObject subclass: PegAction [
