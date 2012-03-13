@@ -55,33 +55,36 @@ NSObject extend [
 
 
 NSObject subclass: NSDelayInvocation [
-	| target selector args |
+	| selector args |
 	
-	+invocationWithTarget: aTarget selector: aSelector arguments: someArgs [
-		target := aTarget.
+	+invocationWithSelector: aSelector arguments: someArgs [
+		^self alloc initWithSelector: aSelector arguments: someArgs
+	]
+	initWithSelector: aSelector arguments: someArgs [
 		selector := aSelector.
 		args := someArgs
 	]
-	
 	canReduce [^true]
-
-	reduce [
+	reduceOn: target [
 		| reduceArgs |
 		reduceArgs := args map: [:each | each canReduce 
-                                       ifTrue: [each reduce]
+                                       ifTrue: [each reduceOn: target]
 									   ifFalse: [each]].
 		^(NSInvocation invocationWithTarget: target selector: selector arguments: reduceArgs) invoke
 		
 	]
+
+	description [
+		^ selector description, ' with args: ', args description
+	]
 ]
 
 NSObject subclass: PKParseAction [
-	| selector argumentsName delegate |
+	| selector argumentsName |
 	
-	initWithSelector: sel argumentsName: args delegate: anObject [
+	initWithSelector: sel argumentsName: args [
 		selector := sel.
 		argumentsName := args.
-		delegate := anObject
 	]
 
 	invocationInEnvironment: env [
@@ -90,13 +93,13 @@ NSObject subclass: PKParseAction [
 		argumentsName do: [:each |
 			argsBuild addObject: (env objectForKey: each).
 		].
-		^NSDelayInvocation invocationWithTarget: delegate selector: selector arguments: argsBuild
+		^NSDelayInvocation invocationWithSelector: selector arguments: argsBuild
 	]
 ]
 
 
 NSObject subclass: PKParseMatch [
-	| input range action |
+	| input range action delegate |
 
 	+emptyMatch: input [
         ^self new initWithInput: input length: 0; 
@@ -134,20 +137,22 @@ NSObject subclass: PKParseMatch [
 			ifFalse: [input bind: name object: action]
 	]
 	
-	attachAction: anAction ["action := anAction"]
+	setDelegate: anObject  [ delegate := anObject ]
+	attachAction: anAction [ action := anAction ]
 	match  [ ^(input fromRange: range)]
 	isEmpty [ ^range length = 0]
 	isSuccess [ ^true ]
 	isFailure [ ^false ]
 	range [^range]
+	reduce [^action == nil ifTrue: [nil] ifFalse: [action reduceOn: delegate]]
     stopPosition [^range length + range location]
 	description [
-		^'PKMatchSuccess  ( Recognized: ''', (input fromRange: range), ''' location: ', range description , ', binds: ', input environment description,')\n' 
+		^'PKMatchSuccess  ( Recognized: ''', (input fromRange: range), ''' location: ', range description,' aciton: ', action description, ')\n' 
 	]
 ]
 
 NSObject subclass: PKParseFail [
-	| input failedPosition describ |
+	| input failedPosition describ delegate |
 
 	initWithInput: list description: string [
 		super init.
@@ -156,7 +161,7 @@ NSObject subclass: PKParseFail [
 		failedPosition := input position.
 		^self
 	]
-	
+	setDelegate: anObject  [ delegate := anObject]
 	stopPosition [^failedPosition]
 	isFailure [ ^true ]
 	isSuccess [ ^false ]
@@ -203,6 +208,12 @@ NSObject subclass: PKParseExpression [
 	
 	seq: exp [
 		^PKSequenceExpression alloc initWithFirst: self second: exp
+	]
+
+	actionSelector: aSel arguments: args  [
+		|action|
+		action := PKParseAction alloc initWithSelector: aSel argumentsName: args.
+		^PKActionExpression alloc initWithExp: self action: action
 	]
 
 	seq: exp1 seq: exp2 [
@@ -325,8 +336,28 @@ PKParseExpression subclass: PKComposeExpression [
 	expression [^exp]
 ]
 
+PKComposeExpression subclass: PKActionExpression [
+	| action |
+	
+	initWithExp: aExp action: anAction [
+		super initWithExp: aExp.
+		action := anAction
+	]
+
+	parseInput: list [
+		| match |
+		
+		match := exp parseInput: list.
+		match isSuccess  ifTrue: [
+			match attachAction: (action invocationInEnvironment: list environment)
+		].
+		
+		^match
+	]
+]
+
 PKComposeExpression subclass: PKNonTerminalExpression [
-	| name action |
+	| name  |
 	initWithName: string exp: expression [
 		super init.
 		exp := expression.
@@ -345,13 +376,9 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 				match := exp parseInput: list.
 				list  addMatch: match at: position named: name.
 			] ifFalse: [match isSuccess ifTrue: [list pushPosition: match stopPosition]].
-			match isSucess ifTrue: [match attachAction: action invocationInEnvironment: list environment]
+			
 		].
 		^match
-	]
-
-	addAction: anAction [
-	"	action := anAction"
 	]
 
 	setExpression: anExp [ exp := anExp ]
@@ -690,13 +717,6 @@ NSObject subclass: PKRules [
 		]
 	]
 
-	addRule: name expression: exp action: anAction [
-		|rule|
-		rule := self addRule: name expression: exp.
-		rule addAction: anAction
-	]
-	
-
 	addRule: name expression: exp [
 		| rule |
 		rule := rules objectForKey: name.
@@ -757,7 +777,7 @@ NSArray extend [
 ]
 
 NSObject subclass: PKParser [
-	| input +rulesRepo rules actionObject delegateee |
+	| input +rulesRepo rules actionObject delegate |
 
 	+derivate: parent subgrammar: name [
 		| rule newRule |
@@ -783,7 +803,7 @@ NSObject subclass: PKParser [
 	]
 
 	setDelegate: anObject [
-		delegateee := anObject
+		delegate := anObject
 	]
 
     initWithGrammar: grammarName [
@@ -808,12 +828,6 @@ NSObject subclass: PKParser [
 		^PKNonTerminalLookup alloc initWithGrammar: self name: rule
 	]
 
-	addRule: name expression: exp invoke: selector args: argList [
-		| action |
-		action := PKParseAction alloc initWithSelector: selector argumentsName: argList delegate: delegateee.
-		rules addRule: name expression: exp action: action
-	]
-
 	addRule: name expression: exp  [
 		rules addRule: name expression: exp
 	]
@@ -831,28 +845,26 @@ NSObject subclass: PKParser [
 	]
 	
 	match: inputStream rule: rule [
+		|match|
 		input := PKInputStream alloc initWithStream: inputStream.
-		^self apply: rule
+		match := self apply: rule.
+		match setDelegate: delegate.
+		^match
 	]
    
 ]
 
 NSObject subclass: PKPegAstGen [
-	makeLit: literal [
-		
-	]
-]
-
-NSObject subclass: PegAction [
-	makeLit: literal [
+	makeLiteral: literal [
 		^literal asExp
 	]
 ]
 
+
 NSObject subclass: SmalltalkTool [
 	
 	run [
-		| dict parser abStar abStar b c tExp alphaNumeric oMeta content contentString |
+		| dict parser abStar abStar b c tExp alphaNumeric oMeta content contentString match |
 		abStar := PKRepetitionExpression alloc
 					 initWithExpression: 'ab' asExp
 					 canBeEmpty: false; yourself.
@@ -896,10 +908,14 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (oMeta match: 'EndOfLine <- ''\\r\\n''' rule: 'Grammar').
 		ETTranscript show: (oMeta match: 'Ometa { EndOfLine <- ''\\r\\n'' }' rule: 'Ometa').
 		oMeta := self smalltalkPegGrammar: oMeta.
+		oMeta setDelegate: (PKPegAstGen new).
 
 		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
 		ETTranscript show: (oMeta match: contentString  rule: 'OmetaList').
+		match := oMeta match: '''test''' rule: 'Literal'.
+		ETTranscript show: match.
+		ETTranscript show: match reduce; cr.
 
 		self testSubgrammar.
 	]
@@ -960,7 +976,8 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'Range' expression: (((oMeta at: 'Char') seq: '-' asExp seq: (oMeta at: 'Char')) or: (oMeta at: 'Char')).
 		oMeta addRule: 'Class' expression: ('[' asExp seq: (']' asExp not seq: (oMeta at: 'Range')) repeat seq: ']' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'Literal' expression: (
-			('''' asExp seq: ('''' asExp not seq: (oMeta at: 'Char')) repeat seq: '''' asExp seq: (oMeta at: 'Spacing') ) 
+			(('''' asExp seq: (('''' asExp not seq: (oMeta at: 'Char')) repeat bind: 'literal') seq: '''' asExp seq: (oMeta at: 'Spacing') ) 
+				actionSelector: #makeLiteral: arguments: {'literal'})
 			or: ('"' asExp seq: ('"' asExp not seq: (oMeta at: 'Char')) repeat seq: '"' asExp seq: (oMeta at: 'Spacing') )).
 		oMeta addRule: 'IdentStart'  expression: ((PKRangeExpression alloc initFrom: 'a' to: 'z') 
 			or: (PKRangeExpression alloc initFrom: 'A' to: 'Z')
