@@ -21,10 +21,10 @@
  * defaults (GNUstep).
  */
 @interface XMPPAccount : NSObject {
-	NSString * name;
-	JID * myJID;
-	XMPPRoster * roster;
-	XMPPConnection * connection;
+        NSString * name;
+        JID * myJID;
+        XMPPRoster * roster;
+        XMPPConnection * connection;
 }
 /**
  * Sets the default JID (stored in address book)
@@ -38,6 +38,10 @@
  * Attempt to reconnect after disconnection.
  */
 - (void) reconnect;
+/**
+ * Initialize an Account with a given Name
+ */
+- (id) initWithName:(NSString*)aName;
 /**
  * Returns the JID associated with the account.
  */
