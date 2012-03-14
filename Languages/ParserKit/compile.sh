@@ -4,7 +4,7 @@
 for ST in $@ 
 do
 	echo Compiling $ST to LLVM bitcode...
-	edlc -c -f $ST -v LKLowerIfTrueTransform
+	edlc -c -f $ST 
 done
 
 # Link the bitcode together

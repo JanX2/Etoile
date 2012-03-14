@@ -1,0 +1,5 @@
+#include <Foundation/NSInvocation.h>
+
+@interface NSInvocation (pkextension)
+-(id)returnValueAsObject;
+@end

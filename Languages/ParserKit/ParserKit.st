@@ -66,11 +66,13 @@ NSObject subclass: NSDelayInvocation [
 	]
 	canReduce [^true]
 	reduceOn: target [
-		| reduceArgs |
+		| reduceArgs anInvoc |
 		reduceArgs := args map: [:each | each canReduce 
                                        ifTrue: [each reduceOn: target]
 									   ifFalse: [each]].
-		^(NSInvocation invocationWithTarget: target selector: selector arguments: reduceArgs) invoke
+		anInvoc := NSInvocation invocationWithTarget: target selector: selector arguments: reduceArgs.
+		anInvoc invoke.
+		^anInvoc returnValueAsObject
 		
 	]
 
@@ -133,7 +135,7 @@ NSObject subclass: PKParseMatch [
 
 	bind: name [
 		action == nil 
-            ifTrue: [input bind: name object: range]
+            ifTrue: [input bind: name object: (input fromRange: range)]
 			ifFalse: [input bind: name object: action]
 	]
 	
