@@ -53,6 +53,30 @@ NSObject extend [
 	matchSize [ ^1 ]
 ]
 
+NSObject subclass: NSDelayActionArray [
+	| anArray |
+
+	init [
+		super init.
+		anArray := NSMutableArray new.
+	]
+
+	addObject: anObject [
+		anArray addObject: anObject
+	]
+
+	addAction: anObject [
+		self addObject: anObject.
+		^self
+	]
+
+	canReduce [^true]
+	reduceOn: target [
+		^anArray map: [:each | each canReduce 
+                                       ifTrue: [each reduceOn: target]
+									   ifFalse: [each]]
+	]
+]
 
 NSObject subclass: NSDelayInvocation [
 	| selector args |
@@ -97,6 +121,14 @@ NSObject subclass: PKParseAction [
 		].
 		^NSDelayInvocation invocationWithSelector: selector arguments: argsBuild
 	]
+
+	addAction: anAction [
+		| newActions |
+		newAction := NSDelayActionArry new.
+		newAction addAction: self.
+		anAction == nil ifFalse: [newAction addAction: anAction].
+		^newAction
+	]
 ]
 
 
@@ -130,6 +162,8 @@ NSObject subclass: PKParseMatch [
 		(range location + range length) == match range location
 			ifFalse: [ NSException raise: 'ParserKit' format: 'Can not add the range, it is not contigus'].
 		newMatch := self class alloc copyInitWith: input range: (NSValue rangeWithLocation: range location length: (range length + match  range length)).
+		newMatch attachAction: action.
+		newMatch attachAction: match action.
 		^newMatch
 	]
 
@@ -140,7 +174,12 @@ NSObject subclass: PKParseMatch [
 	]
 	
 	setDelegate: anObject  [ delegate := anObject ]
-	attachAction: anAction [ action := anAction ]
+	attachAction: anAction [ 
+		action == nil 
+			ifTrue: [action := anAction]
+			ifFalse: [action := action addAction: anAction]
+	]
+	action [^action]
 	match  [ ^(input fromRange: range)]
 	isEmpty [ ^range length = 0]
 	isSuccess [ ^true ]
@@ -175,6 +214,8 @@ NSObject subclass: PKParseFail [
 
 
 NSObject subclass: PKParseExpression [
+	
+	asExp [^self]
 
 	bind: name [
 		^PKBindExpression alloc initWithExp: self name: name
@@ -776,6 +817,17 @@ NSArray extend [
 		].
 		^exp
 	]
+	sequenceAll [
+		| exp |
+		exp := nil.
+		self do: [ :value |
+			(exp == nil)
+                ifTrue: [
+					exp := value asExp]
+				ifFalse: [exp := exp seq: value asExp].
+		].
+		^exp
+	]
 ]
 
 NSObject subclass: PKParser [
@@ -860,6 +912,15 @@ NSObject subclass: PKPegAstGen [
 	makeLiteral: literal [
 		^literal asExp
 	]
+	makeRangeFrom: first to: second [
+		^PKRangeExpression alloc initFrom: first to: second.
+	]
+	makeToken: tok [
+		^PKTokenExpression alloc initWithPattern: tok
+	]
+	sequence: list [
+		
+	]
 ]
 
 
@@ -919,6 +980,10 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: match.
 		ETTranscript show: match reduce; cr.
 
+		match := oMeta match:( '[a-d] ') rule: 'Class'.
+		ETTranscript show: match.
+		ETTranscript show: match reduce; cr.
+
 		self testSubgrammar.
 	]
 
@@ -975,12 +1040,21 @@ NSObject subclass: SmalltalkTool [
 				or: ('\' asExp seq: (PKRangeExpression alloc initFrom: '0' to: '7') 
 							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') )
 			    or: ('\' asExp not seq: (PKDotExpression new)  )).
-		oMeta addRule: 'Range' expression: (((oMeta at: 'Char') seq: '-' asExp seq: (oMeta at: 'Char')) or: (oMeta at: 'Char')).
-		oMeta addRule: 'Class' expression: ('[' asExp seq: (']' asExp not seq: (oMeta at: 'Range')) repeat seq: ']' asExp seq: (oMeta at: 'Spacing')).
-		oMeta addRule: 'Literal' expression: (
-			(('''' asExp seq: (('''' asExp not seq: (oMeta at: 'Char')) repeat bind: 'literal') seq: '''' asExp seq: (oMeta at: 'Spacing') ) 
-				actionSelector: #makeLiteral: arguments: {'literal'})
-			or: ('"' asExp seq: ('"' asExp not seq: (oMeta at: 'Char')) repeat seq: '"' asExp seq: (oMeta at: 'Spacing') )).
+		oMeta addRule: 'Range' expression: (((((oMeta at: 'Char') bind: 'first') 
+                         seq: '-' asExp seq: ((oMeta at: 'Char') bind: 'second')) 
+												 actionSelector: #makeRangeFrom:to: arguments: {'first', 'second'})
+                 or: (((oMeta at: 'Char') bind: 'tok') actionSelector: #makeToken: arguments: {'tok'}) .
+		oMeta addRule: 'Class' expression: (('[' asExp 
+                seq: ((']' asExp not seq: (oMeta at: 'Range')) repeat bind: 'rangeList')
+                seq: ']' asExp 
+                seq: (oMeta at: 'Spacing')) actionSelector: #seqence: arguments: {'rangeList'}.
+		oMeta addRule: 'Literal' expression: (((('''' asExp 
+                seq: (('''' asExp not seq: (oMeta at: 'Char')) repeat bind: 'literal') 
+				seq: '''' asExp seq: (oMeta at: 'Spacing') ) 
+			or: ('"' asExp 
+                seq: (('"' asExp not seq: (oMeta at: 'Char')) repeat bind: 'literal') 
+				seq: '"' asExp seq: (oMeta at: 'Spacing') ))
+		  actionSelector: #makeLiteral: arguments: {'literal'}).
 		oMeta addRule: 'IdentStart'  expression: ((PKRangeExpression alloc initFrom: 'a' to: 'z') 
 			or: (PKRangeExpression alloc initFrom: 'A' to: 'Z')
 			or: '_' asExp).
