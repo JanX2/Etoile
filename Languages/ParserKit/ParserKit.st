@@ -51,6 +51,7 @@ Symbole extend [
 NSObject extend [
 	canReduce [^false]
 	matchSize [ ^1 ]
+	isArray [^false]
 ]
 
 NSObject subclass: NSDelayActionArray [
@@ -66,16 +67,27 @@ NSObject subclass: NSDelayActionArray [
 	]
 
 	addAction: anObject [
-		self addObject: anObject.
+		
+		(anObject isArray and: (anObject == nil) not)
+			ifTrue: [anObject do: [:each | self addObject: each]]
+			ifFalse: [self addObject: anObject].
 		^self
+	]
+
+	isArray [^true]
+
+	do: aBlock [
+		anArray do: aBlock
 	]
 
 	canReduce [^true]
 	reduceOn: target [
-		^anArray map: [:each | each canReduce 
-                                       ifTrue: [each reduceOn: target]
-									   ifFalse: [each]]
+		^anArray map: [:each | 
+			each canReduce 
+                   ifTrue: [each reduceOn: target]
+				   ifFalse: [each]]
 	]
+	description [^'Delay', anArray description]
 ]
 
 NSObject subclass: NSDelayInvocation [
@@ -117,17 +129,12 @@ NSObject subclass: PKParseAction [
 		| argsBuild |
 		argsBuild := NSMutableArray new.
 		argumentsName do: [:each |
-			argsBuild addObject: (env objectForKey: each).
+			| value |
+			value := env objectForKey: each.
+			value == nil ifTrue: [NSException raise: 'ParserKit' format: 'Unknown binding: ', each].
+			argsBuild addObject: value.
 		].
 		^NSDelayInvocation invocationWithSelector: selector arguments: argsBuild
-	]
-
-	addAction: anAction [
-		| newActions |
-		newAction := NSDelayActionArry new.
-		newAction addAction: self.
-		anAction == nil ifFalse: [newAction addAction: anAction].
-		^newAction
 	]
 ]
 
@@ -142,6 +149,7 @@ NSObject subclass: PKParseMatch [
 
 	initWithInput: list length: length [
 		super init.
+		action := nil.
 		input := list.
 		range := (NSValue rangeWithLocation: input position length: length).
 		input pushPosition: range length + range location.
@@ -150,7 +158,8 @@ NSObject subclass: PKParseMatch [
 	
 	copyInitWith: list range: aRange [
 		input := list.
-		range := aRange
+		range := aRange.
+		action := nil
 	]
 
 	sequenceWith: match [
@@ -162,24 +171,27 @@ NSObject subclass: PKParseMatch [
 		(range location + range length) == match range location
 			ifFalse: [ NSException raise: 'ParserKit' format: 'Can not add the range, it is not contigus'].
 		newMatch := self class alloc copyInitWith: input range: (NSValue rangeWithLocation: range location length: (range length + match  range length)).
-		newMatch attachAction: action.
-		newMatch attachAction: match action.
+		(action == nil and: match matchAction == nil) ifFalse: [
+			newMatch attachAction: NSDelayActionArray new.
+			newMatch attachAction: action.
+			newMatch attachAction: match matchAction.
+		].
 		^newMatch
 	]
 
 	bind: name [
 		action == nil 
             ifTrue: [input bind: name object: (input fromRange: range)]
-			ifFalse: [input bind: name object: action]
+			ifFalse: [input bind: name object: action. action := nil]
 	]
 	
 	setDelegate: anObject  [ delegate := anObject ]
 	attachAction: anAction [ 
 		action == nil 
-			ifTrue: [action := anAction]
+			ifTrue:  [action := anAction]
 			ifFalse: [action := action addAction: anAction]
 	]
-	action [^action]
+	matchAction [^action]
 	match  [ ^(input fromRange: range)]
 	isEmpty [ ^range length = 0]
 	isSuccess [ ^true ]
@@ -206,6 +218,7 @@ NSObject subclass: PKParseFail [
 	stopPosition [^failedPosition]
 	isFailure [ ^true ]
 	isSuccess [ ^false ]
+	matchAction [^nil]
 
 	description [ 
 		^'PKMatchFailure  ( At: ''',   failedPosition description, ''', ', input stream, ') ', describ, '\n' 
@@ -605,7 +618,9 @@ PKParseExpression subclass: PKRepetitionExpression [
 		[
 			currentMatch := e parseInput: list.
 			currentMatch isSuccess
-		] whileTrue: [ match := match sequenceWith: currentMatch].
+		] whileTrue: [ 
+			match := match sequenceWith: currentMatch.
+		].
 		^(match isEmpty and: canBeEmpty not) 
             ifTrue: [PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', e description ]
 			ifFalse: [match]
@@ -917,9 +932,17 @@ NSObject subclass: PKPegAstGen [
 	]
 	makeToken: tok [
 		^PKTokenExpression alloc initWithPattern: tok
+
 	]
+
+	makeWildcard [^PKDotExpression new]
+
+	join: list [
+		^list joinAll
+	]
+
 	sequence: list [
-		
+		^list sequenceAll
 	]
 ]
 
@@ -939,9 +962,6 @@ NSObject subclass: SmalltalkTool [
 		alphaNumeric  := PKAlphanumericExpression new repeat.
 		oMeta := PKParser alloc initWithNewGrammar: 'Test'.
 		oMeta addRule: 'alphaNum'  expression: alphaNumeric.
-		ETTranscript show: 'This is a test\n'.
-		ETTranscript show: true; cr.
-		ETTranscript show: NSObject alloc; cr.
 		ETTranscript show: (parser parseInput: 'cab' asInputStream); cr.
 		ETTranscript show: alphaNumeric; cr.
 		ETTranscript show: (alphaNumeric parseInput: 'Good34'  asInputStream); cr.
@@ -981,6 +1001,10 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: match reduce; cr.
 
 		match := oMeta match:( '[a-d] ') rule: 'Class'.
+		ETTranscript show: match.
+		ETTranscript show: match reduce; cr.
+
+		match := oMeta match:( '[a-d\34] ') rule: 'Class'.
 		ETTranscript show: match.
 		ETTranscript show: match reduce; cr.
 
@@ -1042,13 +1066,13 @@ NSObject subclass: SmalltalkTool [
 			    or: ('\' asExp not seq: (PKDotExpression new)  )).
 		oMeta addRule: 'Range' expression: (((((oMeta at: 'Char') bind: 'first') 
                          seq: '-' asExp seq: ((oMeta at: 'Char') bind: 'second')) 
-												 actionSelector: #makeRangeFrom:to: arguments: {'first', 'second'})
-                 or: (((oMeta at: 'Char') bind: 'tok') actionSelector: #makeToken: arguments: {'tok'}) .
+												 actionSelector: #makeRangeFrom:to: arguments: {'first'. 'second'})
+                 or: (((oMeta at: 'Char') bind: 'tok') actionSelector: #makeToken: arguments: {'tok'})).
 		oMeta addRule: 'Class' expression: (('[' asExp 
                 seq: ((']' asExp not seq: (oMeta at: 'Range')) repeat bind: 'rangeList')
                 seq: ']' asExp 
-                seq: (oMeta at: 'Spacing')) actionSelector: #seqence: arguments: {'rangeList'}.
-		oMeta addRule: 'Literal' expression: (((('''' asExp 
+                seq: (oMeta at: 'Spacing')) actionSelector: #join: arguments: {'rangeList'}).
+		oMeta addRule: 'Literal' expression: ((('''' asExp 
                 seq: (('''' asExp not seq: (oMeta at: 'Char')) repeat bind: 'literal') 
 				seq: '''' asExp seq: (oMeta at: 'Spacing') ) 
 			or: ('"' asExp 
@@ -1064,7 +1088,7 @@ NSObject subclass: SmalltalkTool [
 			or: ((oMeta at: 'OPEN') seq: (oMeta at: 'Expression') seq: (oMeta at: 'CLOSE'))
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
-			or: (oMeta at: 'DOT')).
+			or: ((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})).
 		oMeta addRule: 'Suffix' expression: ((oMeta at: 'Primary') 
             seq: ((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe 
 			seq: (':' asExp seq: (oMeta at: 'Identifier')) maybe).

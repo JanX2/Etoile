@@ -7,16 +7,17 @@ Expression <- Sequence (SLASH Sequence)*
 Sequence <- Prefix* (Spacing RIGHTARROW AOPEN Statements ACLOSE)?
 Prefix <- (AND / NOT)? Suffix
 Suffix <- Primary (QUESTION / STAR / PLUS)? (':' Identifier)?
-Primary <- Identifier !LEFTARROW
-/ OPEN Expression CLOSE
-/ Literal / Class / DOT
+Primary <- Identifier:rule (!LEFTARROW
+/ OPEN (Expression):e CLOSE
+/ (Literal):e / (Class):e / 
+(DOT -> [makeWildcard]):e) -> [addRule: rule expression: e]
 # Lexical syntax
 Identifier <- IdentStart IdentCont* Spacing
 IdentStart <- [a-zA-Z_]
 IdentCont <- IdentStart / [0-9]
 Literal <- ['] (!['] Char)*:stringLit ['] Spacing -> [makeLiteral: stringLit]
 / ["] (!["] Char)* ["] Spacing
-Class <- '[' (!']' Range)*:rangeList ']' Spacing -> [seqence:rangeList]
+Class <- '[' (!']' Range)*:rangeList ']' Spacing -> [sequence:rangeList]
 Range <- Char:first '-' Char:second -> [makeRangeFrom: first to: second] 
 	  / Char:tok -> [ makeToken: tok ]
 Char <- '\\' [nrt'"\[\]\\]
