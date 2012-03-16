@@ -39,9 +39,9 @@
  */
 - (void) reconnect;
 /**
- * Initialize an Account with a given Name
+ * Initialize an Account with a given Name a Jid and a password
  */
-- (id) initWithName:(NSString*)aName;
+- (id) initWithName:(NSString*)aName withJid:(JID*)aJid withPassword:(NSString*)aPassword;
 /**
  * Returns the JID associated with the account.
  */

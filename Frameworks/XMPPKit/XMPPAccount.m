@@ -15,41 +15,6 @@
 #import "XMPPRoster.h"
 #import "JID.h"
 
-NSString * passwordForJID(JID * aJID)
-{
-#ifdef GNUSTEP
-        return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"XMPPPasswords"] objectForKey:[aJID jidString]];
-#else
-        UInt32 passwordLength;
-        char * passwordData;
-
-        //Get the password from the keychain
-        OSStatus status = SecKeychainFindInternetPassword(NULL, 
-                                                                        [[aJID domain] length],
-                                                                        [[aJID domain] UTF8String],
-                                                                        0,
-                                                                        NULL,
-                                                                        [[aJID node] length],
-                                                                        [[aJID node] UTF8String],
-                                                                        0,
-                                                                        NULL,
-                                                                        5222,
-                                                                        kSecProtocolTypeTelnet, //This is wrong, but there seems to be no correct answer.
-                                                                        kSecAuthenticationTypeDefault,
-                                                                        &passwordLength,
-                                                                        (void**)&passwordData,
-                                                                        NULL);
-        if(status == noErr)
-        {
-                NSString * password = [NSString stringWithCString:strdup(passwordData)
-                                                              length:passwordLength];
-                SecKeychainItemFreeContent(NULL,passwordData);
-                return password;
-        }
-        return nil;
-#endif
-}
-
 //NOTE: These could probably be done more neatly with KVC
 void setDefault(NSString * dictionary, id key, id value)
 {
@@ -99,7 +64,7 @@ id getDefault(NSString * dictionary, id key)
         setDefault(@"Servers", [aJID jidString], aServer);
 }
 
-- (id) initWithName:(NSString*)aName
+- (id) initWithName:(NSString*)aName withJid:(JID*)aJid withPassword:(NSString*)aPassword
 {
         self = [super init];
         if(self == nil)
@@ -113,34 +78,22 @@ id getDefault(NSString * dictionary, id key)
         [connection setPresenceDisplay:[roster delegate]];
 
         //Get user's Jabber ID from Address Book
-        ABMultiValue * jids = [[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty];
-        NSString * jidString = [jids valueAtIndex:0];
-        if(jidString == nil)
-        {
-                [[NSException exceptionWithName:XMPPNOJIDEXCEPTION
-                                                                 reason:@"Unable to find JID for connection"
-                                       userInfo:nil] raise];
-        }
-        myJID = [[JID jidWithString:jidString] retain];
-                
-        NSString * password = passwordForJID(myJID);
         
-        if(password != nil)
+        myJID = [aJid retain];
+        if(aPassword != nil)
         {
                 NSString * server = getDefault(@"Servers", [myJID jidString]);
                 [connection connectToJabberServer:server
                                           withJID:myJID
-                                         password:password];
-                
-                
+                                         password:aPassword];
                 return self;
         }
         else
         {
                 [[NSException exceptionWithName:XMPPNOPASSWORDEXCEPTION
                                                                  reason:@"Unable to find password for connection"
-                                                           userInfo:[NSDictionary dictionaryWithObject:myJID
-                                                                                                forKey:@"JID"]] raise];
+                                                               userInfo:[NSDictionary dictionaryWithObject:myJID
+                                                                                                    forKey:@"JID"]] raise];
         }
         // Never reached; just used to eliminate a warning
         // from the compiler that doesn't know about exceptions
@@ -150,11 +103,6 @@ id getDefault(NSString * dictionary, id key)
 - (void) reconnect
 {
         [connection reconnectToJabberServer];
-}
-
-- (id) init
-{
-        return [self initWithName:@"Default"];
 }
 
 - (XMPPRoster*) roster
