@@ -10,6 +10,42 @@
 #import "PasswordWindowController.h"
 #import "AccountWindowController.h"
 
+NSString * passwordForJID(JID * aJID)
+{
+#ifdef GNUSTEP
+        return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"XMPPPasswords"] objectForKey:[aJID jidString]];
+#else
+        UInt32 passwordLength;
+        char * passwordData;
+
+        //Get the password from the keychain
+        OSStatus status = SecKeychainFindInternetPassword(NULL, 
+                                                                        [[aJID domain] length],
+                                                                        [[aJID domain] UTF8String],
+                                                                        0,
+                                                                        NULL,
+                                                                        [[aJID node] length],
+                                                                        [[aJID node] UTF8String],
+                                                                        0,
+                                                                        NULL,
+                                                                        5222,
+                                                                        kSecProtocolTypeTelnet, //This is wrong, but there seems to be no correct answer.
+                                                                        kSecAuthenticationTypeDefault,
+                                                                        &passwordLength,
+                                                                        (void**)&passwordData,
+                                                                        NULL);
+        if(status == noErr)
+        {
+                NSString * password = [NSString stringWithCString:strdup(passwordData)
+                                                              length:passwordLength];
+                SecKeychainItemFreeContent(NULL,passwordData);
+                return password;
+        }
+        return nil;
+#endif
+}
+
+
 @implementation JabberApp
 
 - (void) test:(id)timer
@@ -52,25 +88,33 @@
 #ifdef NDEBUG
 	[[debugMenu menu] removeItem:debugMenu];
 #endif
-	while(account == nil)
+	while (nil == account)
 	{
-		NS_DURING
-			//Account now throws an exception if there is no account.
-			account = [[XMPPAccount alloc] init];
-		NS_HANDLER
-			if([[localException name] isEqualToString:XMPPNOJIDEXCEPTION])
-			{
-				[self getAccountInfo];
-			}
-			else if([[localException name] isEqualToString:XMPPNOPASSWORDEXCEPTION])
-			{
-				[self getPassword:[[localException userInfo] objectForKey:@"JID"]];
-			}
-		NS_ENDHANDLER
+		ABMultiValue * jids = [[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty];
+		NSString * jidString = [jids valueAtIndex:0];
+
+		while (nil == jidString)
+        {
+        	[self getAccountInfo];
+			jids = [[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty];
+			jidString = [jids valueAtIndex:0];
+		}
+
+		JID *tmpJid = [JID jidWithString:jidString];
+		NSString *password = passwordForJID(tmpJid);
+
+		while (nil == password)
+		{
+			[self getPassword: tmpJid];
+			password = passwordForJID(tmpJid);
+		}
+		account = [[XMPPAccount alloc] initWithName:@"Default" 
+                                                    withJid:tmpJid 
+                                               withPassword:password];
 	}
 	rosterWindow = [[RosterController alloc] initWithNibName:@"RosterWindow"
-												  forAccount:account
-												  withRoster:[account roster]];
+						      forAccount:account
+						      withRoster:[account roster]];
 	[[account roster] setDelegate:rosterWindow];
 	[[account connection] setPresenceDisplay:rosterWindow];
 	[rosterWindow showWindow:self];
