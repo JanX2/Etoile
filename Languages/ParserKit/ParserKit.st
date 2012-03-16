@@ -425,6 +425,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 		| match |
 		list inEnvironmentDo: [
 			exp == nil ifTrue: [NSException raise: 'ParserKit' format: 'Uncomplete grammar definition for ', name].
+			ETTranscript show: 'Try non terminal: ', name;cr.
 			match := list matchRule: name.
 			(match == nil) ifTrue: [
 				| position |

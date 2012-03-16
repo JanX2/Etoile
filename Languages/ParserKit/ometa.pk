@@ -9,7 +9,7 @@ Prefix <- (AND / NOT)? Suffix
 Suffix <- Primary (QUESTION / STAR / PLUS)? (':' Identifier)?
 Primary <- Identifier:rule (!LEFTARROW
 / OPEN (Expression):e CLOSE
-/ (Literal):e / (Class):e / 
+/ Literal:e / Class:e / 
 (DOT -> [makeWildcard]):e) -> [addRule: rule expression: e]
 # Lexical syntax
 Identifier <- IdentStart IdentCont* Spacing
