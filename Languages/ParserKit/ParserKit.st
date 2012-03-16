@@ -28,6 +28,28 @@
 ============================================================================
 "
 
+NSObject subclass: PKTranscriptControler [
+	| +inDebugMode |
+
+	+setDebugMode: value [ inDebugMode := value ]
+	+isInDebugMode [ ^inDebugMode ]
+
+]
+
+ETTranscript extend [
+
+	+setDebugMode: value [
+		PKTranscriptControler setDebugMode: value
+	]
+    +debug: output [
+		 PKTranscriptControler isInDebugMode ifTrue: [ self show: output]
+	 ]
+
+	+debugCr [
+		PKTranscriptControler isInDebugMode ifTrue: [ self cr]
+	]
+]
+
 NSString extend [
 
 	concat: other [
@@ -167,7 +189,7 @@ NSObject subclass: PKParseMatch [
 		input mergePosition.
 		input lastPosition == range location ifFalse: [
 			"Can be remove or rephrase later."
-			NSException raise: 'ParseKit' format: 'Last position is not same as the location range, something is wrong here range loc: ', range location description, ' last input: ', input lastPosition description ].
+			NSException raise: 'ParseKit' format: 'Last position is not same as the location range, something is wrong here range loc: ', range location description, ' last input: ', input lastPosition description, ' match: ', match description, ' merge with: ', self description ].
 		(range location + range length) == match range location
 			ifFalse: [ NSException raise: 'ParserKit' format: 'Can not add the range, it is not contigus'].
 		newMatch := self class alloc copyInitWith: input range: (NSValue rangeWithLocation: range location length: (range length + match  range length)).
@@ -199,8 +221,9 @@ NSObject subclass: PKParseMatch [
 	range [^range]
 	reduce [^action == nil ifTrue: [nil] ifFalse: [action reduceOn: delegate]]
     stopPosition [^range length + range location]
+	matchText [^ input fromRange: range]
 	description [
-		^'PKMatchSuccess  ( Recognized: ''', (input fromRange: range), ''' location: ', range description,' aciton: ', action description, ')\n' 
+		^'PKMatchSuccess  ( Recognized: ''', self matchText , ''' location: ', range description,' aciton: ', action description, ')\n' 
 	]
 ]
 
@@ -425,15 +448,17 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 		| match |
 		list inEnvironmentDo: [
 			exp == nil ifTrue: [NSException raise: 'ParserKit' format: 'Uncomplete grammar definition for ', name].
-			ETTranscript show: 'Try non terminal: ', name;cr.
+			ETTranscript debug: 'Try non terminal: ', name, ' input pos: '; debug: list positionStack; debugCr.
 			match := list matchRule: name.
 			(match == nil) ifTrue: [
 				| position |
 				position := list position.
 				match := exp parseInput: list.
 				list  addMatch: match at: position named: name.
-			] ifFalse: [match isSuccess ifTrue: [list pushPosition: match stopPosition]].
-			
+			] ifFalse: [match isSuccess ifTrue: [
+				ETTranscript debug: 'Pushing back position: '; debug: match stopPosition; debugCr.
+				list pushPosition: match stopPosition]].
+			ETTranscript debug: 'End of non terminal: ', name, ' input pos: '; debug: list positionStack; debugCr.
 		].
 		^match
 	]
@@ -513,6 +538,7 @@ PKParseExpression subclass: PKSequenceExpression [
 			match2 := (e2 parseInput: list).
 			match2 isSuccess 
                 ifTrue: [ 
+					ETTranscript debug: 'Merge sequence: ', match1 matchText, ' with: ', match2 matchText; debugCr.
 					match1 sequenceWith: match2 ]
 				ifFalse: [ list popPosition. match2 ]
 		] ifFalse: [ match1 ]
@@ -620,10 +646,11 @@ PKParseExpression subclass: PKRepetitionExpression [
 			currentMatch := e parseInput: list.
 			currentMatch isSuccess
 		] whileTrue: [ 
+			ETTranscript debug: 'Merge repetition ', match matchText, ' with: ', currentMatch matchText; debugCr.
 			match := match sequenceWith: currentMatch.
 		].
 		^(match isEmpty and: canBeEmpty not) 
-            ifTrue: [PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', e description ]
+            ifTrue: [list popPosition. PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', e description ]
 			ifFalse: [match]
 	]
 
@@ -640,7 +667,7 @@ PKParseExpression subclass: PKNonTerminalLookup [
 	]
 
 	parseInput: list [
-		"ETTranscript show: 'Apply ', name, ' at: '; show: list position; cr."
+		"ETTranscript debug: 'Apply ', name, ' at: '; debug: list position; debugCr."
 		^grammar apply: name
 	]
 
@@ -739,21 +766,11 @@ NSObject subclass: PKInputStream [
 		positionStack removeLastObject
 	]
 
-	position [
-		^position
-	]
-
-	length [
-		^stream length
-	]
-
-	atEnd [
-		^self position = stream length
-	]
-
-	stream [
-		^stream
-	]
+	position [^position]
+	positionStack [^positionStack]
+	length [ ^stream length]
+	atEnd [^self position = stream length]
+	stream [ ^stream ]
 ]
 
 NSObject subclass: PKRules [
@@ -952,6 +969,8 @@ NSObject subclass: SmalltalkTool [
 	
 	run [
 		| dict parser abStar abStar b c tExp alphaNumeric oMeta content contentString match |
+
+		ETTranscript setDebugMode: false.
 		abStar := PKRepetitionExpression alloc
 					 initWithExpression: 'ab' asExp
 					 canBeEmpty: false; yourself.
@@ -1027,9 +1046,10 @@ NSObject subclass: SmalltalkTool [
 	smalltalkPegGrammar: parent [
 		| ocParser |
 		ocParser := parent subgrammar: 'SmalltalkOmeta'.
+		ocParser addRule: 'Unary' expression: (ocParser at: 'Identifier').
 		ocParser addRule: 'Keyword' expression: ((ocParser at: 'IdentStart') seq: (ocParser at: 'IdentCont') repeat seq: (ocParser at: 'COLON')).
 		ocParser addRule: 'KeywordMessage' expression: ((ocParser at: 'Keyword') seq: (ocParser at: 'Identifier')) repeatOneLeast.
-		ocParser addRule: 'Statements' expression: (ocParser at: 'KeywordMessage').
+		ocParser addRule: 'Statements' expression: ((ocParser at: 'KeywordMessage') or: (ocParser at: 'Unary')).
 		^ocParser
 	]
 
