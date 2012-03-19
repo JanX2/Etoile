@@ -10,6 +10,8 @@ ${TOOL_NAME}_LANGUAGES = English
 
 ${TOOL_NAME}_OBJC_FILES = \
 	NSInvocation+pkextention.m\
+	NSString+append.m\
+	NSScanner+returnValue.m\
 	PKMain.m
 
 ${TOOL_NAME}_OBJCFLAGS = -std=c99 -g -Wno-unused-value

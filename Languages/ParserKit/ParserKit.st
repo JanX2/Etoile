@@ -187,10 +187,10 @@ NSObject subclass: PKParseMatch [
 	sequenceWith: match [
 		| newMatch |
 		input mergePosition.
-		input lastPosition == range location ifFalse: [
+		input lastPosition = range location ifFalse: [
 			"Can be remove or rephrase later."
 			NSException raise: 'ParseKit' format: 'Last position is not same as the location range, something is wrong here range loc: ', range location description, ' last input: ', input lastPosition description, ' match: ', match description, ' merge with: ', self description ].
-		(range location + range length) == match range location
+		(range location + range length) = match range location
 			ifFalse: [ NSException raise: 'ParserKit' format: 'Can not add the range, it is not contigus'].
 		newMatch := self class alloc copyInitWith: input range: (NSValue rangeWithLocation: range location length: (range length + match  range length)).
 		(action == nil and: match matchAction == nil) ifFalse: [
@@ -202,9 +202,10 @@ NSObject subclass: PKParseMatch [
 	]
 
 	bind: name [
-		action == nil 
-            ifTrue: [input bind: name object: (input fromRange: range)]
-			ifFalse: [input bind: name object: action. action := nil]
+		self isEmpty ifFalse: [
+			action == nil 
+                ifTrue: [input bind: name object: (input fromRange: range)]
+			    ifFalse: [input bind: name object: action. action := nil]]
 	]
 	
 	setDelegate: anObject  [ delegate := anObject ]
@@ -242,7 +243,7 @@ NSObject subclass: PKParseFail [
 	isFailure [ ^true ]
 	isSuccess [ ^false ]
 	matchAction [^nil]
-
+	bind: name ["No sensible thing can be done here"]
 	description [ 
 		^'PKMatchFailure  ( At: ''',   failedPosition description, ''', ', input stream, ') ', describ, '\n' 
 	]
@@ -560,7 +561,7 @@ PKComposeExpression subclass: PKBindExpression [
 	parseInput: list [
 		| match |
 		match := exp parseInput: list.
-		match isSuccess ifTrue: [match bind: name].
+		match bind: name.
 		^match
 	]
 ]
@@ -942,6 +943,20 @@ NSObject subclass: PKParser [
 ]
 
 NSObject subclass: PKPegAstGen [
+	| specialCharToChar |
+
+	init [
+		super init.
+		specialCharToChar := NSMutableDictionary new.
+		specialCharToChar setValue: '\n' forKey: 'n'.
+		specialCharToChar setValue: '\t' forKey: 't'.
+		specialCharToChar setValue: '\\' forKey: '\\'.
+		specialCharToChar setValue: '''' forKey: ''''.
+		specialCharToChar setValue: '"' forKey: '"'.
+		specialCharToChar setValue: '[' forKey: '['.
+		specialCharToChar setValue: ']' forKey: ']'.
+	]
+	
 	makeLiteral: literal [
 		^literal asExp
 	]
@@ -951,6 +966,18 @@ NSObject subclass: PKPegAstGen [
 	makeToken: tok [
 		^PKTokenExpression alloc initWithPattern: tok
 
+	]
+
+	parseSpecialChar: char [
+		^specialCharToChar objectForKey: char
+	]
+
+	parseHexChar: value [
+		| scanner return |
+		scanner := NSScanner scannerWithString: value.
+		return := NSMutableString new.
+		return appendCharacter: scanner hexIntegerValue.
+		^return
 	]
 
 	makeWildcard [^PKDotExpression new]
@@ -991,13 +1018,13 @@ NSObject subclass: SmalltalkTool [
 
 		ETTranscript show: oMeta; cr.
 		ETTranscript show: (oMeta at: 'Char'); cr.
-		ETTranscript show: (oMeta match:( '\n') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\\n') rule: 'Char').
 		ETTranscript show: (oMeta match:('n') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\266') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\268') rule: 'Char').
 		ETTranscript show: (oMeta match:( '\66') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\66') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\66-\234') rule: 'Range').
+		ETTranscript show: (oMeta match:( '\F8') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\6E') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\6A') rule: 'Char').
+		ETTranscript show: (oMeta match:( '\66-\F4') rule: 'Range').
 		ETTranscript show: (oMeta match:( 'a-d') rule: 'Range').
 		ETTranscript show: (oMeta match:( '[a-d] ') rule: 'Class').
 		ETTranscript show: (oMeta match:( '[a-d\34] ') rule: 'Class').
@@ -1015,6 +1042,7 @@ NSObject subclass: SmalltalkTool [
 
 		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
+		self testSubgrammar.
 		ETTranscript show: (oMeta match: contentString  rule: 'OmetaList').
 		match := oMeta match: '''test''' rule: 'Literal'.
 		ETTranscript show: match.
@@ -1028,7 +1056,23 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: match.
 		ETTranscript show: match reduce; cr.
 
-		self testSubgrammar.
+		match := oMeta match:( '\\t') rule: 'Char'.
+		ETTranscript show: match.
+		ETTranscript show: match reduce; cr.
+
+		match := oMeta match:( '\\n') rule: 'Char'.
+		ETTranscript show: match.
+		ETTranscript show: match reduce; cr.
+
+		match := oMeta match:( '\\\\') rule: 'Char'.
+		ETTranscript show: match.
+		ETTranscript show: match reduce; cr.
+
+		match := oMeta match:( '\5F') rule: 'Char'.
+		ETTranscript show: match.
+		ETTranscript show: match reduce; cr.
+
+		
 	]
 
 	testSubgrammar [
@@ -1061,6 +1105,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'Comment' expression: ('#' asExp seq: ((oMeta at: 'EndOfLine') not 
             seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
 		oMeta addRule: 'Spacing' expression: ((oMeta at: 'Space') or: (oMeta at: 'Comment')) repeat.
+		oMeta addRule: 'HexDigit' expression: ((PKRangeExpression alloc initFrom: '0' to: '9') or: (PKRangeExpression alloc initFrom: 'A' to: 'F')).
 		oMeta addRule: 'DOT' expression: ('.' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'COLON' expression: (':' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'CLOSE' expression: ( ')' asExp seq: (oMeta at: 'Spacing')). 
@@ -1078,12 +1123,11 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'LEFTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'RIGHTARROW' expression: ( '->' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'Char' expression: 
-			(('\' asExp seq: {'n' . 'r' . 't' . ''''. '"' . '[' . ']'. '\'} joinAll)
-				or: ('\' asExp seq: (PKRangeExpression alloc initFrom: '0' to: '2') 
-							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') 
-							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') )
-				or: ('\' asExp seq: (PKRangeExpression alloc initFrom: '0' to: '7') 
-							   seq: (PKRangeExpression alloc initFrom: '0' to: '7') )
+			((('\' asExp seq: ({'n' . 'r' . 't' . ''''. '"' . '[' . ']'. '\'} joinAll bind: 'specialChar'))  
+                          actionSelector: #parseSpecialChar: arguments: {'specialChar'})
+				or: (('\' asExp seq: (((oMeta at: 'HexDigit') 
+							    seq: (oMeta at: 'HexDigit')) bind: 'hexChar'))
+				  actionSelector: #parseHexChar: arguments: {'hexChar'})
 			    or: ('\' asExp not seq: (PKDotExpression new)  )).
 		oMeta addRule: 'Range' expression: (((((oMeta at: 'Char') bind: 'first') 
                          seq: '-' asExp seq: ((oMeta at: 'Char') bind: 'second')) 
@@ -1110,9 +1154,9 @@ NSObject subclass: SmalltalkTool [
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
 			or: ((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})).
-		oMeta addRule: 'Suffix' expression: ((oMeta at: 'Primary') 
+		oMeta addRule: 'Suffix' expression: (((oMeta at: 'Primary') bind: 'epxression')
             seq: ((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe 
-			seq: (':' asExp seq: (oMeta at: 'Identifier')) maybe).
+			seq: ((':' asExp seq: (oMeta at: 'Identifier')) maybe bind: 'bindingName')).
 		oMeta addRule: 'Prefix' expression: (((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe seq: (oMeta at: 'Suffix')).
 		oMeta addRule: 'Sequence' expression: ((oMeta at: 'Prefix') repeat 
            seq: ((oMeta at: 'RIGHTARROW') 
