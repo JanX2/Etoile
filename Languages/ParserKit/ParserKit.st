@@ -202,10 +202,9 @@ NSObject subclass: PKParseMatch [
 	]
 
 	bind: name [
-		self isEmpty ifFalse: [
-			action == nil 
-                ifTrue: [input bind: name object: (input fromRange: range)]
-			    ifFalse: [input bind: name object: action. action := nil]]
+		action == nil 
+            ifTrue: [input bind: name object: (input fromRange: range)]
+			ifFalse: [input bind: name object: action. action := nil]
 	]
 	
 	setDelegate: anObject  [ delegate := anObject ]
@@ -942,6 +941,21 @@ NSObject subclass: PKParser [
    
 ]
 
+NSObject subclass: PKAstExpressionGen [
+	| expression operation |
+
+	initWithExp: exp operation: op [
+		expression := exp.
+		operation := op
+	]
+
+	reduce: exp [
+		exp == nil 
+            ifFasle: [ expression ]
+			ifTrue: [ operation value: exp value: expression ]
+	]
+]
+
 NSObject subclass: PKPegAstGen [
 	| specialCharToChar |
 
@@ -968,6 +982,18 @@ NSObject subclass: PKPegAstGen [
 
 	]
 
+	makeExpression: expression modifier: mode bind: name [
+		mode = '+' ifTrue: [ expression := expression repreatOneLeast ].
+		mode = '*' ifTrue: [ expression := expression repeat ].
+		mode = '?' ifTrue: [ expression := expression maybe ].
+		name = '' ifFalse: [ expression := expression bind: name ].
+		^expression
+	]
+
+	makePrefix: junction exp: expression [
+		^PKAstExpressionGen alloc initWithExp: expression operation: junction
+	]
+
 	parseSpecialChar: char [
 		^specialCharToChar objectForKey: char
 	]
@@ -979,6 +1005,9 @@ NSObject subclass: PKPegAstGen [
 		return appendCharacter: scanner hexIntegerValue.
 		^return
 	]
+
+	orJunction [^[:exp1 :exp2 | exp1 or: exp2 ]]
+	seqJunction [^[:exp1 :exp2 | exp1 seq: exp2 ]]
 
 	makeWildcard [^PKDotExpression new]
 
@@ -1118,8 +1147,8 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'STAR' expression: ( '*' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'QUESTION' expression: ( '?' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'NOT' expression: ( '!' asExp seq: (oMeta at: 'Spacing')).
-		oMeta addRule: 'SLASH' expression: ( '/' asExp seq: (oMeta at: 'Spacing')).
-		oMeta addRule: 'AND' expression: ( '&' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'SLASH' expression: (( '/' asExp seq: (oMeta at: 'Spacing')) actionSelector: #orJunction arguments: {}).
+		oMeta addRule: 'AND' expression: (( '&' asExp seq: (oMeta at: 'Spacing')) actionSelector: #seqJunction arguments: {}).
 		oMeta addRule: 'LEFTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'RIGHTARROW' expression: ( '->' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'Char' expression: 
@@ -1154,10 +1183,13 @@ NSObject subclass: SmalltalkTool [
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
 			or: ((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})).
-		oMeta addRule: 'Suffix' expression: (((oMeta at: 'Primary') bind: 'epxression')
-            seq: ((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe 
-			seq: ((':' asExp seq: (oMeta at: 'Identifier')) maybe bind: 'bindingName')).
-		oMeta addRule: 'Prefix' expression: (((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe seq: (oMeta at: 'Suffix')).
+		oMeta addRule: 'Suffix' expression: ((((oMeta at: 'Primary') bind: 'expression')
+            seq: (((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe bind: 'modifier')
+			seq: ((':' asExp seq: (oMeta at: 'Identifier')) maybe bind: 'bindingName'))
+			   actionSelector: #makeExpression:modifier:bind: arguments: {'expression'. 'modifier'. 'bindingName'}) .
+		oMeta addRule: 'Prefix' expression: (((((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe bind: 'junction') 
+            seq: ((oMeta at: 'Suffix') bind: 'expression'))
+			   actionSelector: #makePrefix:exp: arguments: {'junction'. 'expression'}).
 		oMeta addRule: 'Sequence' expression: ((oMeta at: 'Prefix') repeat 
            seq: ((oMeta at: 'RIGHTARROW') 
                     seq: (oMeta at: 'AOPEN') 
