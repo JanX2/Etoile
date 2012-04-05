@@ -53,6 +53,12 @@ do
       echo
       echo "  --website-dir           - Path to a working copy of the Etoile website" 
       echo "                            (default: no documentation upload if omitted)"
+      echo "  --download-dir          - Subpath to a directory in the GNA download area."
+      echo "                            e.g. --download-dir=etoile-0.4.2" 
+      echo "                            (default: upload into download.gna.org:/upload/etoile "
+      echo "                            if omitted)"
+      echo "  --templates-dir         - Path to DocGenerator Templates directory"
+      echo "                            (default: none if omitted)"
       echo "  --name                  - Archive name for the source code."
       echo "                            Should include a version but no file extension. "
       echo "                            e.g. --name=etoile-foundation-0.5" 
@@ -83,6 +89,10 @@ do
   case $option in
     --website-dir)
       WEBSITE_DIR=$optionarg;;
+    --download-dir)
+      DOWNLOAD_DIR=$optionarg;;
+    --templates-dir)
+      TEMPLATES_DIR=$PWD/$optionarg;;
     --name)
       ARCHIVE_BASE_NAME=$optionarg;;
     --user-name)
@@ -112,6 +122,14 @@ fi
 #echo $PRODUCT_DIR/$ARCHIVE_BASE_NAME
 #exit
 
+if [ "$DOC" = "yes" ]; then
+	rm -rf $PRODUCT_DIR/$DOC_NAME*
+fi
+
+if [ "$CODE" = "yes" ]; then
+	rm -rf $PRODUCT_DIR/$ARCHIVE_BASE_NAME*
+fi
+
 # Build and copy project doc into the Products dir
 
 if [ "$DOC" = "yes" ]; then
@@ -122,7 +140,7 @@ fi
 # Clean and copy project code into the Products dir
 
 if [ "$CODE" = "yes" ]; then
-	make -C $PROJECT_DIR distclean
+	make -C $PROJECT_DIR clean
 
 	cp -r $PROJECT_DIR $PRODUCT_DIR/$ARCHIVE_BASE_NAME
 	cp -r $PROJECT_DIR $PRODUCT_DIR/$ARCHIVE_BASE_NAME-svn
@@ -137,23 +155,34 @@ if [ "$DOC" = "yes" ]; then
 	rm -rf $DOC_NAME/GSDoc
 fi
 
-# Remove .svn and creates archives from the product code
+# Remove .svn, GSDoc dir, add doc templates, and creates archives from the product code
 
 if [ "$CODE" = "yes" ]; then
 	find $ARCHIVE_BASE_NAME -name ".svn" -exec rm -rf {} \;
+	echo `ls $ARCHIVE_BASE_NAME-svn`
+	echo  $ARCHIVE_BASE_NAME $ARCHIVE_BASE_NAME-svn $ARCHIVE_BASE_NAME/* $ARCHIVE_BASE_NAME-svn/*
+	# For subprojects e.g. EtoileFoundation/EtoileXML, we check subdirs that contain a Documentation dir
+	for dir in $ARCHIVE_BASE_NAME $ARCHIVE_BASE_NAME-svn $ARCHIVE_BASE_NAME/* $ARCHIVE_BASE_NAME-svn/*; do
+		if [ ! -d $dir ]; then
+			continue
+		fi
+		rm -rf $dir/Documentation/GSDoc
+		rm -f $dir/images $dir/_includes
+		cp -rf $TEMPLATES_DIR/images $dir
+		cp -rf $TEMPLATES_DIR/_includes $dir
+	done
 
-	tar -cvzf $ARCHIVE_BASE_NAME.tar.gz $ARCHIVE_BASE_NAME 
-	tar -cvzf $ARCHIVE_BASE_NAME-svn.tar.gz $ARCHIVE_BASE_NAME-svn
+	tar -czf $ARCHIVE_BASE_NAME.tar.gz $ARCHIVE_BASE_NAME 
+	tar -czf $ARCHIVE_BASE_NAME-svn.tar.gz $ARCHIVE_BASE_NAME-svn
 fi
 
 # Upload
 
 if [ "$CODE" = "yes" -a -n "$UPLOAD" -a -n "$USER_NAME" ]; then
 	echo
-	echo "WARNING: Copying into the GNA download area is disabled currently"
 	echo
-	#scp $ARCHIVE_BASE_NAME.tgz ${USER_NAME}@download.gna.org:/upload/etoile
-	#scp $ARCHIVE_BASE_NAME-svn.tar.gz ${USER_NAME}@download.gna.org:/upload/etoile
+	scp $ARCHIVE_BASE_NAME.tgz ${USER_NAME}@download.gna.org:/upload/etoile/${DOWNLOAD_DIR}
+	scp $ARCHIVE_BASE_NAME-svn.tar.gz ${USER_NAME}@download.gna.org:/upload/etoile/${DOWNLOAD_DIR}
 fi
 
 if [ "$DOC" = "yes" -a -n "$UPLOAD" -a -n "$WEBSITE_DIR" ]; then
