@@ -130,14 +130,7 @@ if [ "$CODE" = "yes" ]; then
 	rm -rf $PRODUCT_DIR/$ARCHIVE_BASE_NAME*
 fi
 
-# Build and copy project doc into the Products dir
-
-if [ "$DOC" = "yes" ]; then
-	make -C $PROJECT_DIR clean-doc doc
-	cp -r $PROJECT_DIR/Documentation $PRODUCT_DIR/$DOC_NAME
-fi
-
-# Clean and copy project code into the Products dir
+# Clean and copy project code including doc into the Products dir
 
 if [ "$CODE" = "yes" ]; then
 	make -C $PROJECT_DIR clean
@@ -175,9 +168,32 @@ if [ "$CODE" = "yes" -a -n "$UPLOAD" -a -n "$USER_NAME" ]; then
 	scp $ARCHIVE_BASE_NAME-svn.tar.gz ${USER_NAME}@download.gna.org:/upload/etoile/${DOWNLOAD_DIR}
 fi
 
+# Exit Products dir
 cd ..
 
-# Upload doc (including .svn and GSDoc dir removal)
+# Copy the project code into the Website working copy
+
+if [ "$DOC" = "yes" -a -n "$WEBSITE_DIR" ]; then
+
+	# For debugging
+	echo
+	ls $WEBSITE_DIR
+	ls $WEBSITE_DIR/dev/api
+	echo
+
+	cp -rf $PROJECT_NAME/Documentation $WEBSITE_DIR/dev/api/$DOC_NAME
+	ln -sf ./$DOC_NAME $WEBSITE_DIR/dev/api/$PROJECT_NAME
+fi
+
+# Remove .svn and GSDoc dir from the web doc
+
+if [ "$DOC" = "yes" -a -n "$WEBSITE_DIR" ]; then
+	find $WEBSITE_DIR/dev/api/$DOC_NAME -name ".svn" -exec rm -rf {} \;
+	rm -rf $WEBSITE_DIR/dev/api/$DOC_NAME/GSDoc $WEBSITE_DIR/dev/api/$DOC_NAME/doc-make-dependencies
+fi
+
+
+# Upload doc
 
 if [ "$DOC" = "yes" -a -n "$UPLOAD" -a -n "$WEBSITE_DIR" ]; then
 	echo
@@ -185,20 +201,8 @@ if [ "$DOC" = "yes" -a -n "$UPLOAD" -a -n "$WEBSITE_DIR" ]; then
 	echo "You have to make the commit explicitly."
 	echo
 
-	# For debugging
-	ls $WEBSITE_DIR
-	ls $WEBSITE_DIR/dev/api
-
-	cp -rf $PROJECT_NAME/Documentation $WEBSITE_DIR/dev/api/$DOC_NAME
-	ln -sf ./$DOC_NAME $WEBSITE_DIR/dev/api/$PROJECT_NAME
-
-	find $WEBSITE_DIR/dev/api/$DOC_NAME -name ".svn" -exec rm -rf {} \;
-	rm -rf $WEBSITE_DIR/dev/api/$DOC_NAME/GSDoc
-
 	svn add $WEBSITE_DIR/dev/api/$DOC_NAME
 	svn add $WEBSITE_DIR/dev/api/$PROJECT_NAME
 	#svn commit $WEBSITE_DIR/dev/api/$DOC_NAME $WEBSITE_DIR/dev/api/$PROJECT_NAME
 fi
 
-# Exit Products dir
-cd ..
