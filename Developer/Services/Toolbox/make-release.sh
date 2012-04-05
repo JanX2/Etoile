@@ -88,7 +88,7 @@ do
 
   case $option in
     --website-dir)
-      WEBSITE_DIR=$optionarg;;
+      WEBSITE_DIR=$PWD/$optionarg;;
     --download-dir)
       DOWNLOAD_DIR=$optionarg;;
     --templates-dir)
@@ -110,7 +110,7 @@ fi
 PROJECT_DIR=$arg
 PRODUCT_DIR=$PWD/Products
 PROJECT_NAME=`basename $PROJECT_DIR`
-DOC_NAME=$PROJECT_NAME
+DOC_NAME=$ARCHIVE_BASE_NAME
 
 if [ ! -d $PRODUCT_DIR ]; then
 	mkdir $PRODUCT_DIR	
@@ -148,13 +148,6 @@ fi
 
 cd $PRODUCT_DIR
 
-# Remove .svn and GSDoc dir from the product doc
-
-if [ "$DOC" = "yes" ]; then
-	find $DOC_NAME -name ".svn" -exec rm -rf {} \;
-	rm -rf $DOC_NAME/GSDoc
-fi
-
 # Remove .svn, GSDoc dir, add doc templates, and creates archives from the product code
 
 if [ "$CODE" = "yes" ]; then
@@ -175,23 +168,36 @@ if [ "$CODE" = "yes" ]; then
 	tar -czf $ARCHIVE_BASE_NAME-svn.tar.gz $ARCHIVE_BASE_NAME-svn
 fi
 
-# Upload
+# Upload code
 
 if [ "$CODE" = "yes" -a -n "$UPLOAD" -a -n "$USER_NAME" ]; then
 	scp $ARCHIVE_BASE_NAME.tar.gz ${USER_NAME}@download.gna.org:/upload/etoile/${DOWNLOAD_DIR}
 	scp $ARCHIVE_BASE_NAME-svn.tar.gz ${USER_NAME}@download.gna.org:/upload/etoile/${DOWNLOAD_DIR}
 fi
 
+cd ..
+
+# Upload doc (including .svn and GSDoc dir removal)
+
 if [ "$DOC" = "yes" -a -n "$UPLOAD" -a -n "$WEBSITE_DIR" ]; then
 	echo
 	echo "WARNING: Documentation $DOC_NAME is only 'svn added' to the website working copy currently."
 	echo "You have to make the commit explicitly."
 	echo
+
+	# For debugging
 	ls $WEBSITE_DIR
 	ls $WEBSITE_DIR/dev/api
-	cp -r $DOC_NAME $WEBSITE_DIR/dev/api/$DOC_NAME
+
+	cp -rf $PROJECT_NAME/Documentation $WEBSITE_DIR/dev/api/$DOC_NAME
+	ln -sf ./$DOC_NAME $WEBSITE_DIR/dev/api/$PROJECT_NAME
+
+	find $WEBSITE_DIR/dev/api/$DOC_NAME -name ".svn" -exec rm -rf {} \;
+	rm -rf $WEBSITE_DIR/dev/api/$DOC_NAME/GSDoc
+
 	svn add $WEBSITE_DIR/dev/api/$DOC_NAME
-	#svn commit $WEBSITE_DIR/dev/api/$DOC_NAME
+	svn add $WEBSITE_DIR/dev/api/$PROJECT_NAME
+	#svn commit $WEBSITE_DIR/dev/api/$DOC_NAME $WEBSITE_DIR/dev/api/$PROJECT_NAME
 fi
 
 # Exit Products dir
