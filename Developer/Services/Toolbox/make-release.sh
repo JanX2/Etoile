@@ -159,8 +159,7 @@ fi
 
 if [ "$CODE" = "yes" ]; then
 	find $ARCHIVE_BASE_NAME -name ".svn" -exec rm -rf {} \;
-	echo `ls $ARCHIVE_BASE_NAME-svn`
-	echo  $ARCHIVE_BASE_NAME $ARCHIVE_BASE_NAME-svn $ARCHIVE_BASE_NAME/* $ARCHIVE_BASE_NAME-svn/*
+
 	# For subprojects e.g. EtoileFoundation/EtoileXML, we check subdirs that contain a Documentation dir
 	for dir in $ARCHIVE_BASE_NAME $ARCHIVE_BASE_NAME-svn $ARCHIVE_BASE_NAME/* $ARCHIVE_BASE_NAME-svn/*; do
 		if [ ! -d $dir ]; then
@@ -179,9 +178,7 @@ fi
 # Upload
 
 if [ "$CODE" = "yes" -a -n "$UPLOAD" -a -n "$USER_NAME" ]; then
-	echo
-	echo
-	scp $ARCHIVE_BASE_NAME.tgz ${USER_NAME}@download.gna.org:/upload/etoile/${DOWNLOAD_DIR}
+	scp $ARCHIVE_BASE_NAME.tar.gz ${USER_NAME}@download.gna.org:/upload/etoile/${DOWNLOAD_DIR}
 	scp $ARCHIVE_BASE_NAME-svn.tar.gz ${USER_NAME}@download.gna.org:/upload/etoile/${DOWNLOAD_DIR}
 fi
 
