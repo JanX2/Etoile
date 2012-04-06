@@ -28,7 +28,7 @@
 ============================================================================
 "
 
-NSObject subclass: PKTranscriptControler [
+NSObject subclass: PKTranscriptController [
 	| +inDebugMode |
 
 	+setDebugMode: value [ inDebugMode := value ]
@@ -39,14 +39,14 @@ NSObject subclass: PKTranscriptControler [
 ETTranscript extend [
 
 	+setDebugMode: value [
-		PKTranscriptControler setDebugMode: value
+		PKTranscriptController setDebugMode: value
 	]
     +debug: output [
-		 PKTranscriptControler isInDebugMode ifTrue: [ self show: output]
+		 PKTranscriptController isInDebugMode ifTrue: [ self show: output]
 	 ]
 
 	+debugCr [
-		PKTranscriptControler isInDebugMode ifTrue: [ self cr]
+		PKTranscriptController isInDebugMode ifTrue: [ self cr]
 	]
 ]
 
@@ -223,7 +223,7 @@ NSObject subclass: PKParseMatch [
     stopPosition [^range length + range location]
 	matchText [^ input fromRange: range]
 	description [
-		^'PKMatchSuccess  ( Recognized: ''', self matchText , ''' location: ', range description,' aciton: ', action description, ')\n' 
+		^'PKMatchSuccess  ( Recognized: ''', self matchText , ''' location: ', range description,' action: ', action description, ')\n' 
 	]
 ]
 
