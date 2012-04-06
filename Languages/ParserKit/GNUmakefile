@@ -18,9 +18,9 @@ ${TOOL_NAME}_OBJCFLAGS = -std=c99 -g -Wno-unused-value
 ${TOOL_NAME}_LDFLAGS += -g -lgmp -lEtoileFoundation -lgnustep-gui\
 	-L/usr/local/lib\
 	-lSmalltalkSupport\
-	smalltalk.optimised.o -march=i686
+	smalltalk.optimised.o -march=native
 
-ADDITIONAL_OBJCFLAGS +=  -march=i686
+ADDITIONAL_OBJCFLAGS +=  -march=native
 
 ${TOOL_NAME}_CFLAGS += -Wno-implicit -g 
 

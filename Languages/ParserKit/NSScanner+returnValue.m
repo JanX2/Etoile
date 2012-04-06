@@ -1,9 +1,9 @@
+#include <Foundation/Foundation.h>
 #include "NSScanner+returnValue.h"
-#include <Foundation/NSException.h>
 
 
 @implementation NSScanner (ParserKit)
-- (NSUInteger) hexIntegerValue
+- (id) hexIntegerValue
 {
   NSUInteger aInt = 0;
   BOOL scanned = [self scanHexInt: &aInt];
@@ -11,6 +11,6 @@
   {
 	[NSException raise: @"ParserKit" format: @"Could not parse %@ as hex integer.", [self string]];
   }
-  return aInt;
+  return [NSNumber numberWithUnsignedInteger: aInt];
 }
 @end

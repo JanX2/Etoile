@@ -1,8 +1,10 @@
 #include "NSString+append.h"
 
 @implementation NSMutableString  (ParserKit)
-- (void)appendCharacter: (const unichar)aCharacter
+- (id)appendCharacter: (id)aCharacter
 {
-  [self appendString: [NSString stringWithCharacters: &aCharacter length: 1]];
+  unichar c = [aCharacter shortValue];
+  [self appendString: [NSString stringWithCharacters: &c length: 1]];
+  return self;
 }
 @end
