@@ -16,23 +16,16 @@ ${TOOL_NAME}_OBJC_FILES = \
 
 ${TOOL_NAME}_OBJCFLAGS = -std=c99 -g -Wno-unused-value
 ${TOOL_NAME}_LDFLAGS += -g -lgmp -lEtoileFoundation -lgnustep-gui\
-	-L/usr/local/lib\
-	-lSmalltalkSupport\
-	smalltalk.optimised.o -march=native
+	-L/usr/local/lib -march=native
+
+${TOOL_NAME}_SMALLTALK_FILES += ParserKit.st
 
 ADDITIONAL_OBJCFLAGS +=  -march=native
 
 ${TOOL_NAME}_CFLAGS += -Wno-implicit -g 
 
-SMALLTALK_FILES += ParserKit.st
 
-all:: smalltalk.optimised.o
-
-clean::
-	rm -f smalltalk.optimised.* *.bc
-
+include ../../smalltalk.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 include $(GNUSTEP_MAKEFILES)/tool.make
 
-smalltalk.optimised.o: ${SMALLTALK_FILES}
-	@sh compile.sh ${SMALLTALK_FILES}
