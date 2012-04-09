@@ -951,7 +951,7 @@ NSObject subclass: PKAstExpressionGen [
 
 	reduce: exp [
 		exp == nil 
-            ifFasle: [ expression ]
+            ifFalse: [ expression ]
 			ifTrue: [ operation value: exp value: expression ]
 	]
 ]
