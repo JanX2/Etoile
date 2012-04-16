@@ -64,6 +64,10 @@ NSString extend [
 	count [ ^self length]
 	isEmpty [^self length = 0]
 	isNotEmpty [^self length > 0 ]
+
+	isLessThan: other [
+		^(self integerValue) < (other integerValue)
+	]
 ]
 
 Symbole extend [
@@ -161,6 +165,46 @@ NSObject subclass: PKParseAction [
 ]
 
 
+NSObject subclass: PKParsePredicate [
+	| targetName selector argumentNames |
+	initWithTargetName: trgt selector: sel argumentNames: args [
+		targetName := trgt.
+		selector := sel.
+		argumentNames := args.
+	]
+
+	succeedsInEnvironment: env [
+		| target arguments invocation |
+		arguments := argumentNames mappedCollectionWithBlock: [ :argName |
+			|value |
+			value := env objectForKey: argName.
+			"FIXME: This is a quick hack. If the value cannot be bound, we assume
+			 that it should be interpreted as a literal value."
+			value == nil ifTrue: [value := argName].
+			value.
+		].
+		target := env objectForKey: targetName.
+		target == nil ifTrue: [target := targetName].
+		invocation := NSInvocation invocationWithTarget: target selector: selector arguments: arguments.
+		invocation invoke.
+		^invocation returnValueAsBool
+	]
+	
+	description [
+		| selectorParts messageString |
+		selectorParts := selector description componentsSeparatedByString: ':'.
+		selectorParts := selectorParts zippedCollectionWithCollection: argumentNames andBlock: [ 
+			:first :second |
+			first, ': ', second
+		].
+		messageString := selectorParts componentsJoinedByString: ' '.
+		^'?(', targetName, ' ', (messageString substringWithRange: (NSValue rangeWithLocation: 1 length: messageString length - 1)), ')'.
+	]
+]
+	
+		
+			
+
 NSObject subclass: PKParseMatch [
 	| input range action delegate |
 
@@ -226,6 +270,7 @@ NSObject subclass: PKParseMatch [
 		^'PKMatchSuccess  ( Recognized: ''', self matchText , ''' location: ', range description,' action: ', action description, ')\n' 
 	]
 ]
+
 
 NSObject subclass: PKParseFail [
 	| input failedPosition describ delegate |
@@ -295,6 +340,12 @@ NSObject subclass: PKParseExpression [
 		^PKActionExpression alloc initWithExp: self action: action
 	]
 
+	parameterTarget: trgt selector: aSel arguments: args [
+		| predicate |
+		predicate := PKParsePredicate alloc initWithTargetName: trgt selector: aSel argumentNames: args.
+		^PKParameterizedExpression alloc initWithExp: self predicate: predicate
+	]	
+
 	seq: exp1 seq: exp2 [
 		^(self seq: exp1) seq: exp2
 	]
@@ -321,7 +372,7 @@ NSObject subclass: PKParseExpression [
 		^match isFailure ifTrue: [aBlock value]
 						 ifFalse: [ match ]
 	]
-	
+
 ]
 
 PKParseExpression subclass: PKDotExpression [
@@ -432,6 +483,29 @@ PKComposeExpression subclass: PKActionExpression [
 		].
 		
 		^match
+	]
+]
+
+PKComposeExpression subclass: PKParameterizedExpression [
+	| predicate |
+	initWithExp: aExp predicate: pred [
+		super initWithExp: aExp.
+		predicate := pred.
+	]
+	parseInput: list [
+		| match |
+		match := exp parseInput: list.
+		^match isSuccess ifTrue: [
+			(predicate succeedsInEnvironment: (list environment)) ifTrue: [ match ]
+				ifFalse: [
+					list popPosition.
+					PKParseFail alloc initWithInput: list description: ('Expected ', exp description, ' to satisfy parameter ', predicate description)]
+			]
+		ifFalse: [ match ].
+	]
+	
+	description [
+		^exp description, ' ', predicate description
 	]
 ]
 
@@ -1024,7 +1098,7 @@ NSObject subclass: PKPegAstGen [
 NSObject subclass: SmalltalkTool [
 	
 	run [
-		| dict parser abStar abStar b c tExp alphaNumeric oMeta content contentString match |
+		| dict parser abStar abStar b c tExp alphaNumeric parameterized oMeta content contentString match |
 
 		ETTranscript setDebugMode: false.
 		abStar := PKRepetitionExpression alloc
@@ -1036,12 +1110,15 @@ NSObject subclass: SmalltalkTool [
 		parser := ('c' asExp repeat) seq: parser seq: PKEmptyExpression uniqueInstance.
 
 		alphaNumeric  := PKAlphanumericExpression new repeat.
+		parameterized := (PKNumericExpression new bind: 'num') parameterTarget: 'num' selector: #isLessThan: arguments: {'7'}.
 		oMeta := PKParser alloc initWithNewGrammar: 'Test'.
 		oMeta addRule: 'alphaNum'  expression: alphaNumeric.
 		ETTranscript show: (parser parseInput: 'cab' asInputStream); cr.
 		ETTranscript show: alphaNumeric; cr.
 		ETTranscript show: (alphaNumeric parseInput: 'Good34'  asInputStream); cr.
 		ETTranscript show: (alphaNumeric parseInput: 'testing4'  asInputStream); cr.
+		ETTranscript show: (parameterized parseInput: '6' asInputStream); cr.
+		ETTranscript show: (parameterized parseInput: '8' asInputStream); cr.
 		ETTranscript show: (oMeta match: 'testing4' rule: 'alphaNum'); cr.
 		oMeta := self pegGrammar.
 
