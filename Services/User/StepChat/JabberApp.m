@@ -91,13 +91,18 @@ NSString * passwordForJID(JID * aJID)
 	while (nil == account)
 	{
 		ABMultiValue * jids = [[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty];
-		NSString * jidString = [jids valueAtIndex:0];
+		NSString * jidString = nil;
+		if ([jids count] > 0)
+		{
+			jidString = [jids valueAtIndex:0];
+		}
 
 		while (nil == jidString)
         {
         	[self getAccountInfo];
 			jids = [[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty];
-			jidString = [jids valueAtIndex:0];
+			if([jids count] >0)
+				jidString = [jids valueAtIndex:0];
 		}
 
 		JID *tmpJid = [JID jidWithString:jidString];
