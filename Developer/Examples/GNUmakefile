@@ -10,7 +10,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 -include ../../modules.make
 
 export bookmarkkitexample ?= no
-export coreobjectexample ?= yes
+export coreobjectexample ?= no
 export etoilethreadexample ?= no
 export microblogpushexample ?=yes
 export ogrekitexample ?= yes
