@@ -144,17 +144,17 @@ NSObject subclass: NSDelayInvocation [
 ]
 
 NSObject subclass: PKParseAction [
-	| selector argumentsName |
+	| selector argumentNames |
 	
-	initWithSelector: sel argumentsName: args [
+	initWithSelector: sel argumentNames: args [
 		selector := sel.
-		argumentsName := args.
+		argumentNames := args.
 	]
 
 	invocationInEnvironment: env [
 		| argsBuild |
 		argsBuild := NSMutableArray new.
-		argumentsName do: [:each |
+		argumentNames do: [:each |
 			| value |
 			value := env objectForKey: each.
 			value == nil ifTrue: [NSException raise: 'ParserKit' format: 'Unknown binding: ', each].
@@ -162,15 +162,33 @@ NSObject subclass: PKParseAction [
 		].
 		^NSDelayInvocation invocationWithSelector: selector arguments: argsBuild
 	]
+	
+	messageString [
+		| messageString |
+		(selector description hasSuffix: ':') ifTrue: [
+			| selectorParts |
+			selectorParts := selector description componentsSeparatedByString: ':'.
+			selectorParts := selectorParts zippedCollectionWithCollection: argumentNames andBlock: [ 
+				:first :second |
+				first, ': ', second
+			].
+			messageString := selectorParts componentsJoinedByString: ' '.
+		] ifFalse: [
+			messageString := selector description.
+		].
+		^messageString substringWithRange: (NSValue rangeWithLocation: 1 length: (messageString length - 1))
+	]
+
+	description [ ^ '[', self messageString, ']' ]
 ]
 
 
-NSObject subclass: PKParsePredicate [
-	| targetName selector argumentNames |
+PKParseAction subclass: PKParsePredicate [
+	| targetName |
 	initWithTargetName: trgt selector: sel argumentNames: args [
+		super initWithSelector: sel argumentNames: args.
 		targetName := trgt.
-		selector := sel.
-		argumentNames := args.
+		^self
 	]
 
 	succeedsInEnvironment: env [
@@ -191,14 +209,7 @@ NSObject subclass: PKParsePredicate [
 	]
 	
 	description [
-		| selectorParts messageString |
-		selectorParts := selector description componentsSeparatedByString: ':'.
-		selectorParts := selectorParts zippedCollectionWithCollection: argumentNames andBlock: [ 
-			:first :second |
-			first, ': ', second
-		].
-		messageString := selectorParts componentsJoinedByString: ' '.
-		^'?(', targetName, ' ', (messageString substringWithRange: (NSValue rangeWithLocation: 1 length: messageString length - 1)), ')'.
+		^'?(', targetName, ' ', self messageString, ')'.
 	]
 ]
 	
@@ -336,7 +347,7 @@ NSObject subclass: PKParseExpression [
 
 	actionSelector: aSel arguments: args  [
 		|action|
-		action := PKParseAction alloc initWithSelector: aSel argumentsName: args.
+		action := PKParseAction alloc initWithSelector: aSel argumentNames: args.
 		^PKActionExpression alloc initWithExp: self action: action
 	]
 
@@ -372,6 +383,8 @@ NSObject subclass: PKParseExpression [
 		^match isFailure ifTrue: [aBlock value]
 						 ifFalse: [ match ]
 	]
+
+	isMemoizable [ ^true ]
 
 ]
 
@@ -464,6 +477,9 @@ PKParseExpression subclass: PKComposeExpression [
 	]
 
 	expression [^exp]
+
+	" Non-Memoizability is inherited. "
+	isMemoizable [ ^exp isMemoizable ]
 ]
 
 PKComposeExpression subclass: PKActionExpression [
@@ -484,6 +500,7 @@ PKComposeExpression subclass: PKActionExpression [
 		
 		^match
 	]
+	description [ ^exp description, ' -> ', action description ]
 ]
 
 PKComposeExpression subclass: PKParameterizedExpression [
@@ -497,16 +514,18 @@ PKComposeExpression subclass: PKParameterizedExpression [
 		match := exp parseInput: list.
 		^match isSuccess ifTrue: [
 			(predicate succeedsInEnvironment: (list environment)) ifTrue: [ match ]
-				ifFalse: [
-					list popPosition.
-					PKParseFail alloc initWithInput: list description: ('Expected ', exp description, ' to satisfy parameter ', predicate description)]
-			]
-		ifFalse: [ match ].
+			ifFalse: [
+				list popPosition.
+				PKParseFail alloc initWithInput: list
+				                    description: ('Expected ', exp description, ' to satisfy parameter ', predicate description)].
+		] ifFalse: [ match ].
 	]
 	
 	description [
 		^exp description, ' ', predicate description
 	]
+	
+	isMemoizable [ ^false ]
 ]
 
 PKComposeExpression subclass: PKNonTerminalExpression [
@@ -528,7 +547,8 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 				| position |
 				position := list position.
 				match := exp parseInput: list.
-				list  addMatch: match at: position named: name.
+				" Only memoize the matches from expressions for which it is safely possible. "
+				exp isMemoizable ifTrue: [list addMatch: match at: position named: name].
 			] ifFalse: [match isSuccess ifTrue: [
 				ETTranscript debug: 'Pushing back position: '; debug: match stopPosition; debugCr.
 				list pushPosition: match stopPosition]].
@@ -538,7 +558,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 	]
 
 	setExpression: anExp [ exp := anExp ]
-	description [^' ', name, ' ']
+	description [^name]
 ]
 
 PKComposeExpression subclass: PKAlphanumericExpression [
@@ -591,7 +611,7 @@ PKParseExpression subclass: PKEmptyExpression [
 	]
 
 	description [
-		^ '$ '
+		^ '$'
 	]
 ]
 
@@ -619,7 +639,7 @@ PKParseExpression subclass: PKSequenceExpression [
 	]
 
 	description [
-		^e1 description, e2 description
+		^e1 description, ' ', e2 description
 	]
 ]
 
@@ -637,6 +657,9 @@ PKComposeExpression subclass: PKBindExpression [
 		match bind: name.
 		^match
 	]
+
+	description [ ^'(', exp description, '):', name ]
+	
 ]
 
 PKComposeExpression subclass: PKLookAheadExpression [
@@ -648,6 +671,8 @@ PKComposeExpression subclass: PKLookAheadExpression [
 		match isFailure ifFalse: [list popPosition].
 		^match
 	]
+	
+	description [ ^'!!(', exp description, ')' ]
 ]
 
 PKComposeExpression subclass: PKNegateExpression [
@@ -658,7 +683,7 @@ PKComposeExpression subclass: PKNegateExpression [
 	]
 
 	description [
-		^'!(',exp description,')'
+		^'!(',exp expression description,')'
 	]
 
 	parseInput: list [
@@ -699,7 +724,7 @@ PKParseExpression subclass: PKAlternateExpression [
 	 ]
 
 	description [
-		^' ', first description, ' / ', second description, ' '
+		^first description, ' / ', second description
 	]
 ]
 
@@ -745,7 +770,7 @@ PKParseExpression subclass: PKNonTerminalLookup [
 		^grammar apply: name
 	]
 
-	description [ ^' ', name, ' '	]
+	description [ ^name ]
 ]
 
 "--- Recursive Extend ---"
@@ -899,7 +924,7 @@ NSObject subclass: PKRules [
 
 	description [
 		| desc |
-		desc := name, ' {'.
+		desc := name, ' {\n'.
 		rules allKeys do: [:key | 
 			desc := desc, key, ' <- ', (rules objectForKey: key) expression description, '\n'
 		].
@@ -1121,7 +1146,7 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (parameterized parseInput: '8' asInputStream); cr.
 		ETTranscript show: (oMeta match: 'testing4' rule: 'alphaNum'); cr.
 		oMeta := self pegGrammar.
-
+		
 		ETTranscript show: oMeta; cr.
 		ETTranscript show: (oMeta at: 'Char'); cr.
 		ETTranscript show: (oMeta match:( '\\n') rule: 'Char').
