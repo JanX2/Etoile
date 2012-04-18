@@ -58,7 +58,11 @@ ifeq ($(coreobject), yes)
     SUBPROJECTS += CoreObject
 endif
 
-# Depends on CoreObject
+ifeq ($(iconkit), yes)
+   SUBPROJECTS += IconKit
+endif
+
+# Depends on CoreObject and IconKit
 ifeq ($(etoileui), yes)
     SUBPROJECTS += EtoileUI
 endif
@@ -75,10 +79,6 @@ endif
 
 ifeq ($(ogrekit), yes)
    SUBPROJECTS += OgreKit
-endif
-
-ifeq ($(iconkit), yes)
-   SUBPROJECTS += IconKit
 endif
 
 ifeq ($(systemconfig), yes)
