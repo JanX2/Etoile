@@ -386,6 +386,9 @@ NSObject subclass: PKParseExpression [
 
 	isMemoizable [ ^true ]
 
+	" We need a special memoizability check for lookups to non-terminals because
+	  they might recursively refer to themselves."
+	isMemoizableForNonTerminal: name inGrammar: grammar [ ^true ]
 ]
 
 PKParseExpression subclass: PKDotExpression [
@@ -480,6 +483,7 @@ PKParseExpression subclass: PKComposeExpression [
 
 	" Non-Memoizability is inherited. "
 	isMemoizable [ ^exp isMemoizable ]
+	isMemoizableForNonTerminal: name inGrammar: grammar [ ^exp isMemoizableForNonTerminal: name inGrammar: grammar ] 
 ]
 
 PKComposeExpression subclass: PKActionExpression [
@@ -526,6 +530,7 @@ PKComposeExpression subclass: PKParameterizedExpression [
 	]
 	
 	isMemoizable [ ^false ]
+	isMemoizableForNonTerminal: name inGrammar: grammar [ ^false ] 
 ]
 
 PKComposeExpression subclass: PKNonTerminalExpression [
@@ -641,6 +646,12 @@ PKParseExpression subclass: PKSequenceExpression [
 	description [
 		^e1 description, ' ', e2 description
 	]
+
+	isMemoizable [ ^e1 isMemoizable ifTrue: [e2 isMemoizable]
+			               ifFalse: [false] ]
+
+	isMemoziableForNonTerminal: name inGrammar: grammar [ ^ (e1 isMemoizableForNonTerminal: name inGrammar: grammar) and:
+		(e2 isMemoizableForNonTerminal: name inGrammar: grammar) ]
 ]
 
 PKComposeExpression subclass: PKBindExpression [
@@ -726,14 +737,20 @@ PKParseExpression subclass: PKAlternateExpression [
 	description [
 		^first description, ' / ', second description
 	]
+	
+	isMemoizable [ ^first isMemoizable ifTrue: [second isMemoizable]
+			                  ifFalse: [false] ]
+
+	isMemoziableForNonTerminal: name inGrammar: grammar [ ^ (first isMemoizableForNonTerminal: name inGrammar: grammar) and:
+		(second isMemoizableForNonTerminal: name inGrammar: grammar) ]
 ]
 
-PKParseExpression subclass: PKRepetitionExpression [
-	| e canBeEmpty |
+PKComposeExpression subclass: PKRepetitionExpression [
+	| canBeEmpty |
 
-	initWithExpression: exp canBeEmpty: aBool [
+	initWithExpression: anExp canBeEmpty: aBool [
 		super init.
-		e := exp.
+		exp := anExp.
 		canBeEmpty := aBool.
 		^self
 	]
@@ -742,19 +759,19 @@ PKParseExpression subclass: PKRepetitionExpression [
 		| match currentMatch |
 		match := PKParseMatch emptyMatch: list.
 		[
-			currentMatch := e parseInput: list.
+			currentMatch := exp parseInput: list.
 			currentMatch isSuccess
 		] whileTrue: [ 
 			ETTranscript debug: 'Merge repetition ', match matchText, ' with: ', currentMatch matchText; debugCr.
 			match := match sequenceWith: currentMatch.
 		].
 		^(match isEmpty and: canBeEmpty not) 
-            ifTrue: [list popPosition. PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', e description ]
+            ifTrue: [list popPosition. PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', exp description ]
 			ifFalse: [match]
 	]
 
 	description [
-		^e description , (canBeEmpty ifTrue: ['*'] ifFalse: ['+'])
+		^exp description , (canBeEmpty ifTrue: ['*'] ifFalse: ['+'])
 	]
 ]
 
@@ -770,6 +787,11 @@ PKParseExpression subclass: PKNonTerminalLookup [
 		^grammar apply: name
 	]
 
+	isMemoizable [ ^(grammar rules lookup: name ifFailed: [^false]) isMemoizableForNonTerminal: name inGrammar: grammar ]
+
+	isMemoizableForNonTerminal: aName inGrammar: aGrammar [ ^((grammar == aGrammar) and: (name = aName)) ifTrue: [true] 
+		ifFalse: [self isMemoizable]
+	]
 	description [ ^name ]
 ]
 
@@ -1037,6 +1059,8 @@ NSObject subclass: PKParser [
 		match setDelegate: delegate.
 		^match
 	]
+
+	rules  [ ^rules ]
    
 ]
 
