@@ -314,7 +314,13 @@ NSObject subclass: PKParseExpression [
 	]
 
 	or: exp [
-		^PKAlternateExpression alloc initWithExp: self or: exp.
+		| alternative |
+		((exp isKindOfClass: PKNAryAlternateExpression class) or: (exp isKindOfClass: PKAlternateExpression class)) ifTrue: [
+			alternative := PKNAryAlternateExpression new.
+			alternative addExpression: self.
+			alternative addExpressions: exp expressions.
+		] ifFalse: [ alternative := PKAlternateExpression alloc initWithExp: self or: exp].
+		^alternative
 	]
 
 	or: exp1 or: exp2 [
@@ -342,7 +348,13 @@ NSObject subclass: PKParseExpression [
 	]
 	
 	seq: exp [
-		^PKSequenceExpression alloc initWithFirst: self second: exp
+		| sequence |
+		((exp isKindOfClass: PKNArySequenceExpression class) or: (exp isKindOfClass: PKSequenceExpression class)) ifTrue: [
+			sequence := PKNArySequenceExpression new.
+			sequence addExpression: self.
+			sequence addExpressions: exp expressions.
+		] ifFalse: [ sequence := PKSequenceExpression alloc initWithFirst: self second: exp].
+		^sequence
 	]
 
 	actionSelector: aSel arguments: args  [
@@ -484,6 +496,47 @@ PKParseExpression subclass: PKComposeExpression [
 	" Non-Memoizability is inherited. "
 	isMemoizable [ ^exp isMemoizable ]
 	isMemoizableForNonTerminal: name inGrammar: grammar [ ^exp isMemoizableForNonTerminal: name inGrammar: grammar ] 
+]
+
+
+"Abstract compose expression with n subexpressions" 
+PKParseExpression subclass: PKNAryComposeExpression [
+	| expressions |
+
+	init [
+		super init.
+		expressions := NSMutableArray new.
+		^self
+	]
+
+	addExpression: exp
+	[
+		expressions addObject: exp.
+	]
+
+	addExpressions: exprs
+	[
+		expressions addObjectsFromArray: exprs.
+	]
+
+	parseInput: list [ 
+		^self subclassResponsibility
+	]
+
+	expressions [ ^expressions]
+
+	isMemoizableForNonTerminal: name inGrammar: grammar [
+		| result |
+		result := true.
+		expressions do: [ :exp|
+			result ifTrue: [
+				result := exp isMemoizableForNonTerminal: name inGrammar: grammar.
+			]
+		].
+		^result. 
+	]
+
+	isMemoizable [ ^self isMemoizableForNonTerminal: nil inGrammar: nil ]
 ]
 
 PKComposeExpression subclass: PKActionExpression [
@@ -643,6 +696,15 @@ PKParseExpression subclass: PKSequenceExpression [
 		] ifFalse: [ match1 ]
 	]
 
+	expressions [ ^{e1. e2} ]
+
+	seq: exp [
+		| multiSeq |
+		multiSeq := PKNArySequenceExpression new.
+		multiSeq addExpressions: self expressions.
+		^multiSeq seq: exp
+	]
+
 	description [
 		^e1 description, ' ', e2 description
 	]
@@ -652,6 +714,43 @@ PKParseExpression subclass: PKSequenceExpression [
 
 	isMemoziableForNonTerminal: name inGrammar: grammar [ ^ (e1 isMemoizableForNonTerminal: name inGrammar: grammar) and:
 		(e2 isMemoizableForNonTerminal: name inGrammar: grammar) ]
+]
+
+PKNAryComposeExpression subclass: PKNArySequenceExpression [
+
+	parseInput: list [
+		| match |
+		match := PKParseMatch emptyMatch: list.
+		expressions do: [ :exp|
+			match isSuccess ifTrue: [
+				| currentMatch |
+				currentMatch := exp parseInput: list.
+				currentMatch isSuccess ifTrue: [ 
+					ETTranscript debug: 'Merge sequence ', match matchText, ' with: ', currentMatch matchText; debugCr.
+					match := match sequenceWith: currentMatch.
+				] ifFalse: [
+					list popPosition.
+					match := PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', exp description ]
+			]
+		].
+		^ match
+	]
+	
+	seq: exp
+	[
+		((exp isKindOfClass: PKNArySequenceExpression class) or: (exp isKindOfClass: PKSequenceExpression class)) ifTrue: [
+			self addExpressions: exp expressions.
+		] ifFalse: [ self addExpression: exp ].
+		^self
+	]
+
+	description [
+		^expressions leftFoldWithInitialValue: ''
+		                            intoBlock: [ :acc :exp|
+			('' = acc) ifTrue: [exp description]
+			          ifFalse: [acc, ' ', exp description]
+		]
+	]
 ]
 
 PKComposeExpression subclass: PKBindExpression [
@@ -734,6 +833,16 @@ PKParseExpression subclass: PKAlternateExpression [
 		 ]		
 	 ]
 
+	expressions [ ^{first. second} ]
+
+	or: exp [
+		| multiOr |
+		multiOr := PKNAryAlternateExpression new.
+		multiOr addExpression: first; addExpression: second.
+		
+		^multiOr or: exp.
+	]
+
 	description [
 		^first description, ' / ', second description
 	]
@@ -744,6 +853,37 @@ PKParseExpression subclass: PKAlternateExpression [
 	isMemoziableForNonTerminal: name inGrammar: grammar [ ^ (first isMemoizableForNonTerminal: name inGrammar: grammar) and:
 		(second isMemoizableForNonTerminal: name inGrammar: grammar) ]
 ]
+
+PKNAryComposeExpression subclass: PKNAryAlternateExpression [
+	parseInput: list [
+		| match |
+		match := PKParseFail alloc initWithInput: list description: 'Expected ', self description.
+		expressions do: [ :exp |
+			match isSuccess ifFalse: [
+				| currentMatch |
+				currentMatch := exp parseInput: list.
+				currentMatch isSuccess ifTrue: [ match := currentMatch ]
+			]
+		].
+		^match
+	]
+	
+	description [
+		^expressions leftFoldWithInitialValue: ''
+		                            intoBlock: [ :acc :exp|
+			('' = acc) ifTrue: [exp description]
+			          ifFalse: [acc, ' / ', exp description]
+		]
+	]
+
+	or: exp [
+		((exp isKindOfClass: PKNAryAlternateExpression class) or: (exp isKindOfClass: PKAlternateExpression class)) ifTrue: [
+			self addExpressions: exp expressions.
+		] ifFalse: [ self addExpression: exp ]
+	]
+]
+
+
 
 PKComposeExpression subclass: PKRepetitionExpression [
 	| canBeEmpty |
@@ -1147,7 +1287,7 @@ NSObject subclass: PKPegAstGen [
 NSObject subclass: SmalltalkTool [
 	
 	run [
-		| dict parser abStar abStar b c tExp alphaNumeric parameterized oMeta content contentString match |
+		| dict parser abStar b c tExp alphaNumeric parameterized multiSequence multiAlternate oMeta content contentString match |
 
 		ETTranscript setDebugMode: false.
 		abStar := PKRepetitionExpression alloc
@@ -1155,14 +1295,19 @@ NSObject subclass: SmalltalkTool [
 					 canBeEmpty: false; yourself.
 
 		parser := abStar or: 'a' asExp.
-
 		parser := ('c' asExp repeat) seq: parser seq: PKEmptyExpression uniqueInstance.
-
 		alphaNumeric  := PKAlphanumericExpression new repeat.
 		parameterized := (PKNumericExpression new bind: 'num') parameterTarget: 'num' selector: #isLessThan: arguments: {'7'}.
+		multiSequence := PKNArySequenceExpression new.
+		multiSequence addExpression: ('c' asExp repeat); addExpression: parser; addExpression: PKEmptyExpression uniqueInstance.
+		multiAlternate := PKNAryAlternateExpression new.
+		multiAlternate addExpression: ('c' asExp); addExpression: ('d' asExp); addExpression: ('e' asExp).
+		multiAlternate := multiAlternate repeat.
 		oMeta := PKParser alloc initWithNewGrammar: 'Test'.
 		oMeta addRule: 'alphaNum'  expression: alphaNumeric.
 		ETTranscript show: (parser parseInput: 'cab' asInputStream); cr.
+		ETTranscript show: (multiSequence parseInput: 'cab' asInputStream); cr.
+		ETTranscript show: (multiAlternate parseInput: 'cde' asInputStream); cr.
 		ETTranscript show: alphaNumeric; cr.
 		ETTranscript show: (alphaNumeric parseInput: 'Good34'  asInputStream); cr.
 		ETTranscript show: (alphaNumeric parseInput: 'testing4'  asInputStream); cr.
