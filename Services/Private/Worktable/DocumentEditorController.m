@@ -6,7 +6,7 @@
 	License:  Modified BSD (see COPYING)
  */
 
-#import <ObjectMerging/COEditingContext.h>
+#import <CoreObject/COEditingContext.h>
 #import <EtoileUI/ETLayoutItem+CoreObject.h>
 #import "DocumentEditorController.h"
 
@@ -26,12 +26,30 @@
 	[[ETApp mainMenu] addItem: [ETApp arrangeMenuItem]];
 }
 
+/* For debugging */
+/*- (void) showBasicRectangleItems
+{
+	ETLayoutItem *rectItem = RETAIN([itemFactory rectangle]);
+	ETUUID *uuid = [rectItem UUID];
+
+	[rectItem becomePersistentInContext: ctxt rootObject: rectItem];
+	[rectItem commit];
+	[[itemFactory windowGroup] addItem: rectItem];
+
+	[ctxt unloadRootObjectTree: rectItem];
+
+	ETLayoutItem *newRectItem = [ctxt objectWithUUID: uuid];
+	//[newRectItem setStyle: [ETShape rectangleShapeWithRect: [newRectItem contentBounds]]];
+	[[itemFactory windowGroup] addItem: newRectItem];
+}*/
+
 - (void) applicationDidFinishLaunching: (NSNotification *)notif
 {
 	[self setUpMenus];
 
+	//COEditingContext *ctxt = [COEditingContext contextWithURL: [NSURL fileURLWithPath: [@"~/TestDocumentStore" stringByExpandingTildeInPath]]];
 	COEditingContext *ctxt = [COEditingContext contextWithURL: 
-		[NSURL fileURLWithPath: [@"~/TestDocumentStore" stringByExpandingTildeInPath]]];
+		[NSURL fileURLWithPath: [@"~/TestObjectStore" stringByExpandingTildeInPath]]];
 
 	[COEditingContext setCurrentContext: ctxt];
 
@@ -62,11 +80,12 @@
 
 	/* Set the type of the documented to be created by default with 'New' in the menu */
 	[self setCurrentObjectType: mainType];
-	
+
+	//[self showBasicRectangleItemsForDebugging];
 	//[self newDocument: nil];
 	//[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"kETOpenedDocumentUUIDs"];
 	[self showPreviouslyOpenedDocuments];
-	return;
+
 	ETLayoutItemGroup *picker = [itemFactory itemGroupWithRepresentedObject: [ETAspectRepository mainRepository]];
 	ETController *controller = AUTORELEASE([[ETController alloc] init]);
 	ETItemTemplate *template = [controller templateForType: [controller currentObjectType]];
@@ -159,13 +178,23 @@
 {
 	[self rememberOpenedDocumentItem: anItem];
 	// Hmm, not sure that's the proper place to commit
-	[[COEditingContext currentContext] commit];
+	[[COEditingContext currentContext] commitWithType: @"Item Creation" shortDescription: @"Created Compound Document"];
 }
 
 // Won't be called on quit, -terminate: doesn't close the windows with -performClose:
 - (void) willCloseDocumentItem: (ETLayoutItem *)anItem
 {
 	[self rememberClosedDocumentItem: anItem];
+}
+
+- (IBAction) undo: (id)sender
+{
+	[[[self activeItem] commitTrack] undo];
+}
+
+- (IBAction) redo: (id)sender
+{
+	[[[self activeItem] commitTrack] redo];
 }
 
 @end
