@@ -24,7 +24,7 @@
 
 	/* Mapping of each specification identifier to multiple identifiers 
 	   supported as synonyms (make compatibility straightforward) */
-	NSMutableDictionary *_specIdentifiers; 
+	NSDictionary *_specIdentifiers; 
 }
 
 + (IKIconTheme *) theme;
