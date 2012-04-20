@@ -6,9 +6,9 @@
 	License:  Modified BSD  (see COPYING)
  */
 
-#import <ObjectMerging/COCommitTrack.h>
-#import <ObjectMerging/COHistoryTrack.h>
-#import <ObjectMerging/COObject.h>
+#import <CoreObject/COCommitTrack.h>
+#import <CoreObject/COHistoryTrack.h>
+#import <CoreObject/COObject.h>
 #import "OMBrowserController.h"
 #import "OMLayoutItemFactory.h"
 #import "OMAppController.h"

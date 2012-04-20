@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		6068BE081474286400953B26 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6068BDF21474283C00953B26 /* EtoileFoundation.framework */; };
-		6068BE091474286D00953B26 /* ObjectMerging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6068BE011474284000953B26 /* ObjectMerging.framework */; };
 		6068BE301474287F00953B26 /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6068BE1B1474287900953B26 /* EtoileUI.framework */; };
 		6068BE37147429E000953B26 /* OMAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6068BE36147429E000953B26 /* OMAppController.m */; };
 		6068BE4514742B2800953B26 /* OMLayoutItemFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 6068BE4414742B2800953B26 /* OMLayoutItemFactory.m */; };
+		60734610154176DD002558C7 /* CoreObject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6073460B154176D4002558C7 /* CoreObject.framework */; };
 		60E6AB15147AB5EC00AD684D /* OMBrowserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E6AB14147AB5EC00AD684D /* OMBrowserController.m */; };
 		60E6AC0D147B9B4200AD684D /* IconKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60E6AC0C147B9B3B00AD684D /* IconKit.framework */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -48,27 +48,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 6072CF691360E144003256C5;
 			remoteInfo = PlugInExample;
-		};
-		6068BE001474284000953B26 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6686BDAC12592BDA0065DE1A;
-			remoteInfo = ObjectMerging;
-		};
-		6068BE021474284000953B26 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 791B4E2D1299C79300CCF472;
-			remoteInfo = Test;
-		};
-		6068BE041474284000953B26 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 66D099C4129AE111006BEDC3;
-			remoteInfo = StoreTest;
 		};
 		6068BE1A1474287900953B26 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -147,13 +126,6 @@
 			remoteGlobalIDString = 605AD43A13BF8D8500755772;
 			remoteInfo = Worktable;
 		};
-		6068BE311474289900953B26 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 6686BDAB12592BDA0065DE1A;
-			remoteInfo = ObjectMerging;
-		};
 		6068BE331474289900953B26 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */;
@@ -161,25 +133,32 @@
 			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41;
 			remoteInfo = EtoileUI;
 		};
-		608AAF511479715E00DF2F57 /* PBXContainerItemProxy */ = {
+		6073460A154176D4002558C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 603647AB0E409244003377E0;
-			remoteInfo = EtoileFoundation;
+			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6686BDAC12592BDA0065DE1A /* CoreObject.framework */;
+			remoteInfo = CoreObject;
+		};
+		6073460C154176D4002558C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 791B4E2D1299C79300CCF472 /* Test */;
+			remoteInfo = Test;
+		};
+		6073460E154176D4002558C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 66D099C4129AE111006BEDC3 /* StoreTest */;
+			remoteInfo = StoreTest;
 		};
 		60E6AC0B147B9B3B00AD684D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
-			remoteInfo = IconKit;
-		};
-		60E6AC36147B9D0300AD684D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = IconKit;
 		};
 /* End PBXContainerItemProxy section */
@@ -193,12 +172,12 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
-		6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ObjectMerging4.xcodeproj; path = ../../../Frameworks/ObjectMerging/ObjectMerging4.xcodeproj; sourceTree = SOURCE_ROOT; };
 		6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileUI.xcodeproj; path = ../../../Frameworks/EtoileUI/EtoileUI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		6068BE35147429E000953B26 /* OMAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMAppController.h; sourceTree = "<group>"; };
 		6068BE36147429E000953B26 /* OMAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMAppController.m; sourceTree = "<group>"; };
 		6068BE4314742B2800953B26 /* OMLayoutItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMLayoutItemFactory.h; sourceTree = "<group>"; };
 		6068BE4414742B2800953B26 /* OMLayoutItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMLayoutItemFactory.m; sourceTree = "<group>"; };
+		60734604154176D4002558C7 /* CoreObject.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoreObject.xcodeproj; path = ../../../Frameworks/CoreObject/CoreObject.xcodeproj; sourceTree = SOURCE_ROOT; };
 		60E6AB13147AB5EC00AD684D /* OMBrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMBrowserController.h; sourceTree = "<group>"; };
 		60E6AB14147AB5EC00AD684D /* OMBrowserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMBrowserController.m; sourceTree = "<group>"; };
 		60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = IconKit.xcodeproj; path = ../../../Frameworks/IconKit/IconKit.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -212,8 +191,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6068BE081474286400953B26 /* EtoileFoundation.framework in Frameworks */,
-				6068BE091474286D00953B26 /* ObjectMerging.framework in Frameworks */,
 				6068BE301474287F00953B26 /* EtoileUI.framework in Frameworks */,
+				60734610154176DD002558C7 /* CoreObject.framework in Frameworks */,
 				60E6AC0D147B9B4200AD684D /* IconKit.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 			);
@@ -265,7 +244,7 @@
 			isa = PBXGroup;
 			children = (
 				6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */,
-				6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */,
+				60734604154176D4002558C7 /* CoreObject.xcodeproj */,
 				6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */,
 				60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -315,16 +294,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6068BDFB1474284000953B26 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				6068BE011474284000953B26 /* ObjectMerging.framework */,
-				6068BE031474284000953B26 /* Test */,
-				6068BE051474284000953B26 /* StoreTest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		6068BE0D1474287900953B26 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -339,6 +308,16 @@
 				6068BE2B1474287900953B26 /* TableExample.app */,
 				6068BE2D1474287900953B26 /* FormExample.app */,
 				6068BE2F1474287900953B26 /* Worktable.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		60734605154176D4002558C7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6073460B154176D4002558C7 /* CoreObject.framework */,
+				6073460D154176D4002558C7 /* Test */,
+				6073460F154176D4002558C7 /* StoreTest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -365,10 +344,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				6068BE321474289900953B26 /* PBXTargetDependency */,
 				6068BE341474289900953B26 /* PBXTargetDependency */,
-				608AAF521479715E00DF2F57 /* PBXTargetDependency */,
-				60E6AC37147B9D0300AD684D /* PBXTargetDependency */,
 			);
 			name = ObjectManager;
 			productInstallPath = "$(HOME)/Applications";
@@ -398,6 +374,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 60734605154176D4002558C7 /* Products */;
+					ProjectRef = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
+				},
+				{
 					ProductGroup = 6068BDE91474283C00953B26 /* Products */;
 					ProjectRef = 6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */;
 				},
@@ -408,10 +388,6 @@
 				{
 					ProductGroup = 60E6AC08147B9B3B00AD684D /* Products */;
 					ProjectRef = 60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */;
-				},
-				{
-					ProductGroup = 6068BDFB1474284000953B26 /* Products */;
-					ProjectRef = 6068BDFA1474284000953B26 /* ObjectMerging4.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -448,27 +424,6 @@
 			fileType = wrapper.cfbundle;
 			path = PlugInExample.plugin;
 			remoteRef = 6068BDF51474283C00953B26 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		6068BE011474284000953B26 /* ObjectMerging.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ObjectMerging.framework;
-			remoteRef = 6068BE001474284000953B26 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		6068BE031474284000953B26 /* Test */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = Test;
-			remoteRef = 6068BE021474284000953B26 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		6068BE051474284000953B26 /* StoreTest */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = StoreTest;
-			remoteRef = 6068BE041474284000953B26 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		6068BE1B1474287900953B26 /* EtoileUI.framework */ = {
@@ -548,6 +503,27 @@
 			remoteRef = 6068BE2E1474287900953B26 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		6073460B154176D4002558C7 /* CoreObject.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CoreObject.framework;
+			remoteRef = 6073460A154176D4002558C7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6073460D154176D4002558C7 /* Test */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = Test;
+			remoteRef = 6073460C154176D4002558C7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6073460F154176D4002558C7 /* StoreTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = StoreTest;
+			remoteRef = 6073460E154176D4002558C7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		60E6AC0C147B9B3B00AD684D /* IconKit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -584,25 +560,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		6068BE321474289900953B26 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = ObjectMerging;
-			targetProxy = 6068BE311474289900953B26 /* PBXContainerItemProxy */;
-		};
 		6068BE341474289900953B26 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = EtoileUI;
 			targetProxy = 6068BE331474289900953B26 /* PBXContainerItemProxy */;
-		};
-		608AAF521479715E00DF2F57 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = EtoileFoundation;
-			targetProxy = 608AAF511479715E00DF2F57 /* PBXContainerItemProxy */;
-		};
-		60E6AC37147B9D0300AD684D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = IconKit;
-			targetProxy = 60E6AC36147B9D0300AD684D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -653,14 +614,14 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../../../Frameworks/EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
 					"$(PROJECT_DIR)/../../../Frameworks/EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-					"$(PROJECT_DIR)/../../../Frameworks/ObjectMerging/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../../../Frameworks/CoreObject/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
 					"$(PROJECT_DIR)/../../../Frameworks/IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
 					"$(BUILT_PRODUCTS_DIR)",
 				);
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/../../../Frameworks/EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/ObjectMerging/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/../../../Frameworks/EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/CoreObject/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx10.6;
 			};

@@ -12,8 +12,8 @@
 #ifndef GNUSTEP
 #import <EtoileFoundation/GNUstep.h>
 #endif
-#import <ObjectMerging/COEditingContext.h>
-#import <ObjectMerging/COGroup.h>
+#import <CoreObject/COEditingContext.h>
+#import <CoreObject/COGroup.h>
 #import <EtoileUI/EtoileUI.h>
 
 /** An abstract controller class that provides access to the editing context. */

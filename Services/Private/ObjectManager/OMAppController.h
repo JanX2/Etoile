@@ -12,10 +12,10 @@
 #ifndef GNUSTEP
 #import <EtoileFoundation/GNUstep.h>
 #endif
-#import <ObjectMerging/COContainer.h>
-#import <ObjectMerging/COCustomTrack.h>
-#import <ObjectMerging/COEditingContext.h>
-#import <ObjectMerging/COGroup.h>
+#import <CoreObject/COContainer.h>
+#import <CoreObject/COCustomTrack.h>
+#import <CoreObject/COEditingContext.h>
+#import <CoreObject/COGroup.h>
 #import <EtoileUI/EtoileUI.h>
 
 @class OMLayoutItemFactory;

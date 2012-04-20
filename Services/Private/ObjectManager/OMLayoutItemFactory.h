@@ -12,7 +12,7 @@
 #ifndef GNUSTEP
 #import <EtoileFoundation/GNUstep.h>
 #endif
-#import <ObjectMerging/COGroup.h>
+#import <CoreObject/COGroup.h>
 #import <EtoileUI/EtoileUI.h>
 
 @class OMBrowserController;
