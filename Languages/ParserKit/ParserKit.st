@@ -113,7 +113,10 @@ NSObject subclass: NSDelayActionArray [
                    ifTrue: [each reduceOn: target]
 				   ifFalse: [each]]
 	]
-	description [^'Delay', anArray description]
+	description [
+		^anArray leftFoldWithInitialValue: 'Delay:'
+		                        intoBlock: [ :acc :action | acc, action description, ', ']
+	]
 ]
 
 NSObject subclass: NSDelayInvocation [
@@ -139,7 +142,10 @@ NSObject subclass: NSDelayInvocation [
 	]
 
 	description [
-		^ selector description, ' with args: ', args description
+		| argList |
+		argList := args leftFoldWithInitialValue: ''
+		intoBlock: [ :acc :arg | acc, arg description, ', ' ].
+		^ selector description, ' with args: (', argList, ')'
 	]
 ]
 
@@ -284,23 +290,35 @@ NSObject subclass: PKParseMatch [
 
 
 NSObject subclass: PKParseFail [
-	| input failedPosition describ delegate |
+	| input failedPosition describ delegate cause |
 
-	initWithInput: list description: string [
+	initWithInput: list description: string cause: theCause [
 		super init.
 		describ := string.
 		input := list.
+		cause := theCause.
 		failedPosition := input position.
 		^self
 	]
+	initWithInput: list description: string [
+		^self initWithInput: list description: string cause: nil
+	]
+
+	cause [
+		^(nil == cause) ifTrue: [ self ]
+		                ifFalse: [ cause cause ]
+	]  
 	setDelegate: anObject  [ delegate := anObject]
 	stopPosition [^failedPosition]
 	isFailure [ ^true ]
 	isSuccess [ ^false ]
 	matchAction [^nil]
 	bind: name ["No sensible thing can be done here"]
-	description [ 
-		^'PKMatchFailure  ( At: ''',   failedPosition description, ''', ', input stream, ') ', describ, '\n' 
+	description [
+		| desc |
+		 desc := 'PKMatchFailure  ( At: ''',   failedPosition description, ''', ', input stream, ') ', describ, '\n'.
+		(nil == cause) ifFalse: [desc := desc, 'Cause: ', self cause description, '\n'].
+		^desc. 
 	]
 ]
 
@@ -358,17 +376,21 @@ NSObject subclass: PKParseExpression [
 	]
 
 	actionSelector: aSel arguments: args  [
-		|action|
-		action := PKParseAction alloc initWithSelector: aSel argumentNames: args.
+		^self semanticAction: (PKParseAction alloc initWithSelector: aSel argumentNames: args).
+	]
+
+	semanticAction: action [
 		^PKActionExpression alloc initWithExp: self action: action
 	]
 
 	parameterTarget: trgt selector: aSel arguments: args [
-		| predicate |
-		predicate := PKParsePredicate alloc initWithTargetName: trgt selector: aSel argumentNames: args.
+		^self parameter: (PKParsePredicate alloc initWithTargetName: trgt selector: aSel argumentNames: args).
+	]
+
+	parameter: predicate [	
 		^PKParameterizedExpression alloc initWithExp: self predicate: predicate
 	]	
-
+	
 	seq: exp1 seq: exp2 [
 		^(self seq: exp1) seq: exp2
 	]
@@ -730,7 +752,8 @@ PKNAryComposeExpression subclass: PKNArySequenceExpression [
 					match := match sequenceWith: currentMatch.
 				] ifFalse: [
 					list popPosition.
-					match := PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', exp description ]
+					match := PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', exp description
+					                                 cause: currentMatch ]
 			]
 		].
 		^ match
@@ -906,7 +929,8 @@ PKComposeExpression subclass: PKRepetitionExpression [
 			match := match sequenceWith: currentMatch.
 		].
 		^(match isEmpty and: canBeEmpty not) 
-            ifTrue: [list popPosition. PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', exp description ]
+            ifTrue: [list popPosition. PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', exp description
+	                                                           cause: currentMatch ]
 			ifFalse: [match]
 	]
 
@@ -942,15 +966,64 @@ NSString extend [
 	]
 ]
 
+"The environment stack maintains a scoped list of all bound variables in an 
+ OMeta parse tree."
+NSObject subclass: PKEnvironmentStack [
+	| environmentStack top |
+	init [
+		environmentStack := NSMutableArray new.
+		top := NSMutableDictionary new.
+		^self
+	]
+
+	setValue: val forKey: key [
+		top setValue: val forKey: key.
+	]
+
+	setObject: obj forKey: key [
+		self setValue: obj forKey: key.
+	]
+
+	objectForKey: key [
+		| object |
+		object := top objectForKey: key.
+		^(object == nil) ifTrue: [ self searchStackFor: key ]
+		                ifFalse: [ object ]	
+	]
+
+	searchStackFor: key [
+		| object |
+		object := nil.
+		" The stack top is at index 0, so we can just iterate over the array to
+		  return the most locally scoped binding first. "
+		environmentStack do: [ :each |
+			(nil == object) ifTrue: [
+				object := each objectForKey: key.
+			]
+		].
+		^object
+	]
+
+	pushEnvironment [
+		environmentStack insertObject: top atIndex: 0.
+		top := NSMutableDictionary new.
+	]
+
+	popEnvironment [
+		top := environmentStack objectAtIndex: 0.
+		environmentStack removeObjectAtIndex: 0.
+	]
+]
+	
 NSObject subclass: PKInputStream [
-    | memo stream position positionStack positionStack currentEnvironment |
+    | memo stream position positionStack environmentStack |
 
     initWithStream: input [
         stream := input.
         memo := NSMutableDictionary new.
 		positionStack := NSMutableArray new.
 		position := 0.
-		currentEnvironment := NSMutableDictionary new.
+		environmentStack := PKEnvironmentStack new.
 		^self
 	]
 
@@ -959,18 +1032,16 @@ NSObject subclass: PKInputStream [
 	]
 
 	inEnvironmentDo: aBlock [
-		| previousEnvironment |
-		previousEnvironment := currentEnvironment.
-		currentEnvironment := NSMutableDictionary new.
+		environmentStack pushEnvironment.
 		aBlock value.
-		currentEnvironment := previousEnvironment
+		environmentStack popEnvironment.
 	]
 
 	bind: name object: anObject [
-		currentEnvironment setValue: anObject forKey: name
+		environmentStack setValue: anObject forKey: name
 	]
 
-	environment [^currentEnvironment ]
+	environment [^environmentStack ]
 
     addMatch: parserMatch at: position named: aString [
 		| matchList |
@@ -1187,7 +1258,7 @@ NSObject subclass: PKParser [
 	apply: rule [
 		| exp |
 		exp := rules lookup: rule ifFailed: [
-			NSException raise: 'ParserKit' format: 'Invalid rule'
+			NSException raise: 'ParserKit' format: ('Invalid rule ', rule)
 		].
 		^exp parseInput: input.
 	]
@@ -1245,11 +1316,12 @@ NSObject subclass: PKPegAstGen [
 
 	]
 
-	makeExpression: expression modifier: mode bind: name [
+	makeExpression: expression modifier: mode bind: name predicate: predicate [
 		mode = '+' ifTrue: [ expression := expression repreatOneLeast ].
 		mode = '*' ifTrue: [ expression := expression repeat ].
 		mode = '?' ifTrue: [ expression := expression maybe ].
 		name = '' ifFalse: [ expression := expression bind: name ].
+		predicate = '' ifFalse: [ expression parameter: predicate ].
 		^expression
 	]
 
@@ -1390,10 +1462,15 @@ NSObject subclass: SmalltalkTool [
 	smalltalkPegGrammar: parent [
 		| ocParser |
 		ocParser := parent subgrammar: 'SmalltalkOmeta'.
-		ocParser addRule: 'Unary' expression: (ocParser at: 'Identifier').
+		ocParser addRule: 'Nullary' expression: (((ocParser at: 'Identifier') bind: 'nullary')
+			actionSelector: #makeNullarySelector: arguments: {'nullary'}).
 		ocParser addRule: 'Keyword' expression: ((ocParser at: 'IdentStart') seq: (ocParser at: 'IdentCont') repeat seq: (ocParser at: 'COLON')).
-		ocParser addRule: 'KeywordMessage' expression: ((ocParser at: 'Keyword') seq: (ocParser at: 'Identifier')) repeatOneLeast.
-		ocParser addRule: 'Statements' expression: ((ocParser at: 'KeywordMessage') or: (ocParser at: 'Unary')).
+		ocParser addRule: 'KeywordMessagePart' expression: ((((ocParser at: 'Keyword') bind: 'selectorPart')
+			seq: ((ocParser at: 'Identifier') bind: 'argument'))
+				actionSelector: #makeKeywordMessagePart:argument: arguments: {'selectorPart'. 'argument'}).
+		ocParser addRule: 'KeywordMessage' expression: (((ocParser at: 'KeywordMessagePart') repeatOneLeast bind: 'selectorArgumentPairs')
+			actionSelector: #makeSelectorAndArguments: arguments: {'selectorArgumentPairs'}).
+		ocParser addRule: 'Statements' expression: ((ocParser at: 'KeywordMessage') or: (ocParser at: 'Nullary')).
 		^ocParser
 	]
 
@@ -1422,6 +1499,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'AND' expression: (( '&' asExp seq: (oMeta at: 'Spacing')) actionSelector: #seqJunction arguments: {}).
 		oMeta addRule: 'LEFTARROW' expression: ( '<-' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'RIGHTARROW' expression: ( '->' asExp seq: (oMeta at: 'Spacing')).
+		oMeta addRule: 'CARET' expression: ('^' asExp seq: (oMeta at: 'Spacing')).
 		oMeta addRule: 'Char' expression: 
 			((('\' asExp seq: ({'n' . 'r' . 't' . ''''. '"' . '[' . ']'. '\'} joinAll bind: 'specialChar'))  
                           actionSelector: #parseSpecialChar: arguments: {'specialChar'})
@@ -1449,31 +1527,54 @@ NSObject subclass: SmalltalkTool [
 			or: '_' asExp).
 		oMeta addRule: 'IdentCont' expression: ((oMeta at: 'IdentStart') or: (PKRangeExpression alloc initFrom: '0' to: '9')).
 		oMeta addRule: 'Identifier' expression: ((oMeta at: 'IdentStart') seq: (oMeta at: 'IdentCont') repeat seq: (oMeta at: 'Spacing')).
-		oMeta addRule: 'Primary' expression: (((oMeta at: 'Identifier') seq: (oMeta at: 'LEFTARROW') not)
+		oMeta addRule: 'SuperRuleApplication' expression: (((oMeta at: 'CARET') seq: ((oMeta at: 'Identifier') bind: 'rule'))
+			actionSelector: #makeSuperRuleLookup: arguments: {'rule'}).
+		oMeta addRule: 'ForeignRuleApplication' expression: ((((oMeta at: 'Identifier') bind: 'grammar')
+			seq: (oMeta at: 'COLON') seq: (oMeta at: 'COLON')
+			seq: ((oMeta at: 'Identifier') bind: 'rule'))
+				actionSelector: #makeForeignRuleLookup:fromGrammar: arguments: {'rule'. 'grammar'}).
+		oMeta addRule: 'RuleApplication' expression: ((oMeta at: 'SuperRuleApplication')
+			or: (oMeta at: 'ForeignRuleApplication')
+			or: (((oMeta at: 'Identifier') bind: 'rule') 
+				actionSelector: #makeRuleLookup: arguments: {'rule'})).
+		oMeta addRule: 'Primary' expression: (((oMeta at: 'RuleApplication') seq: (oMeta at: 'LEFTARROW') not)
 			or: ((oMeta at: 'OPEN') seq: (oMeta at: 'Expression') seq: (oMeta at: 'CLOSE'))
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
 			or: ((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})).
 		oMeta addRule: 'Suffix' expression: ((((oMeta at: 'Primary') bind: 'expression')
             seq: (((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe bind: 'modifier')
-			seq: ((':' asExp seq: (oMeta at: 'Identifier')) maybe bind: 'bindingName'))
-			   actionSelector: #makeExpression:modifier:bind: arguments: {'expression'. 'modifier'. 'bindingName'}) .
+			seq: ((':' asExp seq: (oMeta at: 'Identifier')) maybe bind: 'bindingName')
+			seq: ((oMeta at: 'Predicate') maybe bind: 'predicate'))
+			   actionSelector: #makeExpression:modifier:bind:predicate: arguments: {'expression'. 'modifier'. 'bindingName'. 'predicate'}).
 		oMeta addRule: 'Prefix' expression: (((((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe bind: 'junction') 
             seq: ((oMeta at: 'Suffix') bind: 'expression'))
 			   actionSelector: #makePrefix:exp: arguments: {'junction'. 'expression'}).
-		oMeta addRule: 'Sequence' expression: ((oMeta at: 'Prefix') repeat 
-           seq: ((oMeta at: 'RIGHTARROW') 
-                    seq: (oMeta at: 'AOPEN') 
-					seq: (oMeta at: 'Statements') 
-					seq: (oMeta at: 'ACLOSE') ) maybe).
+		oMeta addRule: 'Action' expression: (((oMeta at: 'RIGHTARROW')
+			seq: (oMeta at: 'AOPEN')
+			seq: ((oMeta at: 'Statements') bind: 'actionStatements')
+			seq: (oMeta at: 'ACLOSE'))
+				actionSelector: #makeAction: arguments: {'actionStatements'}).
+		oMeta addRule: 'Predicate' expression: (((oMeta at: 'QUESTION') seq: (oMeta at: 'OPEN') seq: ((oMeta at: 'Identifier') bind: 'target')
+		    seq: ((oMeta at: 'Statements') bind: 'predicateMessage') seq: (oMeta at: 'CLOSE'))
+		       actionSelector: #makePredicate:target: arguments: {'predicateMessage'. 'target'}). 
+		oMeta addRule: 'Sequence' expression: ((((oMeta at: 'Prefix')  repeat bind: 'expressions')
+        	seq: ((oMeta at: 'Action') maybe bind: 'action'))
+				actionSelector: #makeSequenceExpression:action: arguments: {'expressions'. 'action'}).
 		oMeta addRule: 'Expression' expression: ((oMeta at: 'Sequence') seq: ((oMeta at: 'SLASH') seq: (oMeta at: 'Sequence')) repeat).
-		oMeta addRule: 'Definition' expression: ((oMeta at: 'Identifier') seq: (oMeta at: 'LEFTARROW') seq: (oMeta at: 'Expression')).
-		oMeta addRule: 'Grammar' expression: ((oMeta at: 'Spacing') seq: (oMeta at: 'Definition') repeatOneLeast).
-		oMeta addRule: 'Ometa' expression: ((oMeta at: 'Identifier')
-			seq: ((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'superGrammar')) maybe
+		oMeta addRule: 'Definition' expression: ((((oMeta at: 'Identifier') bind: 'ruleName')
+			seq: (oMeta at: 'LEFTARROW')
+			seq: ((oMeta at: 'Expression') bind: 'ruleExpression'))
+				actionSelector: #makeRule:expression: arguments: {'ruleName'. 'ruleExpression'}).
+		oMeta addRule: 'Grammar' expression: ((oMeta at: 'Spacing') seq: ((oMeta at: 'Definition') repeatOneLeast)).
+		oMeta addRule: 'SuperGrammarIdentifier' expression: (((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'super'))
+			actionSelector: #makeSuperGrammar: arguments: {'super'}).
+		oMeta addRule: 'Ometa' expression: ((((oMeta at: 'Identifier') bind: 'grammar')
+			seq: (((oMeta at: 'SuperGrammarIdentifier') maybe bind: 'superGrammar'))
             seq: (oMeta at: 'COPEN')
 			seq: ((oMeta at: 'Grammar') bind: 'grammarList')
-			seq: (oMeta at: 'CCLOSE')).
+			seq: (oMeta at: 'CCLOSE'))
+				actionSelector: #makeGrammar:parent:rules: arguments: {'grammar'. 'superGrammar'. 'grammarList'}).
 		oMeta addRule: 'OmetaList' expression: ((oMeta at: 'Spacing') 
             seq: (oMeta at: 'Ometa') repeatOneLeast 
 			seq: PKEmptyExpression uniqueInstance ).
