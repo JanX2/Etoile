@@ -1,7 +1,7 @@
 "
 ============================================================================
   ParserKit.st -- OMeta like parser implementation
-
+/NS
   Copyright (C) 2011 Mathieu Suen <mathieu@nebu.li>
 
   The parser have the same syntax that the OMeta one. Although the semantic 
@@ -78,6 +78,8 @@ NSObject extend [
 	canReduce [^false]
 	matchSize [ ^1 ]
 	isArray [^false]
+	joinAll [ ^self ]
+	sequenceAll [ ^self ]
 ]
 
 NSObject subclass: NSDelayActionArray [
@@ -107,10 +109,13 @@ NSObject subclass: NSDelayActionArray [
 
 	canReduce [^true]
 	reduceOn: target [
-		^anArray map: [:each | 
+		| result |
+		result := anArray map: [:each | 
 			each canReduce 
                    ifTrue: [each reduceOn: target]
-				   ifFalse: [each]]
+				   ifFalse: [each]].
+		(1 = (result count)) ifTrue: [ result := result objectAtIndex: 0 ].
+		^result.
 	]
 	description [
 		^anArray leftFoldWithInitialValue: 'Delay:'
@@ -487,7 +492,8 @@ PKParseExpression subclass: PKRangeExpression [
 	| from to |
 
 	initFrom: fromChar to: toChar [
-		self init.
+		(('0' = from) and: ('9' = to)) ifTrue: [^PKNumericExpression new].
+		super init.
 		from := fromChar.
 		to := toChar.
 		^self
@@ -506,6 +512,7 @@ PKParseExpression subclass: PKRangeExpression [
 	description [
 		^'[', from, '-', to, ']'
 	]
+	
 	
 ]
 
@@ -1517,10 +1524,7 @@ NSObject subclass: PKParserASTGenerator [
 
 	makeEmpty [^'']
 
-	singletonElement: arg  [
-		(arg isKindOfClass: NSArray class) ifTrue: [
-			(1 == arg count) ifTrue: [ arg := arg objectAtIndex: 0 ]
-		].
+	restrict: arg  [
 		^arg
 	]
 
@@ -1533,6 +1537,7 @@ NSObject subclass: PKParserASTGenerator [
 		| selector args |
 		selector := ''.
 		args := NSMutableArray new.
+		(components isKindOfClass: NSArray class) ifFalse: [ components := { components } ].
 		components do: [ :each |
 			selector := selector, (each objectForKey: 'selectorPart').
 			args addObject: (each objectForKey: 'argumentName').
@@ -1568,11 +1573,6 @@ NSObject subclass: PKParserASTGenerator [
 	] 
 
 	makeExpression: expression modifier: mode bind: name predicate: predicate [
-		" Strip the singletons out of the arrays they arrive in: "
-		expression := self singletonElement: expression.
-		name := self singletonElement: name.
-		mode := self singletonElement: mode.
-		predicate := self singletonElement: predicate.
 		mode = '+' ifTrue: [ expression := expression repeatOneLeast ].
 		mode = '*' ifTrue: [ expression := expression repeat ].
 		mode = '?' ifTrue: [ expression := expression maybe ].
@@ -1589,9 +1589,7 @@ NSObject subclass: PKParserASTGenerator [
 
 	makeSequenceExpression: expressions action: action [
 		| expression |
-		(1 = expressions count) ifTrue: [
-			expression := expressions objectAtIndex: 0
-		] ifFalse: [
+		(expressions isKindOfClass: NSArray class) ifTrue: [
 			expression := expressions leftFoldWithInitialValue: nil
 			                                         intoBlock: [ :acc :exp|
 				(nil == acc) ifTrue: [ exp ]
@@ -1605,6 +1603,8 @@ NSObject subclass: PKParserASTGenerator [
 					].
 					acc seq: exp ]
 			].
+		] ifFalse: [
+			expression := expressions.
 		].
 		action = '' ifFalse: [
 			expression := expression semanticAction: action
@@ -1824,23 +1824,23 @@ NSObject subclass: SmalltalkTool [
             seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
 		oMeta addRule: 'Spacing' expression: ((((oMeta at: 'Space') or: (oMeta at: 'Comment')) repeat) actionSelector: #makeEmpty arguments: {}).
 		oMeta addRule: 'HexDigit' expression: ((PKRangeExpression alloc initFrom: '0' to: '9') or: (PKRangeExpression alloc initFrom: 'A' to: 'F')).
-		oMeta addRule: 'DOT' expression: ((('.' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
-		oMeta addRule: 'COLON' expression: (((':' asExp bind: 'expr') seq: (oMeta at: 'Spacing'))actionSelector: #singletonElement: arguments: { 'expr' } ).
-		oMeta addRule: 'CLOSE' expression: ((( ')' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }). 
-		oMeta addRule: 'OPEN' expression: ((( '(' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
-		oMeta addRule: 'CCLOSE' expression: ((( '}' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }). 
-		oMeta addRule: 'COPEN' expression: ((( '{' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
-		oMeta addRule: 'ACLOSE' expression: ((( ']' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }). 
-		oMeta addRule: 'AOPEN' expression: ((( '[' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
-		oMeta addRule: 'PLUS' expression: ((('+' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
-		oMeta addRule: 'STAR' expression: ((('*' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
-		oMeta addRule: 'QUESTION' expression: ((('?' asExp bind: 'expr')  seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
-		oMeta addRule: 'NOT' expression: ((('!' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
+		oMeta addRule: 'DOT' expression: ((('.' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'COLON' expression: (((':' asExp bind: 'expr') seq: (oMeta at: 'Spacing'))actionSelector: #restrict: arguments: { 'expr' } ).
+		oMeta addRule: 'CLOSE' expression: ((( ')' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }). 
+		oMeta addRule: 'OPEN' expression: ((( '(' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'CCLOSE' expression: ((( '}' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }). 
+		oMeta addRule: 'COPEN' expression: ((( '{' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'ACLOSE' expression: ((( ']' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }). 
+		oMeta addRule: 'AOPEN' expression: ((( '[' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'PLUS' expression: ((('+' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'STAR' expression: ((('*' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'QUESTION' expression: ((('?' asExp bind: 'expr')  seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'NOT' expression: ((('!' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
 		oMeta addRule: 'SLASH' expression: (( '/' asExp seq: (oMeta at: 'Spacing')) actionSelector: #orJunction arguments: {}).
-		oMeta addRule: 'AND' expression: ((('&' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
-		oMeta addRule: 'LEFTARROW' expression: ((( '<-' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
-		oMeta addRule: 'RIGHTARROW' expression: ((( '->' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
-		oMeta addRule: 'CARET' expression: ((('^' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #singletonElement: arguments: { 'expr' }).
+		oMeta addRule: 'AND' expression: ((('&' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'LEFTARROW' expression: ((( '<-' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'RIGHTARROW' expression: ((( '->' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'CARET' expression: ((('^' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
 		oMeta addRule: 'Char' expression: 
 			((('\' asExp seq: ({'n' . 'r' . 't' . ''''. '"' . '[' . ']'. '\'} joinAll bind: 'specialChar'))  
                           actionSelector: #parseSpecialChar: arguments: {'specialChar'})
@@ -1868,7 +1868,7 @@ NSObject subclass: SmalltalkTool [
 			or: '_' asExp).
 		oMeta addRule: 'IdentCont' expression: ((oMeta at: 'IdentStart') or: (PKRangeExpression alloc initFrom: '0' to: '9')).
 		oMeta addRule: 'Identifier' expression: (((((oMeta at: 'IdentStart') seq: ((oMeta at: 'IdentCont') repeat)) bind: 'ident') seq: (oMeta at: 'Spacing'))
-			actionSelector: #singletonElement: arguments: {'ident'}).
+			actionSelector: #restrict: arguments: {'ident'}).
 		oMeta addRule: 'SuperRuleApplication' expression: (((oMeta at: 'CARET') seq: ((oMeta at: 'Identifier') bind: 'rule'))
 			actionSelector: #makeRuleLookup:fromSuperGrammar: arguments: {'rule'. 'superGrammar'}).
 		oMeta addRule: 'ForeignRuleApplication' expression: ((((oMeta at: 'Identifier') bind: 'grammar')
@@ -1881,7 +1881,7 @@ NSObject subclass: SmalltalkTool [
 				actionSelector: #makeRuleLookup:fromGrammar: arguments: {'rule'. 'grammar'})).
 		oMeta addRule: 'Primary' expression: ((((((oMeta at: 'RuleApplication') bind: 'expr') seq: (oMeta at: 'LEFTARROW') not)
 			or: (((oMeta at: 'OPEN') seq: ((oMeta at: 'Expression') bind: 'expr') seq: (oMeta at: 'CLOSE'))))
-				actionSelector: #singletonElement: arguments: {'expr'})
+				actionSelector: #restrict: arguments: {'expr'})
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
 			or: ((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})).
@@ -1915,7 +1915,7 @@ NSObject subclass: SmalltalkTool [
 			seq: ((oMeta at: 'Expression') bind: 'ruleExpression'))
 				actionSelector: #makeRule:expression: arguments: {'ruleName'. 'ruleExpression'}).
 		oMeta addRule: 'Grammar' expression: (((oMeta at: 'Spacing') seq: (((oMeta at: 'Definition') repeatOneLeast) bind: 'expr'))
-			actionSelector: #singletonElement: arguments: { 'expr'}).
+			actionSelector: #restrict: arguments: { 'expr'}).
 		oMeta addRule: 'SuperGrammarIdentifier' expression: (((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'super'))
 			actionSelector: #makeSuperGrammar: arguments: {'super'}).
 		oMeta addRule: 'Ometa' expression: ((((oMeta at: 'Identifier') bind: 'grammar')
@@ -1927,7 +1927,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'OmetaList' expression: (((oMeta at: 'Spacing') 
             seq: (((oMeta at: 'Ometa') repeatOneLeast) bind: 'grammars')
 			seq: PKEmptyExpression uniqueInstance)
-				actionSelector: #singletonElement: arguments: { 'grammars'}).
+				actionSelector: #restrict: arguments: { 'grammars'}).
 		^oMeta
 	]
 ]
