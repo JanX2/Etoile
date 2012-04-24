@@ -725,6 +725,22 @@ PKParseExpression subclass: PKEmptyExpression [
 	]
 ]
 
+PKParseExpression subclass: PKAnythingExpression [
+	| +instance |
+
+	+initialize [
+		instance := self new.
+	]
+
+	+uniqueInstance [
+		^instance
+	]
+
+	parseInput: list [ ^PKParseMatch alloc initWithInput: list length: 0]
+
+	description [ ^'']
+]
+
 PKParseExpression subclass: PKSequenceExpression [
  	| e1 e2 |
 
@@ -1327,10 +1343,13 @@ NSObject subclass: PKParser [
 	]
 	
 	apply: rule [
-		| exp |
+		| exp init |
 		exp := rules lookup: rule ifFailed: [
 			NSException raise: 'ParserKit' format: ('Invalid rule ', rule)
 		].
+		" If the grammar has a __init__ rule, it needs to be matched first. "
+		init := rules lookup: '__init__' ifFailed: [ nil ].
+		init ==	nil ifFalse: [ exp := init seq: exp ].
 		^exp parseInput: input.
 	]
 	
@@ -1662,6 +1681,8 @@ NSObject subclass: PKParserASTGenerator [
 
 	makeWildcard [^PKDotExpression new]
 
+	makeAnythingBind: name [ ^(PKAnythingExpression uniqueInstance) bind: name ]
+
 	join: list [
 		^list joinAll
 	]
@@ -1869,9 +1890,11 @@ NSObject subclass: SmalltalkTool [
 			seq: ((':' asExp seq: (oMeta at: 'Identifier')) maybe bind: 'bindingName')
 			seq: ((oMeta at: 'Predicate') maybe bind: 'predicate'))
 			   actionSelector: #makeExpression:modifier:bind:predicate: arguments: {'expression'. 'modifier'. 'bindingName'. 'predicate'}).
-		oMeta addRule: 'Prefix' expression: (((((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe bind: 'junction') 
+		oMeta addRule: 'Prefix' expression: ((((((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe bind: 'junction') 
             seq: ((oMeta at: 'Suffix') bind: 'expression'))
-			   actionSelector: #makePrefix:exp: arguments: {'junction'. 'expression'}).
+			   actionSelector: #makePrefix:exp: arguments: {'junction'. 'expression'})
+			or: (((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'bindingName'))
+				actionSelector: #makeAnythingBind: arguments: {'bindingName'})).
 		oMeta addRule: 'Action' expression: (((oMeta at: 'RIGHTARROW')
 			seq: (oMeta at: 'AOPEN')
 			seq: ((oMeta at: 'Statements') bind: 'actionStatements')
