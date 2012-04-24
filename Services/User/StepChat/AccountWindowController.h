@@ -8,11 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+#import <XMPPKit/JID.h>
+#import "SCAccountInfoManager.h"
 
 @interface AccountWindowController : NSWindowController {
-	IBOutlet NSTextField * jidBox;
-	IBOutlet NSTextField * serverBox;
+        IBOutlet NSTextField * jidBox;
+        IBOutlet NSTextField * serverBox;
 }
+
 - (IBAction) yes:(id)sender;
 - (IBAction) no:(id)sender;
 @end

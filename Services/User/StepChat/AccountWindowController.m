@@ -7,28 +7,33 @@
 //
 
 #import "AccountWindowController.h"
-#import "JabberApp.h"
+#import <XMPPKit/XMPPAccount.h>
 
 @implementation AccountWindowController
+
 - (IBAction) yes:(id)sender
 {
-	JID * myJID = [JID jidWithString:[jidBox stringValue]];
-	NSString * myServer = [serverBox stringValue];
-	if(myServer != nil && ![myServer isEqualToString:@""])
-	{
-		[XMPPAccount setDefaultJID:myJID withServer:myServer];
-	}
-	else
-	{
-		[XMPPAccount setDefaultJID:myJID];
-	}
-	[[self window] close];
-	[NSApp stopModalWithCode:0];
+        JID *myJID = [JID jidWithString:[jidBox stringValue]];
+        NSString * myServer = [serverBox stringValue];
+        if(myServer != nil && ![myServer isEqualToString:@""])
+        {
+                [XMPPAccount setDefaultJID:myJID withServer:myServer];
+                SCAccountInfoManager *manager = [[SCAccountInfoManager alloc] init];
+                [manager writeJIDToFile:myJID atPath:[manager filePath]];
+        }
+        else
+        {
+                [XMPPAccount setDefaultJID:myJID];
+                SCAccountInfoManager *manager = [[SCAccountInfoManager alloc] init];
+                [manager writeJIDToFile:myJID atPath:[manager filePath]];
+        }
+        [[self window] close];
+        [NSApp stopModalWithCode:0];
 }
 - (IBAction) no:(id)sender
 {
-	[[self window] close];
-	[NSApp stopModalWithCode:-1];
-	[NSApp terminate:self];  //Slex
+        [[self window] close];
+        [NSApp stopModalWithCode:-1];
+        [NSApp terminate:self];  //Slex
 }
 @end

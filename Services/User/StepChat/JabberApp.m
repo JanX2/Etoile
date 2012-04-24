@@ -8,7 +8,7 @@
 
 #import "JabberApp.h"
 #import "PasswordWindowController.h"
-#import "AccountWindowController.h"
+#import "JabberApp.h"
 
 NSString * passwordForJID(JID * aJID)
 {
@@ -50,159 +50,165 @@ NSString * passwordForJID(JID * aJID)
 
 - (void) test:(id)timer
 {
-	NSLog(@"Idle timer fired");
+        NSLog(@"Idle timer fired");
 }
 - (NSTextView*) xmlLogBox
 {
-	return xmlLogBox;
+        return xmlLogBox;
 }
 - (void) getPassword:aJid
 {
-	PasswordWindowController * passwordWindow = [[PasswordWindowController alloc] initWithWindowNibName:@"PasswordBox" forJID:aJid];
-	if([NSApp runModalForWindow:[passwordWindow window]] == 0)
-	{
-		//User entered a password.
-	}
-	else
-	{
-		//Do something sensible here.
-	}
+        PasswordWindowController * passwordWindow = [[PasswordWindowController alloc] initWithWindowNibName:@"PasswordBox" forJID:aJid];
+        if([NSApp runModalForWindow:[passwordWindow window]] == 0)
+        {
+                //User entered a password.
+        }
+        else
+        {
+                //Do something sensible here.
+        }
 }
 
 - (void) getAccountInfo
 {
-	AccountWindowController * accountWindow = [[AccountWindowController alloc] initWithWindowNibName:@"AccountBox"];
-	if([NSApp runModalForWindow:[accountWindow window]] == 0)
-	{
-		//User entered an account.
-	}
-	else
-	{
-		//Do something sensible here.
-	}
+        accountWindow = [[AccountWindowController alloc] initWithWindowNibName:@"AccountBox"];
+        if([NSApp runModalForWindow:[accountWindow window]] == 0)
+        {
+                //User entered an account.
+        }
+        else
+        {
+                //Do something sensible here.
+        }
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-	//TODO: Make this a user defaults thing.
+        //TODO: Make this a user defaults thing.
 #ifdef NDEBUG
-	[[debugMenu menu] removeItem:debugMenu];
+        [[debugMenu menu] removeItem:debugMenu];
 #endif
-	while (nil == account)
-	{
-		ABMultiValue * jids = [[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty];
-		NSString * jidString = nil;
-		if ([jids count] > 0)
-		{
-			jidString = [jids valueAtIndex:0];
-		}
-
-		while (nil == jidString)
+        SCAccountInfoManager *manager = [[SCAccountInfoManager alloc] init];
+        while (nil == account)
         {
-        	[self getAccountInfo];
-			jids = [[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty];
-			if([jids count] >0)
-				jidString = [jids valueAtIndex:0];
-		}
+               /*ABMultiValue * jids = [[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty];*/               
+             NSString * jidString = nil;
+             jidString = [manager readJIDFromFileAtPath:[manager filePath]];   
+                 /*if ([jids count] > 0) 
+                {
+                        jidString = [jids valueAtIndex:0];
+                }*/
 
-		JID *tmpJid = [JID jidWithString:jidString];
-		NSString *password = passwordForJID(tmpJid);
+             while (nil == jidString || [jidString isEqualToString:@"N"])
+              {
+                [self getAccountInfo];
+                jidString = [manager readJIDFromFileAtPath:[manager filePath]];
+                       /* jids = [[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty];
+                        if ([jids count] >0)
+                        {
+                                jidString = [jids valueAtIndex:0];
+                        }*/
 
-		while (nil == password)
-		{
-			[self getPassword: tmpJid];
-			password = passwordForJID(tmpJid);
-		}
-		account = [[XMPPAccount alloc] initWithName:@"Default" 
+              }
+
+                JID *tmpJid = [JID jidWithString:jidString];
+                NSString *password = passwordForJID(tmpJid);
+
+                while (nil == password)
+                {
+                        [self getPassword: tmpJid];
+                        password = passwordForJID(tmpJid);
+                }
+                account = [[XMPPAccount alloc] initWithName:@"Default" 
                                                     withJid:tmpJid 
                                                withPassword:password];
-	}
-	rosterWindow = [[RosterController alloc] initWithNibName:@"RosterWindow"
-						      forAccount:account
-						      withRoster:[account roster]];
-	[[account roster] setDelegate:rosterWindow];
-	[[account connection] setPresenceDisplay:rosterWindow];
-	[rosterWindow showWindow:self];
+        }
+        rosterWindow = [[RosterController alloc] initWithNibName:@"RosterWindow"
+                                                      forAccount:account
+                                                      withRoster:[account roster]];
+        [[account roster] setDelegate:rosterWindow];
+        [[account connection] setPresenceDisplay:rosterWindow];
+        [rosterWindow showWindow:self];
 }
 
 - (id) init
 {
-	return [super init];
+        return [super init];
 }
 
 - (void) reconnect
 {
-	account = [[XMPPAccount alloc] init];
+        account = [[XMPPAccount alloc] init];
 }
 
 - (void) redrawRosters
 {
-	[rosterWindow update:nil];
+        [rosterWindow update:nil];
 }
 
 - (void) setPresence:(unsigned char)_presence withMessage:(NSString*)_message
 {
-	if(_presence == PRESENCE_OFFLINE)
-	{
-		[[account connection] disconnect];
-		[[account roster] offline];
-		[rosterWindow update:nil];
-	}
-	else
-	{
-		if(_message == nil)
-		{
-			_message = [rosterWindow currentStatusMessage];
-		}
-		if ([[account connection] isConnected])
-		{
-			[[account connection] setStatus:_presence withMessage:_message];
-		}
-		else
-		{
-			[[account roster] setInitialStatus:_presence withMessage:_message];
-			if (![[account connection] isConnected])
-			{	
-				[account reconnect];
-			}
-		}
-	}
+        if(_presence == PRESENCE_OFFLINE)
+        {
+                [[account connection] disconnect];
+                [[account roster] offline];
+                [rosterWindow update:nil];
+        }
+        else
+        {
+                if(_message == nil)
+                {
+                        _message = [rosterWindow currentStatusMessage];
+                }
+                if ([[account connection] isConnected])
+                {
+                        [[account connection] setStatus:_presence withMessage:_message];
+                }
+                else
+                {
+                        [[account roster] setInitialStatus:_presence withMessage:_message];
+                        if (![[account connection] isConnected])
+                        {        
+                                [account reconnect];
+                        }
+                }
+        }
 }
 
 //Should not be called any longer...
 - (void) connectionFailed:(XMPPAccount*)_account
 {
-	NSLog(@"Account: %@",_account);
-	PasswordWindowController * passwordWindow = [[PasswordWindowController alloc] initWithWindowNibName:@"PasswordBox" forJID:[_account jid]];
-	if([NSApp runModalForWindow:[passwordWindow window]] == 0)
-	{
-		[_account release];
-		account = [[XMPPAccount alloc] init];
-	}
-	else
-	{
-		[_account release];
-	}
+        NSLog(@"Account: %@",_account);
+        PasswordWindowController * passwordWindow = [[PasswordWindowController alloc] initWithWindowNibName:@"PasswordBox" forJID:[_account jid]];
+        if([NSApp runModalForWindow:[passwordWindow window]] == 0)
+        {
+                [_account release];
+                account = [[XMPPAccount alloc] init];
+        }
+        else
+        {
+                [_account release];
+        }
 }
 
 - (IBAction) showRosterWindow:(id)_sender
 {
-	[rosterWindow showWindow:_sender];
+        [rosterWindow showWindow:_sender];
 }
 
 - (void) setCustomPresence:(id) sender
 {
-	[customPresenceWindow showWindow:sender];
+        [customPresenceWindow showWindow:sender];
 }
 
 - (XMPPAccount*) account
 {
-	return account;
+        return account;
 }
 
 - (void) dealloc
 {
-	[account release];
-	[super dealloc];
+        [account release];
+        [super dealloc];
 }
 @end
