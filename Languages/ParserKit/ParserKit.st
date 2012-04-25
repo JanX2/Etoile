@@ -236,8 +236,42 @@ PKParseAction subclass: PKParsePredicate [
 	]
 ]
 	
-		
-			
+NSObject subclass: PKParseRestriction [
+	| binding |
+	initWithBinding: name [
+		super init.
+		binding := name.
+		^self
+	]
+
+	restrictInEnvironment: env [
+		| value |
+		value := env objectForKey: binding.
+		value == nil ifTrue: [NSException raise: 'ParserKit' format: 'Unknown binding: ', binding].
+		^PKRestrictedMatch alloc initWithResult: value
+	]
+
+	description [ ^binding ]
+]
+	
+
+NSObject subclass: PKRestrictedMatch [
+	| restricted |
+	initWithResult: result [
+		super init.
+		restricted := result.
+		^self
+	]
+
+	reduceOn: delegate [
+		^(restricted canReduce) ifTrue: [restricted reduceOn: delegate]
+		                       ifFalse: [restricted].	
+	]
+	
+	canReduce [ ^true ]
+
+	description [ ^restricted description ]
+]
 
 NSObject subclass: PKParseMatch [
 	| input range action delegate |
@@ -422,7 +456,10 @@ NSObject subclass: PKParseExpression [
 	parameter: predicate [	
 		^PKParameterizedExpression alloc initWithExp: self predicate: predicate
 	]	
-	
+
+	restrict: binding [
+		^PKRestrictionExpression alloc initWithExp: self restriction: (PKParseRestriction alloc initWithBinding: binding)
+	]
 	seq: exp1 seq: exp2 [
 		^(self seq: exp1) seq: exp2
 	]
@@ -617,6 +654,29 @@ PKComposeExpression subclass: PKActionExpression [
 		^match
 	]
 	description [ ^exp description, ' -> ', action description ]
+]
+
+" Restricted expressions are a quick hack to work around the fact that our 
+  delegate based action syntax does not allow us to replace the parse match with
+  a bound subexpression without jumping to a large number of hoops. (i.e. write
+  a delegate method that does nothing"
+PKComposeExpression subclass: PKRestrictionExpression [
+	| restriction |
+	initWithExp: aExp restriction: aRestriction [
+		super initWithExp: aExp.
+		restriction := aRestriction
+	]
+
+	parseInput: list [
+		| match |
+		
+		match := exp parseInput: list.
+		match isSuccess  ifTrue: [
+			match attachAction: (restriction restrictInEnvironment: list environment)
+		].	
+		^match
+	]
+	description [ ^exp description, ' -> ', restriction description ]
 ]
 
 PKComposeExpression subclass: PKParameterizedExpression [
@@ -1429,6 +1489,10 @@ NSObject subclass: PKDelayedExpressionBuilder [
 		^PKDelayedExpressionBuilder alloc initWithBlock: [self value semanticAction: action ].
 	]
 
+	restrict: binding [
+		^PKDelayedExpressionBuilder alloc initWithBlock: [self value restrict: binding ].
+	]
+
 	not [
 		^PKDelayedExpressionBuilder alloc initWithBlock: [self value not ].
 	]
@@ -1555,6 +1619,10 @@ NSObject subclass: PKParserASTGenerator [
 		]
 	]
 
+	makeRestriction: binding [
+		^PKParseRestriction alloc initWithBinding: binding
+	]
+
 	makePredicate: predicateInfo target: target [
 		^(predicateInfo isKindOfClass: NSDictionary class) ifTrue: [
 			PKParsePredicate alloc initWithTargetName: target
@@ -1587,7 +1655,7 @@ NSObject subclass: PKParserASTGenerator [
 		^expression
 	]
 
-	makeSequenceExpression: expressions action: action [
+	makeSequenceExpression: expressions actionOrRestriction: action [
 		| expression |
 		(expressions isKindOfClass: NSArray class) ifTrue: [
 			expression := expressions leftFoldWithInitialValue: nil
@@ -1607,7 +1675,12 @@ NSObject subclass: PKParserASTGenerator [
 			expression := expressions.
 		].
 		action = '' ifFalse: [
-			expression := expression semanticAction: action
+			(action isKindOfClass: (PKParseAction class)) ifTrue: [
+				expression := expression semanticAction: action
+			] ifFalse: [
+				"It's a restriction statement, but we need to unpack the binding again"
+				expression := expression restrict: action description.
+			].
 		].
 		^expression.
 	]
@@ -1747,6 +1820,7 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (oMeta match: 'EndOfLine <- ''\\r\\n''' rule: 'Grammar').
 		ETTranscript show: (oMeta match: 'Ometa { EndOfLine <- ''\\r\\n'' }' rule: 'Ometa').
 		ETTranscript show: (oMeta match: 'Foo' rule: 'Identifier').
+		ETTranscript show: (oMeta match: 'Test <- .:char . -> char' rule: 'Grammar').
 		oMeta := self smalltalkPegGrammar: oMeta.
 		oMeta setDelegate: (PKParserASTGenerator new).
 
@@ -1824,23 +1898,23 @@ NSObject subclass: SmalltalkTool [
             seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
 		oMeta addRule: 'Spacing' expression: ((((oMeta at: 'Space') or: (oMeta at: 'Comment')) repeat) actionSelector: #makeEmpty arguments: {}).
 		oMeta addRule: 'HexDigit' expression: ((PKRangeExpression alloc initFrom: '0' to: '9') or: (PKRangeExpression alloc initFrom: 'A' to: 'F')).
-		oMeta addRule: 'DOT' expression: ((('.' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
-		oMeta addRule: 'COLON' expression: (((':' asExp bind: 'expr') seq: (oMeta at: 'Spacing'))actionSelector: #restrict: arguments: { 'expr' } ).
-		oMeta addRule: 'CLOSE' expression: ((( ')' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }). 
-		oMeta addRule: 'OPEN' expression: ((( '(' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
-		oMeta addRule: 'CCLOSE' expression: ((( '}' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }). 
-		oMeta addRule: 'COPEN' expression: ((( '{' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
-		oMeta addRule: 'ACLOSE' expression: ((( ']' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }). 
-		oMeta addRule: 'AOPEN' expression: ((( '[' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
-		oMeta addRule: 'PLUS' expression: ((('+' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
-		oMeta addRule: 'STAR' expression: ((('*' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
-		oMeta addRule: 'QUESTION' expression: ((('?' asExp bind: 'expr')  seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
-		oMeta addRule: 'NOT' expression: ((('!' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'DOT' expression: ((('.' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'COLON' expression: (((':' asExp bind: 'expr') seq: (oMeta at: 'Spacing'))restrict:  'expr'  ).
+		oMeta addRule: 'CLOSE' expression: ((( ')' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ). 
+		oMeta addRule: 'OPEN' expression: ((( '(' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'CCLOSE' expression: ((( '}' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ). 
+		oMeta addRule: 'COPEN' expression: ((( '{' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'ACLOSE' expression: ((( ']' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ). 
+		oMeta addRule: 'AOPEN' expression: ((( '[' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'PLUS' expression: ((('+' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'STAR' expression: ((('*' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'QUESTION' expression: ((('?' asExp bind: 'expr')  seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'NOT' expression: ((('!' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
 		oMeta addRule: 'SLASH' expression: (( '/' asExp seq: (oMeta at: 'Spacing')) actionSelector: #orJunction arguments: {}).
-		oMeta addRule: 'AND' expression: ((('&' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
-		oMeta addRule: 'LEFTARROW' expression: ((( '<-' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
-		oMeta addRule: 'RIGHTARROW' expression: ((( '->' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
-		oMeta addRule: 'CARET' expression: ((('^' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) actionSelector: #restrict: arguments: { 'expr' }).
+		oMeta addRule: 'AND' expression: ((('&' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'LEFTARROW' expression: ((( '<-' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'RIGHTARROW' expression: ((( '->' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'CARET' expression: ((('^' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
 		oMeta addRule: 'Char' expression: 
 			((('\' asExp seq: ({'n' . 'r' . 't' . ''''. '"' . '[' . ']'. '\'} joinAll bind: 'specialChar'))  
                           actionSelector: #parseSpecialChar: arguments: {'specialChar'})
@@ -1868,7 +1942,7 @@ NSObject subclass: SmalltalkTool [
 			or: '_' asExp).
 		oMeta addRule: 'IdentCont' expression: ((oMeta at: 'IdentStart') or: (PKRangeExpression alloc initFrom: '0' to: '9')).
 		oMeta addRule: 'Identifier' expression: (((((oMeta at: 'IdentStart') seq: ((oMeta at: 'IdentCont') repeat)) bind: 'ident') seq: (oMeta at: 'Spacing'))
-			actionSelector: #restrict: arguments: {'ident'}).
+			restrict: 'ident').
 		oMeta addRule: 'SuperRuleApplication' expression: (((oMeta at: 'CARET') seq: ((oMeta at: 'Identifier') bind: 'rule'))
 			actionSelector: #makeRuleLookup:fromSuperGrammar: arguments: {'rule'. 'superGrammar'}).
 		oMeta addRule: 'ForeignRuleApplication' expression: ((((oMeta at: 'Identifier') bind: 'grammar')
@@ -1881,7 +1955,7 @@ NSObject subclass: SmalltalkTool [
 				actionSelector: #makeRuleLookup:fromGrammar: arguments: {'rule'. 'grammar'})).
 		oMeta addRule: 'Primary' expression: ((((((oMeta at: 'RuleApplication') bind: 'expr') seq: (oMeta at: 'LEFTARROW') not)
 			or: (((oMeta at: 'OPEN') seq: ((oMeta at: 'Expression') bind: 'expr') seq: (oMeta at: 'CLOSE'))))
-				actionSelector: #restrict: arguments: {'expr'})
+				restrict: 'expr')
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
 			or: ((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})).
@@ -1900,12 +1974,15 @@ NSObject subclass: SmalltalkTool [
 			seq: ((oMeta at: 'Statements') bind: 'actionStatements')
 			seq: (oMeta at: 'ACLOSE'))
 				actionSelector: #makeAction: arguments: {'actionStatements'}).
+		oMeta addRule: 'Restriction' expression: (((oMeta at: 'RIGHTARROW')
+			seq: ((oMeta at: 'Identifier') bind: 'bindingName'))
+				actionSelector: #makeRestriction: arguments: { 'bindingName' }).
 		oMeta addRule: 'Predicate' expression: (((oMeta at: 'QUESTION') seq: (oMeta at: 'OPEN') seq: ((oMeta at: 'Identifier') bind: 'target')
 		    seq: ((oMeta at: 'Statements') bind: 'predicateMessage') seq: (oMeta at: 'CLOSE'))
 		       actionSelector: #makePredicate:target: arguments: {'predicateMessage'. 'target'}). 
 		oMeta addRule: 'Sequence' expression: ((((oMeta at: 'Prefix')  repeat bind: 'expressions')
-        	seq: ((oMeta at: 'Action') maybe bind: 'action'))
-				actionSelector: #makeSequenceExpression:action: arguments: {'expressions'. 'action'}).
+        	seq: (((oMeta at: 'Action') or: (oMeta at: 'Restriction')) maybe bind: 'action'))
+				actionSelector: #makeSequenceExpression:actionOrRestriction: arguments: {'expressions'. 'action'}).
 		oMeta addRule: 'Expression' expression: ((((oMeta at: 'Sequence') bind: 'expression1')
 			seq: ((((oMeta at: 'SLASH')
 			seq: (oMeta at: 'Sequence')) repeat) bind: 'alternative'))
@@ -1915,7 +1992,7 @@ NSObject subclass: SmalltalkTool [
 			seq: ((oMeta at: 'Expression') bind: 'ruleExpression'))
 				actionSelector: #makeRule:expression: arguments: {'ruleName'. 'ruleExpression'}).
 		oMeta addRule: 'Grammar' expression: (((oMeta at: 'Spacing') seq: (((oMeta at: 'Definition') repeatOneLeast) bind: 'expr'))
-			actionSelector: #restrict: arguments: { 'expr'}).
+			restrict:  'expr').
 		oMeta addRule: 'SuperGrammarIdentifier' expression: (((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'super'))
 			actionSelector: #makeSuperGrammar: arguments: {'super'}).
 		oMeta addRule: 'Ometa' expression: ((((oMeta at: 'Identifier') bind: 'grammar')
@@ -1927,7 +2004,7 @@ NSObject subclass: SmalltalkTool [
 		oMeta addRule: 'OmetaList' expression: (((oMeta at: 'Spacing') 
             seq: (((oMeta at: 'Ometa') repeatOneLeast) bind: 'grammars')
 			seq: PKEmptyExpression uniqueInstance)
-				actionSelector: #restrict: arguments: { 'grammars'}).
+				restrict: 'grammars').
 		^oMeta
 	]
 ]
