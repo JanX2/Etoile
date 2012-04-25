@@ -1,8 +1,8 @@
 /**
 Copyright (C) 2012 Alessandro Sangiuliano
- 	
+         
 Author: Alessandro Sangiuliano <alex22_7@hotmail.com>
-Date: January 2012	
+Date: January 2012        
 License: Modified BSD
 */
 
@@ -94,5 +94,12 @@ License: Modified BSD
   [fileManager release];
 }
 
+- (void) dealloc
+{
+  [filePath release];
+  [fileName release];
+  [gPath release];
+  [super dealloc];
+}
 @end
     
