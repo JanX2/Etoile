@@ -1,11 +1,12 @@
 "
 ============================================================================
   ParserKit.st -- OMeta like parser implementation
-/NS
-  Copyright (C) 2011 Mathieu Suen <mathieu@nebu.li>
 
-  The parser have the same syntax that the OMeta one. Although the semantic 
-  could differ. For the time being to write expression use the 
+  Copyright (C) 2011 Mathieu Suen <mathieu@nebu.li>
+  Copyright (C) 2012 Niels Grewe <niels.grewe@halbordnung.de>
+
+  The parser has a slightly different syntax than the OMeta one. Semantics
+  could also differ. For the time being to write expression use the 
   PKParseExpression class. See example at the bottom of the file.
 
     2012/03/08 Rule lookup can be optimize at runtime
@@ -24,6 +25,14 @@
       - Adding the PKParserBase PKRules class
 
     2011/11/09 Todo merge PKRules with PKParserBase
+
+============================================================================
+"
+
+"
+============================================================================
+  
+ Helper and convenience classes and categories
 
 ============================================================================
 "
@@ -68,11 +77,12 @@ NSString extend [
 	isLessThan: other [
 		^(self integerValue) < (other integerValue)
 	]
+
+	asExp [
+		^PKTokenExpression new initWithPattern: self
+	]
 ]
 
-Symbole extend [
-
-]
 
 NSObject extend [
 	canReduce [^false]
@@ -80,8 +90,48 @@ NSObject extend [
 	isArray [^false]
 	joinAll [ ^self ]
 	sequenceAll [ ^self ]
+	asArray [ ^{ self } ]
 ]
 
+NSArray extend [
+	joinAll [
+		| exp |
+		exp := nil.
+		self do: [ :value |
+			(exp == nil)
+                ifTrue: [
+					exp := value asExp]
+				ifFalse: [exp := exp or: value asExp].
+		].
+		^exp
+	]
+	sequenceAll [
+		| exp |
+		exp := nil.
+		self do: [ :value |
+			(exp == nil)
+                ifTrue: [
+					exp := value asExp]
+				ifFalse: [exp := exp seq: value asExp].
+		].
+		^exp
+	]
+	asArray [ ^self ]
+]
+
+
+"
+============================================================================
+
+  Classes to implement semantic actions
+
+============================================================================
+"
+
+"
+ The delayed action array records a number of delayed invocations so that they
+ can be executed after parsing was successful.
+"
 NSObject subclass: NSDelayActionArray [
 	| anArray |
 
@@ -126,6 +176,12 @@ NSObject subclass: NSDelayActionArray [
 	]
 ]
 
+
+"
+  Delayed invocations are used to record the semantic actions defined by parse
+  expressions and to execute them after the parse tree has successfully
+  constructed.
+"
 NSObject subclass: NSDelayInvocation [
 	| selector args |
 	
@@ -164,6 +220,13 @@ NSObject subclass: NSDelayInvocation [
 	]
 ]
 
+
+" 
+  Generates a delayed invocation with the arguments bound to the corresponding
+  expressions from the current parsing environment. We might want to define a
+  subclass that doesn't use invocations but instead uses the JIT to compile
+  blocks that can be executed in the environment.  
+"
 NSObject subclass: PKParseAction [
 	| selector argumentNames |
 	
@@ -206,6 +269,11 @@ NSObject subclass: PKParseAction [
 ]
 
 
+
+"
+  Parse predicates can be evaluated right away to decide whether a given
+  expression should match.
+"
 PKParseAction subclass: PKParsePredicate [
 	| targetName |
 	initWithTargetName: trgt selector: sel argumentNames: args [
@@ -218,8 +286,11 @@ PKParseAction subclass: PKParsePredicate [
 		| target arguments invocation |
 		arguments := argumentNames mappedCollectionWithBlock: [ :argName |
 			|value |
+			"FIXME: We might need to reduce the value first, but that is only possible
+			 if we know about the delegate, which in the present state of things, we 
+			 don't."
 			value := env objectForKey: argName.
-			"FIXME: This is a quick hack. If the value cannot be bound, we assume
+			"FIXME2: This is a quick hack. If the value cannot be bound, we assume
 			 that it should be interpreted as a literal value."
 			value == nil ifTrue: [value := argName].
 			value.
@@ -235,7 +306,12 @@ PKParseAction subclass: PKParsePredicate [
 		^'?(', targetName, ' ', self messageString, ')'.
 	]
 ]
-	
+
+
+"
+  Parse restrictions are a reduced case of actions that can be used to replace a
+  match with a bound sub-expression.
+"	
 NSObject subclass: PKParseRestriction [
 	| binding |
 	initWithBinding: name [
@@ -253,8 +329,11 @@ NSObject subclass: PKParseRestriction [
 
 	description [ ^binding ]
 ]
-	
 
+"
+  Restricted matches can be used just as delayed invocations, but they only
+  contain their literal value.
+"
 NSObject subclass: PKRestrictedMatch [
 	| restricted |
 	initWithResult: result [
@@ -273,121 +352,13 @@ NSObject subclass: PKRestrictedMatch [
 	description [ ^restricted description ]
 ]
 
-NSObject subclass: PKParseMatch [
-	| input range action delegate |
+"
+============================================================================
+  
+  Expression classes for the ParserKit oMeta parser
 
-	+emptyMatch: input [
-        ^self new initWithInput: input length: 0; 
-			yourself
-	]
-
-	initWithInput: list length: length [
-		super init.
-		action := nil.
-		input := list.
-		range := (NSValue rangeWithLocation: input position length: length).
-		input pushPosition: range length + range location.
-		^self
-	]
-	
-	copyInitWith: list range: aRange [
-		input := list.
-		range := aRange.
-		action := nil
-	]
-
-	sequenceWith: match [
-		| newMatch |
-		input mergePosition.
-		input lastPosition = range location ifFalse: [
-			"Can be remove or rephrase later."
-			NSException raise: 'ParseKit' format: 'Last position is not same as the location range, something is wrong here range loc: ', range location description, ' last input: ', input lastPosition description, ' match: ', match description, ' merge with: ', self description ].
-		(range location + range length) = match range location
-			ifFalse: [ NSException raise: 'ParserKit' format: 'Can not add the range, it is not contiguous'].
-		newMatch := self class alloc copyInitWith: input range: (NSValue rangeWithLocation: range location length: (range length + match  range length)).
-		(action == nil and: match matchAction == nil) ifFalse: [
-			newMatch attachAction: NSDelayActionArray new.
-			" It is important to attach the verbatim matches from matches that do not require actions,
-			  but only if it's no the empty match (esp. since every sequence matching starts with the
-			  empty match."
-			(action == nil) ifTrue: [self isEmpty ifFalse: [ newMatch sequenceAction: self matchText ]]
-			               ifFalse: [newMatch sequenceAction: action].
-			(match matchAction == nil) ifTrue: [newMatch isEmpty ifFalse: [newMatch sequenceAction: match matchText]]
-			                          ifFalse: [newMatch sequenceAction: match matchAction].
-		].
-		^newMatch
-	]
-
-	bind: name [
-		action == nil 
-            ifTrue: [input bind: name object: (input fromRange: range)]
-			ifFalse: [input bind: name action: action match: self. action := nil]
-	]
-	
-	setDelegate: anObject  [ delegate := anObject ]
-
-	sequenceAction: anAction [ 
-		action == nil 
-			ifTrue:  [action := anAction]
-			ifFalse: [ action := action addAction: anAction ]
-	]
-
-	attachAction: anAction [
-		" There might still be an attached action if the result was not bound.
-		  In this case, it is safe to assume that the result of the evaluation 
-		  is irrelevant to reducing the expression at hand. 
-		  FIXME: People might potentially be interested in the side-effects..."
-		action := anAction.	
-	]
-
-	matchAction [^action]
-	match  [ ^(input fromRange: range)]
-	isEmpty [ ^range length = 0]
-	isSuccess [ ^true ]
-	isFailure [ ^false ]
-	range [^range]
-	reduce [^action == nil ifTrue: [nil] ifFalse: [action reduceOn: delegate]]
-    stopPosition [^range length + range location]
-	matchText [^ input fromRange: range]
-	description [
-		^'PKMatchSuccess  ( Recognized: ''', self matchText , ''' location: ', range description,' action: ', action description, ')\n' 
-	]
-]
-
-
-NSObject subclass: PKParseFail [
-	| input failedPosition describ delegate cause |
-
-	initWithInput: list description: string cause: theCause [
-		super init.
-		describ := string.
-		input := list.
-		cause := theCause.
-		failedPosition := input position.
-		^self
-	]
-	initWithInput: list description: string [
-		^self initWithInput: list description: string cause: nil
-	]
-
-	cause [
-		^(nil == cause) ifTrue: [ self ]
-		                ifFalse: [ cause cause ]
-	]  
-	setDelegate: anObject  [ delegate := anObject]
-	stopPosition [^failedPosition]
-	isFailure [ ^true ]
-	isSuccess [ ^false ]
-	matchAction [^nil]
-	bind: name ["No sensible thing can be done here"]
-	description [
-		| desc |
-		 desc := 'PKMatchFailure  ( At: ''',   failedPosition description, ''', ', input stream, ') ', describ, '\n'.
-		(nil == cause) ifFalse: [desc := desc, 'Cause: ', self cause description, '\n'].
-		^desc. 
-	]
-]
-
+============================================================================
+"
 
 NSObject subclass: PKParseExpression [
 	
@@ -718,7 +689,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 		| match |
 		list inEnvironmentDo: [
 			exp == nil ifTrue: [NSException raise: 'ParserKit' format: 'Uncomplete grammar definition for ', name].
-			ETTranscript debug: 'Try non terminal: ', name, ' input pos: '; debug: list positionStack; debugCr.
+			ETTranscript debug: 'Trying non terminal: ', name, ' input pos: '; debug: list positionStack; debugCr.
 			match := list matchRule: name.
 			(match == nil) ifTrue: [
 				| position |
@@ -726,10 +697,11 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 				match := exp parseInput: list.
 				" Only memoize the matches from expressions for which it is safely possible. "
 				exp isMemoizable ifTrue: [list addMatch: match at: position named: name].
-			] ifFalse: [match isSuccess ifTrue: [
+			] ifFalse: [ match isSuccess ifTrue: [
 				ETTranscript debug: 'Pushing back position: '; debug: match stopPosition; debugCr.
-				list pushPosition: match stopPosition]].
-			ETTranscript debug: 'End of non terminal: ', name, ' input pos: '; debug: list positionStack; debugCr.
+				list pushPosition: match stopPosition]
+			].
+			ETTranscript debug: 'End of non terminal: ', name, ' input pos: '; debug: list positionStack; debug: 'last position: '; debug: list position; debugCr.
 		].
 		^match
 	]
@@ -825,7 +797,7 @@ PKParseExpression subclass: PKSequenceExpression [
 			match2 := (e2 parseInput: list).
 			match2 isSuccess 
                 ifTrue: [ 
-					ETTranscript debug: 'Merge sequence: ', match1 matchText, ' with: ', match2 matchText; debugCr.
+					ETTranscript debug: 'Merge sequence: ''', match1 matchText, ''' with: ''', match2 matchText, ''''; debugCr.
 					match1 sequenceWith: match2 ]
 				ifFalse: [ list popPosition. match2 ]
 		] ifFalse: [ match1 ]
@@ -860,8 +832,10 @@ PKNAryComposeExpression subclass: PKNArySequenceExpression [
 			match isSuccess ifTrue: [
 				| currentMatch |
 				currentMatch := exp parseInput: list.
+				ETTranscript debug: 'N-Ary partmatch: '; debug: currentMatch; debugCr.
+				(list length > 24) ifTrue: [ETTranscript debug: (list fromRange: (NSValue rangeWithLocation: 0 length: 24)); debugCr]. 
 				currentMatch isSuccess ifTrue: [ 
-					ETTranscript debug: 'Merge sequence ', match matchText, ' with: ', currentMatch matchText; debugCr.
+					ETTranscript debug: 'Merge sequence ''', match matchText, ''' with: ''', currentMatch matchText, ''''; debugCr.
 					match := match sequenceWith: currentMatch.
 				] ifFalse: [
 					list popPosition.
@@ -1062,7 +1036,7 @@ PKParseExpression subclass: PKNonTerminalLookup [
 
 	parseInput: list [
 		"ETTranscript debug: 'Apply ', name, ' at: '; debug: list position; debugCr."
-		^grammar apply: name
+		^grammar matchStream: list rule: name
 	]
 
 	isMemoizable [ ^(grammar rules lookup: name ifFailed: [^false]) isMemoizableForNonTerminal: name inGrammar: grammar ]
@@ -1073,13 +1047,13 @@ PKParseExpression subclass: PKNonTerminalLookup [
 	description [ ^name ]
 ]
 
+"
+============================================================================
+  
+  Basic (string) input stream and related utilities
 
-"--- Recursive Extend ---"
-NSString extend [
-	asExp [
-		^PKTokenExpression new initWithPattern: self
-	]
-]
+============================================================================
+"
 
 "The environment stack maintains a scoped list of all bound variables in an 
  OMeta parse tree."
@@ -1155,21 +1129,30 @@ NSObject subclass: PKEnvironmentStack [
 		].
 	]
 ]
-	
+
+"
+  PKInputStream maintains the position into the stream being parsed, the
+  corresponding environment and memoized matches.
+  
+  Subclassing note: Input stream subclasses that want to parse something other
+  than strings need to override -substreamWithRange:, -emptyStream and
+  potentially -length.
+"
 NSObject subclass: PKInputStream [
     | memo stream position positionStack environmentStack |
 
     initWithStream: input [
-        stream := input.
-        memo := NSMutableDictionary new.
-		positionStack := NSMutableArray new.
-		position := 0.
-		environmentStack := PKEnvironmentStack new.
-		^self
-	]
+	super init.
+	stream := input.
+	memo := NSMutableDictionary new.
+	positionStack := NSMutableArray new.
+	position := 0.
+	environmentStack := PKEnvironmentStack new.
+	self
+]
 
 	description [
-		^(stream substringWithRange: (NSValue rangeWithLocation: position length: stream length - position)), ' pos: ', positionStack description
+		^(self substreamWithRange: (NSValue rangeWithLocation: position length: (self length) - position)), ' pos: ', positionStack description
 	]
 
 	inEnvironmentDo: aBlock [
@@ -1224,9 +1207,9 @@ NSObject subclass: PKInputStream [
 	]
 
 	fromRange: range [
-		^(range length == 0) ifTrue: ['']
+		^(range length == 0) ifTrue: [self emptyStream]
 			ifFalse: [
-				stream substringWithRange: range]
+				self substreamWithRange: range]
 	]
 
 	head [
@@ -1235,7 +1218,7 @@ NSObject subclass: PKInputStream [
 	
 	head: size [
 		"Todo non local return seems broken"
-		^(position + size) > stream length ifTrue: ['']
+		^(position + size) > self length ifTrue: [self emptyStream]
 			ifFalse: [self fromRange: (NSValue rangeWithLocation: position length: size)]
 	]
 
@@ -1247,10 +1230,152 @@ NSObject subclass: PKInputStream [
 	position [^position]
 	positionStack [^positionStack]
 	length [ ^stream length]
-	atEnd [^self position = stream length]
+	atEnd [^self position = self length]
+	
 	stream [ ^stream ]
+
+	substreamWithRange: range [
+		^stream substringWithRange: range
+	]
+
+	emptyStream [ ^'']
 ]
 
+"
+============================================================================
+  
+  Match classes
+
+============================================================================
+"
+
+NSObject subclass: PKParseMatch [
+	| input range action delegate |
+
+	+emptyMatch: input [
+        ^self new initWithInput: input length: 0; 
+			yourself
+	]
+
+	initWithInput: list length: length [
+		super init.
+		action := nil.
+		input := list.
+		range := (NSValue rangeWithLocation: input position length: length).
+		input pushPosition: range length + range location.
+		^self
+	]
+	
+	copyInitWith: list range: aRange [
+		input := list.
+		range := aRange.
+		action := nil
+	]
+
+	sequenceWith: match [
+		| newMatch |
+		input mergePosition.
+		input lastPosition = range location ifFalse: [
+			"Can be remove or rephrase later."
+			NSException raise: 'ParseKit' format: 'Last position is not same as the location range, something is wrong here range loc: ', range location description, ' last input: ', input lastPosition description, ' match: ', match description, ' merge with: ', self description ].
+		(range location + range length) = match range location
+			ifFalse: [ NSException raise: 'ParserKit' format: 'Can not add the range, it is not contiguous'].
+		newMatch := self class alloc copyInitWith: input range: (NSValue rangeWithLocation: range location length: (range length + match  range length)).
+		(action == nil and: match matchAction == nil) ifFalse: [
+			newMatch attachAction: NSDelayActionArray new.
+			" It is important to attach the verbatim matches from matches that do not require actions,
+			  but only if it's no the empty match (esp. since every sequence matching starts with the
+			  empty match."
+			(action == nil) ifTrue: [self isEmpty ifFalse: [ newMatch sequenceAction: self matchText ]]
+			               ifFalse: [newMatch sequenceAction: action].
+			(match matchAction == nil) ifTrue: [newMatch isEmpty ifFalse: [newMatch sequenceAction: match matchText]]
+			                          ifFalse: [newMatch sequenceAction: match matchAction].
+		].
+		^newMatch
+	]
+
+	bind: name [
+		action == nil 
+            ifTrue: [input bind: name object: (input fromRange: range)]
+			ifFalse: [input bind: name action: action match: self. action := nil]
+	]
+	
+	setDelegate: anObject  [ delegate := anObject ]
+
+	sequenceAction: anAction [ 
+		action == nil 
+			ifTrue:  [action := anAction]
+			ifFalse: [ action := action addAction: anAction ]
+	]
+
+	attachAction: anAction [
+		" There might still be an attached action if the result was not bound.
+		  In this case, it is safe to assume that the result of the evaluation 
+		  is irrelevant to reducing the expression at hand. 
+		  FIXME: People might potentially be interested in the side-effects..."
+		action := anAction.	
+	]
+
+	matchAction [^action]
+	match  [ ^(input fromRange: range)]
+	isEmpty [ ^range length = 0]
+	isSuccess [ ^true ]
+	isFailure [ ^false ]
+	range [^range]
+	reduce [^action == nil ifTrue: [nil] ifFalse: [action reduceOn: delegate]]
+    stopPosition [^range length + range location]
+	matchText [^ input fromRange: range]
+	description [
+		^'PKMatchSuccess  ( Recognized: ''', self matchText , ''' location: ', range description,' action: ', action description, ')\n' 
+	]
+]
+
+
+NSObject subclass: PKParseFail [
+	| input failedPosition describ delegate cause |
+
+	initWithInput: list description: string cause: theCause [
+		super init.
+		describ := string.
+		input := list.
+		cause := theCause.
+		failedPosition := input position.
+		^self
+	]
+	initWithInput: list description: string [
+		^self initWithInput: list description: string cause: nil
+	]
+
+	cause [
+		^(nil == cause) ifTrue: [ self ]
+		                ifFalse: [ cause cause ]
+	]  
+	setDelegate: anObject  [ delegate := anObject]
+	stopPosition [^failedPosition]
+	isFailure [ ^true ]
+	isSuccess [ ^false ]
+	matchAction [^nil]
+	bind: name ["No sensible thing can be done here"]
+	description [
+		| desc |
+		 desc := 'PKMatchFailure  ( At: ''',   failedPosition description, ''', ', input stream, ') ', describ, '\n'.
+		(nil == cause) ifFalse: [desc := desc, 'Cause: ', self cause description, '\n'].
+		^desc. 
+	]
+]
+
+"
+============================================================================
+  
+  Main parser class and builtin declarations of the Étoilé oMeta dialect.
+  
+============================================================================
+"
+
+
+"
+  PKRules encapsulates the rules set up by a single grammar.
+"
 NSObject subclass: PKRules [
 	| parent rules name |
 
@@ -1320,36 +1445,147 @@ NSObject subclass: PKRules [
 ]
 
 
-NSArray extend [
-	joinAll [
-		| exp |
-		exp := nil.
-		self do: [ :value |
-			(exp == nil)
-                ifTrue: [
-					exp := value asExp]
-				ifFalse: [exp := exp or: value asExp].
-		].
-		^exp
-	]
-	sequenceAll [
-		| exp |
-		exp := nil.
-		self do: [ :value |
-			(exp == nil)
-                ifTrue: [
-					exp := value asExp]
-				ifFalse: [exp := exp seq: value asExp].
-		].
-		^exp
-	]
-]
-
 NSObject subclass: PKParser [
-	| input +rulesRepo rules actionObject delegate |
+	| +rulesRepo input rules delegate |
 
 	+initialize [
 		rulesRepo := NSMutableDictionary new.
+		self actionizedParserGrammar.
+		self loadGrammarsFromBundle: NSBundle mainBundle.
+ 	]
+
+	+actionizedParserGrammar [
+		| ocParser |
+		ocParser := (self parserGrammar) subgrammar: 'ActionizedEtoileOMeta'.
+		ocParser addRule: 'Nullary' expression: (((ocParser at: 'Identifier') bind: 'nullary')
+			actionSelector: #makeNullarySelector: arguments: {'nullary'}).
+		ocParser addRule: 'Keyword' expression: ((ocParser at: 'IdentStart') seq: (ocParser at: 'IdentCont') repeat seq: (ocParser at: 'COLON')).
+		ocParser addRule: 'KeywordMessagePart' expression: ((((ocParser at: 'Keyword') bind: 'selectorPart')
+			seq: ((ocParser at: 'Identifier') bind: 'argument'))
+				actionSelector: #makeKeywordMessagePart:argument: arguments: {'selectorPart'. 'argument'}).
+		ocParser addRule: 'KeywordMessage' expression: (((ocParser at: 'KeywordMessagePart') repeatOneLeast bind: 'selectorArgumentPairs')
+			actionSelector: #makeSelectorAndArguments: arguments: {'selectorArgumentPairs'}).
+		ocParser addRule: 'Statements' expression: ((ocParser at: 'KeywordMessage') or: (ocParser at: 'Nullary')).
+		^ocParser
+	]
+
+	+parserGrammar [
+		| oMeta  |
+		oMeta := PKParser alloc initWithNewGrammar: 'EtoileOMeta'.
+		oMeta addRule: 'EndOfLine' expression: ('\r\n' asExp or: '\n' asExp).
+		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: (oMeta at: 'EndOfLine')).
+		oMeta addRule: 'Comment' expression: ('#' asExp seq: ((oMeta at: 'EndOfLine') not 
+            seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
+		oMeta addRule: 'Spacing' expression: ((((oMeta at: 'Space') or: (oMeta at: 'Comment')) repeat) actionSelector: #makeEmpty arguments: {}).
+		oMeta addRule: 'HexDigit' expression: ((PKRangeExpression alloc initFrom: '0' to: '9') or: (PKRangeExpression alloc initFrom: 'A' to: 'F')).
+		oMeta addRule: 'DOT' expression: ((('.' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'COLON' expression: (((':' asExp bind: 'expr') seq: (oMeta at: 'Spacing'))restrict:  'expr'  ).
+		oMeta addRule: 'CLOSE' expression: ((( ')' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ). 
+		oMeta addRule: 'OPEN' expression: ((( '(' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'CCLOSE' expression: ((( '}' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ). 
+		oMeta addRule: 'COPEN' expression: ((( '{' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'ACLOSE' expression: ((( ']' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ). 
+		oMeta addRule: 'AOPEN' expression: ((( '[' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'PLUS' expression: ((('+' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'STAR' expression: ((('*' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'QUESTION' expression: ((('?' asExp bind: 'expr')  seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'NOT' expression: ((('!' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'SLASH' expression: (( '/' asExp seq: (oMeta at: 'Spacing')) actionSelector: #orJunction arguments: {}).
+		oMeta addRule: 'AND' expression: ((('&' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'LEFTARROW' expression: ((( '<-' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'RIGHTARROW' expression: ((( '->' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'CARET' expression: ((('^' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'Char' expression: 
+			((('\' asExp seq: ({'n' . 'r' . 't' . ''''. '"' . '[' . ']'. '\'} joinAll bind: 'specialChar'))  
+                          actionSelector: #parseSpecialChar: arguments: {'specialChar'})
+				or: (('\' asExp seq: (((oMeta at: 'HexDigit') 
+							    seq: (oMeta at: 'HexDigit')) bind: 'hexChar'))
+				  actionSelector: #parseHexChar: arguments: {'hexChar'})
+			    or: ('\' asExp not seq: (PKDotExpression new)  )).
+		oMeta addRule: 'Range' expression: (((((oMeta at: 'Char') bind: 'first') 
+        	seq: '-' asExp seq: ((oMeta at: 'Char') bind: 'second')) 
+				 actionSelector: #makeRangeFrom:to: arguments: {'first'. 'second'})
+        	or: (((oMeta at: 'Char') bind: 'tok') actionSelector: #makeToken: arguments: {'tok'})).
+		oMeta addRule: 'Class' expression: (('[' asExp 
+                seq: ((']' asExp not seq: (oMeta at: 'Range')) repeat bind: 'rangeList')
+                seq: ']' asExp 
+                seq: (oMeta at: 'Spacing')) actionSelector: #join: arguments: {'rangeList'}).
+		oMeta addRule: 'Literal' expression: ((('''' asExp 
+                seq: (('''' asExp not seq: (oMeta at: 'Char')) repeat bind: 'literal') 
+				seq: '''' asExp seq: (oMeta at: 'Spacing') ) 
+			or: ('"' asExp 
+                seq: (('"' asExp not seq: (oMeta at: 'Char')) repeat bind: 'literal') 
+				seq: '"' asExp seq: (oMeta at: 'Spacing') ))
+		  actionSelector: #makeLiteral: arguments: {'literal'}).
+		oMeta addRule: 'IdentStart'  expression: ((PKRangeExpression alloc initFrom: 'a' to: 'z') 
+			or: (PKRangeExpression alloc initFrom: 'A' to: 'Z')
+			or: '_' asExp).
+		oMeta addRule: 'IdentCont' expression: ((oMeta at: 'IdentStart') or: (PKRangeExpression alloc initFrom: '0' to: '9')).
+		oMeta addRule: 'Identifier' expression: (((((oMeta at: 'IdentStart') seq: ((oMeta at: 'IdentCont') repeat)) bind: 'ident') seq: (oMeta at: 'Spacing'))
+			restrict: 'ident').
+		oMeta addRule: 'SuperRuleApplication' expression: (((oMeta at: 'CARET') seq: ((oMeta at: 'Identifier') bind: 'rule'))
+			actionSelector: #makeRuleLookup:fromSuperGrammar: arguments: {'rule'. 'superGrammar'}).
+		oMeta addRule: 'ForeignRuleApplication' expression: ((((oMeta at: 'Identifier') bind: 'grammar')
+			seq: ('::' asExp)
+			seq: ((oMeta at: 'Identifier') bind: 'rule'))
+				actionSelector: #makeRuleLookup:fromGrammar: arguments: {'rule'. 'grammar'}).
+		oMeta addRule: 'RuleApplication' expression: ((oMeta at: 'SuperRuleApplication')
+			or: (oMeta at: 'ForeignRuleApplication')
+			or: ((((oMeta at: 'Identifier') bind: 'rule') seq: ((oMeta at: 'LEFTARROW') not))
+				actionSelector: #makeRuleLookup:fromGrammar: arguments: {'rule'. 'grammar'})).
+		oMeta addRule: 'Primary' expression: ((((((oMeta at: 'RuleApplication') bind: 'expr') seq: (oMeta at: 'LEFTARROW') not)
+			or: (((oMeta at: 'OPEN') seq: ((oMeta at: 'Expression') bind: 'expr') seq: (oMeta at: 'CLOSE'))))
+				restrict: 'expr')
+			or: (oMeta at: 'Literal')
+			or: (oMeta at: 'Class')
+			or: ((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})).
+		oMeta addRule: 'Suffix' expression: ((((oMeta at: 'Primary') bind: 'expression')
+            seq: (((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe bind: 'modifier')
+			seq: ((':' asExp seq: (oMeta at: 'Identifier')) maybe bind: 'bindingName')
+			seq: ((oMeta at: 'Predicate') maybe bind: 'predicate'))
+			   actionSelector: #makeExpression:modifier:bind:predicate: arguments: {'expression'. 'modifier'. 'bindingName'. 'predicate'}).
+		oMeta addRule: 'Prefix' expression: ((((((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe bind: 'junction') 
+            seq: ((oMeta at: 'Suffix') bind: 'expression'))
+			   actionSelector: #makePrefix:exp: arguments: {'junction'. 'expression'})
+			or: (((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'bindingName'))
+				actionSelector: #makeAnythingBind: arguments: {'bindingName'})).
+		oMeta addRule: 'Action' expression: (((oMeta at: 'RIGHTARROW')
+			seq: (oMeta at: 'AOPEN')
+			seq: ((oMeta at: 'Statements') bind: 'actionStatements')
+			seq: (oMeta at: 'ACLOSE'))
+				actionSelector: #makeAction: arguments: {'actionStatements'}).
+		oMeta addRule: 'Restriction' expression: (((oMeta at: 'RIGHTARROW')
+			seq: ((oMeta at: 'Identifier') bind: 'bindingName'))
+				actionSelector: #makeRestriction: arguments: { 'bindingName' }).
+		oMeta addRule: 'Predicate' expression: (((oMeta at: 'QUESTION') seq: (oMeta at: 'OPEN') seq: ((oMeta at: 'Identifier') bind: 'target')
+		    seq: ((oMeta at: 'Statements') bind: 'predicateMessage') seq: (oMeta at: 'CLOSE'))
+		       actionSelector: #makePredicate:target: arguments: {'predicateMessage'. 'target'}). 
+		oMeta addRule: 'Sequence' expression: ((((oMeta at: 'Prefix')  repeat bind: 'expressions')
+        	seq: (((oMeta at: 'Action') or: (oMeta at: 'Restriction')) maybe bind: 'action'))
+				actionSelector: #makeSequenceExpression:actionOrRestriction: arguments: {'expressions'. 'action'}).
+		oMeta addRule: 'Expression' expression: ((((oMeta at: 'Sequence') bind: 'expression1')
+			seq: ((((oMeta at: 'SLASH')
+			seq: (oMeta at: 'Sequence')) repeat) bind: 'alternative'))
+				actionSelector: #makeAlternativeExpression:alternative: arguments: { 'expression1'. 'alternative' }).
+		oMeta addRule: 'Definition' expression: ((((oMeta at: 'Identifier') bind: 'ruleName')
+			seq: (oMeta at: 'LEFTARROW')
+			seq: ((oMeta at: 'Expression') bind: 'ruleExpression'))
+				actionSelector: #makeRule:expression: arguments: {'ruleName'. 'ruleExpression'}).
+		oMeta addRule: 'Grammar' expression: (((oMeta at: 'Spacing') seq: (((oMeta at: 'Definition') repeatOneLeast) bind: 'expr'))
+			restrict:  'expr').
+		oMeta addRule: 'SuperGrammarIdentifier' expression: (((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'super'))
+			actionSelector: #makeSuperGrammar: arguments: {'super'}).
+		oMeta addRule: 'Ometa' expression: ((((oMeta at: 'Identifier') bind: 'grammar')
+			seq: (((oMeta at: 'SuperGrammarIdentifier') maybe bind: 'superGrammar'))
+            seq: (oMeta at: 'COPEN')
+			seq: ((oMeta at: 'Grammar') bind: 'grammarList')
+			seq: (oMeta at: 'CCLOSE'))
+				actionSelector: #makeGrammar:parent:rules: arguments: {'grammar'. 'superGrammar'. 'grammarList'}).
+		oMeta addRule: 'OmetaList' expression: (((oMeta at: 'Spacing') 
+            seq: (((oMeta at: 'Ometa') repeatOneLeast) bind: 'grammars')
+			seq: PKEmptyExpression uniqueInstance)
+				restrict: 'grammars').
+		^oMeta
 	]
 
 	+derivate: parent subgrammar: name [
@@ -1379,18 +1615,51 @@ NSObject subclass: PKParser [
 		delegate := anObject
 	]
 
-    initWithGrammar: grammarName [
+	+supportsGrammar: name [
+		^((rulesRepo objectForKey: name) == nil) not.
+	]
+
+	+loadGrammarsFromBundle: bundle [
+		|files|
+		files := bundle pathsForResourcesOfType: 'pk'
+		                            inDirectory: nil.
+		files leftFoldWithInitialValue: {}
+		                     intoBlock: [ :acc :each|
+			acc arrayByAddingObjectsFromArray:
+			  (self loadGrammarWithString: (NSString stringWithContentsOfFile: each)).
+		] 
+	]
+	
+	+loadGrammarWithString: string [
+		| parserParser internalDelegate match grammars notificationCenter |
+		internalDelegate := PKParserASTGenerator new.
+		parserParser := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
+		parserParser setDelegate: internalDelegate.
+		match := parserParser match: string rule: 'OmetaList'.
+		"TODO: Smarter error reporting."
+		match isSuccess ifFalse: [NSException raise: 'PKParserException' format: 'Could not load grammar.'].
+		notificationCenter := NSNotificationCenter defaultCenter.
+		grammars := match reduce asArray.
+		grammars do: [ :each|
+			notificationCenter postNotificationName: 'PKParserGrammarBecameAvailable'
+			                                 object: self
+                                           userInfo: (NSDictionary alloc initWithObject: (each name)
+			                                 forKey: 'name').
+		].
+		^grammars map: [ :each | each name ].
+	]
+    
+
+	initWithGrammar: grammarName [
+		super init.
 		rules := self class getGrammar: grammarName.
 		^self
 	]
 
 	initWithNewGrammar: grammarName [
+		super init.
 		rules := self class getNewGrammar: grammarName.
 		^self
-	]
-
-	setActionObject: obj [
-		actionObject := actionObject
 	]
 
 	subgrammar: name [
@@ -1409,21 +1678,34 @@ NSObject subclass: PKParser [
 		^rules description
 	]
 	
+
 	apply: rule [
-		| exp init |
+		^self apply: rule withInit: nil
+	]
+
+	apply: rule withInit: init [
+		| exp |
 		exp := rules lookup: rule ifFailed: [
 			NSException raise: 'ParserKit' format: ('Invalid rule ', rule)
 		].
-		" If the grammar has a __init__ rule, it needs to be matched first. "
-		init := rules lookup: '__init__' ifFailed: [ nil ].
-		init ==	nil ifFalse: [ exp := init seq: exp ].
+		(init == nil) ifFalse: [ exp := init seq: exp ].
 		^exp parseInput: input.
 	]
 	
 	match: inputStream rule: rule [
+		^self matchStream: (PKInputStream alloc initWithStream: inputStream)
+		             rule: rule
+		         withInit: (rules lookup: '__init__' ifFailed: [nil]).
+	]
+
+	matchStream: stream rule: rule [
+		^self matchStream: stream rule: rule withInit: nil.
+	]
+	
+	matchStream: stream rule: rule withInit: init [
 		|match|
-		input := PKInputStream alloc initWithStream: inputStream.
-		match := self apply: rule.
+		input := stream.	
+		match := self apply: rule withInit: init.
 		match setDelegate: delegate.
 		^match
 	]
@@ -1432,6 +1714,16 @@ NSObject subclass: PKParser [
    
 ]
 
+
+"
+============================================================================
+Delegate and utilities to parse oMeta grammars
+============================================================================
+"
+
+"
+  Expression generator, presently only used for alternative expressions.
+"
 NSObject subclass: PKAstExpressionGen [
 	| expression operation |
 
@@ -1447,6 +1739,12 @@ NSObject subclass: PKAstExpressionGen [
 	]
 ]
 
+
+"
+  The purpose of the delayed expression builder is to defer generating
+  expressions that depend on global state until after the entire grammar
+  has been parsed.
+"
 NSObject subclass: PKDelayedExpressionBuilder [
 	| block exp |
 
@@ -1522,8 +1820,17 @@ NSObject subclass: PKDelayedExpressionBuilder [
 	]
 ]
 
+
+"
+  Delegate class that generates a grammar. The main entry point is
+  #makeGrammar:parent:rules. That method also installs the parsed grammars into
+  the rule repository.
+
+  Dependencies on foreign grammars are not yet automatically resolved. You need
+  to make sure that all referenced grammars have already been registered.
+"
 NSObject subclass: PKParserASTGenerator [
-	| specialCharToChar |
+	| delegate specialCharToChar |
 
 	init [
 		super init.
@@ -1536,8 +1843,13 @@ NSObject subclass: PKParserASTGenerator [
 		specialCharToChar setValue: '"' forKey: '"'.
 		specialCharToChar setValue: '[' forKey: '['.
 		specialCharToChar setValue: ']' forKey: ']'.
+		^self
 	]
-	
+
+	setDelegate: aDelegate [
+		delegate := aDelegate
+	]	
+
 	makeLiteral: literal [
 		(literal isKindOfClass: NSArray class) ifTrue: [
 			literal := literal objectAtIndex: 0.
@@ -1578,6 +1890,7 @@ NSObject subclass: PKParserASTGenerator [
 			ETTranscript debug: 'Adding rule ''', name, ''' expression: ', (expression description); debugCr.
 			grammar addRule: name expression: expression.
 		].
+		delegate ifResponds loadedGrammar: grammarName.
 		^grammar 
 	]
 
@@ -1587,10 +1900,6 @@ NSObject subclass: PKParserASTGenerator [
 
 
 	makeEmpty [^'']
-
-	restrict: arg  [
-		^arg
-	]
 
 	makeKeywordMessagePart: keyword argument: arg [
 		^NSDictionary dictionaryWithObjects: { keyword componentsJoinedByString: ''. arg }
@@ -1762,250 +2071,6 @@ NSObject subclass: PKParserASTGenerator [
 
 	sequence: list [
 		^list sequenceAll
-	]
-]
-
-
-NSObject subclass: SmalltalkTool [
-	
-	run [
-		| dict parser abStar b c tExp alphaNumeric parameterized multiSequence multiAlternate oMeta oMetaMatch content contentString match |
-
-		ETTranscript setDebugMode: false.
-		abStar := PKRepetitionExpression alloc
-					 initWithExpression: 'ab' asExp
-					 canBeEmpty: false; yourself.
-
-		parser := abStar or: 'a' asExp.
-		parser := ('c' asExp repeat) seq: parser seq: PKEmptyExpression uniqueInstance.
-		alphaNumeric  := PKAlphanumericExpression new repeat.
-		parameterized := (PKNumericExpression new bind: 'num') parameterTarget: 'num' selector: #isLessThan: arguments: {'7'}.
-		multiSequence := PKNArySequenceExpression new.
-		multiSequence addExpression: ('c' asExp repeat); addExpression: parser; addExpression: PKEmptyExpression uniqueInstance.
-		multiAlternate := PKNAryAlternateExpression new.
-		multiAlternate addExpression: ('c' asExp); addExpression: ('d' asExp); addExpression: ('e' asExp).
-		multiAlternate := multiAlternate repeat.
-		oMeta := PKParser alloc initWithNewGrammar: 'Test'.
-		oMeta addRule: 'alphaNum'  expression: alphaNumeric.
-		ETTranscript show: (parser parseInput: 'cab' asInputStream); cr.
-		ETTranscript show: (multiSequence parseInput: 'cab' asInputStream); cr.
-		ETTranscript show: (multiAlternate parseInput: 'cde' asInputStream); cr.
-		ETTranscript show: alphaNumeric; cr.
-		ETTranscript show: (alphaNumeric parseInput: 'Good34'  asInputStream); cr.
-		ETTranscript show: (alphaNumeric parseInput: 'testing4'  asInputStream); cr.
-		ETTranscript show: (parameterized parseInput: '6' asInputStream); cr.
-		ETTranscript show: (parameterized parseInput: '8' asInputStream); cr.
-		ETTranscript show: (oMeta match: 'testing4' rule: 'alphaNum'); cr.
-		oMeta := self pegGrammar.
-		
-		ETTranscript show: oMeta; cr.
-		ETTranscript show: (oMeta at: 'Char'); cr.
-		ETTranscript show: (oMeta match:( '\\n') rule: 'Char').
-		ETTranscript show: (oMeta match:('n') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\66') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\F8') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\6E') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\6A') rule: 'Char').
-		ETTranscript show: (oMeta match:( '\66-\F4') rule: 'Range').
-		ETTranscript show: (oMeta match:( 'a-d') rule: 'Range').
-		ETTranscript show: (oMeta match:( '[a-d] ') rule: 'Class').
-		ETTranscript show: (oMeta match:( '[a-d\34] ') rule: 'Class').
-		ETTranscript show: (oMeta match:( '[a-dA-Z]\n') rule: 'Class').
-		ETTranscript show: (oMeta match:( '''foo'' bar') rule: 'Literal').
-		ETTranscript show: (oMeta match:( '"bar" foo') rule: 'Literal').
-		ETTranscript show: (oMeta match:( '. ? ') rule: 'Suffix').
-		ETTranscript show: (oMeta match:( '([zf]"oo")?') rule: 'Suffix').
-		ETTranscript show: (oMeta match: '' rule: 'Spacing').
-		ETTranscript show: (oMeta match: 'One <- .' rule: 'Grammar').
-		ETTranscript show: (oMeta match: 'EndOfLine <- ''\\r\\n''' rule: 'Grammar').
-		ETTranscript show: (oMeta match: 'Ometa { EndOfLine <- ''\\r\\n'' }' rule: 'Ometa').
-		ETTranscript show: (oMeta match: 'Foo' rule: 'Identifier').
-		ETTranscript show: (oMeta match: 'Test <- .:char . -> char' rule: 'Grammar').
-		oMeta := self smalltalkPegGrammar: oMeta.
-		oMeta setDelegate: (PKParserASTGenerator new).
-
-		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
-		contentString := NSString alloc initWithData: content encoding: 4.
-		self testSubgrammar.
-		oMetaMatch := (oMeta match: contentString  rule: 'OmetaList').
-		ETTranscript show: oMetaMatch; cr.
-		ETTranscript show: oMetaMatch reduce description; cr.
-		ETTranscript show: (PKParser getGrammar: 'SmalltalkOmeta') description; cr.
-		match := oMeta match: '''test''' rule: 'Literal'.
-		ETTranscript show: match.
-		ETTranscript show: match reduce; cr.
-
-		match := oMeta match:( '[a-d] ') rule: 'Class'.
-		ETTranscript show: match.
-		ETTranscript show: match reduce; cr.
-
-		match := oMeta match:( '[a-d\34] ') rule: 'Class'.
-		ETTranscript show: match.
-		ETTranscript show: match reduce; cr.
-
-		match := oMeta match:( '\\t') rule: 'Char'.
-		ETTranscript show: match.
-		ETTranscript show: match reduce; cr.
-
-		match := oMeta match:( '\\n') rule: 'Char'.
-		ETTranscript show: match.
-		ETTranscript show: match reduce; cr.
-
-		match := oMeta match:( '\\\\') rule: 'Char'.
-		ETTranscript show: match.
-		ETTranscript show: match reduce; cr.
-
-		match := oMeta match:( '\5F') rule: 'Char'.
-		ETTranscript show: match.
-		ETTranscript show: match reduce; cr.
-
-		
-	]
-
-	testSubgrammar [
-		|grammar sub|
-		grammar := PKParser alloc initWithNewGrammar: 'PEG'.
-		grammar addRule: 'Ab' expression: ('a' asExp or: 'b' asExp).
-		ETTranscript show: (grammar match: 'b'  rule: 'Ab').
-
-		sub := grammar subgrammar: 'PEG2'.
-		sub addRule: 'Ab' expression: ('c' asExp or: 'd' asExp).
-		ETTranscript show: (sub match: 'b'  rule: 'Ab').
-		ETTranscript show: (sub match: 'c'  rule: 'Ab').
-	]
-
-	smalltalkPegGrammar: parent [
-		| ocParser |
-		ocParser := parent subgrammar: 'SmalltalkPEG'.
-		ocParser addRule: 'Nullary' expression: (((ocParser at: 'Identifier') bind: 'nullary')
-			actionSelector: #makeNullarySelector: arguments: {'nullary'}).
-		ocParser addRule: 'Keyword' expression: ((ocParser at: 'IdentStart') seq: (ocParser at: 'IdentCont') repeat seq: (ocParser at: 'COLON')).
-		ocParser addRule: 'KeywordMessagePart' expression: ((((ocParser at: 'Keyword') bind: 'selectorPart')
-			seq: ((ocParser at: 'Identifier') bind: 'argument'))
-				actionSelector: #makeKeywordMessagePart:argument: arguments: {'selectorPart'. 'argument'}).
-		ocParser addRule: 'KeywordMessage' expression: (((ocParser at: 'KeywordMessagePart') repeatOneLeast bind: 'selectorArgumentPairs')
-			actionSelector: #makeSelectorAndArguments: arguments: {'selectorArgumentPairs'}).
-		ocParser addRule: 'Statements' expression: ((ocParser at: 'KeywordMessage') or: (ocParser at: 'Nullary')).
-		^ocParser
-	]
-
-	pegGrammar [
-		| oMeta  |
-		oMeta := PKParser alloc initWithNewGrammar: 'PEG'.
-		oMeta addRule: 'EndOfLine' expression: ('\r\n' asExp or: '\n' asExp).
-		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: (oMeta at: 'EndOfLine')).
-		oMeta addRule: 'Comment' expression: ('#' asExp seq: ((oMeta at: 'EndOfLine') not 
-            seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
-		oMeta addRule: 'Spacing' expression: ((((oMeta at: 'Space') or: (oMeta at: 'Comment')) repeat) actionSelector: #makeEmpty arguments: {}).
-		oMeta addRule: 'HexDigit' expression: ((PKRangeExpression alloc initFrom: '0' to: '9') or: (PKRangeExpression alloc initFrom: 'A' to: 'F')).
-		oMeta addRule: 'DOT' expression: ((('.' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'COLON' expression: (((':' asExp bind: 'expr') seq: (oMeta at: 'Spacing'))restrict:  'expr'  ).
-		oMeta addRule: 'CLOSE' expression: ((( ')' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ). 
-		oMeta addRule: 'OPEN' expression: ((( '(' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'CCLOSE' expression: ((( '}' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ). 
-		oMeta addRule: 'COPEN' expression: ((( '{' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'ACLOSE' expression: ((( ']' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ). 
-		oMeta addRule: 'AOPEN' expression: ((( '[' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'PLUS' expression: ((('+' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'STAR' expression: ((('*' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'QUESTION' expression: ((('?' asExp bind: 'expr')  seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'NOT' expression: ((('!' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'SLASH' expression: (( '/' asExp seq: (oMeta at: 'Spacing')) actionSelector: #orJunction arguments: {}).
-		oMeta addRule: 'AND' expression: ((('&' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'LEFTARROW' expression: ((( '<-' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'RIGHTARROW' expression: ((( '->' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'CARET' expression: ((('^' asExp   bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
-		oMeta addRule: 'Char' expression: 
-			((('\' asExp seq: ({'n' . 'r' . 't' . ''''. '"' . '[' . ']'. '\'} joinAll bind: 'specialChar'))  
-                          actionSelector: #parseSpecialChar: arguments: {'specialChar'})
-				or: (('\' asExp seq: (((oMeta at: 'HexDigit') 
-							    seq: (oMeta at: 'HexDigit')) bind: 'hexChar'))
-				  actionSelector: #parseHexChar: arguments: {'hexChar'})
-			    or: ('\' asExp not seq: (PKDotExpression new)  )).
-		oMeta addRule: 'Range' expression: (((((oMeta at: 'Char') bind: 'first') 
-        	seq: '-' asExp seq: ((oMeta at: 'Char') bind: 'second')) 
-				 actionSelector: #makeRangeFrom:to: arguments: {'first'. 'second'})
-        	or: (((oMeta at: 'Char') bind: 'tok') actionSelector: #makeToken: arguments: {'tok'})).
-		oMeta addRule: 'Class' expression: (('[' asExp 
-                seq: ((']' asExp not seq: (oMeta at: 'Range')) repeat bind: 'rangeList')
-                seq: ']' asExp 
-                seq: (oMeta at: 'Spacing')) actionSelector: #join: arguments: {'rangeList'}).
-		oMeta addRule: 'Literal' expression: ((('''' asExp 
-                seq: (('''' asExp not seq: (oMeta at: 'Char')) repeat bind: 'literal') 
-				seq: '''' asExp seq: (oMeta at: 'Spacing') ) 
-			or: ('"' asExp 
-                seq: (('"' asExp not seq: (oMeta at: 'Char')) repeat bind: 'literal') 
-				seq: '"' asExp seq: (oMeta at: 'Spacing') ))
-		  actionSelector: #makeLiteral: arguments: {'literal'}).
-		oMeta addRule: 'IdentStart'  expression: ((PKRangeExpression alloc initFrom: 'a' to: 'z') 
-			or: (PKRangeExpression alloc initFrom: 'A' to: 'Z')
-			or: '_' asExp).
-		oMeta addRule: 'IdentCont' expression: ((oMeta at: 'IdentStart') or: (PKRangeExpression alloc initFrom: '0' to: '9')).
-		oMeta addRule: 'Identifier' expression: (((((oMeta at: 'IdentStart') seq: ((oMeta at: 'IdentCont') repeat)) bind: 'ident') seq: (oMeta at: 'Spacing'))
-			restrict: 'ident').
-		oMeta addRule: 'SuperRuleApplication' expression: (((oMeta at: 'CARET') seq: ((oMeta at: 'Identifier') bind: 'rule'))
-			actionSelector: #makeRuleLookup:fromSuperGrammar: arguments: {'rule'. 'superGrammar'}).
-		oMeta addRule: 'ForeignRuleApplication' expression: ((((oMeta at: 'Identifier') bind: 'grammar')
-			seq: ('::' asExp)
-			seq: ((oMeta at: 'Identifier') bind: 'rule'))
-				actionSelector: #makeRuleLookup:fromGrammar: arguments: {'rule'. 'grammar'}).
-		oMeta addRule: 'RuleApplication' expression: ((oMeta at: 'SuperRuleApplication')
-			or: (oMeta at: 'ForeignRuleApplication')
-			or: ((((oMeta at: 'Identifier') bind: 'rule') seq: ((oMeta at: 'LEFTARROW') not))
-				actionSelector: #makeRuleLookup:fromGrammar: arguments: {'rule'. 'grammar'})).
-		oMeta addRule: 'Primary' expression: ((((((oMeta at: 'RuleApplication') bind: 'expr') seq: (oMeta at: 'LEFTARROW') not)
-			or: (((oMeta at: 'OPEN') seq: ((oMeta at: 'Expression') bind: 'expr') seq: (oMeta at: 'CLOSE'))))
-				restrict: 'expr')
-			or: (oMeta at: 'Literal')
-			or: (oMeta at: 'Class')
-			or: ((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})).
-		oMeta addRule: 'Suffix' expression: ((((oMeta at: 'Primary') bind: 'expression')
-            seq: (((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe bind: 'modifier')
-			seq: ((':' asExp seq: (oMeta at: 'Identifier')) maybe bind: 'bindingName')
-			seq: ((oMeta at: 'Predicate') maybe bind: 'predicate'))
-			   actionSelector: #makeExpression:modifier:bind:predicate: arguments: {'expression'. 'modifier'. 'bindingName'. 'predicate'}).
-		oMeta addRule: 'Prefix' expression: ((((((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe bind: 'junction') 
-            seq: ((oMeta at: 'Suffix') bind: 'expression'))
-			   actionSelector: #makePrefix:exp: arguments: {'junction'. 'expression'})
-			or: (((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'bindingName'))
-				actionSelector: #makeAnythingBind: arguments: {'bindingName'})).
-		oMeta addRule: 'Action' expression: (((oMeta at: 'RIGHTARROW')
-			seq: (oMeta at: 'AOPEN')
-			seq: ((oMeta at: 'Statements') bind: 'actionStatements')
-			seq: (oMeta at: 'ACLOSE'))
-				actionSelector: #makeAction: arguments: {'actionStatements'}).
-		oMeta addRule: 'Restriction' expression: (((oMeta at: 'RIGHTARROW')
-			seq: ((oMeta at: 'Identifier') bind: 'bindingName'))
-				actionSelector: #makeRestriction: arguments: { 'bindingName' }).
-		oMeta addRule: 'Predicate' expression: (((oMeta at: 'QUESTION') seq: (oMeta at: 'OPEN') seq: ((oMeta at: 'Identifier') bind: 'target')
-		    seq: ((oMeta at: 'Statements') bind: 'predicateMessage') seq: (oMeta at: 'CLOSE'))
-		       actionSelector: #makePredicate:target: arguments: {'predicateMessage'. 'target'}). 
-		oMeta addRule: 'Sequence' expression: ((((oMeta at: 'Prefix')  repeat bind: 'expressions')
-        	seq: (((oMeta at: 'Action') or: (oMeta at: 'Restriction')) maybe bind: 'action'))
-				actionSelector: #makeSequenceExpression:actionOrRestriction: arguments: {'expressions'. 'action'}).
-		oMeta addRule: 'Expression' expression: ((((oMeta at: 'Sequence') bind: 'expression1')
-			seq: ((((oMeta at: 'SLASH')
-			seq: (oMeta at: 'Sequence')) repeat) bind: 'alternative'))
-				actionSelector: #makeAlternativeExpression:alternative: arguments: { 'expression1'. 'alternative' }).
-		oMeta addRule: 'Definition' expression: ((((oMeta at: 'Identifier') bind: 'ruleName')
-			seq: (oMeta at: 'LEFTARROW')
-			seq: ((oMeta at: 'Expression') bind: 'ruleExpression'))
-				actionSelector: #makeRule:expression: arguments: {'ruleName'. 'ruleExpression'}).
-		oMeta addRule: 'Grammar' expression: (((oMeta at: 'Spacing') seq: (((oMeta at: 'Definition') repeatOneLeast) bind: 'expr'))
-			restrict:  'expr').
-		oMeta addRule: 'SuperGrammarIdentifier' expression: (((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'super'))
-			actionSelector: #makeSuperGrammar: arguments: {'super'}).
-		oMeta addRule: 'Ometa' expression: ((((oMeta at: 'Identifier') bind: 'grammar')
-			seq: (((oMeta at: 'SuperGrammarIdentifier') maybe bind: 'superGrammar'))
-            seq: (oMeta at: 'COPEN')
-			seq: ((oMeta at: 'Grammar') bind: 'grammarList')
-			seq: (oMeta at: 'CCLOSE'))
-				actionSelector: #makeGrammar:parent:rules: arguments: {'grammar'. 'superGrammar'. 'grammarList'}).
-		oMeta addRule: 'OmetaList' expression: (((oMeta at: 'Spacing') 
-            seq: (((oMeta at: 'Ometa') repeatOneLeast) bind: 'grammars')
-			seq: PKEmptyExpression uniqueInstance)
-				restrict: 'grammars').
-		^oMeta
 	]
 ]
 
