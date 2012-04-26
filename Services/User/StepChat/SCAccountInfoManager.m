@@ -62,8 +62,7 @@ License: Modified BSD
                         atomically:NO 
                           encoding:NSUTF8StringEncoding 
                              error:NULL];
-      NSLog(@"BHO %@", jid);
-      
+
       if (done == NO)
         {
           [NSAlert alertWithMessageText:@"Can't write to file"

@@ -15,16 +15,18 @@
 {
         JID *myJID = [JID jidWithString:[jidBox stringValue]];
         NSString * myServer = [serverBox stringValue];
+        SCAccountInfoManager *manager;
+        
         if(myServer != nil && ![myServer isEqualToString:@""])
         {
                 [XMPPAccount setDefaultJID:myJID withServer:myServer];
-                SCAccountInfoManager *manager = [[SCAccountInfoManager alloc] init];
+                manager = [[SCAccountInfoManager alloc] init];
                 [manager writeJIDToFile:myJID atPath:[manager filePath]];
         }
         else
         {
                 [XMPPAccount setDefaultJID:myJID];
-                SCAccountInfoManager *manager = [[SCAccountInfoManager alloc] init];
+                manager = [[SCAccountInfoManager alloc] init];
                 [manager writeJIDToFile:myJID atPath:[manager filePath]];
         }
         [[self window] close];
