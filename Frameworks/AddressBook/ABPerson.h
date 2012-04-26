@@ -7,6 +7,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <EtoileFoundation/EtoileFoundation.h>
 #import <CoreObject/COObject.h>
 #import <AddressBook/ABRecord.h>
 
