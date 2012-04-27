@@ -509,15 +509,66 @@ PKParseExpression subclass: PKAlphabeticExpression [
 	]
 
 	description [
-		^'[a-zA-Z]'
+		^'[[:alpha:]]'
 	]
 ]
+
+PKParseExpression subclass: PKUppercaseExpression [
+
+	parseInput: list delegate: delegate [
+		^list head isEmpty ifTrue: [
+			PKParseFail alloc initWithInput: list description: 'Expected uppercase character'
+		] ifFalse: [
+			(list head characterAtIndex: 0) isUppercase ifTrue: [
+				PKParseMatch alloc initWithInput: list length: list head length
+			] ifFalse: [
+				PKParseFail alloc initWithInput: list description: 'Expected uppercase character'
+			]
+		]
+	]
+
+	description [ ^'[[:upper:]]']
+]
+
+PKParseExpression subclass: PKLowercaseExpression [
+
+	parseInput: list delegate: delegate [
+		^list head isEmpty ifTrue: [
+			PKParseFail alloc initWithInput: list description: 'Expected lowercase character'
+		] ifFalse: [
+			(list head characterAtIndex: 0) isLowercase ifTrue: [
+				PKParseMatch alloc initWithInput: list length: list head length
+			] ifFalse: [
+				PKParseFail alloc initWithInput: list description: 'Expected lowercase character'
+			]
+		]
+	]
+
+	description [ ^'[[:lower:]]']
+]
+
+PKParseExpression subclass: PKWhitespaceExpression [
+
+	parseInput: list delegate: delegate [
+		^list head isEmpty ifTrue: [
+			PKParseFail alloc initWithInput: list description: 'Expected whitespace character'
+		] ifFalse: [
+			(list head characterAtIndex: 0) isWhitespace ifTrue: [
+				PKParseMatch alloc initWithInput: list length: list head length
+			] ifFalse: [
+				PKParseFail alloc initWithInput: list description: 'Expected whitespace character'
+			]
+		]
+	]
+
+	description [ ^'[[:space:]]']
+]
+
 
 PKParseExpression subclass: PKRangeExpression [
 	| from to |
 
 	initFrom: fromChar to: toChar [
-		(('0' = from) and: ('9' = to)) ifTrue: [^PKNumericExpression new].
 		super init.
 		from := fromChar.
 		to := toChar.
@@ -553,7 +604,7 @@ PKParseExpression subclass: PKNumericExpression [
 	]
 
 	description [
-		^'[0-9]'
+		^'[[:digit:]]'
 	]
 ]
 
@@ -742,7 +793,10 @@ PKComposeExpression subclass: PKAlphanumericExpression [
 	init [
 		self initWithExp: (  PKAlphabeticExpression new or: PKNumericExpression new )
 	]
+	
+	description [^'[[:alnum:]]']
 ]
+
 
 PKParseExpression subclass: PKTokenExpression [
 	| match |
@@ -1548,9 +1602,15 @@ NSObject subclass: PKParser [
 							    seq: (oMeta at: 'HexDigit')) bind: 'hexChar'))
 				  actionSelector: #parseHexChar: arguments: {'hexChar'})
 			    or: ('\' asExp not seq: (PKDotExpression new)  )).
+		oMeta addRule: 'BuiltinRange' expression: ((('[:' asExp) seq: 
+			(((('alpha' asExp) or: ('alnum' asExp) or: ('digit' asExp))
+				or: ('lower' asExp) or: ('upper' asExp) or: ('space' asExp))
+			 bind: 'builtinRange')
+			seq: (':]' asExp)) actionSelector: #makeBuiltinRange: arguments: {'builtinRange'}).
 		oMeta addRule: 'Range' expression: (((((oMeta at: 'Char') bind: 'first') 
         	seq: '-' asExp seq: ((oMeta at: 'Char') bind: 'second')) 
 				 actionSelector: #makeRangeFrom:to: arguments: {'first'. 'second'})
+		or: (oMeta at: 'BuiltinRange')
         	or: (((oMeta at: 'Char') bind: 'tok') actionSelector: #makeToken: arguments: {'tok'})).
 		oMeta addRule: 'Class' expression: (('[' asExp 
                 seq: ((']' asExp not seq: (oMeta at: 'Range')) repeat bind: 'rangeList')
@@ -1907,6 +1967,20 @@ NSObject subclass: PKParserASTGenerator [
 	makeRangeFrom: first to: second [
 		^PKRangeExpression alloc initFrom: first to: second.
 	]
+
+
+	makeBuiltinRange: builtin [
+		| exp |
+		'alpha' = builtin ifTrue: [exp := PKAlphabeticExpression new].	
+		'alnum' = builtin ifTrue: [exp := PKAlphanumericExpression new].	
+		'digit' = builtin ifTrue: [exp := PKNumericExpression new].	
+		'lower' = builtin ifTrue: [exp := PKLowercaseExpression new].	
+		'upper' = builtin ifTrue: [exp := PKUppercaseExpression new].	
+		'space' = builtin ifTrue: [exp := PKWhitespaceExpression new].	
+
+		^exp
+	]
+
 	makeToken: tok [
 		^PKTokenExpression alloc initWithPattern: tok
 

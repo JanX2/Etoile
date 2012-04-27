@@ -14,7 +14,7 @@ Primary <- Identifier:rule (!LEFTARROW
 # Lexical syntax
 Identifier <- IdentStart IdentCont* Spacing
 IdentStart <- [a-zA-Z_]
-IdentCont <- IdentStart / [0-9]
+IdentCont <- IdentStart / [[:digit:]]
 Literal <- ['] (!['] Char)*:stringLit ['] Spacing -> [makeLiteral: stringLit]
 / ["] (!["] Char)* ["] Spacing
 Class <- '[' (!']' Range)*:rangeList ']' Spacing -> [sequence:rangeList]
