@@ -282,17 +282,25 @@ PKParseAction subclass: PKParsePredicate [
 		^self
 	]
 
-	succeedsInEnvironment: env [
+	succeedsInEnvironment: env withDelegate: delegate [
 		| target arguments invocation |
 		arguments := argumentNames mappedCollectionWithBlock: [ :argName |
 			|value |
-			"FIXME: We might need to reduce the value first, but that is only possible
-			 if we know about the delegate, which in the present state of things, we 
-			 don't."
 			value := env objectForKey: argName.
 			"FIXME2: This is a quick hack. If the value cannot be bound, we assume
 			 that it should be interpreted as a literal value."
 			value == nil ifTrue: [value := argName].
+
+			" We might need to reduce the value first, which might trigger
+			  unwanted side-effects if we need to backtrack latter.
+			  TODO: In the ParserKit manual, clearly inform the user about
+			  the fact that it is unsafe use bound matches with side-effecting
+			  actions in predicates "
+			value canReduce ifTrue: [
+				value := value reduceOn: delegate.
+				" We also need to update the environment with the reduced value. "
+				env replaceObject: value forKey: argName.
+			].	
 			value.
 		].
 		target := env objectForKey: targetName.
@@ -450,15 +458,23 @@ NSObject subclass: PKParseExpression [
 	lookahead [
 		^PKLookAheadExpression alloc initWithExp: self
 	]
-	parseInput: sequence [
+	parseInput: sequence delegate: delegate [
 		^self subclassResponsibility
 	]
+
+	parseInput: sequence [
+		^self parseInput: sequence delegate: nil
+	]
 		
-	parseInput: list ifFailed: aBlock [
+	parseInput: list delegate: delegate ifFailed: aBlock [
 		| match |
-		match := (self parseInput: list).
+		match := (self parseInput: list delegate: delegate).
 		^match isFailure ifTrue: [aBlock value]
 						 ifFalse: [ match ]
+	]
+
+	parseInput: list ifFailed: aBlock [
+		^self parseInput: list delegate: nil ifFailed: aBlock
 	]
 
 	isMemoizable [ ^true ]
@@ -469,7 +485,7 @@ NSObject subclass: PKParseExpression [
 ]
 
 PKParseExpression subclass: PKDotExpression [
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		^list atEnd 
             ifTrue: [PKParseFail alloc initWithInput: list description: 'Unexpected end of stream']
 			ifFalse: [PKParseMatch alloc initWithInput: list length: list head length]
@@ -478,11 +494,12 @@ PKParseExpression subclass: PKDotExpression [
 	description [
 		^'.'
 	]
+
 ]
 
 PKParseExpression subclass: PKAlphabeticExpression [
 	
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		^list head isEmpty 
 			ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected alphabetic character']
 			ifFalse: [
@@ -507,7 +524,7 @@ PKParseExpression subclass: PKRangeExpression [
 		^self
 	]
 
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		^list head isEmpty 
             ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected character [', from, '-', to, ']']
 			ifFalse: [
@@ -526,7 +543,7 @@ PKParseExpression subclass: PKRangeExpression [
 
 PKParseExpression subclass: PKNumericExpression [
 
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		^list head isEmpty ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected digit character']
 			ifFalse: [
 				(list head characterAtIndex: 0) isDigit
@@ -554,8 +571,8 @@ PKParseExpression subclass: PKComposeExpression [
 		^exp description	
 	]
 
-	parseInput: list [
-	    ^exp parseInput: list	
+	parseInput: list delegate: delegate [
+	    ^exp parseInput: list delegate: delegate
 	]
 
 	expression [^exp]
@@ -563,6 +580,11 @@ PKParseExpression subclass: PKComposeExpression [
 	" Non-Memoizability is inherited. "
 	isMemoizable [ ^exp isMemoizable ]
 	isMemoizableForNonTerminal: name inGrammar: grammar [ ^exp isMemoizableForNonTerminal: name inGrammar: grammar ] 
+
+	setDelegate: aDelegate [
+		super setDelegate: aDelegate.
+		exp setDelegate: aDelegate.
+	]
 ]
 
 
@@ -586,7 +608,7 @@ PKParseExpression subclass: PKNAryComposeExpression [
 		expressions addObjectsFromArray: exprs.
 	]
 
-	parseInput: list [ 
+	parseInput: list delegate: delegate [ 
 		^self subclassResponsibility
 	]
 
@@ -604,6 +626,11 @@ PKParseExpression subclass: PKNAryComposeExpression [
 	]
 
 	isMemoizable [ ^self isMemoizableForNonTerminal: nil inGrammar: nil ]
+
+	setDelegate: aDelegate [
+		super setDelegate: aDelegate.
+		expressions do: [ :each | each setDelegate: aDelegate ].
+	]
 ]
 
 PKComposeExpression subclass: PKActionExpression [
@@ -614,10 +641,10 @@ PKComposeExpression subclass: PKActionExpression [
 		action := anAction
 	]
 
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		| match |
 		
-		match := exp parseInput: list.
+		match := exp parseInput: list delegate: delegate.
 		match isSuccess  ifTrue: [
 			match attachAction: (action invocationInEnvironment: list environment)
 		].
@@ -638,7 +665,7 @@ PKComposeExpression subclass: PKRestrictionExpression [
 		restriction := aRestriction
 	]
 
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		| match |
 		
 		match := exp parseInput: list.
@@ -656,11 +683,11 @@ PKComposeExpression subclass: PKParameterizedExpression [
 		super initWithExp: aExp.
 		predicate := pred.
 	]
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		| match |
-		match := exp parseInput: list.
+		match := exp parseInput: list delegate: delegate.
 		^match isSuccess ifTrue: [
-			(predicate succeedsInEnvironment: (list environment)) ifTrue: [ match ]
+			(predicate succeedsInEnvironment: (list environment) withDelegate: delegate) ifTrue: [ match ]
 			ifFalse: [
 				list popPosition.
 				PKParseFail alloc initWithInput: list
@@ -685,7 +712,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 		^self
 	]
 
-	parseInput: list  [
+	parseInput: list delegate: delegate  [
 		| match |
 		list inEnvironmentDo: [
 			exp == nil ifTrue: [NSException raise: 'ParserKit' format: 'Uncomplete grammar definition for ', name].
@@ -694,7 +721,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 			(match == nil) ifTrue: [
 				| position |
 				position := list position.
-				match := exp parseInput: list.
+				match := exp parseInput: list delegate: delegate.
 				" Only memoize the matches from expressions for which it is safely possible. "
 				exp isMemoizable ifTrue: [list addMatch: match at: position named: name].
 			] ifFalse: [ match isSuccess ifTrue: [
@@ -726,7 +753,7 @@ PKParseExpression subclass: PKTokenExpression [
 		^self
 	]
 	
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		| return |
 		((list head: match matchSize) isEqual: match) ifTrue: [ 
 			return := PKParseMatch alloc initWithInput: list
@@ -753,7 +780,7 @@ PKParseExpression subclass: PKEmptyExpression [
         ^instance
 	]
 
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		^list atEnd
             ifTrue: [PKParseMatch alloc initWithInput: list length: 0]
 			ifFalse: [PKParseFail alloc initWithInput: list description:  'Expected an empty string'] 
@@ -775,7 +802,7 @@ PKParseExpression subclass: PKAnythingExpression [
 		^instance
 	]
 
-	parseInput: list [ ^PKParseMatch alloc initWithInput: list length: 0]
+	parseInput: list delegate: delegate [ ^PKParseMatch alloc initWithInput: list length: 0]
 
 	description [ ^'']
 ]
@@ -789,12 +816,12 @@ PKParseExpression subclass: PKSequenceExpression [
 		^self
 	] 
 
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		| match1 |
-		match1 := e1 parseInput: list.
+		match1 := e1 parseInput: list delegate: delegate.
 		^match1 isSuccess ifTrue: [
 			| match2 |
-			match2 := (e2 parseInput: list).
+			match2 := (e2 parseInput: list delegate: delegate).
 			match2 isSuccess 
                 ifTrue: [ 
 					ETTranscript debug: 'Merge sequence: ''', match1 matchText, ''' with: ''', match2 matchText, ''''; debugCr.
@@ -825,13 +852,13 @@ PKParseExpression subclass: PKSequenceExpression [
 
 PKNAryComposeExpression subclass: PKNArySequenceExpression [
 
-	parseInput: list [
+	parseInput: list delegate: delegate[
 		| match |
 		match := PKParseMatch emptyMatch: list.
 		expressions do: [ :exp|
 			match isSuccess ifTrue: [
 				| currentMatch |
-				currentMatch := exp parseInput: list.
+				currentMatch := exp parseInput: list delegate: delegate.
 				ETTranscript debug: 'N-Ary partmatch: '; debug: currentMatch; debugCr.
 				(list length > 24) ifTrue: [ETTranscript debug: (list fromRange: (NSValue rangeWithLocation: 0 length: 24)); debugCr]. 
 				currentMatch isSuccess ifTrue: [ 
@@ -872,9 +899,9 @@ PKComposeExpression subclass: PKBindExpression [
 		name := aName
 	]
 
-	parseInput: list [
+	parseInput: list delegate: delegate[
 		| match |
-		match := exp parseInput: list.
+		match := exp parseInput: list delegate: delegate. 
 		match bind: name.
 		^match
 	]
@@ -886,9 +913,9 @@ PKComposeExpression subclass: PKBindExpression [
 PKComposeExpression subclass: PKLookAheadExpression [
 
 	
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		| match |
-		match := exp parseInput: list.
+		match := exp parseInput: list delegate: delegate.
 		match isFailure ifFalse: [list popPosition].
 		^match
 	]
@@ -907,18 +934,18 @@ PKComposeExpression subclass: PKNegateExpression [
 		^'!(',exp expression description,')'
 	]
 
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		| match |
-		match := exp parseInput: list.
+		match := exp parseInput: list delegate: delegate.
 		^match isSuccess ifTrue: [PKParseFail alloc initWithInput: list description: 'Should not match ', exp description] 
 						 ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
 	]
 ]
 
 PKComposeExpression subclass: PKMaybeExpression [
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		| match |
-		match := exp parseInput: list.
+		match := exp parseInput: list delegate: delegate.
 		^match isSuccess ifTrue: [match]
 						 ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
 	]
@@ -934,10 +961,10 @@ PKParseExpression subclass: PKAlternateExpression [
 		second := exp2
 	]
 
-	parseInput: list [
-		 ^first parseInput: list ifFailed: [
+	parseInput: list delegate: delegate[
+		 ^first parseInput: list delegate: delegate ifFailed: [
 			 | match |
-			 match := second parseInput: list.
+			 match := second parseInput: list delegate: delegate.
 			 match isFailure 
                  ifTrue:[ PKParseFail alloc initWithInput: list description: 'Expected ', self description]
 				 ifFalse: [match]
@@ -963,16 +990,17 @@ PKParseExpression subclass: PKAlternateExpression [
 
 	isMemoziableForNonTerminal: name inGrammar: grammar [ ^ (first isMemoizableForNonTerminal: name inGrammar: grammar) and:
 		(second isMemoizableForNonTerminal: name inGrammar: grammar) ]
+
 ]
 
 PKNAryComposeExpression subclass: PKNAryAlternateExpression [
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		| match |
 		match := PKParseFail alloc initWithInput: list description: 'Expected ', self description.
 		expressions do: [ :exp |
 			match isSuccess ifFalse: [
 				| currentMatch |
-				currentMatch := exp parseInput: list.
+				currentMatch := exp parseInput: list delegate: delegate.
 				currentMatch isSuccess ifTrue: [ match := currentMatch ]
 			]
 		].
@@ -1006,11 +1034,11 @@ PKComposeExpression subclass: PKRepetitionExpression [
 		^self
 	]
 	
-	parseInput: list [
+	parseInput: list delegate: delegate[
 		| match currentMatch |
 		match := PKParseMatch emptyMatch: list.
 		[
-			currentMatch := exp parseInput: list.
+			currentMatch := exp parseInput: list delegate: delegate.
 			currentMatch isSuccess
 		] whileTrue: [ 
 			ETTranscript debug: 'Merge repetition ', match matchText, ' with: ', currentMatch matchText; debugCr.
@@ -1034,9 +1062,9 @@ PKParseExpression subclass: PKNonTerminalLookup [
 		name := aName
 	]
 
-	parseInput: list [
+	parseInput: list delegate: delegate [
 		"ETTranscript debug: 'Apply ', name, ' at: '; debug: list position; debugCr."
-		^grammar matchStream: list rule: name
+		^grammar matchStream: list rule: name delegate: delegate
 	]
 
 	isMemoizable [ ^(grammar rules lookup: name ifFailed: [^false]) isMemoizableForNonTerminal: name inGrammar: grammar ]
@@ -1101,6 +1129,24 @@ NSObject subclass: PKEnvironmentStack [
 			]
 		].
 		^object
+	]
+
+
+	" This method replaces the value of a binding in place. This is needed for
+	  predicates that reduce their arguments during parsing. "
+	replaceObject: newObject forKey: key [
+		| oldObject |
+		oldObject := top objectForKey: key.
+		((oldObject == nil) not) ifTrue: [top setObject: newObject forKey: key]
+		                     ifFalse: [
+			environmentStack do: [ :each |
+				(nil == oldObject) ifTrue: [
+					oldObject := each objectForKey: key.
+					(nil == oldObject) ifFalse: [each setObject: newObject
+					                                     forKey: key].
+				]
+			]
+		]
 	]
 
 	pushEnvironment [
@@ -1680,33 +1726,35 @@ NSObject subclass: PKParser [
 	
 
 	apply: rule [
-		^self apply: rule withInit: nil
+		^self apply: rule withInit: nil delegate: delegate 
 	]
 
-	apply: rule withInit: init [
+	apply: rule withInit: init delegate: aDelegate[
 		| exp |
 		exp := rules lookup: rule ifFailed: [
 			NSException raise: 'ParserKit' format: ('Invalid rule ', rule)
 		].
 		(init == nil) ifFalse: [ exp := init seq: exp ].
-		^exp parseInput: input.
+		^exp parseInput: input delegate: aDelegate.
 	]
 	
 	match: inputStream rule: rule [
 		^self matchStream: (PKInputStream alloc initWithStream: inputStream)
 		             rule: rule
-		         withInit: (rules lookup: '__init__' ifFailed: [nil]).
+		         withInit: (rules lookup: '__init__' ifFailed: [nil])
+			 delegate: delegate.
 	]
 
-	matchStream: stream rule: rule [
-		^self matchStream: stream rule: rule withInit: nil.
+	matchStream: stream rule: rule delegate: aDelegate [
+		^self matchStream: stream rule: rule withInit: nil delegate: aDelegate.
 	]
 	
-	matchStream: stream rule: rule withInit: init [
+	matchStream: stream rule: rule withInit: init delegate: aDelegate [
 		|match|
+		(aDelegate == nil) ifTrue: [aDelegate := delegate].
 		input := stream.	
-		match := self apply: rule withInit: init.
-		match setDelegate: delegate.
+		match := self apply: rule withInit: init delegate: aDelegate.
+		match setDelegate: aDelegate.
 		^match
 	]
 
