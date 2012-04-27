@@ -86,6 +86,7 @@ NSString extend [
 
 NSObject extend [
 	canReduce [^false]
+	isExplicitAction [ ^ false ]
 	matchSize [ ^1 ]
 	isArray [^false]
 	joinAll [ ^self ]
@@ -157,14 +158,27 @@ NSObject subclass: NSDelayActionArray [
 		anArray do: aBlock
 	]
 
+	isExplicitAction [ ^true ]
+
 	canReduce [^true]
 	reduceOn: target [
-		| result |
+		| result implicit |
+		" Find out whether the array only contains implicit actions. In
+		  this case, we want to rejoin them. "
+		implicit := anArray leftFoldWithInitialValue: true
+		                                   intoBlock: [ :acc :each | acc and: (each isExplicitAction not) ].
 		result := anArray map: [:each | 
 			each canReduce 
                    ifTrue: [each reduceOn: target]
 				   ifFalse: [each]].
-		(1 = (result count)) ifTrue: [ result := result objectAtIndex: 0 ].
+		(1 = (result count)) ifTrue: [ result := result objectAtIndex: 0 ]
+		                    ifFalse: [
+			implicit ifTrue: [
+				" FIXME: Define generic protocol so that this
+				  works for something other than strings. "
+				result := result componentsJoinedByString: ''
+			]
+		].
 		^result.
 	]
 	description [
@@ -177,36 +191,109 @@ NSObject subclass: NSDelayActionArray [
 ]
 
 
+NSObject subclass: PKMatchRangeNotice [
+	| match rule range |
+
+	initWithMatch: aMatch rule: aRule at: aRange [
+		super init.
+		match := aMatch.
+		rule := aRule.
+		range := aRange.
+	]
+
+	canReduce [ ^true ]
+
+	isExplicitAction [
+		^(match respondsToSelector: #isExplicitAction ) ifTrue: [
+			(self == match) ifTrue: [ false ]
+			               ifFalse: [ match isExplicitAction ].
+		] ifFalse: [
+			| action |
+			action := match matchAction.
+			(nil == action) ifTrue: [ false ]
+			ifFalse: [
+				(action isKindOfClass: PKMatchRangeNotice class) ifTrue: [ false ]
+				ifFalse: [ action isExplicitAction ]
+			]
+		]
+	]
+
+	originalMatch [ ^match ]
+
+	range [ ^range ]
+
+	setOriginalMatch: aMatch [
+		match := aMatch
+	]
+
+	reduceOn: target [
+		| selector |
+		selector := ('matched', rule, 'At:') selValue.
+		(target respondsToSelector: selector) ifTrue: [
+			target performSelector: selector withObject: range.
+		] ifFalse: [
+			target ifResponds matched: rule at: range.
+		].
+		^match canReduce ifTrue: [ 
+			match reduceOn: target
+		] ifFalse: [
+			match match
+		]
+	]
+
+	description [ ^'Notice about match for ''', rule, ''' at ', range description ] 
+]
+
 "
   Delayed invocations are used to record the semantic actions defined by parse
   expressions and to execute them after the parse tree has successfully
   constructed.
 "
 NSObject subclass: NSDelayInvocation [
-	| selector args |
+	| selector args original |
 	
-	+invocationWithSelector: aSelector arguments: someArgs [
-		^self alloc initWithSelector: aSelector arguments: someArgs
+	+invocationWithSelector: aSelector arguments: someArgs originalMatch: match [
+		^self alloc initWithSelector: aSelector arguments: someArgs originalMatch: match
 	]
-	initWithSelector: aSelector arguments: someArgs [
+	initWithSelector: aSelector arguments: someArgs originalMatch: match [
+		super init.
 		selector := aSelector.
-		args := someArgs
+		args := someArgs.
+		original := match.
+		^self
 	]
+
+	isExplicitAction [^true]
 	canReduce [^true]
 	reduceOn: target [
-		| reduceArgs anInvoc |
-		reduceArgs := args map: [:each | each canReduce ifTrue: [
-			| res | res := each reduceOn: target.
-			(res == nil) ifTrue: [
-				NSNull new
-			] ifFalse: [
-				res]
-		] ifFalse: [each]].
-		anInvoc := NSInvocation invocationWithTarget: target selector: selector arguments: reduceArgs.
-		(target respondsToSelector: selector) ifFalse: [ ETTranscript debug: target description, ' does not recognize ', selector description; debugCr. ]. 
-		anInvoc invoke.
-		^anInvoc returnValueAsObject
-		
+		| oldSelString rangedSelector reduceArgs anInvoc |
+		oldSelString := selector description.
+		(oldSelString hasPrefix: '#') ifTrue: [ oldSelString := oldSelString substringFromIndex: 1 ].
+		rangedSelector := (oldSelString hasSuffix: ':') ifTrue: [ (oldSelString stringByAppendingString: 'range:') selValue ]
+		                                               ifFalse: [ (oldSelString stringByAppendingString: 'Range:') selValue ].
+		" If the delegate is also interested in the range, invoke that method (and add the
+		  implicitly bound range argument, of course)"
+		(target respondsToSelector: rangedSelector) ifTrue: [
+			selector := rangedSelector.
+			args := args arrayByAddingObject: original range.
+		].
+
+		^(target respondsToSelector: selector) ifTrue: [
+			reduceArgs := args map: [:each | each canReduce ifTrue: [
+				| res | res := each reduceOn: target.
+				(res == nil) ifTrue: [
+					NSNull new
+				] ifFalse: [
+					res].
+			] ifFalse: [each]].
+			anInvoc := NSInvocation invocationWithTarget: target selector: selector arguments: reduceArgs.
+			anInvoc invoke.
+			anInvoc returnValueAsObject
+		] ifFalse: [
+			" if the selector cannot be invoked, we just return the original match. "
+			ETTranscript debug: 'Delegate does not respond to action ''', selector description, '''';debugCr. 
+			original matchText
+		]
 	]
 
 	description [
@@ -235,7 +322,7 @@ NSObject subclass: PKParseAction [
 		argumentNames := args.
 	]
 
-	invocationInEnvironment: env [
+	invocationInEnvironment: env originalMatch: match [
 		| argsBuild |
 		argsBuild := NSMutableArray new.
 		argumentNames do: [:each |
@@ -244,7 +331,7 @@ NSObject subclass: PKParseAction [
 			value == nil ifTrue: [NSException raise: 'ParserKit' format: 'Unknown binding: ', each].
 			argsBuild addObject: value.
 		].
-		^NSDelayInvocation invocationWithSelector: selector arguments: argsBuild
+		^NSDelayInvocation invocationWithSelector: selector arguments: argsBuild originalMatch: match
 	]
 	
 	messageString [
@@ -287,7 +374,7 @@ PKParseAction subclass: PKParsePredicate [
 		arguments := argumentNames mappedCollectionWithBlock: [ :argName |
 			|value |
 			value := env objectForKey: argName.
-			"FIXME2: This is a quick hack. If the value cannot be bound, we assume
+			"FIXME: This is a quick hack. If the value cannot be bound, we assume
 			 that it should be interpreted as a literal value."
 			value == nil ifTrue: [value := argName].
 
@@ -295,11 +382,24 @@ PKParseAction subclass: PKParsePredicate [
 			  unwanted side-effects if we need to backtrack latter.
 			  TODO: In the ParserKit manual, clearly inform the user about
 			  the fact that it is unsafe use bound matches with side-effecting
-			  actions in predicates "
+			  actions in predicates. The only thing we can avoid is triggering
+			  match range notices to the delegate."
 			value canReduce ifTrue: [
-				value := value reduceOn: delegate.
-				" We also need to update the environment with the reduced value. "
-				env replaceObject: value forKey: argName.
+				(value isKindOfClass: PKMatchRangeNotice class) ifTrue: [
+					| innerValue |
+					innerValue := value originalMatch.
+					innerValue canReduce ifTrue: [
+						innerValue := innerValue reduceOn: delegate.
+					] ifFalse: [
+						innerValue := innerValue match.
+					].
+					value setOriginalMatch: innerValue.
+					value := innerValue.
+				] ifFalse: [
+				  value := value reduceOn: delegate.
+				  " We also need to update the environment with the reduced value. "
+				  env replaceObject: value forKey: argName.
+				].
 			].	
 			value.
 		].
@@ -356,6 +456,8 @@ NSObject subclass: PKRestrictedMatch [
 	]
 	
 	canReduce [ ^true ]
+
+	isExplicitAction [ ^true ]
 
 	description [ ^restricted description ]
 ]
@@ -697,7 +799,7 @@ PKComposeExpression subclass: PKActionExpression [
 		
 		match := exp parseInput: list delegate: delegate.
 		match isSuccess  ifTrue: [
-			match attachAction: (action invocationInEnvironment: list environment)
+			match attachAction: (action invocationInEnvironment: list environment originalMatch: match)
 		].
 		
 		^match
@@ -773,11 +875,31 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 				| position |
 				position := list position.
 				match := exp parseInput: list delegate: delegate.
+				
+				match isSuccess ifTrue: [
+					" Add an implicit range notice "
+					(match matchAction == nil) ifTrue: [
+						match attachAction: (PKMatchRangeNotice alloc
+						  initWithMatch: match
+						           rule: name
+						             at: match range)	
+					] ifFalse: [
+						" If there is already an action, we need to use that for
+						  the match "
+						(match matchAction isKindOfClass: PKMatchRangeNotice class) ifFalse: [
+							match attachAction: (PKMatchRangeNotice alloc
+							     initWithMatch: match matchAction
+							              rule: name
+							                at: match range)
+						]
+					].
+				].
 				" Only memoize the matches from expressions for which it is safely possible. "
 				exp isMemoizable ifTrue: [list addMatch: match at: position named: name].
 			] ifFalse: [ match isSuccess ifTrue: [
 				ETTranscript debug: 'Pushing back position: '; debug: match stopPosition; debugCr.
-				list pushPosition: match stopPosition]
+				list pushPosition: match stopPosition.
+				]
 			].
 			ETTranscript debug: 'End of non terminal: ', name, ' input pos: '; debug: list positionStack; debug: 'last position: '; debug: list position; debugCr.
 		].
@@ -913,8 +1035,6 @@ PKNAryComposeExpression subclass: PKNArySequenceExpression [
 			match isSuccess ifTrue: [
 				| currentMatch |
 				currentMatch := exp parseInput: list delegate: delegate.
-				ETTranscript debug: 'N-Ary partmatch: '; debug: currentMatch; debugCr.
-				(list length > 24) ifTrue: [ETTranscript debug: (list fromRange: (NSValue rangeWithLocation: 0 length: 24)); debugCr]. 
 				currentMatch isSuccess ifTrue: [ 
 					ETTranscript debug: 'Merge sequence ''', match matchText, ''' with: ''', currentMatch matchText, ''''; debugCr.
 					match := match sequenceWith: currentMatch.
@@ -1225,7 +1345,12 @@ NSObject subclass: PKEnvironmentStack [
 			match := matches objectForKey: each.
 			action := top objectForKey: each.
 			"Only perform the restore if there is no new action that has overriden this one"
-			(match matchAction == nil) ifTrue: [match attachAction: action].
+			(match matchAction == nil) ifTrue: [
+				match attachAction: action
+			] ifFalse: [
+				"But we also reattach the action if the new one is only implicit "
+				match matchAction isExplicitAction ifFalse: [ match attachAction: action ].
+			].	
 		].
 	]
 ]
@@ -1613,9 +1738,9 @@ NSObject subclass: PKParser [
 		or: (oMeta at: 'BuiltinRange')
         	or: (((oMeta at: 'Char') bind: 'tok') actionSelector: #makeToken: arguments: {'tok'})).
 		oMeta addRule: 'Class' expression: (('[' asExp 
-                seq: ((']' asExp not seq: (oMeta at: 'Range')) repeat bind: 'rangeList')
-                seq: ']' asExp 
-                seq: (oMeta at: 'Spacing')) actionSelector: #join: arguments: {'rangeList'}).
+			seq: ((']' asExp not seq: (oMeta at: 'Range')) repeat bind: 'rangeList')
+                	seq: ']' asExp 
+                	seq: (oMeta at: 'Spacing')) actionSelector: #join: arguments: {'rangeList'}).
 		oMeta addRule: 'Literal' expression: ((('''' asExp 
                 seq: (('''' asExp not seq: (oMeta at: 'Char')) repeat bind: 'literal') 
 				seq: '''' asExp seq: (oMeta at: 'Spacing') ) 
@@ -1967,7 +2092,6 @@ NSObject subclass: PKParserASTGenerator [
 	makeRangeFrom: first to: second [
 		^PKRangeExpression alloc initFrom: first to: second.
 	]
-
 
 	makeBuiltinRange: builtin [
 		| exp |
