@@ -1764,21 +1764,25 @@ NSObject subclass: PKParser [
 			or: (oMeta at: 'ForeignRuleApplication')
 			or: ((((oMeta at: 'Identifier') bind: 'rule') seq: ((oMeta at: 'LEFTARROW') not))
 				actionSelector: #makeRuleLookup:fromGrammar: arguments: {'rule'. 'grammar'})).
-		oMeta addRule: 'Primary' expression: ((((((oMeta at: 'RuleApplication') bind: 'expr') seq: (oMeta at: 'LEFTARROW') not)
-			or: (((oMeta at: 'OPEN') seq: ((oMeta at: 'Expression') bind: 'expr') seq: (oMeta at: 'CLOSE'))))
+		oMeta addRule: 'ParenthesizedExpression' expression: (((oMeta at: 'OPEN')
+			seq: ((oMeta at: 'Expression') bind: 'expr')
+			seq: (oMeta at: 'CLOSE'))
+				restrict: 'expr').
+		oMeta addRule: 'Primary' expression: (((((oMeta at: 'RuleApplication') bind: 'expr') seq: (oMeta at: 'LEFTARROW') not)
 				restrict: 'expr')
+			or: (oMeta at: 'ParenthesizedExpression')
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
 			or: ((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})).
 		oMeta addRule: 'Suffix' expression: ((((oMeta at: 'Primary') bind: 'expression')
             seq: (((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe bind: 'modifier')
-			seq: ((':' asExp seq: (oMeta at: 'Identifier')) maybe bind: 'bindingName')
+			seq: ((oMeta at: 'Binding') maybe bind: 'bindingName')
 			seq: ((oMeta at: 'Predicate') maybe bind: 'predicate'))
 			   actionSelector: #makeExpression:modifier:bind:predicate: arguments: {'expression'. 'modifier'. 'bindingName'. 'predicate'}).
 		oMeta addRule: 'Prefix' expression: ((((((oMeta at: 'AND') or: (oMeta at: 'NOT')) maybe bind: 'junction') 
             seq: ((oMeta at: 'Suffix') bind: 'expression'))
 			   actionSelector: #makePrefix:exp: arguments: {'junction'. 'expression'})
-			or: (((oMeta at: 'COLON') seq: ((oMeta at: 'Identifier') bind: 'bindingName'))
+			or: (((oMeta at: 'Binding') bind: 'bindingName')
 				actionSelector: #makeAnythingBind: arguments: {'bindingName'})).
 		oMeta addRule: 'Action' expression: (((oMeta at: 'RIGHTARROW')
 			seq: (oMeta at: 'AOPEN')
@@ -1788,6 +1792,7 @@ NSObject subclass: PKParser [
 		oMeta addRule: 'Restriction' expression: (((oMeta at: 'RIGHTARROW')
 			seq: ((oMeta at: 'Identifier') bind: 'bindingName'))
 				actionSelector: #makeRestriction: arguments: { 'bindingName' }).
+		oMeta addRule: 'Binding' expression: ((':' asExp seq: ((oMeta at: 'Identifier') bind: 'bindingName')) restrict: 'bindingName').
 		oMeta addRule: 'Predicate' expression: (((oMeta at: 'QUESTION') seq: (oMeta at: 'OPEN') seq: ((oMeta at: 'Identifier') bind: 'target')
 		    seq: ((oMeta at: 'Statements') bind: 'predicateMessage') seq: (oMeta at: 'CLOSE'))
 		       actionSelector: #makePredicate:target: arguments: {'predicateMessage'. 'target'}). 
@@ -2199,7 +2204,7 @@ NSObject subclass: PKParserASTGenerator [
 		mode = '+' ifTrue: [ expression := expression repeatOneLeast ].
 		mode = '*' ifTrue: [ expression := expression repeat ].
 		mode = '?' ifTrue: [ expression := expression maybe ].
-		name = '' ifFalse: [ expression := expression bind: (name objectAtIndex: 1) ].
+		name = '' ifFalse: [ expression := expression bind: name ].
 		predicate = '' ifFalse: [ expression parameter: predicate ].
 		^expression
 	]
