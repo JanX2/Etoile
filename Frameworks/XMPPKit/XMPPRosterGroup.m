@@ -14,12 +14,12 @@
 @implementation XMPPRosterGroup
 + (id) groupWithRoster:(id)_roster
 {
-	return [[[XMPPRosterGroup alloc] initWithRoster:_roster] autorelease];
+	return [[XMPPRosterGroup alloc] initWithRoster:_roster];
 }
 
 - (id) initWithRoster:(id)_roster
 {
-	[self init];
+	if (!(self = [self init])) return nil;
 	roster = _roster;
 	return self;
 }
@@ -39,8 +39,7 @@
 
 - (void) groupName:(NSString*)_name
 {
-	[name release];
-	name = [_name retain];
+	name = _name;
 }
 
 - (void) addIdentity:(XMPPIdentity*)_identity

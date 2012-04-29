@@ -12,7 +12,7 @@
 @implementation JID
 + (id) jidWithString:(NSString*)aJid
 {
-	return [[[JID alloc] initWithString:aJid] autorelease];
+	return [[JID alloc] initWithString:aJid];
 } 
 
 - (id)copyWithZone:(NSZone *)zone
@@ -72,17 +72,12 @@
 
 - (id) initWithString:(NSString*)aJid
 {
-	[self init];
+	if (!(self = [self init])) return nil;
 	//JID's are not case sensitive.  This is irritating, but what can you do?
 	aJid = [aJid lowercaseString];
 	
 	NSRange at = [aJid rangeOfString:@"@"];
 	NSRange slash = [aJid rangeOfString:@"/"];
-	[server release];
-	[user release];
-	[resource release];
-	[stringRepresentation release];
-	[stringRepresentationWithNoResource release];
 		
 	if(at.location == NSNotFound)
 	{
@@ -90,34 +85,34 @@
 		if(slash.location == NSNotFound)
 		{
 			type = serverJID;
-			server = [aJid retain];
+			server = aJid;
 		}
 		else
 		{
 			type = serverResourceJID;
-			server = [[aJid substringToIndex:slash.location] retain];
-			resource = [[aJid substringFromIndex:slash.location + 1] retain];
+			server = [aJid substringToIndex:slash.location];
+			resource = [aJid substringFromIndex:slash.location + 1];
 		}
 	}
 	else
 	{
-		user = [[aJid substringToIndex:at.location] retain];
+		user = [aJid substringToIndex:at.location];
 		if(slash.location == NSNotFound)
 		{
 			type = userJID;
-			server = [[aJid substringFromIndex:at.location + 1] retain];
+			server = [aJid substringFromIndex:at.location + 1];
 		}
 		else
 		{
 			type = resourceJID;
 			at.location++;
 			at.length = slash.location - at.location;
-			server = [[aJid substringWithRange:at] retain];
-			resource = [[aJid substringFromIndex:slash.location + 1] retain];
+			server = [aJid substringWithRange:at];
+			resource = [aJid substringFromIndex:slash.location + 1];
 		}
 	}
-	stringRepresentation = [[self getJIDString] retain];
-	stringRepresentationWithNoResource = [[self getJIDStringWithNoResource] retain];
+	stringRepresentation = [self getJIDString];
+	stringRepresentationWithNoResource = [self getJIDStringWithNoResource];
 	return self;
 }
 
@@ -193,11 +188,4 @@
 	return resource;
 }
 
-- (void) dealloc
-{
-	[user release];
-	[server release];
-	[resource release];
-	[super dealloc];
-}
 @end

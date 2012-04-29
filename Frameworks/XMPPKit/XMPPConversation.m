@@ -34,9 +34,9 @@ static NSMutableArray * filters;
 {
 	SELFINIT;
 	connection = [_account connection];
-	name = [[corespondent name] retain];
-	remoteJID = [[[corespondent defaultIdentity] jid] retain];
-	remotePerson = [corespondent retain];
+	name = [corespondent name];
+	remoteJID = [[corespondent defaultIdentity] jid];
+	remotePerson = corespondent;
 	//Register to receive any updates to this person's presence.  This will let us switch to a different default corespondent if required
 	[[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(updatePresence:) 
@@ -64,7 +64,6 @@ static NSMutableArray * filters;
 		conversation = [[XMPPConversation alloc] initWithPerson:corespondent forAccount:_account];
 		[conversations setObject:conversation
 						  forKey:corespondent];
-		[conversation release];
 	}
 	return conversation;
 }
@@ -97,8 +96,7 @@ static NSMutableArray * filters;
 
 - (void) setDelegate:(id<NSObject,XMPPConversationDelegate>)_delegate
 {
-	[delegate release];
-	delegate = [_delegate retain];
+	delegate = _delegate;
 	XMPPPresence * presence = [[remotePerson defaultIdentity] presence];
 	[delegate setPresence:[presence show] 
 			  withMessage:[presence status]];
@@ -118,8 +116,8 @@ static NSMutableArray * filters;
 	XMPPMessage *newMessage = [XMPPMessage messageWithBody: nil  for:remoteJID
 	                                   withSubject: nil type: MESSAGE_TYPE_CHAT];
 	[newMessage beginWritingToXMLWriter: [connection xmlWriter]];
-	XMPPObjectStore *store = [[[XMPPObjectStore alloc] initWithXMLWriter: [connection xmlWriter]
-	                                                      inConversation: self] autorelease];
+	XMPPObjectStore *store = [[XMPPObjectStore alloc] initWithXMLWriter: [connection xmlWriter]
+	                                                      inConversation: self];
 	[store beginObjectWithUUID: uuid andApplication: registeredName];
 	return store;
 }
@@ -133,7 +131,7 @@ static NSMutableArray * filters;
 	{
 		if([delegate newRemoteJID:defaultJID])
 		{
-			remoteJID = [remoteJID retain];
+			remoteJID = remoteJID;
 		}
 	}
 	XMPPPresence * presence = [[remotePerson identityForJID:remoteJID] presence];
@@ -154,8 +152,7 @@ static NSMutableArray * filters;
 {
 	if([delegate newRemoteJID:jid])
 	{
-		[remoteJID release];
-		remoteJID = [jid retain];
+		remoteJID = jid;
 		//Update the presence display in the UI as well
 		XMPPPresence * presence = [[remotePerson identityForJID:remoteJID] presence];
 		[delegate setPresence:[presence show] withMessage:[presence status]];		

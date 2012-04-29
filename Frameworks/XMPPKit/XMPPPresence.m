@@ -96,7 +96,7 @@ int PRESENCE_ICONS[] = {
 	if ([aName isEqualToString:@"presence"])
 	{
 		depth++;
-		from = [[JID jidWithString:[attributes objectForKey:@"from"]] retain];
+		from = [JID jidWithString:[attributes objectForKey:@"from"]];
 		NSString * presenceType = [attributes objectForKey:@"type"];
 		priority = 0;
 		onlineStatus = PRESENCE_UNKNOWN;
@@ -135,7 +135,7 @@ int PRESENCE_ICONS[] = {
 	}
 	else if([aName isEqualToString:@"c"])
 	{
-		caps = [[attributes objectForKey:@"ver"] retain];
+		caps = [attributes objectForKey:@"ver"];
 		depth++;
 	}
 	else
@@ -157,7 +157,7 @@ int PRESENCE_ICONS[] = {
 }
 - (void) addstatus:(NSString*)status
 {
-	message = [status retain];
+	message = status;
 }
 - (void) setpriority:(NSString*)aPriority
 {
@@ -165,13 +165,12 @@ int PRESENCE_ICONS[] = {
 }
 - (void) addnickname:(NSString*)aNickname
 {
-	[nickname release];
-	nickname = [aNickname retain];
+	nickname = aNickname;
 }
 
 - (id) initWithJID:(JID*)_jid
 {
-	from = [_jid retain];
+	from = _jid;
 	onlineStatus = PRESENCE_UNKNOWN;
 	message = @"Status Unknown";
 	return [super init];
@@ -241,12 +240,4 @@ int PRESENCE_ICONS[] = {
 	return NSOrderedSame;
 }
 
-- (void) dealloc
-{
-	[from release];
-	[message release];
-	[nickname release];
-	[caps release];
-	[super dealloc];
-}
 @end

@@ -55,365 +55,343 @@ static NSDictionary * STANZA_KEYS;
 @implementation XMPPConnection
 + (void) initialize
 {
-	//Create default handler classes
-	STANZA_CLASSES = [[NSDictionary dictionaryWithObjectsAndKeys:
-		[XMPPMessage class], @"message",
-		[XMPPPresence class], @"presence",
-		[XMPPInfoQueryStanza class], @"iq", 
-		[XMPPStreamFeatures class], @"stream:features",
-		nil] retain];
-	STANZA_KEYS = [[NSDictionary dictionaryWithObjectsAndKeys:
-		@"message", @"message",
-		@"presence", @"presence",
-		@"iq", @"iq", 
-		@"streamFeatures", @"stream:features",
-		nil] retain];
-	
-	NSLog(@"Stanza delegate classes: %@", STANZA_CLASSES);
+        //Create default handler classes
+        STANZA_CLASSES = [NSDictionary dictionaryWithObjectsAndKeys:
+                [XMPPMessage class], @"message",
+                [XMPPPresence class], @"presence",
+                [XMPPInfoQueryStanza class], @"iq", 
+                [XMPPStreamFeatures class], @"stream:features",
+                nil];
+        STANZA_KEYS = [NSDictionary dictionaryWithObjectsAndKeys:
+                @"message", @"message",
+                @"presence", @"presence",
+                @"iq", @"iq", 
+                @"streamFeatures", @"stream:features",
+                nil];
+        
+        NSLog(@"Stanza delegate classes: %@", STANZA_CLASSES);
 }
 
 + (id) connectionWithAccount:(NSString*)_account
 {
-	XMPPConnection * connection;
-	if (connections == nil)
-	{
-		connections = [[NSMutableDictionary alloc] init];
-	}
-	
-	connection = [connections objectForKey:_account];
-	
-	if (connection == nil)
-	{
-		connection = [XMPPConnection alloc];
-		[connections setObject:connection forKey:_account];
-		connection = [connection initWithAccount:_account];
-		[connection autorelease];
-	}
-	return connection;
+        XMPPConnection * connection;
+        if (connections == nil)
+        {
+                connections = [[NSMutableDictionary alloc] init];
+        }
+        
+        connection = [connections objectForKey:_account];
+        
+        if (connection == nil)
+        {
+                connection = [XMPPConnection alloc];
+                [connections setObject:connection forKey:_account];
+                connection = [connection initWithAccount:_account];
+        }
+        return connection;
 }
 
 
 - (id) initWithAccount:(id)anAccount
 {
-	if (![anAccount isKindOfClass:[XMPPAccount class]])
-	{
-		[self release];
-		return nil;
-	}
+        if (![anAccount isKindOfClass:[XMPPAccount class]])
+        {
+                return nil;
+        }
 
-	SUPERINIT;
-	ASSIGN(res, [[NSHost currentHost] name]);
-	//Get the log class, if it has been built
-	xmlLog = NSClassFromString(@"XMLLog");
-	account = anAccount;
-	roster = [(XMPPAccount*)account roster];
-	
-	XMPPDefaultHandler * defaultHandler = [[[XMPPDefaultHandler alloc] initWithAccount:account] autorelease];
-	dispatcher = [[XMPPDispatcher dispatcherWithDefaultInfoQueryHandler:roster
-											 messageHandler:defaultHandler
-											presenceHandler:roster]
-		retain];
-	return self;
+        SUPERINIT;
+        ASSIGN(res, [[NSHost currentHost] name]);
+        //Get the log class, if it has been built
+        xmlLog = NSClassFromString(@"XMLLog");
+        account = anAccount;
+        roster = [(XMPPAccount*)account roster];
+        
+        XMPPDefaultHandler * defaultHandler = [[XMPPDefaultHandler alloc] initWithAccount:account];
+        dispatcher = [XMPPDispatcher dispatcherWithDefaultInfoQueryHandler:roster
+                                                                                         messageHandler:defaultHandler
+                                                                                        presenceHandler:roster];
+        return self;
 }
 - (void)resetKeepAlive
 {
-	[keepalive invalidate];
-	[keepalive release];
-	keepalive = [[NSTimer scheduledTimerWithTimeInterval: 50
-	                                              target: self
-												selector: @selector(sendKeepAlive:)
-	                                            userInfo: nil
-	                                             repeats: NO] retain];
+        [keepalive invalidate];
+        keepalive = [NSTimer scheduledTimerWithTimeInterval: 50
+                                                      target: self
+                                                                                                selector: @selector(sendKeepAlive:)
+                                                    userInfo: nil
+                                                     repeats: NO];
 }
 - (void) reconnectToJabberServer
 {
-	NSLog(@"Connecting...");
-	ASSIGN(socket, [ETSocket socketConnectedToRemoteHost: serverHost
-	                                          forService: @"xmpp-client"]);
-	if (nil == socket)
-	{
-		// Legacy service description for operating systems (e.g. OS X) that
-		// haven't updated /etc/services to the standardised version.
-		ASSIGN(socket, [ETSocket socketConnectedToRemoteHost: serverHost
-												  forService: @"jabber-client"]);
-		if (nil == socket)
-		{
-			NSLog(@"Connect failing\n");
-			return;
-		}
-	}
-	
-	SET_STATE(Connecting);
-	//Initialise the parser
-	[parser autorelease];
-	parser = [[ETXMLParser alloc] init];
-	[parser pushContentHandler:self];
-	[self resetKeepAlive];
+        NSLog(@"Connecting...");
+        ASSIGN(socket, [ETSocket socketConnectedToRemoteHost: serverHost
+                                                  forService: @"xmpp-client"]);
+        if (nil == socket)
+        {
+                // Legacy service description for operating systems (e.g. OS X) that
+                // haven't updated /etc/services to the standardised version.
+                ASSIGN(socket, [ETSocket socketConnectedToRemoteHost: serverHost
+                                                                                                  forService: @"jabber-client"]);
+                if (nil == socket)
+                {
+                        NSLog(@"Connect failing\n");
+                        return;
+                }
+        }
+        
+        SET_STATE(Connecting);
+        //Initialise the parser
+        parser = [[ETXMLParser alloc] init];
+        [parser pushContentHandler:self];
+        [self resetKeepAlive];
 
-	[socket setDelegate: self];
-	[xmlWriter release];
-	xmlWriter = [ETXMLSocketWriter new];
-	[xmlWriter setSocket: socket];
-	[self receivedData: nil fromSocket: nil];
+        [socket setDelegate: self];
+        xmlWriter = [ETXMLSocketWriter new];
+        [xmlWriter setSocket: socket];
+        [self receivedData: nil fromSocket: nil];
 }
 
 //Connect to an XMPP server.
 - (void) connectToJabberServer:(NSString*) jabberServer 
-					   withJID:(JID*) aJID
-					  password:(NSString*) password
+                                           withJID:(JID*) aJID
+                                          password:(NSString*) password
 {
-	ASSIGN(user, [aJID node]);
-	ASSIGN(server, [aJID domain]);
-	ASSIGN(pass, [password retain]);
-	if (jabberServer == nil)
-	{
-		ASSIGN(serverHost, server);
-	}
-	else
-	{
-		ASSIGN(serverHost, jabberServer);
-	}
-	NSLog(@"Connecting to %@ with username %@ and password %@", serverHost, user, pass);
-	[self reconnectToJabberServer];
+        ASSIGN(user, [aJID node]);
+        ASSIGN(server, [aJID domain]);
+        pass=password;
+        if (jabberServer == nil)
+        {
+                ASSIGN(serverHost, server);
+        }
+        else
+        {
+                ASSIGN(serverHost, jabberServer);
+        }
+        NSLog(@"Connecting to %@ with username %@ and password %@", serverHost, user, pass);
+        [self reconnectToJabberServer];
 }
 
 - (void) disconnect {}
 
 - (void)characters:(NSString *)_chars
 {
-	NSLog(@"Unexpected CDATA encountered in <stream:stream /> tag:\n\%@", _chars);
+        NSLog(@"Unexpected CDATA encountered in <stream:stream /> tag:\n\%@", _chars);
 }
 
 - (void)sendString: (NSString*)aString
 {
-	NSLog(@"SENT: %@", aString);
-	[self resetKeepAlive];
-	[socket sendData: [aString dataUsingEncoding: NSUTF8StringEncoding]];
+        NSLog(@"SENT: %@", aString);
+        [self resetKeepAlive];
+        [socket sendData: [aString dataUsingEncoding: NSUTF8StringEncoding]];
 }
 - (void)sendKeepAlive: (id)sender
 {
-	[self sendString: @" "];
+        [self sendString: @" "];
 }
 
 - (void)receivedData: (NSData*)aData fromSocket: (ETSocket*)aSocket {}
 
 - (NSString*) server
 {
-	return server;
+        return server;
 }
 
 - (void)startElement:(NSString *)aName
-		  attributes:(NSDictionary *)_attributes
+                  attributes:(NSDictionary *)_attributes
 {
-	NSLog(@"Parsing element: %@", aName);
-	
-	if ([aName isEqualToString:@"stream:stream"])
-	{
-		sessionID = [[_attributes objectForKey:@"id"] retain];
-		[server release];
-		server = [[_attributes objectForKey:@"from"] retain];
-		if (![[_attributes objectForKey:@"version"] isEqualToString:@"1.0"])
-		{
-			[self legacyLogIn];
-		}
-	}
-	else
-	{
-		NSString * childKey = [STANZA_KEYS objectForKey:aName];
-		id <ETXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser key:childKey];
-		[stanzaDelegate startElement:aName
-						  attributes:_attributes];
-	}
+        NSLog(@"Parsing element: %@", aName);
+        
+        if ([aName isEqualToString:@"stream:stream"])
+        {
+                sessionID = [_attributes objectForKey:@"id"];
+                server = [_attributes objectForKey:@"from"];
+                if (![[_attributes objectForKey:@"version"] isEqualToString:@"1.0"])
+                {
+                        [self legacyLogIn];
+                }
+        }
+        else
+        {
+                NSString * childKey = [STANZA_KEYS objectForKey:aName];
+                id <ETXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser key:childKey];
+                [stanzaDelegate startElement:aName
+                                                  attributes:_attributes];
+        }
 }
 - (void)logInWithMechansisms:(NSSet*) aFeatureSet
 {
-	//TODO: DIGEST-MD5 auth
-	if ([aFeatureSet containsObject:@"PLAIN"])
-	{
-		NSMutableData * authData = [NSMutableData dataWithBytes:"\0" length:1];
-		[authData appendData:[user dataUsingEncoding:NSUTF8StringEncoding]];
-		[authData appendBytes:"\0" length:1];
-		[authData appendData:[pass dataUsingEncoding:NSUTF8StringEncoding]];
-		NSString * authstring = [authData base64String];
-		//Send auth mechanism
-		[xmlWriter startAndEndElement: @"auth"
-		                   attributes: D(@"urn:ietf:params:xml:ns:xmpp-sasl",
-		                                 @"xmlns", @"PLAIN", @"mechanism")
-		                        cdata: authstring];
-		SET_STATE(LoggingIn);
-	}
-	else
-	{
-		NSLog(@"No supported authentication mechanisms found.  Aborting.");
-	}		
+        //TODO: DIGEST-MD5 auth
+        if ([aFeatureSet containsObject:@"PLAIN"])
+        {
+                NSMutableData * authData = [NSMutableData dataWithBytes:"\0" length:1];
+                [authData appendData:[user dataUsingEncoding:NSUTF8StringEncoding]];
+                [authData appendBytes:"\0" length:1];
+                [authData appendData:[pass dataUsingEncoding:NSUTF8StringEncoding]];
+                NSString * authstring = [authData base64String];
+                //Send auth mechanism
+                [xmlWriter startAndEndElement: @"auth"
+                                   attributes: D(@"urn:ietf:params:xml:ns:xmpp-sasl",
+                                                 @"xmlns", @"PLAIN", @"mechanism")
+                                        cdata: authstring];
+                SET_STATE(LoggingIn);
+        }
+        else
+        {
+                NSLog(@"No supported authentication mechanisms found.  Aborting.");
+        }                
 }
 
 - (void) startSession
 {
-	NSString * sessionIqID = [self nextMessageID];
-	[xmlWriter startElement: @"iq"
-	             attributes: D(@"set", @"type", sessionIqID, @"id")];
-	[xmlWriter startAndEndElement: @"session"
-	                   attributes: D(@"urn:ietf:params:xml:ns:xmpp-session",
-	                                 @"xmlns")];
-	[xmlWriter endElement]; // </iq>
-	[dispatcher addInfoQueryResultHandler:self forID:sessionIqID];
+        NSString * sessionIqID = [self nextMessageID];
+        [xmlWriter startElement: @"iq"
+                     attributes: D(@"set", @"type", sessionIqID, @"id")];
+        [xmlWriter startAndEndElement: @"session"
+                           attributes: D(@"urn:ietf:params:xml:ns:xmpp-session",
+                                         @"xmlns")];
+        [xmlWriter endElement]; // </iq>
+        [dispatcher addInfoQueryResultHandler:self forID:sessionIqID];
 }
 
 - (void) bind
 {
-	//Bind to a resource
-	//<iq type='set' id='bind_2'><bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'><resource>someresource</resource></bind></iq>
-	NSString * bindID = [self nextMessageID];
-	[xmlWriter startElement: @"iq"
-	             attributes: D(@"set", @"type", bindID, @"id")];
-	[xmlWriter startElement: @"bind"
-	             attributes: D(@"urn:ietf:params:xml:ns:xmpp-bind", @"xmlns")];
-	[xmlWriter startAndEndElement: @"resource"];
-	[xmlWriter endElement]; // </bind>
-	[xmlWriter endElement]; // </iq>
-	[dispatcher addInfoQueryResultHandler: self forID: bindID];
+        //Bind to a resource
+        //<iq type='set' id='bind_2'><bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'><resource>someresource</resource></bind></iq>
+        NSString * bindID = [self nextMessageID];
+        [xmlWriter startElement: @"iq"
+                     attributes: D(@"set", @"type", bindID, @"id")];
+        [xmlWriter startElement: @"bind"
+                     attributes: D(@"urn:ietf:params:xml:ns:xmpp-bind", @"xmlns")];
+        [xmlWriter startAndEndElement: @"resource"];
+        [xmlWriter endElement]; // </bind>
+        [xmlWriter endElement]; // </iq>
+        [dispatcher addInfoQueryResultHandler: self forID: bindID];
 }
 
 //Child stanza handlers
 - (void) addmessage:(XMPPMessage*)aMessage
 {
-	[dispatcher dispatchMessage:aMessage];
+        [dispatcher dispatchMessage:aMessage];
 }
 
 - (void) addiq:(XMPPInfoQueryStanza*)anIQ
 {
-	[dispatcher dispatchInfoQuery:anIQ];
+        [dispatcher dispatchInfoQuery:anIQ];
 }
 
 - (void) addpresence:(XMPPPresence*)aPresence
 {
-	[dispatcher dispatchPresence:aPresence];
+        [dispatcher dispatchPresence:aPresence];
 }
 //END child stanza handlers
 
 - (void)endElement:(NSString *)_Name
 {
-	if ([_Name isEqualToString:@"stream:stream"])
-	{
-			/*
-		if(connectionState != loggedIn)
-		{
-			Jesse says: we need some other kind of solution here since we don't have
-			a -connectionFailed method anymore... not sure what to do. I commented it
-			out since it was causing XCode's build to fail.
-			
-			if([[NSApp delegate] respondsToSelector:@selector(connectionFailed:)])
-			{
-				[(JabberApp*)[NSApp delegate] connectionFailed:account];
-			}
-		}
-		//If we have not manually disconnected, try to reconnect.
-			*/
-		[presenceDisplay setPresence:PRESENCE_OFFLINE withMessage:@"Disconnected"];
-	}
-	
+        if ([_Name isEqualToString:@"stream:stream"])
+        {
+                        /*
+                if(connectionState != loggedIn)
+                {
+                        Jesse says: we need some other kind of solution here since we don't have
+                        a -connectionFailed method anymore... not sure what to do. I commented it
+                        out since it was causing XCode's build to fail.
+                        
+                        if([[NSApp delegate] respondsToSelector:@selector(connectionFailed:)])
+                        {
+                                [(JabberApp*)[NSApp delegate] connectionFailed:account];
+                        }
+                }
+                //If we have not manually disconnected, try to reconnect.
+                        */
+                [presenceDisplay setPresence:PRESENCE_OFFLINE withMessage:@"Disconnected"];
+        }
+        
 }
 
 - (void) setPresenceDisplay:(id<XMPPPresenceDisplay,NSObject>)_display
 {
-	[presenceDisplay release];
-	presenceDisplay = [_display retain];
+        presenceDisplay = _display;
 }
 
 - (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq {}
 
 - (NSString*) nextMessageID
 {
-	unsigned int i = messageID++;
-	return [NSString stringWithFormat:@"ETXMPP_%d", i];
+        unsigned int i = messageID++;
+        return [NSString stringWithFormat:@"ETXMPP_%d", i];
 }
 
 - (void) XMPPSend: (NSString*) buffer
 {
-	[xmlLog logOutgoingXML:buffer];
-	//If we are not connected, buffer the input until we are.
-	if (unsentBuffer == nil)
-	{
-		unsentBuffer = [[NSMutableString alloc] init];
-	}
-	[unsentBuffer appendString:buffer];
+        [xmlLog logOutgoingXML:buffer];
+        //If we are not connected, buffer the input until we are.
+        if (unsentBuffer == nil)
+        {
+                unsentBuffer = [[NSMutableString alloc] init];
+        }
+        [unsentBuffer appendString:buffer];
 }
 
 
 - (void) setStatus:(unsigned char)aStatus withMessage:(NSString*)aMessage
 {
-	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
-	if (aStatus == PRESENCE_OFFLINE)
-	{
-		[attributes setObject: @"unavailable" forKey: @"type"];
-	}
-	[xmlWriter startElement: @"presence"
-	             attributes: attributes];
+        NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+        if (aStatus == PRESENCE_OFFLINE)
+        {
+                [attributes setObject: @"unavailable" forKey: @"type"];
+        }
+        [xmlWriter startElement: @"presence"
+                     attributes: attributes];
 
-	if (aStatus != PRESENCE_ONLINE)
-	{
-		[xmlWriter startAndEndElement: @"show"
-		                        cdata: [XMPPPresence xmppStringForPresence: aStatus]];
-	}
-	NSDictionary * presenceDictionary;
-	if (aMessage != nil)
-	{
-		[xmlWriter startAndEndElement: @"status"
-		                        cdata: aMessage];
-		presenceDictionary = D([NSNumber numberWithChar:aStatus],@"show",
-		                       aMessage,@"status");
-	}
-	else
-	{
-		presenceDictionary = D([NSNumber numberWithChar:aStatus], @"show");
-	}
-	[xmlWriter endElement];
-	//Notify anyone who cares that our presence has changed
-	NSNotificationCenter * local = [NSNotificationCenter defaultCenter];
-	NSNotificationCenter * remote = [NSDistributedNotificationCenter defaultCenter];
-	[local postNotificationName:@"LocalPresenceChangedNotification"
-						 object:account
-					   userInfo:presenceDictionary];
-	[remote postNotificationName:@"LocalPresenceChangedNotification"
-						  object:[account name]
-						userInfo:presenceDictionary];
+        if (aStatus != PRESENCE_ONLINE)
+        {
+                [xmlWriter startAndEndElement: @"show"
+                                        cdata: [XMPPPresence xmppStringForPresence: aStatus]];
+        }
+        NSDictionary * presenceDictionary;
+        if (aMessage != nil)
+        {
+                [xmlWriter startAndEndElement: @"status"
+                                        cdata: aMessage];
+                presenceDictionary = D([NSNumber numberWithChar:aStatus],@"show",
+                                       aMessage,@"status");
+        }
+        else
+        {
+                presenceDictionary = D([NSNumber numberWithChar:aStatus], @"show");
+        }
+        [xmlWriter endElement];
+        //Notify anyone who cares that our presence has changed
+        NSNotificationCenter * local = [NSNotificationCenter defaultCenter];
+        NSNotificationCenter * remote = [NSDistributedNotificationCenter defaultCenter];
+        [local postNotificationName:@"LocalPresenceChangedNotification"
+                                                 object:account
+                                           userInfo:presenceDictionary];
+        [remote postNotificationName:@"LocalPresenceChangedNotification"
+                                                  object:[account name]
+                                                userInfo:presenceDictionary];
 }
 
 - (void) setParser:(id)aParser
 {
-	parser = aParser;
+        parser = aParser;
 }
 //Does nothing.  This should never be used, since we are the root element...
 - (void) setParent:(id) newParent {}
 
 - (XMPPDispatcher*) dispatcher
 {
-	return dispatcher;
+        return dispatcher;
 }
 - (BOOL)isConnected
 {
-	return NO;
+        return NO;
 }
 - (ETXMLSocketWriter*)xmlWriter
 {
-	return xmlWriter;
+        return xmlWriter;
 }
 
-- (void) dealloc
-{
-	[res release];
-	[user release];
-	[server release];
-	[pass release];
-	[sessionID release];
-	[unsentBuffer release];
-	[serverHost release];
-	[streamFeatures release];
-	[socket release];
-	[dispatcher release];
-	[super dealloc];
-}
 @end
 
 /**
@@ -424,215 +402,211 @@ static NSDictionary * STANZA_KEYS;
 @implementation XMPPConnectedConnection
 - (BOOL)isConnected
 {
-	return YES;
+        return YES;
 }
 //Digest non-SASL auth.
 - (void) legacyLogIn
 {
-	NSString * nextMessageID = [self nextMessageID];
-	[dispatcher addInfoQueryResultHandler:self forID:nextMessageID];
+        NSString * nextMessageID = [self nextMessageID];
+        [dispatcher addInfoQueryResultHandler:self forID:nextMessageID];
 
-	[xmlWriter startElement: @"iq"
-				 attributes: D(nextMessageID, @"id", @"set", @"type", server, @"to")];
-	NSString * sessionPassword = [sessionID stringByAppendingString:pass];
+        [xmlWriter startElement: @"iq"
+                                 attributes: D(nextMessageID, @"id", @"set", @"type", server, @"to")];
+        NSString * sessionPassword = [sessionID stringByAppendingString:pass];
 
-	NSData *data = [sessionPassword dataUsingEncoding: NSUTF8StringEncoding];
-	NSString * digest = [data sha1];
-	[xmlWriter startElement: @"query"
-				 attributes: D(@"jabber:iq:auth", @"xmlns")];
+        NSData *data = [sessionPassword dataUsingEncoding: NSUTF8StringEncoding];
+        NSString * digest = [data sha1];
+        [xmlWriter startElement: @"query"
+                                 attributes: D(@"jabber:iq:auth", @"xmlns")];
 
-	[xmlWriter startAndEndElement: @"username"
-	                        cdata: user];
+        [xmlWriter startAndEndElement: @"username"
+                                cdata: user];
 
-	[xmlWriter startAndEndElement: @"digest"
-	                        cdata: digest];
+        [xmlWriter startAndEndElement: @"digest"
+                                cdata: digest];
 
-	[xmlWriter startAndEndElement: @"resource"
-	                        cdata: res];
+        [xmlWriter startAndEndElement: @"resource"
+                                cdata: res];
 
-	[xmlWriter endElement]; // </query>
-	[xmlWriter endElement]; // </iq>
-	
-	SET_STATE(LoggingIn);
+        [xmlWriter endElement]; // </query>
+        [xmlWriter endElement]; // </iq>
+        
+        SET_STATE(LoggingIn);
 }
 - (void)receivedData: (NSData*)aData fromSocket: (ETSocket*)aSocket
 {
-	[self resetKeepAlive];
-	NSString *xml = 
-		[[[NSString alloc] initWithData: aData
-		                       encoding: NSUTF8StringEncoding] autorelease];
-	NSLog(@"Received: '%@'", xml);
-	[xmlLog logIncomingXML: xml];
-	[parser parseFromSource: xml];
+        [self resetKeepAlive];
+        NSString *xml = 
+                [[NSString alloc] initWithData: aData
+                                       encoding: NSUTF8StringEncoding];
+        NSLog(@"Received: '%@'", xml);
+        [xmlLog logIncomingXML: xml];
+        [parser parseFromSource: xml];
 }
 - (void) addstreamFeatures:(NSDictionary*) aFeatureSet
 {
-	NSLog(@"Stream features has retain count %lu", (unsigned long)[streamFeatures retainCount]);
-	[streamFeatures release];
-	streamFeatures = [aFeatureSet retain];
-	//If we are connected, try logging in
-	if ([[aFeatureSet objectForKey: @"starttls"] 
-		isEqualToString: @"urn:ietf:params:xml:ns:xmpp-tls"])
-	{
-		[self sendString: @"<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/>"];
-		SET_STATE(Encrypting);
-	}
-	//Hack for broken servers
-	else if ([[aFeatureSet objectForKey:@"auth"] isEqualToString:@"http://jabber.org/features/iq-auth"])
-	{
-		[self legacyLogIn];
-	}
-	else
-	{
-		[self logInWithMechansisms:[aFeatureSet objectForKey:@"mechanisms"]];
-	}
+        streamFeatures = aFeatureSet;
+        //If we are connected, try logging in
+        if ([[aFeatureSet objectForKey: @"starttls"] 
+                isEqualToString: @"urn:ietf:params:xml:ns:xmpp-tls"])
+        {
+                [self sendString: @"<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/>"];
+                SET_STATE(Encrypting);
+        }
+        //Hack for broken servers
+        else if ([[aFeatureSet objectForKey:@"auth"] isEqualToString:@"http://jabber.org/features/iq-auth"])
+        {
+                [self legacyLogIn];
+        }
+        else
+        {
+                [self logInWithMechansisms:[aFeatureSet objectForKey:@"mechanisms"]];
+        }
 }
 @end
 @implementation XMPPConnectingConnection
 - (void) reconnectToJabberServer
 {
-	[self disconnect];
-	SET_STATE(Offline);
-	[self reconnectToJabberServer];
+        [self disconnect];
+        SET_STATE(Offline);
+        [self reconnectToJabberServer];
 }
 - (void)endElement:(NSString *)_Name
 {
-	if ([_Name isEqualToString:@"stream:stream"])
-	{
-		//If we have not manually disconnected, try to reconnect.
-		[self reconnectToJabberServer];
-	}
+        if ([_Name isEqualToString:@"stream:stream"])
+        {
+                //If we have not manually disconnected, try to reconnect.
+                [self reconnectToJabberServer];
+        }
 }
 - (void) disconnect
 {
-	[self XMPPSend:@"</stream:stream>"];
-	[socket release];
-	socket = nil;
-	SET_STATE(Offline);
+        [self XMPPSend:@"</stream:stream>"];
+        socket = nil;
+        SET_STATE(Offline);
 }
 - (void)receivedData: (NSData*)aData fromSocket: (ETSocket*)aSocket
 {
-	[self resetKeepAlive];
-	[self sendString: [NSString stringWithFormat: 
-		@"<?xml version='1.0' encoding='UTF-8' ?><stream:stream to='%@'"
-		" xmlns='jabber:client' version='1.0' xmlns:stream="
-		"'http://etherx.jabber.org/streams'>",
-		server]];
-	SET_STATE(Connected);
+        [self resetKeepAlive];
+        [self sendString: [NSString stringWithFormat: 
+                @"<?xml version='1.0' encoding='UTF-8' ?><stream:stream to='%@'"
+                " xmlns='jabber:client' version='1.0' xmlns:stream="
+                "'http://etherx.jabber.org/streams'>",
+                server]];
+        SET_STATE(Connected);
 }
 @end
 @implementation XMPPLoggedInConnection
 - (void)startElement:(NSString *)aName
-		  attributes:(NSDictionary *)_attributes
+                  attributes:(NSDictionary *)_attributes
 {
-	NSString * childKey = [STANZA_KEYS objectForKey:aName];
-	id <ETXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser key:childKey];
-	[stanzaDelegate startElement:aName
-					  attributes:_attributes];
+        NSString * childKey = [STANZA_KEYS objectForKey:aName];
+        id <ETXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser key:childKey];
+        [stanzaDelegate startElement:aName
+                                          attributes:_attributes];
 }
 - (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq
 {
-	if (([anIq type] == IQ_TYPE_RESULT))
-	{
-		NSString * nextMessageID = [self nextMessageID];
-		[dispatcher addInfoQueryResultHandler:roster forID:nextMessageID];
-		[xmlWriter startElement: @"iq"
-		             attributes: D(nextMessageID, @"id", @"get", @"type")];
-		[xmlWriter startElement: @"query"
-					 attributes: D(@"jabber:iq:roster", @"xmlns")];
+        if (([anIq type] == IQ_TYPE_RESULT))
+        {
+                NSString * nextMessageID = [self nextMessageID];
+                [dispatcher addInfoQueryResultHandler:roster forID:nextMessageID];
+                [xmlWriter startElement: @"iq"
+                             attributes: D(nextMessageID, @"id", @"get", @"type")];
+                [xmlWriter startElement: @"query"
+                                         attributes: D(@"jabber:iq:roster", @"xmlns")];
 
-		[xmlWriter endElement];
-		[xmlWriter endElement];
-		
-		SET_STATE(LoggedIn);
-		if(unsentBuffer!=nil && [unsentBuffer isEqualToString:@""] == NO )
-			[self XMPPSend:unsentBuffer];
-		[unsentBuffer setString:@""];
-	}
+                [xmlWriter endElement];
+                [xmlWriter endElement];
+                
+                SET_STATE(LoggedIn);
+                if(unsentBuffer!=nil && [unsentBuffer isEqualToString:@""] == NO )
+                        [self XMPPSend:unsentBuffer];
+                [unsentBuffer setString:@""];
+        }
 }
 - (void) XMPPSend: (NSString*) buffer
 {
-	[xmlLog logOutgoingXML:buffer];
-	if (unsentBuffer != nil)
-	{
-		[self sendString: unsentBuffer];
-		[unsentBuffer release];
-		unsentBuffer = nil;
-	}
-	[self sendString: buffer];
+        [xmlLog logOutgoingXML:buffer];
+        if (unsentBuffer != nil)
+        {
+                [self sendString: unsentBuffer];
+                unsentBuffer = nil;
+        }
+        [self sendString: buffer];
 }
 @end
 @implementation XMPPUnboundConnection
 - (void) addstreamFeatures:(NSDictionary*) aFeatureSet
 {
-	ASSIGN(streamFeatures, aFeatureSet);
-	if ([aFeatureSet objectForKey:@"bind"] != nil)
-	{
-		[self bind];
-	}
-	else if ([aFeatureSet objectForKey:@"session"] != nil)
-	{
-		SET_STATE(NoSession);
-		[self startSession];
-	}
-	else
-	{
-		SET_STATE(LoggedIn);
-	}
+        ASSIGN(streamFeatures, aFeatureSet);
+        if ([aFeatureSet objectForKey:@"bind"] != nil)
+        {
+                [self bind];
+        }
+        else if ([aFeatureSet objectForKey:@"session"] != nil)
+        {
+                SET_STATE(NoSession);
+                [self startSession];
+        }
+        else
+        {
+                SET_STATE(LoggedIn);
+        }
 }
 - (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq
 {
-	if ([streamFeatures objectForKey:@"session"] != nil)
-	{
-		SET_STATE(NoSession);
-		[self startSession];
-	}
-	else
-	{
-		SET_STATE(LoggedIn);
-		[self handleInfoQuery: anIq];
-	}
+        if ([streamFeatures objectForKey:@"session"] != nil)
+        {
+                SET_STATE(NoSession);
+                [self startSession];
+        }
+        else
+        {
+                SET_STATE(LoggedIn);
+                [self handleInfoQuery: anIq];
+        }
 }
 @end
 @implementation XMPPEncryptingConnection
 - (void)startElement:(NSString *)aName
-		  attributes:(NSDictionary *)_attributes
+                  attributes:(NSDictionary *)_attributes
 {
-	if ([aName isEqualToString: @"proceed"])
-	{
-		NSLog(@"SSL returned %d", [socket negotiateSSL]);
-		SET_STATE(Connecting);
-		// Reset the connection
-		[self receivedData: nil fromSocket: nil];
-	}
+        if ([aName isEqualToString: @"proceed"])
+        {
+                NSLog(@"SSL returned %d", [socket negotiateSSL]);
+                SET_STATE(Connecting);
+                // Reset the connection
+                [self receivedData: nil fromSocket: nil];
+        }
 }
 @end
 @implementation XMPPLoggingInConnection 
 - (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq
 {
-	SET_STATE(LoggedIn);
-	[self handleInfoQuery: anIq];
+        SET_STATE(LoggedIn);
+        [self handleInfoQuery: anIq];
 }
 
 - (void)startElement:(NSString *)aName
-		  attributes:(NSDictionary *)_attributes
+                  attributes:(NSDictionary *)_attributes
 {
-	if ([aName isEqualToString:@"success"])
-	{
-		//Once we're authenticated, re-initialise the stream...ha
-		SET_STATE(Unbound);
-		// FIXME: Move this to a method
-		NSString * newStream = [NSString stringWithFormat:@"<stream:stream to='%@' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>",
+        if ([aName isEqualToString:@"success"])
+        {
+                //Once we're authenticated, re-initialise the stream...ha
+                SET_STATE(Unbound);
+                // FIXME: Move this to a method
+                NSString * newStream = [NSString stringWithFormat:@"<stream:stream to='%@' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>",
                                 server];
-		[self sendString: newStream];
-	}
-	// TODO: Handle failure.
+                [self sendString: newStream];
+        }
+        // TODO: Handle failure.
 }
 @end
 @implementation XMPPNoSessionConnection
 - (void) handleInfoQuery:(XMPPInfoQueryStanza*)anIq
 {
-	SET_STATE(LoggedIn);
-	[self handleInfoQuery: anIq];
+        SET_STATE(LoggedIn);
+        [self handleInfoQuery: anIq];
 }
 @end

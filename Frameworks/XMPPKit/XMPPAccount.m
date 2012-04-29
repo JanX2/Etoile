@@ -43,14 +43,14 @@ id getDefault(NSString * dictionary, id key)
         ABPerson * me =  [[ABAddressBook sharedAddressBook] me];
         if(me == nil)
         {
-                me = [[[ABPerson alloc] init] autorelease];
+                me = [[ABPerson alloc] init];
                 [[ABAddressBook sharedAddressBook] addRecord:me];                
                 [[ABAddressBook sharedAddressBook] setMe:me];
         }
         ABMutableMultiValue * jids = [[me valueForProperty:kABJabberInstantProperty] mutableCopy];
         if(jids == nil)
         {
-                jids = [[[ABMutableMultiValue alloc] init] autorelease];
+                jids = [[ABMutableMultiValue alloc] init];
         }
         NSString * defaultID = [jids primaryIdentifier];
         if(defaultID == nil)
@@ -72,14 +72,14 @@ id getDefault(NSString * dictionary, id key)
                 return nil;
         }
         
-        name = [aName retain];
+        name = aName;
         roster = (XMPPRoster*)[[XMPPRoster alloc] initWithAccount:self];
         connection = (XMPPConnection*)[[XMPPConnection alloc] initWithAccount:self];
         [connection setPresenceDisplay:[roster delegate]];
 
         //Get user's Jabber ID from Address Book
         
-        myJID = [aJid retain];
+        myJID = aJid;
         if(aPassword != nil)
         {
                 NSString * server = getDefault(@"Servers", [myJID jidString]);
@@ -122,13 +122,5 @@ id getDefault(NSString * dictionary, id key)
 - (NSString*) name
 {
         return name;
-}
-- (void) dealloc
-{
-        [name release];
-        [myJID release];
-        [roster release];
-        [connection release];
-        [super dealloc];
 }
 @end

@@ -17,19 +17,18 @@
 					   messageHandler:(id <MessageHandler>)message 
 					  presenceHandler:(id <PresenceHandler>)presence
 {
-	return [[[XMPPDispatcher alloc] initWithDefaultInfoQueryHandler:iq 
+	return [[XMPPDispatcher alloc] initWithDefaultInfoQueryHandler:iq 
 										 messageHandler:message 
-										presenceHandler:presence] 
-		autorelease];
+										presenceHandler:presence];
 }
 
 - (id) initWithDefaultInfoQueryHandler:(id <XMPPInfoQueryStanzaHandler>)iq 
 				 messageHandler:(id <MessageHandler>)message 
 				presenceHandler:(id <PresenceHandler>)presence
 {
-	defaultIqHandler = [iq retain];
-	defaultMessageHandler = [message retain];
-	defaultPresenceHandler = [presence retain];
+	defaultIqHandler = iq;
+	defaultMessageHandler = message;
+	defaultPresenceHandler = presence;
 	return [self init];
 }
 - (id) init
@@ -49,7 +48,6 @@
 	{
 		handlers = [[NSMutableSet alloc] init];
 		[iqNamespaceHandlers setObject:handlers forKey:aNamespace];
-		[handlers release];
 	}
 	[handlers addObject:handler];
 	return self;
@@ -62,7 +60,6 @@
 	{
 		handlers = [[NSMutableSet alloc] init];
 		[iqHandlers setObject:handlers forKey:iqID];
-		[handlers release];
 	}
 	[handlers addObject:handler];
 	return self;
@@ -75,7 +72,6 @@
 	{
 		handlers = [[NSMutableSet alloc] init];
 		[messageHandlers setObject:handlers forKey:jid];
-		[handlers release];
 	}
 	[handlers addObject:handler];
 	return self;
@@ -88,7 +84,6 @@
 	{
 		handlers = [[NSMutableSet alloc] init];
 		[presenceHandlers setObject:handlers forKey:jid];
-		[handlers release];
 	}
 	[handlers addObject:handler];
 	return self;
@@ -104,7 +99,6 @@
 		{
 			handlers = [[NSMutableSet alloc] init];
 			[messageHandlers setObject:handlers forKey:[jid jidStringWithNoResource]];
-			[handlers release];
 		}
 	}
 	//TODO:  Make this a proper protocol thing
@@ -155,14 +149,4 @@
 	[defaultIqHandler handleInfoQuery:anIq];
 }
 
-- (void) dealloc
-{
-	[iqHandlers release];
-	[messageHandlers release];
-	[presenceHandlers release];
-	[defaultIqHandler release];
-	[defaultMessageHandler release];
-	[defaultPresenceHandler release];
-	[super dealloc];
-}
 @end

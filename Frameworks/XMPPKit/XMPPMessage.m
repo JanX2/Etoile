@@ -31,7 +31,7 @@ NSDictionary * MESSAGE_TYPES;
 	
 + (id) messageWithBody:(id)aBody for:(JID*)aRecipient withSubject:(NSString*)aSubject type:(message_type_t)aType
 {
-	return [[[XMPPMessage alloc] initWithBody:aBody for:aRecipient withSubject:aSubject type:aType] autorelease];
+	return [[XMPPMessage alloc] initWithBody:aBody for:aRecipient withSubject:aSubject type:aType];
 }
 
 - (id) initWithBody:(id)aBody for:(JID*)aRecipient withSubject:(NSString*)aSubject type:(message_type_t)aType
@@ -43,15 +43,15 @@ NSDictionary * MESSAGE_TYPES;
 	NSLog(@"Body (%@) %@", [aBody class], aBody);
 	if([aBody isKindOfClass:[NSString class]])
 	{
-		body = [[aBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
+		body = [aBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	}
 	else if([aBody isKindOfClass:[NSAttributedString class]])
 	{
-		body = [[[aBody stringValueWithExpandedLinks] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
-		html = [aBody retain];
+		body = [[aBody stringValueWithExpandedLinks] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		html = aBody;
 	}
-	correspondent = [aRecipient retain];
-	subject = [aSubject retain];
+	correspondent = aRecipient;
+	subject = aSubject;
 	type = type;
 	direction = out;
 	return self;
@@ -100,7 +100,6 @@ NSDictionary * MESSAGE_TYPES;
 		[attributes setValue:[correspondent jidString] forKey:@"from"];
 	}
 	[xmlWriter startElement: @"message" attributes: attributes];
-	[attributes release];
 
 	if(subject != nil)
 	{
@@ -144,7 +143,7 @@ NSDictionary * MESSAGE_TYPES;
 
 - (void) setSubject:(NSString*)aSubject
 {
-	subject = [aSubject retain];
+	subject = aSubject;
 }
 - (NSString*) body
 {
@@ -153,7 +152,7 @@ NSDictionary * MESSAGE_TYPES;
 
 - (void) setBody:(NSString*)aBody
 {
-	body = [aBody retain];
+	body = aBody;
 }
 
 
@@ -163,7 +162,7 @@ NSDictionary * MESSAGE_TYPES;
 	{
 		return html;
 	}
-	return [[[NSAttributedString alloc] initWithString:body] autorelease];
+	return [[NSAttributedString alloc] initWithString:body];
 }
 
 - (BOOL) in
@@ -199,7 +198,7 @@ NSDictionary * MESSAGE_TYPES;
 {
 	if([aName isEqualToString:@"message"])
 	{
-		correspondent = [[JID jidWithString:[attributes objectForKey:@"from"]] retain];
+		correspondent = [JID jidWithString:[attributes objectForKey:@"from"]];
 		direction = in;
 		type = [[MESSAGE_TYPES objectForKey:[attributes objectForKey:@"type"]] intValue];
 	}
@@ -237,11 +236,11 @@ NSDictionary * MESSAGE_TYPES;
 
 - (void) addbody:(NSString*)aBody
 {
-	body = [[aBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
+	body = [aBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 - (void) addsubject:(NSString*)aSubject
 {
-	subject = [aSubject retain];
+	subject = aSubject;
 }
 - (void) addtimestamp:(XMPPTimestamp*)aTimestamp
 {
@@ -250,12 +249,11 @@ NSDictionary * MESSAGE_TYPES;
 }
 - (void) addhtml:(NSAttributedString*)anAttributedString
 {
-	html = [anAttributedString retain];
+	html = anAttributedString;
 }
 - (void) adderror:(XMPPError*)anError
 {
-	[error release];
-	error = [anError retain];
+	error = anError;
 }
 
 - (void) setShouldDisplay:(BOOL)aFlag
@@ -268,14 +266,5 @@ NSDictionary * MESSAGE_TYPES;
 }
 
 
-- (void) dealloc
-{
-	[correspondent release];
-	[subject release];
-	[body release];
-	[timestamps release];
-	[error release];
-	[super dealloc];
-}
 
 @end

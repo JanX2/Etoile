@@ -25,7 +25,7 @@
 	{
 		depth++;
 		code = [[attributes objectForKey:@"code"] intValue];
-		type = [[attributes objectForKey:@"type"] retain];
+		type = [attributes objectForKey:@"type"];
 	}
 	else if([aName isEqualToString:@"text"])
 	{
@@ -42,8 +42,7 @@
 }
 - (void) addtext:(NSString*)aString
 {
-	[message release];
-	message = [aString retain];
+	message = aString;
 }
 - (NSString*) errorMessage
 {
@@ -58,10 +57,4 @@
 	return type;
 }
 
-- (void) dealloc
-{
-	[message release];
-	[type release];
-	[super dealloc];
-}
 @end

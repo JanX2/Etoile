@@ -16,12 +16,12 @@ static NSDictionary * TYPES;
 @implementation XMPPInfoQueryStanza
 + (void) initialize
 {
-	TYPES = [[NSDictionary dictionaryWithObjectsAndKeys:
+	TYPES = [NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInt:IQ_TYPE_SET], @"set",
 		[NSNumber numberWithInt:IQ_TYPE_GET], @"get",
 		[NSNumber numberWithInt:IQ_TYPE_RESULT], @"result",
 		[NSNumber numberWithInt:IQ_TYPE_ERROR], @"error",
-		nil] retain];
+		nil];
 }
 - (id) initWithXMLParser: (ETXMLParser*)aParser
                      key: (id)aKey
@@ -44,7 +44,7 @@ static NSDictionary * TYPES;
 		depth++;
 		type = [[TYPES objectForKey:[attributes objectForKey:@"type"]] intValue];
 		jid = [[JID alloc] initWithString:[attributes objectForKey:@"from"]];
-		sequenceID = [[attributes objectForKey:@"id"] retain];
+		sequenceID = [attributes objectForKey:@"id"];
 	}
 	else
 	{
@@ -52,7 +52,7 @@ static NSDictionary * TYPES;
 		NSString * xmlns = [attributes objectForKey:@"xmlns"];
 		if([aName isEqualToString:@"query"])
 		{
-			queryxmlns = [xmlns retain];
+			queryxmlns = xmlns;
 		}
 		Class handler = [factory handlerForTag:aName inNamespace:xmlns];
 		NSString * elementKey = [factory valueForTag:aName inNamespace:xmlns];
@@ -80,11 +80,4 @@ static NSDictionary * TYPES;
 	return queryxmlns;
 }
 
-- (void) dealloc
-{
-	[sequenceID release];
-	[jid release];
-	[queryxmlns release];
-	[super dealloc];
-}
 @end

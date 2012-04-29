@@ -14,41 +14,35 @@
 - (id) initWithXMLParser: (ETXMLParser*)aParser
                      key: (id) aKey
 {
-	self = [super initWithXMLParser: aParser
-	                            key: aKey];
-	if (nil == self)
-	{
-		return nil;
-	}
-	identities = [NSMutableArray new];
-	[value autorelease];
-	value = identities;
-	return self;
+        self = [super initWithXMLParser: aParser
+                                    key: aKey];
+        if (nil == self)
+        {
+                return nil;
+        }
+        identities = [NSMutableArray new];
+        value = identities;
+        return self;
 }
 
 - (void)startElement:(NSString *)aName
-		  attributes:(NSDictionary*)attributes
+                  attributes:(NSDictionary*)attributes
 {
-	if ([aName isEqualToString:@"item"])
-	{
-		[[[XMPPIdentity alloc] initWithXMLParser:parser									     key:@"identity"] startElement:aName
-																  attributes:attributes];
-	}
-	else if ([aName isEqualToString:@"query"])
-	{
-		depth++;
-	}
+        if ([aName isEqualToString:@"item"])
+        {
+                [[[XMPPIdentity alloc] initWithXMLParser:parser                                                                             key:@"identity"] startElement:aName
+                                                                                                                                  attributes:attributes];
+        }
+        else if ([aName isEqualToString:@"query"])
+        {
+                depth++;
+        }
 }
 
 - (void) addidentity:(id)anIdentity
 {
-	[identities addObject:anIdentity];
+        [identities addObject:anIdentity];
 }
 
-- (void) dealloc
-{
-	[identities release];
-	[super dealloc];
-}
 
 @end

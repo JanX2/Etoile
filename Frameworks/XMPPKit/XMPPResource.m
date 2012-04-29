@@ -24,7 +24,6 @@
 
 - (void) setRoot:(XMPPIdentity*)identity
 {
-	[root release];
-	root = [identity retain];
+	root = identity;
 }
 @end

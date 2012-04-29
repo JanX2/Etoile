@@ -13,41 +13,35 @@
 - (id) initWithXMLParser: (ETXMLParser*)aParser
                      key: (id) aKey
 {
-	self = [super initWithXMLParser: aParser
-	                            key: aKey];
-	if (nil == self)
-	{
-		return nil;
-	}
-	items = [[NSMutableArray alloc] init];
-	[value autorelease];
-	value = [self retain];
-	return self;
+        self = [super initWithXMLParser: aParser
+                                    key: aKey];
+        if (nil == self)
+        {
+                return nil;
+        }
+        items = [[NSMutableArray alloc] init];
+        value = self;
+        return self;
 }
 - (void)startElement:(NSString *)aName
           attributes:(NSDictionary*)attributes
 {
-	if([aName isEqualToString:@"item"])
-	{
-		[items addObject:attributes];
-	}
-	else if([aName isEqualToString:@"query"])
-	{
-		node = [[attributes objectForKey:@"node"] retain];
-	}
-	depth++;
+        if([aName isEqualToString:@"item"])
+        {
+                [items addObject:attributes];
+        }
+        else if([aName isEqualToString:@"query"])
+        {
+                node = [attributes objectForKey:@"node"];
+        }
+        depth++;
 }
 - (NSArray*) items
 {
-	return items;
+        return items;
 }
 - (NSString*) node
 {
-	return node;
-}
-- (void) dealloc 
-{
-	[items release];
-	[super dealloc];
+        return node;
 }
 @end

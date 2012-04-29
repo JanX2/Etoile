@@ -27,8 +27,8 @@ static NSString * xmlnsXMPPDiscoItems = @"http://jabber.org/protocol/disco#items
 	children = [[NSMutableDictionary alloc] init];
 	capabilitiesPerJID = [[NSMutableDictionary alloc] init];
 	featuresForCapabilities = [[NSMutableDictionary alloc] init];
-	dispatcher = [[[account roster] dispatcher] retain];
-	connection = [[account connection] retain];
+	dispatcher = [[account roster] dispatcher];
+	connection = [account connection];
 	[dispatcher addInfoQueryHandler:self forNamespace:xmlnsXMPPDiscoInfo];
 	[dispatcher addInfoQueryHandler:self forNamespace:xmlnsXMPPDiscoItems];
 	return self;
@@ -204,14 +204,6 @@ static NSString * xmlnsXMPPDiscoItems = @"http://jabber.org/protocol/disco#items
 	[myFeatures addObject:aFeature];
 }
 
-- (void) dealloc
-{
-	[connection release];
-	[myFeatures release];
-	[dispatcher release];
-	[knownNodes release];
-	[super dealloc];
-}
 
 @end
 

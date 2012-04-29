@@ -19,9 +19,9 @@ static NSString * avatarCachePath = nil;
 @implementation XMPPPerson
 + (void) initialize
 {
-	avatarCachePath = [[NSString stringWithFormat:@"%@/%@/avatars/", 
+	avatarCachePath = [NSString stringWithFormat:@"%@/%@/avatars/", 
 						[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0],
-						[[NSProcessInfo processInfo] processName]] retain];
+						[[NSProcessInfo processInfo] processName]];
 	NSArray * components = [avatarCachePath pathComponents];
 	NSString * currentPath = [components objectAtIndex:0];
 	NSFileManager * fm = [NSFileManager defaultManager];
@@ -38,7 +38,7 @@ static NSString * avatarCachePath = nil;
 }
 + (id) personWithIdentity:(XMPPIdentity*)_identity forRoster:(id)_roster
 {
-	return [[[XMPPPerson alloc] initWithIdentity:_identity forRoster:(id)_roster] autorelease];
+	return [[XMPPPerson alloc] initWithIdentity:_identity forRoster:(id)_roster];
 }
 
 - (void) calculateIdentityList
@@ -82,7 +82,7 @@ static NSString * avatarCachePath = nil;
 	if(vCardID != nil)
 	{
 		ABAddressBook * ab = [ABAddressBook sharedAddressBook];
-		vCard = (ABPerson*)[[ab recordForUniqueId:vCardID] retain];
+		vCard = (ABPerson*)[ab recordForUniqueId:vCardID];
 	}
 	[self calculateIdentityList];
 	return self;
@@ -122,8 +122,7 @@ static NSString * avatarCachePath = nil;
 
 - (void) group:(NSString*)_group
 {
-	[group release];
-	group = [_group retain];
+	group = _group;
 }
 
 - (NSString*) name
@@ -133,8 +132,7 @@ static NSString * avatarCachePath = nil;
 
 - (void) name:(NSString*)_name
 {
-	[name release];
-	name = [_name retain];
+	name = _name;
 }
 
 - (XMPPIdentity*) identityForJID:(JID*)jid
@@ -192,16 +190,14 @@ static NSString * avatarCachePath = nil;
 	{
 		if(currentHash == nil)
 		{
-			currentHash = [[[vCard imageData] sha1] retain];
+			currentHash = [[vCard imageData] sha1];
 		}
 		if(![photoHashes objectForKey:newPhotoHash])
 		{
 			NSData * data = [NSData dataWithContentsOfFile:[avatarCachePath stringByAppendingString:newPhotoHash]];
 			if(data != nil)
 			{
-				[currentHash release];
-				currentHash = [newPhotoHash retain];
-				[avatar release];
+				currentHash = newPhotoHash;
 				avatar = [[NSImage alloc] initWithData:data]; 
 			}
 			else
@@ -214,7 +210,7 @@ static NSString * avatarCachePath = nil;
 	NSNotificationCenter * notifier = [NSNotificationCenter defaultCenter];
 	
 	//Set the presence for the identity
-	XMPPPresence * oldPresence = [[[self defaultIdentity] presence] retain];//Retain this in case changing the presence would cause it to be released
+	XMPPPresence * oldPresence = [[self defaultIdentity] presence];//Retain this in case changing the presence would cause it to be released
 	[identity setPresence:aPresence];
 	
 	[self calculateIdentityList];
@@ -233,7 +229,6 @@ static NSString * avatarCachePath = nil;
 			nil];
 		[notifier postNotificationName:@"TRXMPPPresenceChanged" object:self userInfo:userInfo];			
 	}
-	[oldPresence release];
 	[notifier postNotificationName:@"TRXMPPIdentityPresenceChanged" object:self userInfo:nil];
 }
 
@@ -305,7 +300,6 @@ static NSString * avatarCachePath = nil;
 #endif
 				[vCardJID addValue:address withLabel:label];
 				[vCard setValue:vCardJID forProperty:property];
-				[vCardJID release];
 			}
 			ABPerson * oldPerson = [vCard findExistingPerson];
 			if(oldPerson != nil)
@@ -334,7 +328,7 @@ static NSString * avatarCachePath = nil;
 				}
 				if(jabberGroup == nil)
 				{
-					jabberGroup = [[[ABGroup alloc] init] autorelease];
+					jabberGroup = [[ABGroup alloc] init];
 					[jabberGroup setValue:@"Jabber People" forProperty:kABGroupNameProperty];
 					[ab addRecord:jabberGroup];
 				}
@@ -368,10 +362,8 @@ static NSString * avatarCachePath = nil;
 			if(![imageHash isEqualToString:currentHash])
 			{
 				[photoHashes setObject:imageData forKey:imageHash];
-				[avatar release];
 				avatar = nil;
-				[currentHash release];
-				currentHash = [imageHash retain];
+				currentHash = imageHash;
 			}
 		}		
 	}
@@ -410,7 +402,7 @@ static NSString * avatarCachePath = nil;
 			avatarData = [vCard imageData];
 			if(avatarData != nil)
 			{
-				currentHash = [[avatarData sha1] retain];
+				currentHash = [avatarData sha1];
 				[photoHashes setObject:avatarData forKey:currentHash];
 			}
 		}
@@ -422,12 +414,4 @@ static NSString * avatarCachePath = nil;
 	return avatar;
 }
 
-- (void) dealloc
-{
-	[group release];
-	[name release];
-	[identities release];
-	[photoHashes release];
-	[super dealloc];
-}
 @end

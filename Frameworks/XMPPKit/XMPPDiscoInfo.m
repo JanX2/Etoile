@@ -15,53 +15,45 @@
 - (id) initWithXMLParser: (ETXMLParser*)aParser
                       key: (id) aKey
 {
-	self = [super initWithXMLParser: aParser
-	                            key: aKey];
-	if (nil == self)
-	{
-		return nil;
-	}
-	identities = [[NSMutableArray alloc] init];
-	features = [[NSMutableArray alloc] init];
-	[value autorelease];
-	value = [self retain];
-	return self;
+        self = [super initWithXMLParser: aParser
+                                    key: aKey];
+        if (nil == self)
+        {
+                return nil;
+        }
+        identities = [[NSMutableArray alloc] init];
+        features = [[NSMutableArray alloc] init];
+        value = self;
+        return self;
 }
 
 - (void)startElement:(NSString *)aName
           attributes:(NSDictionary*)attributes
 {
-	if([aName isEqualToString:@"identity"])
-	{
-		[identities addObject:attributes];
-	}
-	else if([aName isEqualToString:@"feature"])
-	{
-		[features addObject:[attributes objectForKey:@"var"]];
-	}
-	else if([aName isEqualToString:@"query"])
-	{
-		node = [[attributes objectForKey:@"node"] retain];
-	}
-	depth++;
+        if([aName isEqualToString:@"identity"])
+        {
+                [identities addObject:attributes];
+        }
+        else if([aName isEqualToString:@"feature"])
+        {
+                [features addObject:[attributes objectForKey:@"var"]];
+        }
+        else if([aName isEqualToString:@"query"])
+        {
+                node = [attributes objectForKey:@"node"];
+        }
+        depth++;
 }
 - (NSArray*) identities
 {
-	return identities;
+        return identities;
 }
 - (NSArray*) features
 {
-	return features;
+        return features;
 }
 - (NSString*) node
 {
-	return node;
-}
-- (void) dealloc 
-{
-	[identities release];
-	[features release];
-	[node release];
-	[super dealloc];
+        return node;
 }
 @end

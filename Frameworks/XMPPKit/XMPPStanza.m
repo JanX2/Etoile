@@ -39,9 +39,4 @@
 {
 	return children;
 }
-- (void) dealloc
-{
-	[children release];
-	[super dealloc];
-}
 @end

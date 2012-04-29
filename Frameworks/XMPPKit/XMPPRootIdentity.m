@@ -58,7 +58,6 @@
 		JID * childJID = jid;
 		[self addResource:childJID];
 		jid = [jid rootJID];
-		[childJID release];
 	}
 	
 	subscription = nil;
@@ -78,10 +77,10 @@
 - (void) addResource:(JID*)_jid
 {
 	NSString * resourceName = [_jid resource];
-	XMPPResource * resource = [[[XMPPResource alloc] initWithJID:_jid
+	XMPPResource * resource = [[XMPPResource alloc] initWithJID:_jid
 															withName:name
 															 inGroup:group
-														   forPerson:person] autorelease];
+														   forPerson:person];
 	[resource setRoot:self];
 	[resources setObject:resource forKey:resourceName];
 	[resourceList addObject:resource];

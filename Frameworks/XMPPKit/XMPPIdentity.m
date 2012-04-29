@@ -15,11 +15,11 @@
 
 - (id) initWithJID:(JID*)_jid withName:(NSString*)_name inGroup:(NSString*)_group forPerson:(id)_person
 {
-	[self init];
-	jid = [_jid retain];
-	name = [_name retain];
-	group = [_group retain];
-	person = [_person retain];
+	if (!(self = [self init])) return nil;
+	jid = _jid;
+	name = _name;
+	group = _group;
+	person = _person;
 	return self;
 }
 
@@ -54,9 +54,9 @@
 	{
 		depth++;
 		jid = [[JID alloc] initWithString:[attributes objectForKey:@"jid"]];
-		subscription = [[attributes objectForKey:@"subscription"] retain];
-		ask = [[attributes objectForKey:@"ask"] retain];
-		name = [[attributes objectForKey:@"name"] retain];
+		subscription = [attributes objectForKey:@"subscription"];
+		ask = [attributes objectForKey:@"ask"];
+		name = [attributes objectForKey:@"name"];
 	}
 	else if([aName isEqualToString:@"group"])
 	{
@@ -74,14 +74,12 @@
 
 - (void) addgroup:(NSString*)aGroup
 {
-	[group release];
-	group = [aGroup retain];
+	group = aGroup;
 }
 
 - (void) setPresence:(XMPPPresence*)_presence
 {
-	[presence release];
-	presence = [_presence retain];
+	presence = _presence;
 	priority = basePriority + 70 - [presence show] + [presence priority];	
 }
 
@@ -100,14 +98,10 @@
 }
 - (void) setName:(NSString*)aName
 {
-	[aName retain];
-	[name release];
 	name = aName;
 }
 - (void) setGroup:(NSString*)aGroup
 {
-	[aGroup retain];
-	[group release];
 	group = aGroup;	
 }
 
@@ -140,8 +134,7 @@
 
 - (void) person:(id)_person
 {
-	[person release];
-	person = [_person retain];
+	person = _person;
 }
 
 - (NSComparisonResult) compareByPriority:(XMPPIdentity*)_other
@@ -162,15 +155,4 @@
 	return NSOrderedAscending;
 }
 
-- (void) dealloc
-{
-	[person release];
-	[jid release];
-	[subscription release];
-	[ask release];
-	[group release];
-	[name release];
-	[presence release];
-	[super dealloc];
-}
 @end
