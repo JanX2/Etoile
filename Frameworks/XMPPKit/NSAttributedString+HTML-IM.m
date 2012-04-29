@@ -19,7 +19,7 @@ typedef NSString*(*styleHandler)(id);
 
 NSString * foregroundColor(NSColor * aColour)
 {
-        float r,g,b,a;
+        CGFloat r,g,b,a;
         [[aColour colorUsingColorSpaceName:NSCalibratedRGBColorSpace]
                          getRed:&r
                           green:&g
