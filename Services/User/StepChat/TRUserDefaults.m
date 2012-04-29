@@ -57,7 +57,7 @@
 	NSSound * sound = [NSSound soundNamed:[self stringForKey:_key]];
 	if(sound == nil)
 	{
-		sound = [[[NSSound alloc] initWithContentsOfFile:[self stringForKey:_key] byReference:YES] autorelease];
+		sound = [[NSSound alloc] initWithContentsOfFile:[self stringForKey:_key] byReference:YES];
 	}
 	return sound;	
 }

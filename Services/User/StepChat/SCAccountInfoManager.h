@@ -1,8 +1,8 @@
 /**
 Copyright (C) 2012 Alessandro Sangiuliano
- 	
+         
 Author: Alessandro Sangiuliano <alex22_7@hotmail.com>
-Date: January 2012	
+Date: January 2012        
 License: Modified BSD
 */
 
@@ -13,12 +13,12 @@ License: Modified BSD
 
 @interface SCAccountInfoManager : NSObject
 {
-  NSMutableString *filePath;
+  NSMutableString *__strong filePath;
   NSString *fileName;
   NSMutableString *gPath;
 }
 
-@property (nonatomic, readonly) NSString *filePath; 
+@property (strong, nonatomic, readonly) NSString *filePath; 
 
 -(NSString*)readJIDFromFileAtPath:(NSString*)aPath;
 -(void)writeJIDToFile:(JID*)aJID atPath:(NSString*)aPath;

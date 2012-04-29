@@ -14,7 +14,7 @@
 
 - (void) windowWillLoad
 {
-	presences = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CustomPresence"] keysSortedByValueUsingSelector:@selector(compare:)] retain];
+	presences = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CustomPresence"] keysSortedByValueUsingSelector:@selector(compare:)];
 }
 
 - (int)numberOfItemsInComboBox:(NSComboBox *)aComboBox
@@ -75,10 +75,5 @@
 - (IBAction) cancel:(id) sender
 {
 	[[self window] close];
-}
-- (void) dealloc
-{
-	[presences release];
-	[super dealloc];
 }
 @end

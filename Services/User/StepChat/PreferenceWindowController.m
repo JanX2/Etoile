@@ -146,7 +146,7 @@
 	NSSound * sound = [NSSound soundNamed:_soundName];
 	if(sound == nil)
 	{
-		sound = [[[NSSound alloc] initWithContentsOfFile:_soundName byReference:YES] autorelease];
+		sound = [[NSSound alloc] initWithContentsOfFile:_soundName byReference:YES];
 	}
 	[sound play];
 }

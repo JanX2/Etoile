@@ -182,12 +182,10 @@ NSString * passwordForJID(JID * aJID)
         PasswordWindowController * passwordWindow = [[PasswordWindowController alloc] initWithWindowNibName:@"PasswordBox" forJID:[_account jid]];
         if([NSApp runModalForWindow:[passwordWindow window]] == 0)
         {
-                [_account release];
                 account = [[XMPPAccount alloc] init];
         }
         else
         {
-                [_account release];
         }
 }
 
@@ -206,9 +204,4 @@ NSString * passwordForJID(JID * aJID)
         return account;
 }
 
-- (void) dealloc
-{
-        [account release];
-        [super dealloc];
-}
 @end

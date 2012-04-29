@@ -49,8 +49,7 @@ COMPARE_METHOD(statusMessage,Status)
 	NSString * status = [dict objectForKey:@"status"];
 	if(status != myStatus)
 	{
-		[myStatus release];
-		myStatus = [status retain];
+		myStatus = status;
 	}
 }
 
@@ -87,8 +86,6 @@ COMPARE_METHOD(statusMessage,Status)
 		NSAttributedString * emoText = [[NSAttributedString alloc] initWithString:emoString];
 		[[view textStorage] insertAttributedString:emoText atIndex:0];
 		[[view textStorage] insertAttributedString:headline atIndex:0];
-		[emoText release];
-		[headline release];
 		[view makeLinksClickable];
 	}
 }

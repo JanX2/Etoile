@@ -224,12 +224,11 @@ static NSMutableArray * messageWindowControllers = nil;
 
 - (void) conversation:(id)_conversation
 {
-	[conversation release];
 	conversation = _conversation;
 	NSWindow * window = [self window];
 	NSString * name = [conversation name];
 	JID * jid = [conversation remoteJID];
-	log = [[XMPPChatLog chatLogWithPerson:[conversation remotePerson]] retain];
+	log = [XMPPChatLog chatLogWithPerson:[conversation remotePerson]];
 	[window setTitle:name];
 	[window setFrameFromString:name];
 	[window setFrameAutosaveName:name];
@@ -262,7 +261,7 @@ static NSMutableArray * messageWindowControllers = nil;
 	[presenceIconBox setTextColor:[[NSUserDefaults standardUserDefaults] colourForPresence:_status]];
 	[presenceIconBox setStringValue:[NSString stringWithFormat:@"%C", PRESENCE_ICONS[(_status / 10) - 1]]];
 	//Set the available identities
-	NSString * currentJID = [[recipientBox titleOfSelectedItem] retain];
+	NSString * currentJID = [recipientBox titleOfSelectedItem];
 	[recipientBox removeAllItems];
 	NSArray * identities = [[conversation remotePerson] identityList];
 	for(unsigned int i=0 ; i<[[conversation remotePerson] identities] ; i++)
@@ -277,10 +276,8 @@ static NSMutableArray * messageWindowControllers = nil;
 						   attributes:colour];
 		[recipientBox addItemWithTitle:title];
 		[[[recipientBox menu] itemWithTitle:title] setAttributedTitle(colouredTitle)];
-		[colouredTitle release];
 	}
 	[recipientBox selectItemWithTitle:currentJID];
-	[currentJID release];
 }
 
 - (BOOL) newRemoteJID:(JID*)jid
@@ -313,7 +310,6 @@ static NSMutableArray * messageWindowControllers = nil;
 - (void) dealloc
 {
 	[messageWindowControllers removeObject:self];
-	[super dealloc];
 }
 @end
 

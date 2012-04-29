@@ -56,8 +56,7 @@ StepChat_OBJC_FILES = \
 
 ADDITIONAL_LDFLAGS += -lEtoileXML -lXMPPKit -lAddresses -lssl -lcrypto -g \
         $(GUI_LIBS) $(FND_LIBS) $(OBJC_LIBS) $(SYSTEM_LIBS)
-ADDITIONAL_OBJCFLAGS += -werror -g
-ADDITIONAL_OBJCFLAGS = -DGNUSTEP -DNO_ATTRIBUTED_TITLES -std=c99 -Wno-import
+ADDITIONAL_OBJCFLAGS += -DGNUSTEP -DNO_ATTRIBUTED_TITLES -std=c99 -Wno-import -werror -g -fobjc-arc
 
 #
 # Makefiles

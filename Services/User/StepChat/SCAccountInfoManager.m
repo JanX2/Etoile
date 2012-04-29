@@ -14,10 +14,10 @@ License: Modified BSD
 {
   self = [super init];
   NSString *home = NSHomeDirectory();
-  gPath = [NSMutableString stringWithString:home];
+  gPath = [[NSMutableString alloc] initWithString:home];
   [gPath appendString:@"/GNUstep/Library/Addresses/"];
   fileName = @"waJID";
-  filePath = [NSMutableString stringWithString:gPath];
+  filePath = [[NSMutableString alloc] initWithString:gPath];
   [filePath appendString:fileName];
   return self;
 }
@@ -47,7 +47,6 @@ License: Modified BSD
     }
   
   NSString *jid = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
-  [fileManager release];
   return jid;
 }
 
@@ -90,15 +89,7 @@ License: Modified BSD
                informativeTextWithFormat:@""];
       }
   }
-  [fileManager release];
 }
 
-- (void) dealloc
-{
-  [filePath release];
-  [fileName release];
-  [gPath release];
-  [super dealloc];
-}
 @end
     

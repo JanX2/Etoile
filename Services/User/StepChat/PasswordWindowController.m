@@ -48,7 +48,7 @@ void setPasswordForAccount(NSString * password, JID * account)
 @implementation PasswordWindowController
 - (id) initWithWindowNibName:(NSString*)windowNibName forJID:(JID*)_jid
 {
-	myJID = [_jid retain];
+	myJID = _jid;
 	return [self initWithWindowNibName:windowNibName];
 }
 
@@ -73,9 +73,4 @@ void setPasswordForAccount(NSString * password, JID * account)
 	[NSApp terminate:self];
 }
 
-- (void) dealloc
-{
-	[myJID release];
-	[super dealloc];
-}
 @end
