@@ -11,8 +11,8 @@
 #import <XMPPKit/JID.h>
 
 @interface PasswordWindowController : NSWindowController {
-	IBOutlet NSTextField * question;
-	IBOutlet NSTextField * passwordBox;
+	__unsafe_unretained IBOutlet NSTextField * question;
+	__unsafe_unretained IBOutlet NSTextField * passwordBox;
 	JID * myJID;
 }
 - (id) initWithWindowNibName:(NSString*)windowNibName forJID:(JID*)_jid;
