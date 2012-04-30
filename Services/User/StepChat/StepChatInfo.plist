@@ -4,6 +4,6 @@
   NSIcon = "StepChat.tiff";
   NSPrincipalClass = "NSApplication";
   ApplicationName = "StepChat";
-  ApplicationRelease = "0.1";
+  ApplicationRelease = "0.2";
   Authors = ("David Chisnall");
 }
