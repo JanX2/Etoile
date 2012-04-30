@@ -15,11 +15,11 @@
 	unsigned char presence;
 	XMPPRoster * roster;
 	XMPPAccount * account;
-	IBOutlet NSOutlineView * view;
-	IBOutlet NSTableColumn * avatarColumn;
-	IBOutlet NSTableColumn * column;
-	IBOutlet NSPopUpButton * presenceBox;
-	IBOutlet NSTextField * statusBox;
+	__unsafe_unretained IBOutlet NSOutlineView * view;
+	__unsafe_unretained IBOutlet NSTableColumn * avatarColumn;
+	__unsafe_unretained IBOutlet NSTableColumn * column;
+	__unsafe_unretained IBOutlet NSPopUpButton * presenceBox;
+	__unsafe_unretained IBOutlet NSTextField * statusBox;
 }
 - (id) initWithNibName:(NSString*)_nib forAccount:(id)_account withRoster:(id)_roster;
 - (void) updatePresence:(NSNotification*)_notification;

@@ -14,14 +14,14 @@
 #import <XMPPKit/XMPPChatLog.h>
 
 @interface MessageWindowController  : NSWindowController <XMPPConversationDelegate> {
-	IBOutlet NSTextView * messageBox;
-	IBOutlet NSScrollView * messageBoxBox;
-	IBOutlet NSTextView * editingBox;
-	IBOutlet NSScrollView * editingBoxBox;
-	IBOutlet NSTextField * presenceBox;
-	IBOutlet NSTextField * presenceIconBox;
-	IBOutlet NSPopUpButton * recipientBox;
-	IBOutlet NSImageView * avatarBox;
+	__unsafe_unretained IBOutlet NSTextView * messageBox;
+	__unsafe_unretained IBOutlet NSScrollView * messageBoxBox;
+	__unsafe_unretained IBOutlet NSTextView * editingBox;
+	__unsafe_unretained IBOutlet NSScrollView * editingBoxBox;
+	__unsafe_unretained IBOutlet NSTextField * presenceBox;
+	__unsafe_unretained IBOutlet NSTextField * presenceIconBox;
+	__unsafe_unretained IBOutlet NSPopUpButton * recipientBox;
+	__unsafe_unretained IBOutlet NSImageView * avatarBox;
 	XMPPConversation * conversation;
 	unsigned int unread;
 	XMPPChatLog * log;

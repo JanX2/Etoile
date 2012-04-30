@@ -11,9 +11,9 @@
 
 
 @interface AddContactWindowController : NSWindowController {
-	IBOutlet NSTextField * jid;
-	IBOutlet NSTextField * name;
-	IBOutlet NSTextField * group;
+	__unsafe_unretained IBOutlet NSTextField * jid;
+	__unsafe_unretained IBOutlet NSTextField * name;
+	__unsafe_unretained IBOutlet NSTextField * group;
 }
 - (IBAction) addPerson:(id)_sender;
 - (IBAction) cancel:(id)_sender;

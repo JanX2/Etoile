@@ -10,16 +10,16 @@
 #import <AppKit/AppKit.h>
 
 @interface PreferenceWindowController : NSWindowController {
-	IBOutlet NSColorWell * chatColour;
-	IBOutlet NSColorWell * onlineColour;
-	IBOutlet NSColorWell * awayColour;
-	IBOutlet NSColorWell * xaColour;
-	IBOutlet NSColorWell * dndColour;
-	IBOutlet NSColorWell * offlineColour;
-	IBOutlet NSColorWell * unknownColour;
-	IBOutlet NSComboBox * onlineSoundBox;
-	IBOutlet NSComboBox * offlineSoundBox;
-	IBOutlet NSComboBox * messageSoundBox;
+	__unsafe_unretained IBOutlet NSColorWell * chatColour;
+	__unsafe_unretained IBOutlet NSColorWell * onlineColour;
+	__unsafe_unretained IBOutlet NSColorWell * awayColour;
+	__unsafe_unretained IBOutlet NSColorWell * xaColour;
+	__unsafe_unretained IBOutlet NSColorWell * dndColour;
+	__unsafe_unretained IBOutlet NSColorWell * offlineColour;
+	__unsafe_unretained IBOutlet NSColorWell * unknownColour;
+	__unsafe_unretained IBOutlet NSComboBox * onlineSoundBox;
+	__unsafe_unretained IBOutlet NSComboBox * offlineSoundBox;
+	__unsafe_unretained IBOutlet NSComboBox * messageSoundBox;
 }
 - (IBAction) selectOnlineSound:(id)_sender;
 - (IBAction) selectOfflineSound:(id)_sender;

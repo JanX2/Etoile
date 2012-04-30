@@ -12,8 +12,8 @@
 #import "SCAccountInfoManager.h"
 
 @interface AccountWindowController : NSWindowController {
-        IBOutlet NSTextField * jidBox;
-        IBOutlet NSTextField * serverBox;
+	__unsafe_unretained IBOutlet NSTextField * jidBox;
+	__unsafe_unretained IBOutlet NSTextField * serverBox;
 }
 
 - (IBAction) yes:(id)sender;

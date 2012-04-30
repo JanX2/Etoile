@@ -10,7 +10,7 @@
 
 
 @interface PresenceLogController : NSWindowController {
-	IBOutlet NSTextView * view;
+	__unsafe_unretained IBOutlet NSTextView * view;
 	NSArray * log;
 	NSString * myStatus;
 	NSMutableDictionary * lastStatus;

@@ -10,9 +10,9 @@
 #import <AppKit/AppKit.h>
 
 @interface CustomPresenceWindowController : NSWindowController {
-	IBOutlet NSComboBox * name;
-	IBOutlet NSComboBox * presence;
-	IBOutlet NSTextView * message;
+	__unsafe_unretained IBOutlet NSComboBox * name;
+	__unsafe_unretained IBOutlet NSComboBox * presence;
+	__unsafe_unretained IBOutlet NSTextView * message;
 	NSArray * presences;
 }
 - (IBAction) okay:(id) sender;
