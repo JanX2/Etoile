@@ -14,12 +14,12 @@
 #import "AccountWindowController.h"
 
 @interface JabberApp : NSObject {
-        XMPPAccount * account;
-        RosterController * rosterWindow;
-        IBOutlet CustomPresenceWindowController * customPresenceWindow;
-        IBOutlet NSMenuItem * debugMenu;
-        IBOutlet NSTextView * xmlLogBox;  
-        AccountWindowController * accountWindow;      
+	XMPPAccount * account;
+	RosterController * rosterWindow;
+	IBOutlet CustomPresenceWindowController * customPresenceWindow;
+	IBOutlet NSMenuItem * debugMenu;
+	IBOutlet NSTextView * xmlLogBox;  
+	AccountWindowController * accountWindow;      
 }
 - (void) reconnect;
 - (void) redrawRosters;
