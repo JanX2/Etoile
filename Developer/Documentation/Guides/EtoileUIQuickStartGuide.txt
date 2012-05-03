@@ -41,7 +41,8 @@ For AppKit users, take note that the EtoileUI application object is `+[ETApplica
 
 You can write a similar code skeleton in Smalltalk. In that case, you usually fit it into a single file. This example doesn't use `ETPrincipalControllerClass` to instantiate a main controller but reuses the object that implements the `-run` method, that gets instantiated by *edlc*, as the main controller.
 
-	NSObject subclass: MainController [
+	"The main controller"
+	NSObject subclass: SmalltalkTool [
 	
 		"edlc looks for this -run method to start the program"
 		run [ 
@@ -56,8 +57,8 @@ You can write a similar code skeleton in Smalltalk. In that case, you usually fi
 
 If you decide to specify a `ETPrincipalControllerClass` key in the plist, the code would look like:
 
-	"Here the Launcher class is equivalent to the main() an Objective-C application"
-	NSObject subclass: Launcher [
+	"Here the SmalltalkTool class is equivalent to the main() an Objective-C application"
+	NSObject subclass: SmalltalkTool [
 	
 		run [ 
 			ETApplication sharedApplication run.
@@ -75,7 +76,7 @@ Alternatively you can use a main Nib file to instantiate a main controller as ex
 
 To run these Smalltalk examples supposing the code is put in a file named *MyExample.st*, just do:
 
-	edlc -l EtoileUI -f MyExample.st
+	edlc -l EtoileUI -f MyExample.st 
 
 
 Hello World
@@ -115,7 +116,7 @@ See the concrete example to know to organize, compile and run this code (either 
 
 Here is the same example now in Smalltalk and in a single file. 
 
-	NSObject subclass: HelloWorld [
+	NSObject subclass: SmalltalkTool [
 	
 		run [ 
  			ETApplication sharedApplication setDelegate: self.
