@@ -2089,11 +2089,13 @@ NSObject subclass: PKParserASTGenerator [
 	]	
 
 	makeLiteral: literal [
+		| result |
 		(literal isKindOfClass: NSArray class) ifTrue: [
-			literal := literal objectAtIndex: 0.
-		].
-		^literal asExp
+			result := literal componentsJoinedByString: ''.
+		] ifFalse: [ result := literal ].
+		^result asExp
 	]
+
 	makeRangeFrom: first to: second [
 		^PKRangeExpression alloc initFrom: first to: second.
 	]

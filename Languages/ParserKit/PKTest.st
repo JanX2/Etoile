@@ -81,11 +81,13 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (oMeta match:( '([zf]"oo")?') rule: 'Suffix').
 		ETTranscript show: (oMeta match: '' rule: 'Spacing').
 		ETTranscript show: (oMeta match: 'One <- .' rule: 'Grammar').
-		ETTranscript show: (oMeta match: 'EndOfLine <- ''\\r\\n''' rule: 'Grammar').
-		ETTranscript show: (oMeta match: 'Ometa { EndOfLine <- ''\\r\\n'' }' rule: 'Ometa').
+		ETTranscript show: (oMeta match: 'EndOfLine <- "\r\n"' rule: 'Grammar').
+		ETTranscript show: (oMeta match: 'Ometa { EndOfLine <- "\r\n" }' rule: 'Ometa').
 		ETTranscript show: (oMeta match: 'Foo' rule: 'Identifier').
 		oMeta setDelegate: (PKParserASTGenerator new).
-
+		oMetaMatch := oMeta match:  '"\r\n"' rule: 'Literal'.
+		ETTranscript show: oMetaMatch description;cr.
+		oMetaMatch reduce.
 		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
 		self testSubgrammar.
