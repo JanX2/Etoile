@@ -58,9 +58,7 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (parameterized parseInput: '6' asInputStream); cr.
 		ETTranscript show: (parameterized parseInput: '8' asInputStream); cr.
 		ETTranscript show: (oMeta match: 'testing4' rule: 'alphaNum'); cr.
-		oMeta := PKParser actionizedParserGrammar.		
-		ETTranscript show: oMeta rules; cr.
-		oMeta := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
+		oMeta := PKParser alloc initWithGrammar: '_ActionizedEtoileOMeta'.
 		ETTranscript show: oMeta rules; cr.
 		ETTranscript show: oMeta; cr.
 		ETTranscript show: (oMeta at: 'Char'); cr.
@@ -94,7 +92,7 @@ NSObject subclass: SmalltalkTool [
 		oMetaMatch := (oMeta match: contentString  rule: 'OmetaList').
 		ETTranscript show: oMetaMatch; cr.
 		ETTranscript show: oMetaMatch reduce description; cr.
-		ETTranscript show: (PKParser getGrammar: 'SmalltalkOmeta') description; cr.
+		ETTranscript show: (PKParser getGrammar: 'ActionizedEtoileOMeta') description; cr.
 		match := oMeta match: '''test''' rule: 'Literal'.
 		ETTranscript show: match.
 		ETTranscript show: match reduce; cr.

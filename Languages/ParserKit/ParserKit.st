@@ -1041,7 +1041,7 @@ PKNAryComposeExpression subclass: PKNArySequenceExpression [
 				] ifFalse: [
 					list popPosition.
 					match := PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', exp description
-					                                 cause: currentMatch
+					                                 cause: currentMatch.
 				].
 			]
 		].
@@ -1121,7 +1121,7 @@ PKComposeExpression subclass: PKMaybeExpression [
 		| match |
 		match := exp parseInput: list delegate: delegate.
 		^match isSuccess ifTrue: [match]
-						 ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
+						 ifFalse: [ PKParseMatch alloc initWithInput: list length: 0 ]
 	]
 	
 	description [^'(', exp description, ')?']
@@ -1520,7 +1520,7 @@ NSObject subclass: PKParseMatch [
 	]
 
 	bind: name [
-		action == nil 
+		action == nil
             ifTrue: [input bind: name object: (input fromRange: range)]
 			ifFalse: [input bind: name action: action match: self. action := nil]
 	]
@@ -1572,9 +1572,10 @@ NSObject subclass: PKParseFail [
 	]
 
 	cause [
-		^(nil == cause) ifTrue: [ self ]
+		^(cause == nil) ifTrue: [ self ]
 		                ifFalse: [ cause cause ]
 	]  
+
 	setDelegate: anObject  [ delegate := anObject]
 	stopPosition [^failedPosition]
 	isFailure [ ^true ]
@@ -1681,7 +1682,7 @@ NSObject subclass: PKParser [
 
 	+actionizedParserGrammar [
 		| ocParser |
-		ocParser := (self parserGrammar) subgrammar: 'ActionizedEtoileOMeta'.
+		ocParser := (self parserGrammar) subgrammar: '_ActionizedEtoileOMeta'.
 		ocParser addRule: 'Nullary' expression: (((ocParser at: 'Identifier') bind: 'nullary')
 			actionSelector: #makeNullarySelector: arguments: {'nullary'}).
 		ocParser addRule: 'Keyword' expression: ((ocParser at: 'IdentStart') seq: (ocParser at: 'IdentCont') repeat seq: (ocParser at: 'COLON')).
@@ -1696,14 +1697,15 @@ NSObject subclass: PKParser [
 
 	+parserGrammar [
 		| oMeta  |
-		oMeta := PKParser alloc initWithNewGrammar: 'EtoileOMeta'.
+		oMeta := PKParser alloc initWithNewGrammar: '_EtoileOMeta'.
 		oMeta addRule: 'EndOfLine' expression: ('\r\n' asExp or: '\n' asExp).
-		oMeta addRule: 'Space' expression: (' ' asExp or: '\t' asExp or: (oMeta at: 'EndOfLine')).
+		oMeta addRule: 'Space' expression: (PKWhitespaceExpression new or: (oMeta at: 'EndOfLine')).
 		oMeta addRule: 'Comment' expression: ('#' asExp seq: ((oMeta at: 'EndOfLine') not 
             seq: (PKDotExpression new) ) repeat seq: (oMeta at: 'EndOfLine')).
 		oMeta addRule: 'Spacing' expression: ((((oMeta at: 'Space') or: (oMeta at: 'Comment')) repeat) actionSelector: #makeEmpty arguments: {}).
 		oMeta addRule: 'HexDigit' expression: ((PKRangeExpression alloc initFrom: '0' to: '9') or: (PKRangeExpression alloc initFrom: 'A' to: 'F')).
 		oMeta addRule: 'DOT' expression: ((('.' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
+		oMeta addRule: 'DOLLAR' expression: ((('$' asExp bind: 'expr') seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
 		oMeta addRule: 'COLON' expression: (((':' asExp bind: 'expr') seq: (oMeta at: 'Spacing'))restrict:  'expr'  ).
 		oMeta addRule: 'CLOSE' expression: ((( ')' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ). 
 		oMeta addRule: 'OPEN' expression: ((( '(' asExp  bind: 'expr')seq: (oMeta at: 'Spacing')) restrict:  'expr' ).
@@ -1773,7 +1775,8 @@ NSObject subclass: PKParser [
 			or: (oMeta at: 'ParenthesizedExpression')
 			or: (oMeta at: 'Literal')
 			or: (oMeta at: 'Class')
-			or: ((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})).
+			or: (((oMeta at: 'DOT') actionSelector: #makeWildcard arguments: {})
+				or: ((oMeta at: 'DOLLAR') actionSelector: #makeEOF arguments: {}))).
 		oMeta addRule: 'Suffix' expression: ((((oMeta at: 'Primary') bind: 'expression')
             seq: (((oMeta at: 'QUESTION') or: (oMeta at: 'STAR') or: (oMeta at: 'PLUS')) maybe bind: 'modifier')
 			seq: ((oMeta at: 'Binding') maybe bind: 'bindingName')
@@ -1869,7 +1872,7 @@ NSObject subclass: PKParser [
 	+loadGrammarWithString: string [
 		| parserParser internalDelegate match grammars notificationCenter |
 		internalDelegate := PKParserASTGenerator new.
-		parserParser := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
+		parserParser := PKParser alloc initWithGrammar: '_ActionizedEtoileOMeta'.
 		parserParser setDelegate: internalDelegate.
 		match := parserParser match: string rule: 'OmetaList'.
 		"TODO: Smarter error reporting."
@@ -2154,6 +2157,8 @@ NSObject subclass: PKParserASTGenerator [
 
 	makeEmpty [^'']
 
+	makeEOF [^PKEmptyExpression uniqueInstance]
+
 	makeKeywordMessagePart: keyword argument: arg [
 		^NSDictionary dictionaryWithObjects: { keyword componentsJoinedByString: ''. arg }
 		                            forKeys: { 'selectorPart'. 'argumentName' }
@@ -2285,7 +2290,7 @@ NSObject subclass: PKParserASTGenerator [
 	  lookup. "
 	makeRuleLookup: ruleName fromGrammar: grammarName [
 		^PKDelayedExpressionBuilder alloc initWithBlock: [
-			PKNonTerminalLookup alloc initWithGrammar: (PKParser getGrammar: grammarName)
+			PKNonTerminalLookup alloc initWithGrammar: (PKParser alloc initWithGrammar: grammarName)
 			                                     name: ruleName
 		]
 	]
