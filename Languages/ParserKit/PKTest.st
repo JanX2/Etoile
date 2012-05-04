@@ -89,9 +89,8 @@ NSObject subclass: SmalltalkTool [
 		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
 		self testSubgrammar.
-		oMetaMatch := (oMeta match: contentString  rule: 'OmetaList').
-		ETTranscript show: oMetaMatch; cr.
-		ETTranscript show: oMetaMatch reduce description; cr.
+		
+		ETTranscript show: (PKParser loadGrammarsFromString: contentString); cr.
 		ETTranscript show: (PKParser getGrammar: 'ActionizedEtoileOMeta') description; cr.
 		match := oMeta match: '''test''' rule: 'Literal'.
 		ETTranscript show: match.

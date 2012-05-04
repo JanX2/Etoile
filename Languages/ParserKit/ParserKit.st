@@ -1865,11 +1865,11 @@ NSObject subclass: PKParser [
 		files leftFoldWithInitialValue: {}
 		                     intoBlock: [ :acc :each|
 			acc arrayByAddingObjectsFromArray:
-			  (self loadGrammarWithString: (NSString stringWithContentsOfFile: each)).
+			  (self loadGrammarsFromString: (NSString stringWithContentsOfFile: each)).
 		] 
 	]
 	
-	+loadGrammarWithString: string [
+	+loadGrammarsFromString: string [
 		| parserParser internalDelegate match grammars notificationCenter |
 		internalDelegate := PKParserASTGenerator new.
 		parserParser := PKParser alloc initWithGrammar: '_ActionizedEtoileOMeta'.
@@ -1882,7 +1882,7 @@ NSObject subclass: PKParser [
 		grammars do: [ :each|
 			notificationCenter postNotificationName: 'PKParserGrammarBecameAvailable'
 			                                 object: self
-                                           userInfo: (NSDictionary alloc initWithObject: (each name)
+                                           userInfo: (NSDictionary dictionaryWithObject: (each name)
 			                                 forKey: 'name').
 		].
 		^grammars map: [ :each | each name ].

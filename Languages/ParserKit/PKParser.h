@@ -12,7 +12,7 @@
 
 + (NSArray*)loadGrammarsFromBundle: (NSBundle*)bundle;
 
-+ (NSArray*)loadGrammarFromString: (NSString*)string;
++ (NSArray*)loadGrammarsFromString: (NSString*)string;
 
 - (id)initWithGrammar: (NSString*)grammarName;
 
