@@ -13,14 +13,15 @@ License: Modified BSD
 
 @interface SCAccountInfoManager : NSObject
 {
-  NSMutableString *__strong filePath;
-  NSString *fileName;
-  NSMutableString *gPath;
+	NSMutableString *__strong filePath;
+	NSString *fileName;
+	NSMutableString *gPath;
 }
 
 @property (strong, nonatomic, readonly) NSString *filePath; 
 
--(NSString*)readJIDFromFileAtPath:(NSString*)aPath;
--(void)writeJIDToFile:(JID*)aJID atPath:(NSString*)aPath;
+- (NSString*) readJIDFromFileAtPath:(NSString*)aPath;
+- (void) writeJIDToFile:(JID*)aJID atPath:(NSString*)aPath;
+- (NSString*) composeNewJIDWithOldJID:(JID*)oldJID withServer:(NSString*)aServer;
 
 @end
