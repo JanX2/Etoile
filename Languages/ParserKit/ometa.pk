@@ -22,7 +22,7 @@ SLASH <- '/' Spacing -> [orJunction]
 Comment <- '#' !EndOfLine .* EndOfLine
 EndOfLine <- '\r\n' / '\n'
 Space <- [[:space:]] / EndOfLine
-Spacing <- Space / Comment* -> [makeEmpty]
+Spacing <- (Space / Comment)* -> [makeEmpty]
 
 # Identifiers #
 IdentStart <- [a-z] / [A-Z] / '_'
@@ -60,7 +60,7 @@ Primary <- (RuleApplication):expr !(LEFTARROW) -> expr
 	/ DOT -> [makeWildcard]
 	/ DOLLAR -> [makeEOF]
 ParenthesizedExpression <- OPEN Expression:expr CLOSE -> expr
-RuleApplication <- SuperRuleApplication / ForeignRuleApplication / Identifier:rule !LEFTARROW -> [makeRuleLookup: rule fromGrammar: grammar]
+RuleApplication <- SuperRuleApplication / ForeignRuleApplication / Identifier:rule !LEFTARROW -> [makeRuleLookup: rule fromSelf: grammar]
 SuperRuleApplication <- CARET Identifier:rule -> [makeRuleLookup: rule fromSuperGrammar: superGrammar]
 ForeignRuleApplication <- Identifier:grammar '::' Identifier:rule -> [makeRuleLookup: rule fromGrammar: grammar]
 Binding <- ':' Identifier:bindingName -> bindingName

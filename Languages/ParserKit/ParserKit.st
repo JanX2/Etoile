@@ -1765,7 +1765,7 @@ NSObject subclass: PKParser [
 		oMeta addRule: 'RuleApplication' expression: ((oMeta at: 'SuperRuleApplication')
 			or: (oMeta at: 'ForeignRuleApplication')
 			or: ((((oMeta at: 'Identifier') bind: 'rule') seq: ((oMeta at: 'LEFTARROW') not))
-				actionSelector: #makeRuleLookup:fromGrammar: arguments: {'rule'. 'grammar'})).
+				actionSelector: #makeRuleLookup:fromSelf: arguments: {'rule'. 'grammar'})).
 		oMeta addRule: 'ParenthesizedExpression' expression: (((oMeta at: 'OPEN')
 			seq: ((oMeta at: 'Expression') bind: 'expr')
 			seq: (oMeta at: 'CLOSE'))
@@ -1871,7 +1871,7 @@ NSObject subclass: PKParser [
 	
 	+loadGrammarsFromString: string [
 		| parserParser internalDelegate match grammars notificationCenter |
-		internalDelegate := PKParserASTGenerator new.
+		internalDelegate := PKParserRuleGenerator new.
 		parserParser := PKParser alloc initWithGrammar: '_ActionizedEtoileOMeta'.
 		parserParser setDelegate: internalDelegate.
 		match := parserParser match: string rule: 'OmetaList'.
@@ -1953,6 +1953,23 @@ NSObject subclass: PKParser [
 
 	rules  [ ^rules ]
    
+
+	getMatchWithInput: list length: len  [
+		^PKParseMatch alloc initWithInput: list length: len.
+	]
+
+	getMatchCopyWithInput: list range: range  [
+		^PKParseMatch alloc copyInitWith: list range: range.
+	]
+
+	getEmptyMatch: list [
+		^PKParseMatch emptyMatch: list
+	]
+
+
+	getFailureWithInput: list description: desc cause: cause [
+		^PKParseFail alloc initWithInput: list description: desc cause: cause.
+	]
 ]
 
 
@@ -2062,15 +2079,7 @@ NSObject subclass: PKDelayedExpressionBuilder [
 ]
 
 
-"
-  Delegate class that generates a grammar. The main entry point is
-  #makeGrammar:parent:rules. That method also installs the parsed grammars into
-  the rule repository.
-
-  Dependencies on foreign grammars are not yet automatically resolved. You need
-  to make sure that all referenced grammars have already been registered.
-"
-NSObject subclass: PKParserASTGenerator [
+NSObject subclass: PKParserAbstractGenerator [
 	| delegate specialCharToChar |
 
 	init [
@@ -2090,6 +2099,31 @@ NSObject subclass: PKParserASTGenerator [
 	setDelegate: aDelegate [
 		delegate := aDelegate
 	]	
+
+	makeEmpty [^'']
+
+	parseSpecialChar: char [
+		^specialCharToChar objectForKey: char
+	]
+
+	parseHexChar: value [
+		| scanner return |
+		scanner := NSScanner scannerWithString: value.
+		return := NSMutableString new.
+		return appendCharacter: scanner hexIntegerValue.
+		^return
+	]
+
+]
+"
+  Delegate class that generates a grammar. The main entry point is
+  #makeGrammar:parent:rules. That method also installs the parsed grammars into
+  the rule repository.
+
+  Dependencies on foreign grammars are not yet automatically resolved. You need
+  to make sure that all referenced grammars have already been registered.
+"
+PKParserAbstractGenerator subclass: PKParserRuleGenerator [
 
 	makeLiteral: literal [
 		| result |
@@ -2155,7 +2189,6 @@ NSObject subclass: PKParserASTGenerator [
 	]
 
 
-	makeEmpty [^'']
 
 	makeEOF [^PKEmptyExpression uniqueInstance]
 
@@ -2295,6 +2328,9 @@ NSObject subclass: PKParserASTGenerator [
 		]
 	]
 
+	makeRuleLookup: ruleName fromSelf: selfName [
+		^self makeRuleLookup: ruleName fromGrammar: selfName
+	]
 
 	" Super lookups are less problematic because the super grammar is
 	  required to be resolved prior to the grammar we are parsing right
@@ -2304,17 +2340,6 @@ NSObject subclass: PKParserASTGenerator [
 			                              name: ruleName
 	]
 
-	parseSpecialChar: char [
-		^specialCharToChar objectForKey: char
-	]
-
-	parseHexChar: value [
-		| scanner return |
-		scanner := NSScanner scannerWithString: value.
-		return := NSMutableString new.
-		return appendCharacter: scanner hexIntegerValue.
-		^return
-	]
 
 	orJunction [^[:exp1 :exp2 | exp1 or: exp2 ]]
 	seqJunction [^[:exp1 :exp2 | exp1 seq: exp2 ]]
@@ -2330,5 +2355,200 @@ NSObject subclass: PKParserASTGenerator [
 	sequence: list [
 		^list sequenceAll
 	]
+]
+
+
+PKParserAbstractGenerator subclass: PKParserASTGenerator [
+	| +rangeBuiltinSelectors |
+
+	+initialize [
+		rangeBuiltinSelectors := NSDictionary alloc initWithObjects:
+		  { 'isAlphabetic' . 'isUppercase' . 'isLowercase' . 'isDigit' . 'isAlphanumeric' . 'isWhitespace' }
+		                                                    forKeys:
+		  { 'alpha' . 'upper' . 'lower' . 'digit' . 'alnum' . 'space' }
+	]
+
+	+selectorForBuiltinRange: name [ ^rangeBuiltinSelectors objectForKey: name ]
+
+	init [
+		super init.
+		^self
+	]
+
+
+	" Reference to the superclass ivar for the input stream "
+	inputRef [ ^LKDeclRef referenceWithSymbol: 'input' ]
+
+	" Reference to the superclass ivar for the delegate "
+	delegateRef [ ^LKDeclRef referenceWithSymbol: 'delegate' ]
+
+	" Gets a failure at the present position the description string will be 
+	  turned into a literal, cause is supposed to be nil or a reference to 
+	  the failure causing this one. "
+	getFailureWithDescription: desc cause: cause [
+		| descLiteral causeRef msg |
+		cause == nil ifTrue: [ causeRef := LKNilRef builtin ]
+		            ifFalse: [ causeRef := cause ].
+		descLiteral := LKLiteral literalFromString: desc.
+		msg := LKMessageSend messageWithSelectorName: 'getFailWithInput:description:cause:'
+		arguments: { self inputRef . descLiteral . causeRef }.
+		msg setTarget: (LKSelfRef referenceWithSymbol: 'self').
+		^msg
+	]
+
+	" Gets a match of the specified length. "
+	getMatchOfLength: len [
+		| msg |
+		msg := LKMessageSend messageWithSelectorName: 'getMatchWithInput:length:'
+		arguments: { self inputRef . len }.
+		msg setTarget: (LKSelfRef referenceWithSymbol: 'self').
+		^msg
+	]
+
+	getEmptyMatch [
+		| msg |
+		msg := LKMessageSend messageWithSelectorName: 'getEmptyMatch:'
+		arguments: { self inputRef }.
+		msg setTarget: (LKSelfRef referenceWithSymbol: 'self').
+		^msg
+	]
+
+	ifAtEndThenFailElse: elseStatements [
+		| isAtEnd |
+		isAtEnd := LKMessageSend messageWithSelectorName: 'atEnd'.
+		isAtEnd setTarget: self inputRef.
+		^LKIfStatement ifStatementWithCondition: isAtEnd
+		                                   then: { self getFailureWithDescription: 'Unexpected end of stream' cause: nil }
+		                                   else: elseStatements
+		
+	]
+
+	makeLiteral: literal [
+		| theLit litLen listHead comparison |
+		(literal isKindOfClass: NSArray class) ifTrue: [
+			theLit := literal componentsJoinedByString: ''.
+		] ifFalse: [ theLit := literal ].
+		" Build LKLiterals for the literal we are matching and its length. "
+		litLen := LKNumberLiteral literalFromString: ((theLit matchSize) stringValue).
+		theLit := LKLiteral literalFromString: theLit.
+
+		" Message send to obtain the appropriate number of characters from the input
+		  stream "
+		listHead := LKMessageSend messageWithSelectorName: 'head:'
+		                                        arguments: { litLen }.
+		listHead setTarget: self inputRef.
+
+		" Message send to check whether the literal matches the head of the stream "
+		comparison := LKMessageSend messageWithSelectorName: 'isEqual:'
+		                                          arguments: { listHead }.
+		comparison setTarget: theLit.
+		^LKIfStatement ifStatementWithCondition: comparison
+		                                   then: { self getMatchOfLength: litLen }
+		                                   else: {
+		  self getFailureWithDescription: ('Expected literal "', theLit description, '"') cause: nil }
+	]
+
+	makeToken: tok [ self makeLiteral: tok ]
+
+	makeWildcard [
+		| isAtEnd getHead getHeadLength|
+		isAtEnd := LKMessageSend messageWithSelectorName: 'atEnd'.
+		isAtEnd setTarget: self inputRef.
+		getHead := LKMessageSend messageWithSelectorName: 'head'.
+		getHead setTarget: self inputRef.
+		getHeadLength := LKMessageSend messageWithSelectorName: 'length'.
+		getHeadLength setTarget: getHead.
+		^LKIfStatement ifStatementWithCondition: isAtEnd
+		                                   then: { self getFailureWithDescription: 'Unexpected end of stream' cause: nil }
+		                                   else: { self getMatchOfLength: getHeadLength }
+		
+	]
+
+	makeEOF [ 
+		| isAtEnd |
+		isAtEnd := LKMessageSend messageWithSelectorName: 'atEnd'.
+		isAtEnd setTarget: self inputRef.
+		^LKIfStatement ifStatementWithCondition: isAtEnd
+		                                   then: { self getEmptyMatch }
+		                                   else: { self getFailureWithDescription: 'Expected end of stream' cause: nil }
+
+	]
+
+	makeRuleLookup: ruleName fromSelf: selfName [
+		| msg |
+		msg := LKMessageSend messageWithSelectorName: ('_rule_', ruleName).
+		msg setTarget: (LKSelfRef referenceWithSymbol: 'self').
+		^msg.
+	]
+
+	makeRuleLookup: ruleName fromSuperGrammar: superGrammar [
+		| msg |
+		msg := LKMessageSend messageWithSelectorName: ('_rule_', ruleName).
+		msg setTarget: (LKSuperRef referenceWithSymbol: 'super').
+		^msg.
+	]
+
+	makeRuleLookup: ruleName fromGrammar: grammarName [
+		| lookupMsg parseMsg  |
+		" Foreign rule invocations require us to obtain a parser for the grammar and
+		  invoke the method corresponding to the rule from there. "
+		lookupMsg := LKMessageSend messageWithSelectorName: 'parserForGrammar:'
+                                                         arguments: { (LKLiteral literalFromString: grammarName) }.
+		lookupMsg setTarget: LKSelfRef referenceWithSymbol: 'self'.
+		parseMsg := LKMessageSend messageWithSelectorName: ('_rule_', ruleName).
+		parseMsg setTarget: lookupMsg.
+		^parseMsg.
+	]
+
+	makeBuiltinRange: name [	
+		| listHead charAtIndex comparison |
+
+		listHead := LKMessageSend messageWithSelectorName: 'head'.
+		listHead setTarget: self inputRef.
+		charAtIndex := LKMessageSend messageWithSelectorName: 'characterAtIndex:'
+		                                           arguments: { LKNumberLiteral literalFromString: '0' }.
+		charAtIndex setTarget: listHead.
+
+		" look up the character class test selector and check whether the character matches"
+		comparison := LKMessageSend messageWithSelectorName: (PKParserASTGenerator selectorForBuiltinRange: name).
+		comparison setTarget: charAtIndex.
+		^self ifAtEndThenFailElse: { 
+		  LKIfStatement ifStatementWithCondition: comparison
+		                                    then: { self getMatchOfLength: (LKNumberLiteral literalFromString: '1') }
+		                                    else: {
+		    self getFailureWithDescription: ('Expected character from class [:', name, ':]') cause: nil }
+		  }
+	]
+
+	makeRangeFrom: first to: last [
+		| block lteLast gteFirst predicate listHead charAtIndex charAssign matchIf blockInvoke |
+		listHead := LKMessageSend messageWithSelectorName: 'head'.
+		listHead setTarget: self inputRef.
+		charAtIndex := LKMessageSend messageWithSelectorName: 'characterAtIndex:'
+		                                           arguments: { LKNumberLiteral literalFromString: '0' }.
+		charAtIndex setTarget: listHead.
+		charAssign := LKAssignExpr assignWithTarget: (LKDeclRef referenceWithSymbol: 'charValue')
+		                                       expr: charAtIndex.
+		lteLast := LKMessageSend messageWithSelectorName: 'isLessThanOrEqualTo:'
+			                                   arguments:
+		  { LKNumberLiteral literalFromString: ((last characterAtIndex: 0) stringValue) }.
+		lteLast setTarget: (LKDeclRef referenceWithSymbol: 'charValue').
+		gteFirst := LKMessageSend messageWithSelectorName: 'isGreaterThanOrEqualTo:'
+			                                   arguments:
+		  { LKNumberLiteral literalFromString: ((first characterAtIndex: 0) stringValue) }.
+		gteFirst setTarget: (LKDeclRef referenceWithSymbol: 'charValue').
+		predicate := LKMessageSend messageWithSelectorName: 'and:'
+                                                 arguments: { lteLast }.
+		predicate setTarget: gteFirst.
+		matchIf := LKIfStatement ifStatementWithCondition: predicate
+		  then: { self getMatchOfLength: (LKNumberLiteral literalFromString: '1') }
+		  else: { self getFailureWithDescription: ('Expected character [', first, '-', last, ']') cause: nil }.
+		block := LKBlockExpr blockWithArguments: {} locals: { 'charValue' } statements: {charAssign . matchIf }.
+		blockInvoke := LKMessageSend messageWithSelectorName: 'value'.
+		blockInvoke setTarget: block.
+		^self ifAtEndThenFailElse: { blockInvoke }
+	]
+
+
 ]
 

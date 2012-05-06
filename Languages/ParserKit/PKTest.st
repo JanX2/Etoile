@@ -92,10 +92,18 @@ NSObject subclass: SmalltalkTool [
 		
 		ETTranscript show: (PKParser loadGrammarsFromString: contentString); cr.
 		ETTranscript show: (PKParser getGrammar: 'ActionizedEtoileOMeta') description; cr.
-		match := oMeta match: '''test''' rule: 'Literal'.
-		ETTranscript show: match.
-		ETTranscript show: match reduce; cr.
 
+		match := oMeta match: '''test''' rule: 'Literal'.
+		ETTranscript show: match reduce; cr.
+		match := oMeta match: '[:alnum:]' rule: 'BuiltinRange'.
+		ETTranscript show: match reduce; cr.
+		match := oMeta match: '.' rule: 'Primary'.
+		ETTranscript show: match reduce; cr.
+		match := oMeta match: '$' rule: 'Primary'.
+		ETTranscript show: match reduce; cr.
+		match := oMeta match: 'a-d' rule: 'Range'.
+		ETTranscript show: match reduce; cr.
+		
 		match := oMeta match:( '[a-d] ') rule: 'Class'.
 		ETTranscript show: match.
 		ETTranscript show: match reduce; cr.
