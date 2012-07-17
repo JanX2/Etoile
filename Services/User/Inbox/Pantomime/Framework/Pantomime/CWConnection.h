@@ -26,6 +26,10 @@
 #import <Foundation/NSData.h>
 #import <Foundation/NSString.h>
 
+#ifdef MACOSX
+typedef enum {ET_RDESC, ET_WDESC, ET_EDESC} RunLoopEventType;
+#endif
+
 /*!
   @protocol CWConnection
   @discussion This protocol defines a basic set of methods that classes

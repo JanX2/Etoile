@@ -52,7 +52,6 @@ extern NSString* PantomimeDNSResolutionCompleted;
 extern NSString* PantomimeDNSResolutionFailed;
 
 #ifdef MACOSX
-typedef enum {ET_RDESC, ET_WDESC, ET_EDESC} RunLoopEventType;
 /*!
   @class CWDNSManager
   @discussion This class is used in Pantomime to perform DNS resolution.

@@ -638,7 +638,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 827707780A13F07C0009F1A9 /* Build configuration list for PBXProject "Pantomime" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* Pantomime */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
@@ -766,93 +773,54 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		827707790A13F07C0009F1A9 /* debug */ = {
+		827707790A13F07C0009F1A9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.5;
 			};
-			name = debug;
+			name = Debug;
 		};
-		8277077A0A13F07C0009F1A9 /* release */ = {
+		8277077A0A13F07C0009F1A9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				SDKROOT = macosx10.5;
 			};
-			name = release;
+			name = Release;
 		};
-		D92C8C430A5C66A40015DF49 /* debug */ = {
+		D92C8C430A5C66A40015DF49 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
-				DEPLOYMENT_LOCATION = NO;
-				DEPLOYMENT_POSTPROCESSING = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
 				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = "";
-				MACOSX_DEPLOYMENT_TARGET_i386 = "";
-				MACOSX_DEPLOYMENT_TARGET_ppc = "";
+				INSTALL_PATH = "@rpath";
 				OTHER_LDFLAGS = (
-					"-seg1addr",
-					0x10000000,
 					"-lssl",
 					"-lcrypto",
 					"-lresolv",
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = Pantomime;
-				SDKROOT = "";
-				SDKROOT_i386 = "";
-				SDKROOT_ppc = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
 				WRAPPER_EXTENSION = framework;
 			};
-			name = debug;
+			name = Debug;
 		};
-		D92C8C440A5C66A40015DF49 /* release */ = {
+		D92C8C440A5C66A40015DF49 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = NO;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = "";
-				MACOSX_DEPLOYMENT_TARGET_i386 = "";
-				MACOSX_DEPLOYMENT_TARGET_ppc = "";
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x10000000,
@@ -860,19 +828,10 @@
 					"-lcrypto",
 					"-lresolv",
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = Pantomime;
-				SDKROOT = "";
-				SDKROOT_i386 = "";
-				SDKROOT_ppc = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
 				WRAPPER_EXTENSION = framework;
 			};
-			name = release;
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -880,20 +839,20 @@
 		827707780A13F07C0009F1A9 /* Build configuration list for PBXProject "Pantomime" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				827707790A13F07C0009F1A9 /* debug */,
-				8277077A0A13F07C0009F1A9 /* release */,
+				827707790A13F07C0009F1A9 /* Debug */,
+				8277077A0A13F07C0009F1A9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = release;
+			defaultConfigurationName = Release;
 		};
 		D92C8C420A5C66A40015DF49 /* Build configuration list for PBXNativeTarget "Pantomime" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D92C8C430A5C66A40015DF49 /* debug */,
-				D92C8C440A5C66A40015DF49 /* release */,
+				D92C8C430A5C66A40015DF49 /* Debug */,
+				D92C8C440A5C66A40015DF49 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = release;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

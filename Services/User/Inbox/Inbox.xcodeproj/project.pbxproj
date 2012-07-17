@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6023515D15B5725300CA49D0 /* CoreObject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 601D334815B563C000311406 /* CoreObject.framework */; };
+		6023515E15B5725F00CA49D0 /* Pantomime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 662C424A10B0D3F500F060E4 /* Pantomime.framework */; };
 		662C422610B0D2FA00F060E4 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 662C41F810B0D2B100F060E4 /* EtoileFoundation.framework */; };
 		662C422710B0D30500F060E4 /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 662C420D10B0D2C800F060E4 /* EtoileUI.framework */; };
-		662C424D10B0D40C00F060E4 /* Pantomime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 662C424A10B0D3F500F060E4 /* Pantomime.framework */; };
 		66A30DF3105CD9910000845A /* RSSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A30DEA105CD9470000845A /* RSSKit.framework */; };
 		66A30EDA105D9B8C0000845A /* InboxController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A30ED9105D9B8C0000845A /* InboxController.m */; };
 		66A30F0F105D9F040000845A /* ETMailAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A30F0E105D9F040000845A /* ETMailAccount.m */; };
@@ -25,130 +26,165 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		601D32EF15B5608400311406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 605AD43A13BF8D8500755772;
+			remoteInfo = Worktable;
+		};
+		601D334715B563C000311406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 601D334115B563C000311406 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6686BDAC12592BDA0065DE1A;
+			remoteInfo = CoreObject;
+		};
+		601D334915B563C000311406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 601D334115B563C000311406 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 791B4E2D1299C79300CCF472;
+			remoteInfo = Test;
+		};
+		601D334B15B563C000311406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 601D334115B563C000311406 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 66D099C4129AE111006BEDC3;
+			remoteInfo = StoreTest;
+		};
+		6023508415B5690A00CA49D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662C41EF10B0D2B100F060E4 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6072CF691360E144003256C5 /* PlugInExample.plugin */;
+			remoteInfo = PlugInExample;
+		};
 		662C41F510B0D2B100F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41EF10B0D2B100F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60073EAD10074D26007272E6 /* EtoileXML.framework */;
+			remoteGlobalIDString = 60073EAD10074D26007272E6;
 			remoteInfo = EtoileXML;
 		};
 		662C41F710B0D2B100F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41EF10B0D2B100F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 603647AC0E409244003377E0 /* EtoileFoundation.framework */;
+			remoteGlobalIDString = 603647AC0E409244003377E0;
 			remoteInfo = EtoileFoundation;
 		};
 		662C41F910B0D2B100F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41EF10B0D2B100F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 609B66D70FEE80CE0007F842 /* TestEtoileFoundation.bundle */;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
 			remoteInfo = TestEtoileFoundation;
 		};
 		662C420C10B0D2C800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60EF8E9D0C5E4D0600C97C41 /* EtoileUI.framework */;
+			remoteGlobalIDString = 60EF8E9D0C5E4D0600C97C41;
 			remoteInfo = EtoileUI;
 		};
 		662C420E10B0D2C800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 600243B90CD133420023182D /* TestEtoileUI.bundle */;
+			remoteGlobalIDString = 600243B90CD133420023182D;
 			remoteInfo = TestEtoileUI;
 		};
 		662C421010B0D2C800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60073C2910074B39007272E6 /* EtoileWeb.framework */;
+			remoteGlobalIDString = 60073C2910074B39007272E6;
 			remoteInfo = EtoileWeb;
 		};
 		662C421210B0D2C800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60EEB9020F09457C00EBB632 /* Collage.app */;
+			remoteGlobalIDString = 60EEB9020F09457C00EBB632;
 			remoteInfo = Collage;
 		};
 		662C421410B0D2C800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60CF742A0D449A8A00B4CA3D /* MarkupEditor.app */;
+			remoteGlobalIDString = 60CF742A0D449A8A00B4CA3D;
 			remoteInfo = MarkupEditor;
 		};
 		662C421610B0D2C800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 605F0CCA0C0F400D003AE3E6 /* ObjectManagerExample.app */;
+			remoteGlobalIDString = 605F0CCA0C0F400D003AE3E6;
 			remoteInfo = ObjectManagerExample;
 		};
 		662C421810B0D2C800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60539D940C240A7B006C57EC /* PaneContainerExample.app */;
+			remoteGlobalIDString = 60539D940C240A7B006C57EC;
 			remoteInfo = PaneContainerExample;
 		};
 		662C421A10B0D2C800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 606B98C90C0AF831000AAA85 /* PhotoViewExample.app */;
+			remoteGlobalIDString = 606B98C90C0AF831000AAA85;
 			remoteInfo = PhotoViewExample;
 		};
 		662C421C10B0D2C800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60909CC90CB2DA42009CAD27 /* TableViewExample.app */;
+			remoteGlobalIDString = 60909CC90CB2DA42009CAD27;
 			remoteInfo = TableViewExample;
 		};
 		662C421E10B0D2C800F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60FC2925105C112D008D2EFF /* FormExample.app */;
+			remoteGlobalIDString = 60FC2925105C112D008D2EFF;
 			remoteInfo = FormExample;
 		};
 		662C422010B0D2DF00F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41EF10B0D2B100F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 603647AB0E409244003377E0 /* EtoileFoundation */;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
 			remoteInfo = EtoileFoundation;
 		};
 		662C422210B0D2E200F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41EF10B0D2B100F060E4 /* EtoileFoundation.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 60073EAC10074D26007272E6 /* EtoileXML */;
+			remoteGlobalIDString = 60073EAC10074D26007272E6;
 			remoteInfo = EtoileXML;
 		};
 		662C422410B0D2E400F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41 /* EtoileUI */;
+			remoteGlobalIDString = 60EF8E9C0C5E4D0600C97C41;
 			remoteInfo = EtoileUI;
 		};
 		662C424910B0D3F500F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C424210B0D3F500F060E4 /* Pantomime.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D92C8C470A5C66A40015DF49 /* Pantomime.framework */;
+			remoteGlobalIDString = D92C8C470A5C66A40015DF49;
 			remoteInfo = Pantomime;
 		};
 		662C424B10B0D40200F060E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662C424210B0D3F500F060E4 /* Pantomime.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = D92C8BA50A5C66A40015DF49 /* Pantomime */;
+			remoteGlobalIDString = D92C8BA50A5C66A40015DF49;
 			remoteInfo = Pantomime;
 		};
 		66A30DE9105CD9470000845A /* PBXContainerItemProxy */ = {
@@ -175,6 +211,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		601D334115B563C000311406 /* CoreObject.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoreObject.xcodeproj; path = ../../../Frameworks/CoreObject/CoreObject.xcodeproj; sourceTree = SOURCE_ROOT; };
 		662C41EF10B0D2B100F060E4 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileUI.xcodeproj; path = ../../../Frameworks/EtoileUI/EtoileUI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		662C424210B0D3F500F060E4 /* Pantomime.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pantomime.xcodeproj; path = Pantomime/Pantomime.xcodeproj; sourceTree = "<group>"; };
@@ -204,7 +241,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				662C424D10B0D40C00F060E4 /* Pantomime.framework in Frameworks */,
+				6023515D15B5725300CA49D0 /* CoreObject.framework in Frameworks */,
+				6023515E15B5725F00CA49D0 /* Pantomime.framework in Frameworks */,
 				662C422610B0D2FA00F060E4 /* EtoileFoundation.framework in Frameworks */,
 				662C422710B0D30500F060E4 /* EtoileUI.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
@@ -269,6 +307,7 @@
 			children = (
 				662C424210B0D3F500F060E4 /* Pantomime.xcodeproj */,
 				662C41EF10B0D2B100F060E4 /* EtoileFoundation.xcodeproj */,
+				601D334115B563C000311406 /* CoreObject.xcodeproj */,
 				662C41FF10B0D2C800F060E4 /* EtoileUI.xcodeproj */,
 				66A30DE2105CD9460000845A /* RSSKit.xcodeproj */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -307,12 +346,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		601D334215B563C000311406 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				601D334815B563C000311406 /* CoreObject.framework */,
+				601D334A15B563C000311406 /* Test */,
+				601D334C15B563C000311406 /* StoreTest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		662C41F010B0D2B100F060E4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				662C41F610B0D2B100F060E4 /* EtoileXML.framework */,
 				662C41F810B0D2B100F060E4 /* EtoileFoundation.framework */,
 				662C41FA10B0D2B100F060E4 /* TestEtoileFoundation.bundle */,
+				6023508515B5690A00CA49D0 /* PlugInExample.plugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -326,10 +376,11 @@
 				662C421310B0D2C800F060E4 /* Collage.app */,
 				662C421510B0D2C800F060E4 /* MarkupEditor.app */,
 				662C421710B0D2C800F060E4 /* ObjectManagerExample.app */,
-				662C421910B0D2C800F060E4 /* PaneContainerExample.app */,
+				662C421910B0D2C800F060E4 /* PaneExample.app */,
 				662C421B10B0D2C800F060E4 /* PhotoViewExample.app */,
-				662C421D10B0D2C800F060E4 /* TableViewExample.app */,
+				662C421D10B0D2C800F060E4 /* TableExample.app */,
 				662C421F10B0D2C800F060E4 /* FormExample.app */,
+				601D32F015B5608400311406 /* Worktable.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -383,10 +434,21 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Inbox" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Inbox */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = 601D334215B563C000311406 /* Products */;
+					ProjectRef = 601D334115B563C000311406 /* CoreObject.xcodeproj */;
+				},
 				{
 					ProductGroup = 662C41F010B0D2B100F060E4 /* Products */;
 					ProjectRef = 662C41EF10B0D2B100F060E4 /* EtoileFoundation.xcodeproj */;
@@ -412,6 +474,41 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		601D32F015B5608400311406 /* Worktable.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Worktable.app;
+			remoteRef = 601D32EF15B5608400311406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		601D334815B563C000311406 /* CoreObject.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CoreObject.framework;
+			remoteRef = 601D334715B563C000311406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		601D334A15B563C000311406 /* Test */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = Test;
+			remoteRef = 601D334915B563C000311406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		601D334C15B563C000311406 /* StoreTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = StoreTest;
+			remoteRef = 601D334B15B563C000311406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6023508515B5690A00CA49D0 /* PlugInExample.plugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = PlugInExample.plugin;
+			remoteRef = 6023508415B5690A00CA49D0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		662C41F610B0D2B100F060E4 /* EtoileXML.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -475,10 +572,10 @@
 			remoteRef = 662C421610B0D2C800F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		662C421910B0D2C800F060E4 /* PaneContainerExample.app */ = {
+		662C421910B0D2C800F060E4 /* PaneExample.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
-			path = PaneContainerExample.app;
+			path = PaneExample.app;
 			remoteRef = 662C421810B0D2C800F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -489,10 +586,10 @@
 			remoteRef = 662C421A10B0D2C800F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		662C421D10B0D2C800F060E4 /* TableViewExample.app */ = {
+		662C421D10B0D2C800F060E4 /* TableExample.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
-			path = TableViewExample.app;
+			path = TableExample.app;
 			remoteRef = 662C421C10B0D2C800F060E4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -592,17 +689,11 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Inbox_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
 				INFOPLIST_FILE = "Inbox-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = Inbox;
 			};
 			name = Debug;
@@ -610,14 +701,10 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Inbox_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
 				INFOPLIST_FILE = "Inbox-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = Inbox;
 			};
 			name = Release;
@@ -626,12 +713,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Pantomime/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../../../Frameworks/EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../../../Frameworks/CoreObject/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../../../Frameworks/IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../../../Frameworks/RSSKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/../../../Frameworks/EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					$BUILT_PRODUCTS_DIR,
+				);
+				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = $SRCROOT/Headers;
+				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/Pantomime/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/CoreObject/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/RSSKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
 				SDKROOT = macosx10.6;
 			};
 			name = Debug;
@@ -640,10 +735,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				SDKROOT = macosx10.6;
 			};
 			name = Release;

@@ -252,8 +252,6 @@ extern NSString* PantomimeProtocolException;
 
 
 #ifdef MACOSX
-typedef enum {ET_RDESC, ET_WDESC, ET_EDESC} RunLoopEventType;
-
 /*!
   @class CWService
   @discussion This abstract class defines the basic behavior and implementation
