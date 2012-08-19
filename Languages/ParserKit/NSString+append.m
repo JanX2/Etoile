@@ -1,3 +1,4 @@
+#include <Foundation/Foundation.h>
 #include "NSString+append.h"
 
 @implementation NSMutableString  (ParserKit)
