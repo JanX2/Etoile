@@ -6,7 +6,7 @@
  * of characters, a style, and optionally some presentation attributes that
  * will override those assigned by the style.
  *
- * Note that a text fragment may contain the empty strings.  This may be used
+ * Note that a text fragment may contain an empty string.  This may be used
  * by subclasses to store references to external resources and other things
  * that would require a special character in NSAttributedString.
  */
