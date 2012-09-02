@@ -8,6 +8,8 @@
   could differ. For the time being to write expression use the 
   PKParseExpression class. See example at the bottom of the file.
 
+    2012/02/09  This file should be poulate in it a proper unit testing fashon
+
     2012/03/08 Rule lookup can be optimize at runtime
 
     2012/03/05 Fix way input consuming. 
@@ -31,33 +33,12 @@
 NSObject subclass: SmalltalkTool [
 	
 	run [
-		| dict parser abStar b c tExp alphaNumeric parameterized multiSequence multiAlternate oMeta oMetaMatch content contentString match |
+		| dict parser b c tExp  oMeta oMetaMatch content contentString match |
 
 		ETTranscript setDebugMode: false.
-		abStar := PKRepetitionExpression alloc
-					 initWithExpression: 'ab' asExp
-					 canBeEmpty: false; yourself.
-
-		parser := abStar or: 'a' asExp.
-		parser := ('c' asExp repeat) seq: parser seq: PKEmptyExpression uniqueInstance.
-		alphaNumeric  := PKAlphanumericExpression new repeat.
-		parameterized := (PKNumericExpression new bind: 'num') parameterTarget: 'num' selector: #isLessThan: arguments: {'7'}.
-		multiSequence := PKNArySequenceExpression new.
-		multiSequence addExpression: ('c' asExp repeat); addExpression: parser; addExpression: PKEmptyExpression uniqueInstance.
-		multiAlternate := PKNAryAlternateExpression new.
-		multiAlternate addExpression: ('c' asExp); addExpression: ('d' asExp); addExpression: ('e' asExp).
-		multiAlternate := multiAlternate repeat.
+		self testPKNode.
 		oMeta := PKParser alloc initWithNewGrammar: 'Test'.
-		oMeta addRule: 'alphaNum'  expression: alphaNumeric.
-		ETTranscript show: (parser parseInput: 'cab' asInputStream); cr.
-		ETTranscript show: (multiSequence parseInput: 'cab' asInputStream); cr.
-		ETTranscript show: (multiAlternate parseInput: 'cde' asInputStream); cr.
-		ETTranscript show: alphaNumeric; cr.
-		ETTranscript show: (alphaNumeric parseInput: 'Good34'  asInputStream); cr.
-		ETTranscript show: (alphaNumeric parseInput: 'testing4'  asInputStream); cr.
-		ETTranscript show: (parameterized parseInput: '6' asInputStream); cr.
-		ETTranscript show: (parameterized parseInput: '8' asInputStream); cr.
-		ETTranscript show: (oMeta match: 'testing4' rule: 'alphaNum'); cr.
+		oMeta addRule: 'foo'  expression: 'foo' asExp .
 		oMeta := PKParser alloc initWithGrammar: '_ActionizedEtoileOMeta'.
 		ETTranscript show: oMeta rules; cr.
 		ETTranscript show: oMeta; cr.
@@ -89,6 +70,7 @@ NSObject subclass: SmalltalkTool [
 		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
 		self testSubgrammar.
+		
 		
 		ETTranscript show: (PKParser loadGrammarsFromString: contentString); cr.
 		ETTranscript show: (PKParser getGrammar: 'ActionizedEtoileOMeta') description; cr.
@@ -128,6 +110,7 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: match.
 		ETTranscript show: match reduce; cr.
 
+		self testFinalParser.
 		
 	]
 
@@ -141,6 +124,51 @@ NSObject subclass: SmalltalkTool [
 		sub addRule: 'Ab' expression: ('c' asExp or: 'd' asExp).
 		ETTranscript show: (sub match: 'b'  rule: 'Ab').
 		ETTranscript show: (sub match: 'c'  rule: 'Ab').
+	]
+
+	testFinalParser [
+		| parser parserRules content contentString match |
+		ETTranscript show: '------------------------------------'; cr.
+		ETTranscript show: '     Testing final parser'; cr.
+		ETTranscript show: '------------------------------------'; cr.
+		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
+		contentString := NSString alloc initWithData: content encoding: 4.
+		PKParser loadGrammarsFromString: contentString.
+		parserRules := PKParser getGrammar: 'ActionizedEtoileOMeta'.
+		ETTranscript show: parserRules; cr.
+		parser := PKParser alloc initWithRules: parserRules.
+		match := parser match: '\5F' rule: 'Char'.
+		ETTranscript show: match; cr.
+		
+	]
+
+
+	testPKNode [
+		| parser abStar alphaNumeric parameterized multiAlternate multiSequence |
+		ETTranscript show: '------------------------------------'; cr.
+		ETTranscript show: '     Testing pk node parser'; cr.
+		ETTranscript show: '------------------------------------'; cr.
+		abStar := PKRepetitionExpression alloc
+					 initWithExpression: 'ab' asExp
+					 canBeEmpty: false; yourself.
+		parser := abStar or: 'a' asExp.
+		parser := ('c' asExp repeat) seq: parser seq: PKEmptyExpression uniqueInstance.
+		alphaNumeric  := PKAlphanumericExpression new repeat.
+		parameterized := (PKNumericExpression new bind: 'num') parameterTarget: 'num' selector: #isLessThan: arguments: {'7'}.
+		multiSequence := PKNArySequenceExpression new.
+		multiSequence addExpression: ('c' asExp repeat); addExpression: parser; addExpression: PKEmptyExpression uniqueInstance.
+		multiAlternate := PKNAryAlternateExpression new.
+		multiAlternate addExpression: ('c' asExp); addExpression: ('d' asExp); addExpression: ('e' asExp).
+		multiAlternate := multiAlternate repeat.
+
+		ETTranscript show: (parser parseInput: 'cab' asInputStream); cr.
+		ETTranscript show: (multiSequence parseInput: 'cab' asInputStream); cr.
+		ETTranscript show: (multiAlternate parseInput: 'cde' asInputStream); cr.
+		ETTranscript show: alphaNumeric; cr.
+		ETTranscript show: (alphaNumeric parseInput: 'Good34'  asInputStream); cr.
+		ETTranscript show: (alphaNumeric parseInput: 'testing4'  asInputStream); cr.
+		ETTranscript show: (parameterized parseInput: '6' asInputStream); cr.
+		ETTranscript show: (parameterized parseInput: '8' asInputStream); cr.
 	]
 
 ]

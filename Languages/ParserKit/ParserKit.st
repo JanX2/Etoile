@@ -1850,6 +1850,10 @@ NSObject subclass: PKParser [
 		^rule	
 	]
 
+	initWithRules: rulesGrammar [
+		rules := rulesGrammar
+	]
+
 	setDelegate: anObject [
 		delegate := anObject
 	]
