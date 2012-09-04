@@ -2,7 +2,7 @@
 ============================================================================
   ParserKit.st -- OMeta like parser implementation
 
-  Copyright (C) 2011 Mathieu Suen <mathieu@nebu.li>
+  Copyright (C) 2011,2012 Mathieu Suen <mathieu@nebu.li>
   Copyright (C) 2012 Niels Grewe <niels.grewe@halbordnung.de>
 
   The parser has a slightly different syntax than the OMeta one. Semantics
@@ -327,6 +327,7 @@ NSObject subclass: PKParseAction [
 		argsBuild := NSMutableArray new.
 		argumentNames do: [:each |
 			| value |
+			ETTranscript debug: 'Parsing with de following env.'; debug: env; debugCr.
 			value := env objectForKey: each.
 			value == nil ifTrue: [NSException raise: 'ParserKit' format: 'Unknown binding: ', each].
 			argsBuild addObject: value.
@@ -560,23 +561,28 @@ NSObject subclass: PKParseExpression [
 	lookahead [
 		^PKLookAheadExpression alloc initWithExp: self
 	]
-	parseInput: sequence delegate: delegate [
+
+	parseInput: sequence  withCurrentParser: parser delegate: delegate [
 		^self subclassResponsibility
 	]
 
+	parseInput: sequence withCurrentParser: parser [
+		^self parseInput: sequence withCurrentParser: parser delegate: nil
+	]
+
 	parseInput: sequence [
-		^self parseInput: sequence delegate: nil
+		^self parseInput: sequence withCurrentParser: nil delegate: nil.
 	]
 		
-	parseInput: list delegate: delegate ifFailed: aBlock [
+	parseInput: list withCurrentParser: parser delegate: delegate ifFailed: aBlock [
 		| match |
-		match := (self parseInput: list delegate: delegate).
+		match := (self parseInput: list withCurrentParser: parser delegate: delegate).
 		^match isFailure ifTrue: [aBlock value]
 						 ifFalse: [ match ]
 	]
 
-	parseInput: list ifFailed: aBlock [
-		^self parseInput: list delegate: nil ifFailed: aBlock
+	parseInput: list withCurrentParser: parser ifFailed: aBlock [
+		^self parseInput: list withCurrentParser: parser delegate: nil ifFailed: aBlock
 	]
 
 	isMemoizable [ ^true ]
@@ -587,7 +593,7 @@ NSObject subclass: PKParseExpression [
 ]
 
 PKParseExpression subclass: PKDotExpression [
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		^list atEnd 
             ifTrue: [PKParseFail alloc initWithInput: list description: 'Unexpected end of stream']
 			ifFalse: [PKParseMatch alloc initWithInput: list length: list head length]
@@ -601,7 +607,7 @@ PKParseExpression subclass: PKDotExpression [
 
 PKParseExpression subclass: PKAlphabeticExpression [
 	
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		^list head isEmpty 
 			ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected alphabetic character']
 			ifFalse: [
@@ -617,7 +623,7 @@ PKParseExpression subclass: PKAlphabeticExpression [
 
 PKParseExpression subclass: PKUppercaseExpression [
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		^list head isEmpty ifTrue: [
 			PKParseFail alloc initWithInput: list description: 'Expected uppercase character'
 		] ifFalse: [
@@ -634,7 +640,7 @@ PKParseExpression subclass: PKUppercaseExpression [
 
 PKParseExpression subclass: PKLowercaseExpression [
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		^list head isEmpty ifTrue: [
 			PKParseFail alloc initWithInput: list description: 'Expected lowercase character'
 		] ifFalse: [
@@ -651,7 +657,7 @@ PKParseExpression subclass: PKLowercaseExpression [
 
 PKParseExpression subclass: PKWhitespaceExpression [
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		^list head isEmpty ifTrue: [
 			PKParseFail alloc initWithInput: list description: 'Expected whitespace character'
 		] ifFalse: [
@@ -677,7 +683,7 @@ PKParseExpression subclass: PKRangeExpression [
 		^self
 	]
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		^list head isEmpty 
             ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected character [', from, '-', to, ']']
 			ifFalse: [
@@ -696,7 +702,7 @@ PKParseExpression subclass: PKRangeExpression [
 
 PKParseExpression subclass: PKNumericExpression [
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		^list head isEmpty ifTrue: [PKParseFail alloc initWithInput: list description: 'Expected digit character']
 			ifFalse: [
 				(list head characterAtIndex: 0) isDigit
@@ -724,8 +730,8 @@ PKParseExpression subclass: PKComposeExpression [
 		^exp description	
 	]
 
-	parseInput: list delegate: delegate [
-	    ^exp parseInput: list delegate: delegate
+	parseInput: list withCurrentParser: parser delegate: delegate [
+	    ^exp parseInput: list  withCurrentParser: parser delegate: delegate
 	]
 
 	expression [^exp]
@@ -761,10 +767,6 @@ PKParseExpression subclass: PKNAryComposeExpression [
 		expressions addObjectsFromArray: exprs.
 	]
 
-	parseInput: list delegate: delegate [ 
-		^self subclassResponsibility
-	]
-
 	expressions [ ^expressions]
 
 	isMemoizableForNonTerminal: name inGrammar: grammar [
@@ -794,10 +796,10 @@ PKComposeExpression subclass: PKActionExpression [
 		action := anAction
 	]
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		| match |
 		
-		match := exp parseInput: list delegate: delegate.
+		match := exp parseInput: list withCurrentParser: parser delegate: delegate.
 		match isSuccess  ifTrue: [
 			match attachAction: (action invocationInEnvironment: list environment originalMatch: match)
 		].
@@ -818,10 +820,10 @@ PKComposeExpression subclass: PKRestrictionExpression [
 		restriction := aRestriction
 	]
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		| match |
 		
-		match := exp parseInput: list.
+		match := exp parseInput: list withCurrentParser: parser.
 		match isSuccess  ifTrue: [
 			match attachAction: (restriction restrictInEnvironment: list environment)
 		].	
@@ -836,9 +838,9 @@ PKComposeExpression subclass: PKParameterizedExpression [
 		super initWithExp: aExp.
 		predicate := pred.
 	]
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		| match |
-		match := exp parseInput: list delegate: delegate.
+		match := exp parseInput: list  withCurrentParser: parser delegate: delegate.
 		^match isSuccess ifTrue: [
 			(predicate succeedsInEnvironment: (list environment) withDelegate: delegate) ifTrue: [ match ]
 			ifFalse: [
@@ -865,7 +867,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 		^self
 	]
 
-	parseInput: list delegate: delegate  [
+	parseInput: list  withCurrentParser: parser delegate: delegate  [
 		| match |
 		list inEnvironmentDo: [
 			exp == nil ifTrue: [NSException raise: 'ParserKit' format: 'Uncomplete grammar definition for ', name].
@@ -874,7 +876,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 			(match == nil) ifTrue: [
 				| position |
 				position := list position.
-				match := exp parseInput: list delegate: delegate.
+				match := exp parseInput: list  withCurrentParser: parser delegate: delegate.
 				
 				match isSuccess ifTrue: [
 					" Add an implicit range notice "
@@ -901,7 +903,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 				list pushPosition: match stopPosition.
 				]
 			].
-			ETTranscript debug: 'End of non terminal: ', name, ' input pos: '; debug: list positionStack; debug: 'last position: '; debug: list position; debugCr.
+			ETTranscript debug: 'End of non terminal: ', name, ' input pos: '; debug: list positionStack; debug: 'last position: '; debug: list position; debug: ', match: '; debug: match matchText; debugCr.
 		].
 		^match
 	]
@@ -929,7 +931,7 @@ PKParseExpression subclass: PKTokenExpression [
 		^self
 	]
 	
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		| return |
 		((list head: match matchSize) isEqual: match) ifTrue: [ 
 			return := PKParseMatch alloc initWithInput: list
@@ -956,7 +958,7 @@ PKParseExpression subclass: PKEmptyExpression [
         ^instance
 	]
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		^list atEnd
             ifTrue: [PKParseMatch alloc initWithInput: list length: 0]
 			ifFalse: [PKParseFail alloc initWithInput: list description:  'Expected an empty string'] 
@@ -978,7 +980,7 @@ PKParseExpression subclass: PKAnythingExpression [
 		^instance
 	]
 
-	parseInput: list delegate: delegate [ ^PKParseMatch alloc initWithInput: list length: 0]
+	parseInput: list  withCurrentParser: parser delegate: delegate [ ^PKParseMatch alloc initWithInput: list length: 0]
 
 	description [ ^'']
 ]
@@ -992,15 +994,15 @@ PKParseExpression subclass: PKSequenceExpression [
 		^self
 	] 
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		| match1 |
-		match1 := e1 parseInput: list delegate: delegate.
+		match1 := e1 parseInput: list withCurrentParser: parser delegate: delegate.
 		^match1 isSuccess ifTrue: [
 			| match2 |
-			match2 := (e2 parseInput: list delegate: delegate).
+			match2 := (e2 parseInput: list withCurrentParser: parser delegate: delegate).
 			match2 isSuccess 
                 ifTrue: [ 
-					ETTranscript debug: 'Merge sequence: ''', match1 matchText, ''' with: ''', match2 matchText, ''''; debugCr.
+					"ETTranscript debug: 'Merge sequence: ''', match1 matchText, ''' with: ''', match2 matchText, ''''; debugCr."
 					match1 sequenceWith: match2 ]
 				ifFalse: [ list popPosition. match2 ]
 		] ifFalse: [ match1 ]
@@ -1028,15 +1030,15 @@ PKParseExpression subclass: PKSequenceExpression [
 
 PKNAryComposeExpression subclass: PKNArySequenceExpression [
 
-	parseInput: list delegate: delegate[
+	parseInput: list withCurrentParser: parser delegate: delegate[
 		| match |
 		match := PKParseMatch emptyMatch: list.
 		expressions do: [ :exp|
 			match isSuccess ifTrue: [
 				| currentMatch |
-				currentMatch := exp parseInput: list delegate: delegate.
+				currentMatch := exp parseInput: list withCurrentParser: parser delegate: delegate.
 				currentMatch isSuccess ifTrue: [ 
-					ETTranscript debug: 'Merge sequence ''', match matchText, ''' with: ''', currentMatch matchText, ''''; debugCr.
+					"ETTranscript debug: 'Merge sequence ''', match matchText, ''' with: ''', currentMatch matchText, ''''; debugCr."
 					match := match sequenceWith: currentMatch.
 				] ifFalse: [
 					list popPosition.
@@ -1073,9 +1075,9 @@ PKComposeExpression subclass: PKBindExpression [
 		name := aName
 	]
 
-	parseInput: list delegate: delegate[
+	parseInput: list withCurrentParser: parser delegate: delegate[
 		| match |
-		match := exp parseInput: list delegate: delegate. 
+		match := exp parseInput: list withCurrentParser: parser delegate: delegate. 
 		match bind: name.
 		^match
 	]
@@ -1087,9 +1089,9 @@ PKComposeExpression subclass: PKBindExpression [
 PKComposeExpression subclass: PKLookAheadExpression [
 
 	
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		| match |
-		match := exp parseInput: list delegate: delegate.
+		match := exp parseInput: list withCurrentParser: parser delegate: delegate.
 		match isFailure ifFalse: [list popPosition].
 		^match
 	]
@@ -1108,18 +1110,18 @@ PKComposeExpression subclass: PKNegateExpression [
 		^'!(',exp expression description,')'
 	]
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		| match |
-		match := exp parseInput: list delegate: delegate.
+		match := exp parseInput: list withCurrentParser: parser delegate: delegate.
 		^match isSuccess ifTrue: [PKParseFail alloc initWithInput: list description: 'Should not match ', exp description] 
 						 ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
 	]
 ]
 
 PKComposeExpression subclass: PKMaybeExpression [
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		| match |
-		match := exp parseInput: list delegate: delegate.
+		match := exp parseInput: list withCurrentParser: parser delegate: delegate.
 		^match isSuccess ifTrue: [match]
 						 ifFalse: [ PKParseMatch alloc initWithInput: list length: 0 ]
 	]
@@ -1135,10 +1137,10 @@ PKParseExpression subclass: PKAlternateExpression [
 		second := exp2
 	]
 
-	parseInput: list delegate: delegate[
-		 ^first parseInput: list delegate: delegate ifFailed: [
+	parseInput: list withCurrentParser: parser delegate: delegate[
+		 ^first parseInput: list  withCurrentParser: parser delegate: delegate ifFailed: [
 			 | match |
-			 match := second parseInput: list delegate: delegate.
+			 match := second parseInput: list withCurrentParser: parser delegate: delegate.
 			 match isFailure 
                  ifTrue:[ PKParseFail alloc initWithInput: list description: 'Expected ', self description]
 				 ifFalse: [match]
@@ -1168,13 +1170,13 @@ PKParseExpression subclass: PKAlternateExpression [
 ]
 
 PKNAryComposeExpression subclass: PKNAryAlternateExpression [
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		| match |
 		match := PKParseFail alloc initWithInput: list description: 'Expected ', self description.
 		expressions do: [ :exp |
 			match isSuccess ifFalse: [
 				| currentMatch |
-				currentMatch := exp parseInput: list delegate: delegate.
+				currentMatch := exp parseInput: list withCurrentParser: parser delegate: delegate.
 				currentMatch isSuccess ifTrue: [ match := currentMatch ]
 			]
 		].
@@ -1208,14 +1210,14 @@ PKComposeExpression subclass: PKRepetitionExpression [
 		^self
 	]
 	
-	parseInput: list delegate: delegate[
+	parseInput: list withCurrentParser: parser delegate: delegate[
 		| match currentMatch |
 		match := PKParseMatch emptyMatch: list.
 		[
-			currentMatch := exp parseInput: list delegate: delegate.
+			currentMatch := exp parseInput: list withCurrentParser: parser delegate: delegate.
 			currentMatch isSuccess
 		] whileTrue: [ 
-			ETTranscript debug: 'Merge repetition ', match matchText, ' with: ', currentMatch matchText; debugCr.
+			"ETTranscript debug: 'Merge repetition ', match matchText, ' with: ', currentMatch matchText; debugCr."
 			match := match sequenceWith: currentMatch.
 		].
 		^(match isEmpty and: canBeEmpty not) 
@@ -1236,15 +1238,21 @@ PKParseExpression subclass: PKNonTerminalLookup [
 		name := aName
 	]
 
-	parseInput: list delegate: delegate [
+	parseInput: list withCurrentParser: parser delegate: delegate [
 		"ETTranscript debug: 'Apply ', name, ' at: '; debug: list position; debugCr."
-		^grammar matchStream: list rule: name delegate: delegate
+		"This allow expression to apply super rules or self rules"
+		^(grammar == nil ) ifTrue: [parser matchStream: list rule: name delegate: delegate] 
+						   ifFalse: [grammar matchStream: list rule: name delegate: delegate]
 	]
 
-	isMemoizable [ ^(grammar rules lookup: name ifFailed: [^false]) isMemoizableForNonTerminal: name inGrammar: grammar ]
+	isMemoizable [ 
+		(grammar == nil) ifTrue: [^true].
+		^(grammar rules lookup: name ifFailed: [^false]) isMemoizableForNonTerminal: name inGrammar: grammar ]
 
-	isMemoizableForNonTerminal: aName inGrammar: aGrammar [ ^((grammar == aGrammar) and: (name = aName)) ifTrue: [true] 
-		ifFalse: [self isMemoizable]
+	isMemoizableForNonTerminal: aName inGrammar: aGrammar [ 
+		(grammar == nil) ifTrue: [^true].
+		^((grammar == aGrammar) and: (name = aName)) ifTrue: [true] 
+													 ifFalse: [self isMemoizable]
 	]
 	description [ ^name ]
 ]
@@ -1353,6 +1361,8 @@ NSObject subclass: PKEnvironmentStack [
 			].	
 		].
 	]
+
+	description [ ^'Env stack: ', environmentStack description, ' top: ', top description]
 ]
 
 "
@@ -1581,6 +1591,7 @@ NSObject subclass: PKParseFail [
 	isFailure [ ^true ]
 	isSuccess [ ^false ]
 	matchAction [^nil]
+	matchText [^'PKParseFail']
 	bind: name ["No sensible thing can be done here"]
 	description [
 		| desc |
@@ -1765,7 +1776,7 @@ NSObject subclass: PKParser [
 		oMeta addRule: 'RuleApplication' expression: ((oMeta at: 'SuperRuleApplication')
 			or: (oMeta at: 'ForeignRuleApplication')
 			or: ((((oMeta at: 'Identifier') bind: 'rule') seq: ((oMeta at: 'LEFTARROW') not))
-				actionSelector: #makeRuleLookup:fromSelf: arguments: {'rule'. 'grammar'})).
+				actionSelector: #makeRuleLookup: arguments: {'rule'})).
 		oMeta addRule: 'ParenthesizedExpression' expression: (((oMeta at: 'OPEN')
 			seq: ((oMeta at: 'Expression') bind: 'expr')
 			seq: (oMeta at: 'CLOSE'))
@@ -1932,7 +1943,7 @@ NSObject subclass: PKParser [
 			NSException raise: 'ParserKit' format: ('Invalid rule ', rule)
 		].
 		(init == nil) ifFalse: [ exp := init seq: exp ].
-		^exp parseInput: input delegate: aDelegate.
+		^exp parseInput: input withCurrentParser: self delegate: aDelegate.
 	]
 	
 	match: inputStream rule: rule [
@@ -2332,8 +2343,11 @@ PKParserAbstractGenerator subclass: PKParserRuleGenerator [
 		]
 	]
 
-	makeRuleLookup: ruleName fromSelf: selfName [
-		^self makeRuleLookup: ruleName fromGrammar: selfName
+	makeRuleLookup: ruleName [
+		^PKDelayedExpressionBuilder alloc initWithBlock: [
+			PKNonTerminalLookup alloc initWithGrammar: nil
+			                                     name: ruleName
+		]
 	]
 
 	" Super lookups are less problematic because the super grammar is
