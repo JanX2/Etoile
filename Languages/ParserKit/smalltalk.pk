@@ -1,0 +1,25 @@
+SmalltalkGrammar : EtoileBase
+{
+	MINUS <- '-':expr Spacing -> expr
+ 	EQUALS <- 	  '=':expr Spacing -> expr
+	IDENTITY <-   '==':expr Spacing -> expr
+	NOTEQUALS <-  '~':expr Spacing -> expr
+	NOTIDENTITY <- '~=':expr Spacing -> expr
+	LT <- 		   '<':expr Spacing -> expr
+	GT <- 		   '>':expr Spacing -> expr
+	LTEQ <- 	   '<=':expr Spacing -> expr
+	GTEQ <- 	   '>='expr Spacing -> expr
+	
+		
+	BinaryMessageName <- (PLUS / STAR / MINUS / EQUALS / IDENTITY / NOTEQUALS / NOTIDENTITY / SLASH / LT / GT / LTEQ / GTEQ):msg -> msg
+	UnaryMessage <- Identifier:message -> [ makeUnaryMessage: message ]
+	BinaryMessage <- BinaryMessageName:message Identifier:arg -> [makeBinaryMessage: message argument: arg]
+	KeywordPart <- (IdentStart IdentCont* COLON):keywordPart Identifier:identPart -> [ makeMessageKeywordPart: keywordPart argument: identPart   ]
+	KeywordMessage <- KeywordPart+:keywordPartList -> [makeKeywordMessage: keywordPartList]
+	MethodDefinition <-  UnaryMessage / BinaryMessage / KeywordMessage
+	ClassMethod <-'+' MethodDefinition  AOPEN ACLOSE
+	InstanceMethod <-  MethodDefinition  AOPEN ACLOSE
+	Method <- ClassMethod / InstanceMethod
+	MethodsList <- Method*
+	Class <- Identifier 'subclass:' Identidier AOPEN MethodsList ACLOSE	
+}

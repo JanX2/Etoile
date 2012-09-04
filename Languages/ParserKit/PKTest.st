@@ -111,11 +111,12 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: match reduce; cr.
 
 		self testFinalParser.
+		self testSmalltalkParser.
 		
 	]
 
 	testSubgrammar [
-		|grammar sub|
+		| grammar sub |
 		grammar := PKParser alloc initWithNewGrammar: 'PEG'.
 		grammar addRule: 'Ab' expression: ('a' asExp or: 'b' asExp).
 		ETTranscript show: (grammar match: 'b'  rule: 'Ab').
@@ -140,6 +141,21 @@ NSObject subclass: SmalltalkTool [
 		match := parser match: '\5F' rule: 'Char'.
 		ETTranscript show: match; cr.
 		
+	]
+
+	testSmalltalkParser [
+		| parser parserRules content contentString match rule |
+		ETTranscript setDebugMode: false.
+		ETTranscript show: '------------------------------------'; cr.
+		ETTranscript show: '     Testing smalltalk parser'; cr.
+		ETTranscript show: '------------------------------------'; cr.
+		content := NSFileManager defaultManager contentsAtPath: './smalltalk.pk'.
+		contentString := NSString alloc initWithData: content encoding: 4.
+		"Assume that ometa file have been loaded"
+		"match := PKParser loadGrammarsFromString:  contentString."
+		parser := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
+		match := parser match: contentString rule: 'OmetaList'.
+		ETTranscript show: match; cr.
 	]
 
 

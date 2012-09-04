@@ -1,5 +1,4 @@
-EtoileOMeta {
-
+EtoileBase {
 # Lexical syntax #
 AND <- '&':expr Spacing -> expr
 CARET <- '^':expr Spacing -> expr
@@ -34,7 +33,7 @@ HexDigit <- [0-9] / [A-F]
 Char <- '\\' ('n' / 'r' / 't' / '\'' / '\"' / '[' / ']' / '\\'):specialChar -> [parseSpecialChar: specialChar]
 	/ '\\' (HexDigit HexDigit):hexChar -> [parseHexChar: hexChar]
 	/ !('\\') .
-Literal <- '\'' (!'\'' Char*):literal '\'' Spacing
+Literal <- '\'' (!'\'' Char)*:literal '\'' Spacing
 	 / '\"' (!'\"' Char*):literal '\"' Spacing -> [makeLiteral: literal]
 
 # Character classes #
@@ -42,13 +41,19 @@ BuiltinRange <- '[:' ('alpha' / 'alnum' / 'digit' / 'lower' / 'upper' / 'space')
 Range <- (Char):first '-' (Char):second -> [makeRangeFrom: first to: second] / BuiltinRange / (Char):tok -> [makeToken: tok]
 Class <- '[' (!']' Range*):rangeList ']' Spacing -> [join: rangeList]
 
+
+}
+
+EtoileOMeta : EtoileBase {
+
+
 # Main syntax #
 OmetaList <- Spacing (Ometa+):grammars $ -> grammars
 Ometa <- Identifier:grammar (SuperGrammarIdentifier?):superGrammar COPEN Grammar:grammarList CCLOSE -> [makeGrammar: grammar parent: superGrammar rules: grammarList]
 SuperGrammarIdentifier <- COLON Identifier:super -> [makeSuperGrammar: super]
-Grammar <- Spacing (Definition+):expr -> expr
+Grammar <-  (Definition+):expr -> expr
 Definition <- (Identifier):ruleName LEFTARROW (Expression):ruleExpression -> [makeRule: ruleName expression: ruleExpression]
-Expression <- (Sequence):expression1 (SLASH Sequence*):alternative -> [makeAlternativeExpression: expression1 alternative: alternative]
+Expression <- (Sequence):expression1 (SLASH Sequence)*:alternative -> [makeAlternativeExpression: expression1 alternative: alternative]
 Sequence <- (Prefix*):expressions ((Action / Restriction)?):action -> [makeSequenceExpression: expressions actionOrRestriction: action]
 Prefix <- (AND / NOT)?:junction Suffix:expression -> [makePrefix: junction exp: expression] 
 	/ Binding:bindingName -> [makeAnythingBind: bindingName]
@@ -60,7 +65,7 @@ Primary <- (RuleApplication):expr !(LEFTARROW) -> expr
 	/ DOT -> [makeWildcard]
 	/ DOLLAR -> [makeEOF]
 ParenthesizedExpression <- OPEN Expression:expr CLOSE -> expr
-RuleApplication <- SuperRuleApplication / ForeignRuleApplication / Identifier:rule !LEFTARROW -> [makeRuleLookup: rule fromSelf: grammar]
+RuleApplication <- SuperRuleApplication / ForeignRuleApplication / Identifier:rule !LEFTARROW -> [makeRuleLookup: rule]
 SuperRuleApplication <- CARET Identifier:rule -> [makeRuleLookup: rule fromSuperGrammar: superGrammar]
 ForeignRuleApplication <- Identifier:grammar '::' Identifier:rule -> [makeRuleLookup: rule fromGrammar: grammar]
 Binding <- ':' Identifier:bindingName -> bindingName
