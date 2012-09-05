@@ -18,7 +18,7 @@ AOPEN <- '[':expr Spacing -> expr
 COPEN <- '{':expr Spacing -> expr
 CCLOSE <- '}':expr Spacing -> expr
 SLASH <- '/' Spacing -> [orJunction]
-Comment <- '#' !EndOfLine .* EndOfLine
+Comment <- '#' (!EndOfLine .)* EndOfLine
 EndOfLine <- '\r\n' / '\n'
 Space <- [[:space:]] / EndOfLine
 Spacing <- (Space / Comment)* -> [makeEmpty]
@@ -39,7 +39,7 @@ Literal <- '\'' (!'\'' Char)*:literal '\'' Spacing
 # Character classes #
 BuiltinRange <- '[:' ('alpha' / 'alnum' / 'digit' / 'lower' / 'upper' / 'space'):builtinRange ':]' -> [makeBuiltinRange: builtinRange]
 Range <- (Char):first '-' (Char):second -> [makeRangeFrom: first to: second] / BuiltinRange / (Char):tok -> [makeToken: tok]
-Class <- '[' (!']' Range*):rangeList ']' Spacing -> [join: rangeList]
+Class <- '[' (!']' Range)*:rangeList ']' Spacing -> [join: rangeList]
 
 
 }
