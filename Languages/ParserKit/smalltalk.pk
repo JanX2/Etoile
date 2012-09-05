@@ -16,10 +16,10 @@ SmalltalkGrammar : EtoileBase
 	BinaryMessage <- BinaryMessageName:message Identifier:arg -> [makeBinaryMessage: message argument: arg]
 	KeywordPart <- (IdentStart IdentCont* COLON):keywordPart Identifier:identPart -> [ makeMessageKeywordPart: keywordPart argument: identPart   ]
 	KeywordMessage <- KeywordPart+:keywordPartList -> [makeKeywordMessage: keywordPartList]
-	MethodDefinition <-  UnaryMessage / BinaryMessage / KeywordMessage
-	ClassMethod <-'+' MethodDefinition  AOPEN ACLOSE
-	InstanceMethod <-  MethodDefinition  AOPEN ACLOSE
-	Method <- ClassMethod / InstanceMethod
-	MethodsList <- Method*
-	Class <- Identifier 'subclass:' Identidier AOPEN MethodsList ACLOSE	
+	MethodDefinition <-  (UnaryMessage / BinaryMessage / KeywordMessage):def -> def
+	ClassMethod <-'+' MethodDefinition:def  AOPEN ACLOSE -> def
+	InstanceMethod <-  MethodDefinition:def  AOPEN ACLOSE -> def
+	Method <- (ClassMethod / InstanceMethod):method -> method
+	MethodsList <- Method*:methodList -> methodList
+	SmalltalkClass <- Identifier 'subclass:' Space Identifier AOPEN MethodsList:methodList ACLOSE -> methodList	
 }

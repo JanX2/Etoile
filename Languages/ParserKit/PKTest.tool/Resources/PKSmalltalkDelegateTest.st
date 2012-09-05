@@ -3,7 +3,7 @@ NSObject subclass:  SmalltalkMessage [
 
 	initWithMessage: msg arguements: args [
 		message := msg.
-		arguements := args
+		arguments := args
 	]
 ]
 
@@ -11,15 +11,14 @@ NSObject subclass: SmalltalkMessagePart [
 	| messagePart argument |
 	initWithMessage: msgPart argument: args [
 		messagePart := msgPart.
-		arguement := args
+		argument := args
 	]
 
 	getMessagePart [ ^messagePart ]
-	getArgument [ ^arguement ]
+	getArgument [ ^argument ]
 ]
 
-
-SmalltalkAstGenerator subclass: PKParserAbstractGenerator [
+PKParserAbstractGenerator subclass: SmalltalkAstGenerator [
 
 	makeUnaryMessage: msg [
 		^SmalltalkMessage alloc initWithMessage: msg arguements: {}
@@ -35,7 +34,7 @@ SmalltalkAstGenerator subclass: PKParserAbstractGenerator [
 
 	makrKeywordMessage: partList [
 		^SmalltalkMessage alloc 
-                initWithMessage: (partList inject: '' into: [:acc :value | acc, value messagePart ])  
-				 arguments: (partList select: [:each | each argument ])
+                initWithMessage: (partList inject: '' into: [:acc :value | acc, value getMessagePart ])  
+				 arguments: (partList select: [:each | each getArgument ])
 	]
 ]

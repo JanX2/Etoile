@@ -112,6 +112,7 @@ NSObject subclass: SmalltalkTool [
 
 		self testFinalParser.
 		self testSmalltalkParser.
+		self testOmetaASTGenerator.
 		
 	]
 
@@ -130,14 +131,14 @@ NSObject subclass: SmalltalkTool [
 	testFinalParser [
 		| parser parserRules content contentString match |
 		ETTranscript show: '------------------------------------'; cr.
-		ETTranscript show: '     Testing final parser'; cr.
+		ETTranscript show: '     Testing interpreter parser'; cr.
 		ETTranscript show: '------------------------------------'; cr.
 		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
 		PKParser loadGrammarsFromString: contentString.
 		parserRules := PKParser getGrammar: 'ActionizedEtoileOMeta'.
 		ETTranscript show: parserRules; cr.
-		parser := PKParser alloc initWithRules: parserRules.
+		parser := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
 		match := parser match: '\5F' rule: 'Char'.
 		ETTranscript show: match; cr.
 		
@@ -156,6 +157,12 @@ NSObject subclass: SmalltalkTool [
 		parser := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
 		match := parser match: contentString rule: 'OmetaList'.
 		ETTranscript show: match; cr.
+
+		PKParser loadGrammarsFromString: contentString.
+		parser := PKParser alloc initWithGrammar: 'SmalltalkGrammar'.
+		parser setDelegate: SmalltalkAstGenerator new. 
+		match := parser match: 'NSObject subclass: Foo []' rule: 'SmalltalkClass'.
+		ETTranscript show: match reduce; cr.
 	]
 
 
@@ -187,5 +194,22 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (parameterized parseInput: '8' asInputStream); cr.
 	]
 
+	testOmetaASTGenerator [
+		| parser content contentString match |
+		ETTranscript setDebugMode: false.
+		ETTranscript show: '------------------------------------'; cr.
+		ETTranscript show: '     Testing AST generator parser'; cr.
+		ETTranscript show: '------------------------------------'; cr.
+		parser := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
+		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
+		contentString := NSString alloc initWithData: content encoding: 4.
+
+		parser setDelegate: PKParserASTGenerator new.
+		match := parser match: contentString rule: 'OmetaList'.
+
+		ETTranscript show: 'Root action '; show: match matchAction; cr.
+		ETTranscript show: 'Match: '; show: match; cr.
+		ETTranscript show: match reduce; cr.
+	]
 ]
 

@@ -229,6 +229,7 @@ NSObject subclass: PKMatchRangeNotice [
 	reduceOn: target [
 		| selector |
 		selector := ('matched', rule, 'At:') selValue.
+		ETTranscript debug: 'Reduce called: '; debug: selector; debugCr.
 		(target respondsToSelector: selector) ifTrue: [
 			target performSelector: selector withObject: range.
 		] ifFalse: [
@@ -1861,10 +1862,6 @@ NSObject subclass: PKParser [
 		^rule	
 	]
 
-	initWithRules: rulesGrammar [
-		rules := rulesGrammar
-	]
-
 	setDelegate: anObject [
 		delegate := anObject
 	]
@@ -2490,6 +2487,11 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		                                   then: { self getEmptyMatch }
 		                                   else: { self getFailureWithDescription: 'Expected end of stream' cause: nil }
 
+	]
+
+	makeGrammar: grammarName parent: parent rules: method [
+		ETTranscript show:  'makeGrammar ', grammarName, ' parent ', parent, ' rules, ', method description; cr.
+		ETTranscript show: 'First rule '; show:  method first.
 	]
 
 	makeRuleLookup: ruleName fromSelf: selfName [

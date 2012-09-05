@@ -1,0 +1,5 @@
+{
+	Frameworks = ("ParserKit");
+	Sources = ( "PKSmalltalkDelegateTest.st", "PKTest.st");
+	PrincipalClass = "SmalltalkTool";
+}
