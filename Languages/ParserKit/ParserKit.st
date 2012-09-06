@@ -59,6 +59,24 @@ ETTranscript extend [
 	]
 ]
 
+NSMutableDictionary extend [
+	at: key ifAbsentDo: aBlock [
+		| return |
+		return := self objectForKey: key.
+		return == nil ifTrue: [
+			return := aBlock value
+		].
+		^return	
+	]
+
+	at: key ifAbsentPut: aBlock [
+		^self at: key ifAbsentDo: [
+			self setValue: aBlock value forKey: key.
+			self objectForKey: key
+		]
+	]
+]
+
 NSString extend [
 
 	concat: other [
@@ -117,6 +135,7 @@ NSArray extend [
 		].
 		^exp
 	]
+
 	asArray [ ^self ]
 ]
 
@@ -171,13 +190,11 @@ NSObject subclass: NSDelayActionArray [
 			each canReduce 
                    ifTrue: [each reduceOn: target]
 				   ifFalse: [each]].
-		(1 = (result count)) ifTrue: [ result := result objectAtIndex: 0 ]
-		                    ifFalse: [
-			implicit ifTrue: [
+
+		((1 < result count) and: implicit) ifTrue: [
 				" FIXME: Define generic protocol so that this
 				  works for something other than strings. "
 				result := result componentsJoinedByString: ''
-			]
 		].
 		^result.
 	]
@@ -877,8 +894,8 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 			(match == nil) ifTrue: [
 				| position |
 				position := list position.
+				exp isMemoizable ifTrue: [list addMatch: (PKParseFail alloc initWithInput: list description: 'Avoid recursion') at: position named: name].
 				match := exp parseInput: list  withCurrentParser: parser delegate: delegate.
-				
 				match isSuccess ifTrue: [
 					" Add an implicit range notice "
 					(match matchAction == nil) ifTrue: [
@@ -903,6 +920,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 				ETTranscript debug: 'Pushing back position: '; debug: match stopPosition; debugCr.
 				list pushPosition: match stopPosition.
 				]
+							 ifFalse: [ ETTranscript debug: 'Memo Catch failure for ', name; debugCr]
 			].
 			ETTranscript debug: 'End of non terminal: ', name, ' input pos: '; debug: list positionStack; debug: 'last position: '; debug: list position; debug: ', match: '; debug: match matchText; debugCr.
 		].
@@ -1891,7 +1909,8 @@ NSObject subclass: PKParser [
 		match isSuccess ifFalse: [NSException raise: 'PKParserException' format: 'Could not load grammar.'].
 		notificationCenter := NSNotificationCenter defaultCenter.
 		grammars := match reduce asArray.
-		grammars do: [ :each|
+		grammars do: [ :each |
+			ETTranscript show: 'grammar '; show: each class; cr.
 			notificationCenter postNotificationName: 'PKParserGrammarBecameAvailable'
 			                                 object: self
                                            userInfo: (NSDictionary dictionaryWithObject: (each name)
@@ -2374,7 +2393,7 @@ PKParserAbstractGenerator subclass: PKParserRuleGenerator [
 
 
 PKParserAbstractGenerator subclass: PKParserASTGenerator [
-	| +rangeBuiltinSelectors |
+	| +rangeBuiltinSelectors externalParsers inputStreamDeclaration tempDecl |
 
 	+initialize [
 		rangeBuiltinSelectors := NSDictionary alloc initWithObjects:
@@ -2385,14 +2404,78 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	+selectorForBuiltinRange: name [ ^rangeBuiltinSelectors objectForKey: name ]
 
+	genTemp [
+		| tempName |
+		tempName := 'temp'.
+		[ true ] whileTrue: [
+			tempDecl at: tempName ifAbsentDo: [
+				tempDecl setValue: (LKDeclRef referenceWithSymbol: tempName) forKey: tempName.
+				^tempDecl objectForKey: tempName
+			].
+			tempName := tempName,'a'.
+		].
+	]
+
+	genOr: first alternate: second [
+		| ifTest match assign test |
+		
+		match := self genTemp.
+		assign := LKAssignExpr assignWithTarget: match expr: first.
+		ifTest := LKMessageSend messageWithSelectorName: 'isFailure'.
+		ifTest setTarget: match.
+		test := LKIfStatement ifStatementWithCondition: ifTest then: { second } else: { first }.
+		^{ assign. test }
+	]
+
+	genAnd: first alternate: second [
+		| match1 match2 firstAssign secondAssign ifTest ifTestLeft ifTestRight test successStatement |
+		match1 := self genTemp.
+		match2 := self genTemp.
+		firstAssign := LKAssignExpr assignWithTarget: match1 expr: first.
+		secondAssign := LKAssignExpr assignWithTarget: match2 expr: second.
+		
+		ifTestLeft := LKMessageSend messageWithSelectorName: 'isSuccess'.
+		ifTestLeft setTarget: match1.
+		ifTestRight := LKMessageSend messageWithSelectorName: 'isSuccess'.
+		ifTestRight setTarget: match2.
+		
+		ifTest := LKMessageSend messageWithSelectorName: 'and:' arguments: { ifTestRight }.
+		ifTest setTarget: ifTestLeft.
+		successStatement := LKMessageSend  messageWithSelectorName: 'sequenceWith:'
+			arguments: {match2}.
+		successStatement setTarget: match1.
+		"Error can be better report with more information but for the time being is good enough"
+		test := LKIfStatement ifStatementWithCondition: ifTest then: {
+			successStatement
+		} else: { 	 
+			self genFailDescription: (LKLiteral literalFromString: 'Both expression failed') 
+		}.
+		^{ firstAssign. secondAssign. test }
+	]
+
 	init [
 		super init.
+		externalParsers := NSMutableDictionary new.
+		tempDecl := NSMutableDictionary new.
+		inputStreamDeclaration := LKDeclRef referenceWithSymbol: 'inputStream'.
+		
 		^self
 	]
 
+	genExternalGrammarReferenceFor: grammarName [
+		^externalParsers at: grammarName ifAbsentPut: [
+			LKDeclRef referenceWithSymbol: 'grammarName'
+		]
+	]
 
-	" Reference to the superclass ivar for the input stream "
-	inputRef [ ^LKDeclRef referenceWithSymbol: 'input' ]
+	genFailDescription: literal [
+		| pkParseFail message |
+		pkParseFail := LKSymbolRef referenceWithSymbol: 'PKParseFail'.
+		message := LKMessageSend messageWithSelectorName: 'initWithInput:description:'
+			arguments: {inputStreamDeclaration. literal}.
+		message setTarget: pkParseFail.
+		^message
+	]
 
 	" Reference to the superclass ivar for the delegate "
 	delegateRef [ ^LKDeclRef referenceWithSymbol: 'delegate' ]
@@ -2406,7 +2489,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		            ifFalse: [ causeRef := cause ].
 		descLiteral := LKLiteral literalFromString: desc.
 		msg := LKMessageSend messageWithSelectorName: 'getFailWithInput:description:cause:'
-		arguments: { self inputRef . descLiteral . causeRef }.
+		arguments: { inputStreamDeclaration . descLiteral . causeRef }.
 		msg setTarget: (LKSelfRef referenceWithSymbol: 'self').
 		^msg
 	]
@@ -2415,7 +2498,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	getMatchOfLength: len [
 		| msg |
 		msg := LKMessageSend messageWithSelectorName: 'getMatchWithInput:length:'
-		arguments: { self inputRef . len }.
+		arguments: { inputStreamDeclaration . len }.
 		msg setTarget: (LKSelfRef referenceWithSymbol: 'self').
 		^msg
 	]
@@ -2423,7 +2506,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	getEmptyMatch [
 		| msg |
 		msg := LKMessageSend messageWithSelectorName: 'getEmptyMatch:'
-		arguments: { self inputRef }.
+		arguments: { inputStreamDeclaration }.
 		msg setTarget: (LKSelfRef referenceWithSymbol: 'self').
 		^msg
 	]
@@ -2431,7 +2514,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	ifAtEndThenFailElse: elseStatements [
 		| isAtEnd |
 		isAtEnd := LKMessageSend messageWithSelectorName: 'atEnd'.
-		isAtEnd setTarget: self inputRef.
+		isAtEnd setTarget: inputStreamDeclaration.
 		^LKIfStatement ifStatementWithCondition: isAtEnd
 		                                   then: { self getFailureWithDescription: 'Unexpected end of stream' cause: nil }
 		                                   else: elseStatements
@@ -2451,7 +2534,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		  stream "
 		listHead := LKMessageSend messageWithSelectorName: 'head:'
 		                                        arguments: { litLen }.
-		listHead setTarget: self inputRef.
+		listHead setTarget: inputStreamDeclaration.
 
 		" Message send to check whether the literal matches the head of the stream "
 		comparison := LKMessageSend messageWithSelectorName: 'isEqual:'
@@ -2468,9 +2551,9 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	makeWildcard [
 		| isAtEnd getHead getHeadLength|
 		isAtEnd := LKMessageSend messageWithSelectorName: 'atEnd'.
-		isAtEnd setTarget: self inputRef.
+		isAtEnd setTarget: inputStreamDeclaration.
 		getHead := LKMessageSend messageWithSelectorName: 'head'.
-		getHead setTarget: self inputRef.
+		getHead setTarget: inputStreamDeclaration.
 		getHeadLength := LKMessageSend messageWithSelectorName: 'length'.
 		getHeadLength setTarget: getHead.
 		^LKIfStatement ifStatementWithCondition: isAtEnd
@@ -2482,41 +2565,92 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	makeEOF [ 
 		| isAtEnd |
 		isAtEnd := LKMessageSend messageWithSelectorName: 'atEnd'.
-		isAtEnd setTarget: self inputRef.
+		isAtEnd setTarget: inputStreamDeclaration.
 		^LKIfStatement ifStatementWithCondition: isAtEnd
 		                                   then: { self getEmptyMatch }
 		                                   else: { self getFailureWithDescription: 'Expected end of stream' cause: nil }
 
 	]
 
-	makeGrammar: grammarName parent: parent rules: method [
-		ETTranscript show:  'makeGrammar ', grammarName, ' parent ', parent, ' rules, ', method description; cr.
-		ETTranscript show: 'First rule '; show:  method first.
+	makeGrammar: grammarName parent: parentName rules: methods [
+		| parentClassName newGrammar |
+		parentClassName := (parentName = '') ifTrue: [ 'PKParser'] ifFalse: ['PK',parentName].
+	
+		newGrammar := LKSubclass subclassWithName: 'PK',grammarName
+			superclassNamed: parentClassName
+			cvars: {}
+			ivars: {}
+			methods: methods.
+		externalParsers := NSMutableDictionary new.
+		^newGrammar
 	]
 
-	makeRuleLookup: ruleName fromSelf: selfName [
+	makeAlternativeExpression: exp1 alternative: alts [
+		^alts isEmpty ifTrue: [exp1] ifFalse: [
+"			| op expectObj |
+			expectObj := false.
+			op := nil.
+			expression := alts leftFoldWithInitialValue: exp1
+			                                  intoBlock: [ :acc :expOrBlock|
+				expectObj ifTrue: [
+					 The current value is an object, we make sure that the next is being
+					  interpreted as a block and update the accumulator by executing the block. 
+					expectObj := false.
+					If the argument and not the receiver is a delayed builder, we need to wrap
+					 the receiver in one.
+					(acc isKindOfClass: PKDelayedExpressionBuilder class) ifFalse: [
+						(expOrBlock isKindOfClass: PKDelayedExpressionBuilder class) ifTrue: [
+							acc := PKDelayedExpressionBuilder alloc initWithExp: acc
+						]
+					].
+					op value: acc value: expOrBlock
+				] ifFalse: [
+					 The next element will be an object, we store the operation and return the
+					  present state of the accumulator.  
+					op := expOrBlock.
+					expectObj := true.
+					acc
+				]
+			]."
+
+			alts leftFoldWithInitialValue: exp1
+				  intoBlock: [ :acc :expOrBlock | 			
+			]
+
+		]
+	]
+
+	makeRule: ruleName expression: statements [
+		| message |
+		message := LKMessageSend messageWithSelectorName:  ruleName.
+		^LKMethod methodWithSignature: message locals: {} statements: statements.
+	]
+
+	makeRuleLookup: ruleName [
 		| msg |
-		msg := LKMessageSend messageWithSelectorName: ('_rule_', ruleName).
+		msg := LKMessageSend messageWithSelectorName: ('parser', ruleName, 'FromInputStream:')
+			                 arguments: inputStreamDeclaration.
 		msg setTarget: (LKSelfRef referenceWithSymbol: 'self').
 		^msg.
 	]
 
 	makeRuleLookup: ruleName fromSuperGrammar: superGrammar [
 		| msg |
-		msg := LKMessageSend messageWithSelectorName: ('_rule_', ruleName).
+		msg := LKMessageSend messageWithSelectorName: ('parse', ruleName, 'FromInputStream:')
+			                 arguments: inputStreamDeclaration.
 		msg setTarget: (LKSuperRef referenceWithSymbol: 'super').
 		^msg.
 	]
 
 	makeRuleLookup: ruleName fromGrammar: grammarName [
 		| lookupMsg parseMsg  |
-		" Foreign rule invocations require us to obtain a parser for the grammar and
-		  invoke the method corresponding to the rule from there. "
-		lookupMsg := LKMessageSend messageWithSelectorName: 'parserForGrammar:'
-                                                         arguments: { (LKLiteral literalFromString: grammarName) }.
-		lookupMsg setTarget: LKSelfRef referenceWithSymbol: 'self'.
-		parseMsg := LKMessageSend messageWithSelectorName: ('_rule_', ruleName).
-		parseMsg setTarget: lookupMsg.
+		" Foreign rule invocations require us to obtain a parser for
+		  the grammar and invoke the method corresponding to the rule
+		  from there.  The external parameter is going to be instance
+		  variable initilize with the corresponding grammar."
+		parseMsg := LKMessageSend messageWithSelectorName: ('parse', ruleName, 'FromInputStream:')
+			                      arguments: inputStreamDeclaration.
+		parseMsg setTarget: (self genExternalGrammarReferenceFor: grammarName).
 		^parseMsg.
 	]
 
@@ -2524,7 +2658,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		| listHead charAtIndex comparison |
 
 		listHead := LKMessageSend messageWithSelectorName: 'head'.
-		listHead setTarget: self inputRef.
+		listHead setTarget: inputStreamDeclaration.
 		charAtIndex := LKMessageSend messageWithSelectorName: 'characterAtIndex:'
 		                                           arguments: { LKNumberLiteral literalFromString: '0' }.
 		charAtIndex setTarget: listHead.
@@ -2543,7 +2677,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	makeRangeFrom: first to: last [
 		| block lteLast gteFirst predicate listHead charAtIndex charAssign matchIf blockInvoke |
 		listHead := LKMessageSend messageWithSelectorName: 'head'.
-		listHead setTarget: self inputRef.
+		listHead setTarget: inputStreamDeclaration.
 		charAtIndex := LKMessageSend messageWithSelectorName: 'characterAtIndex:'
 		                                           arguments: { LKNumberLiteral literalFromString: '0' }.
 		charAtIndex setTarget: listHead.
@@ -2569,6 +2703,14 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		^self ifAtEndThenFailElse: { blockInvoke }
 	]
 
-
+	join: list [
+		| exp |
+		ETTranscript show: 'join: '; show: list ; cr.
+		exp := nil.
+		list do: [:each | 
+			exp = nil ifTrue: [exp := each] ifFalse: [exp := self genOr: exp alternate: each]
+		].
+		^exp
+	]
 ]
 

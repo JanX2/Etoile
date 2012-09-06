@@ -113,6 +113,7 @@ NSObject subclass: SmalltalkTool [
 		self testFinalParser.
 		self testSmalltalkParser.
 		self testOmetaASTGenerator.
+		self testCalc.
 		
 	]
 
@@ -210,6 +211,18 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: 'Root action '; show: match matchAction; cr.
 		ETTranscript show: 'Match: '; show: match; cr.
 		ETTranscript show: match reduce; cr.
+	]
+
+	testCalc [
+		| parser match content contentString calc |
+		ETTranscript setDebugMode: true.
+		parser := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
+		content := NSFileManager defaultManager contentsAtPath: './simple.pk'.
+		contentString := NSString alloc initWithData: content encoding: 4.
+		PKParser loadGrammarsFromString: contentString.
+		calc := PKParser alloc initWithGrammar: 'Calc'.
+		(calc match: '1+2*3' rule: 'Expression') log.
+	
 	]
 ]
 
