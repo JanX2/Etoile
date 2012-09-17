@@ -30,6 +30,29 @@
 ============================================================================
 "
 
+NSObject subclass: Calculator [
+	multiply: a with: b [
+
+		^a * b
+	]
+
+	value: v [
+
+		^v
+	]
+
+	add: a with: b [
+
+		^a + b
+	]
+
+	buildValue: tok [
+
+		^tok integerValue
+	]
+]
+
+
 NSObject subclass: SmalltalkTool [
 	
 	run [
@@ -112,8 +135,9 @@ NSObject subclass: SmalltalkTool [
 
 		self testFinalParser.
 		self testSmalltalkParser.
-		self testOmetaASTGenerator.
 		self testCalc.
+		self testOmetaASTGenerator.
+		
 		
 	]
 
@@ -215,14 +239,22 @@ NSObject subclass: SmalltalkTool [
 
 	testCalc [
 		| parser match content contentString calc |
-		ETTranscript setDebugMode: true.
+		ETTranscript setDebugMode: false.
+		ETTranscript show: '------------------------------------'; cr.
+		ETTranscript show: '     Testing calc parser'; cr.
+		ETTranscript show: '------------------------------------'; cr.
 		parser := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
+		parser := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
+		parser setDelegate: PKParserRuleGenerator new.
+
 		content := NSFileManager defaultManager contentsAtPath: './simple.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
-		PKParser loadGrammarsFromString: contentString.
-		calc := PKParser alloc initWithGrammar: 'Calc'.
-		(calc match: '1+2*3' rule: 'Expression') log.
-	
+		match := parser match: contentString rule: 'OmetaList'.
+		calc := PKParser new.
+		calc setRules: match reduce.
+		calc setDelegate: Calculator new.
+		match := (calc match: '1+(2*3)' rule: 'Exp') .
+		ETTranscript show: 'Evaluating. '; show: match reduce; cr.
 	]
 ]
 

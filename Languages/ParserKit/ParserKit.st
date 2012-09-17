@@ -190,12 +190,14 @@ NSObject subclass: NSDelayActionArray [
 			each canReduce 
                    ifTrue: [each reduceOn: target]
 				   ifFalse: [each]].
-
-		((1 < result count) and: implicit) ifTrue: [
+		(1 = result count) ifTrue: [ result := result objectAtIndex: 0]
+			ifFalse: [
+				implicit ifTrue: [
 				" FIXME: Define generic protocol so that this
 				  works for something other than strings. "
-				result := result componentsJoinedByString: ''
-		].
+					result := result componentsJoinedByString: '']
+			].
+		
 		^result.
 	]
 	description [
@@ -309,7 +311,7 @@ NSObject subclass: NSDelayInvocation [
 			anInvoc returnValueAsObject
 		] ifFalse: [
 			" if the selector cannot be invoked, we just return the original match. "
-			ETTranscript debug: 'Delegate does not respond to action ''', selector description, '''';debugCr. 
+			ETTranscript show: 'Missing selector '; show: selector; cr.
 			original matchText
 		]
 	]
@@ -894,7 +896,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 			(match == nil) ifTrue: [
 				| position |
 				position := list position.
-				exp isMemoizable ifTrue: [list addMatch: (PKParseFail alloc initWithInput: list description: 'Avoid recursion') at: position named: name].
+
 				match := exp parseInput: list  withCurrentParser: parser delegate: delegate.
 				match isSuccess ifTrue: [
 					" Add an implicit range notice "
@@ -915,7 +917,7 @@ PKComposeExpression subclass: PKNonTerminalExpression [
 					].
 				].
 				" Only memoize the matches from expressions for which it is safely possible. "
-				exp isMemoizable ifTrue: [list addMatch: match at: position named: name].
+				"exp isMemoizable ifTrue: [list addMatch: match at: position named: name]."
 			] ifFalse: [ match isSuccess ifTrue: [
 				ETTranscript debug: 'Pushing back position: '; debug: match stopPosition; debugCr.
 				list pushPosition: match stopPosition.
@@ -1910,7 +1912,6 @@ NSObject subclass: PKParser [
 		notificationCenter := NSNotificationCenter defaultCenter.
 		grammars := match reduce asArray.
 		grammars do: [ :each |
-			ETTranscript show: 'grammar '; show: each class; cr.
 			notificationCenter postNotificationName: 'PKParserGrammarBecameAvailable'
 			                                 object: self
                                            userInfo: (NSDictionary dictionaryWithObject: (each name)
@@ -1983,6 +1984,7 @@ NSObject subclass: PKParser [
 	]
 
 	rules  [ ^rules ]
+	setRules: someRules [rules := someRules]
    
 
 	getMatchWithInput: list length: len  [
@@ -2163,7 +2165,6 @@ PKParserAbstractGenerator subclass: PKParserRuleGenerator [
 		] ifFalse: [ result := literal ].
 		^result asExp
 	]
-
 	makeRangeFrom: first to: second [
 		^PKRangeExpression alloc initFrom: first to: second.
 	]
@@ -2393,7 +2394,7 @@ PKParserAbstractGenerator subclass: PKParserRuleGenerator [
 
 
 PKParserAbstractGenerator subclass: PKParserASTGenerator [
-	| +rangeBuiltinSelectors externalParsers inputStreamDeclaration tempDecl |
+	| +rangeBuiltinSelectors externalParsers inputStreamDeclaration tempDecl methodStatements |
 
 	+initialize [
 		rangeBuiltinSelectors := NSDictionary alloc initWithObjects:
@@ -2420,14 +2421,14 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		| ifTest match assign test |
 		
 		match := self genTemp.
-		assign := LKAssignExpr assignWithTarget: match expr: first.
+		methodStatements addObject: ( LKAssignExpr assignWithTarget: match expr: first).
 		ifTest := LKMessageSend messageWithSelectorName: 'isFailure'.
 		ifTest setTarget: match.
 		test := LKIfStatement ifStatementWithCondition: ifTest then: { second } else: { first }.
-		^{ assign. test }
+		^test
 	]
 
-	genAnd: first alternate: second [
+	genSeq: first alternate: second [
 		| match1 match2 firstAssign secondAssign ifTest ifTestLeft ifTestRight test successStatement |
 		match1 := self genTemp.
 		match2 := self genTemp.
@@ -2450,7 +2451,10 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		} else: { 	 
 			self genFailDescription: (LKLiteral literalFromString: 'Both expression failed') 
 		}.
-		^{ firstAssign. secondAssign. test }
+		methodStatements addObject: firstAssign.
+		methodStatements addObject: secondAssign.
+
+		^test
 	]
 
 	init [
@@ -2458,6 +2462,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		externalParsers := NSMutableDictionary new.
 		tempDecl := NSMutableDictionary new.
 		inputStreamDeclaration := LKDeclRef referenceWithSymbol: 'inputStream'.
+		methodStatements := NSMutableArray new.
 		
 		^self
 	]
@@ -2581,43 +2586,13 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 			cvars: {}
 			ivars: {}
 			methods: methods.
-		externalParsers := NSMutableDictionary new.
+		"externalParsers := NSMutableDictionary new."
 		^newGrammar
 	]
 
 	makeAlternativeExpression: exp1 alternative: alts [
-		^alts isEmpty ifTrue: [exp1] ifFalse: [
-"			| op expectObj |
-			expectObj := false.
-			op := nil.
-			expression := alts leftFoldWithInitialValue: exp1
-			                                  intoBlock: [ :acc :expOrBlock|
-				expectObj ifTrue: [
-					 The current value is an object, we make sure that the next is being
-					  interpreted as a block and update the accumulator by executing the block. 
-					expectObj := false.
-					If the argument and not the receiver is a delayed builder, we need to wrap
-					 the receiver in one.
-					(acc isKindOfClass: PKDelayedExpressionBuilder class) ifFalse: [
-						(expOrBlock isKindOfClass: PKDelayedExpressionBuilder class) ifTrue: [
-							acc := PKDelayedExpressionBuilder alloc initWithExp: acc
-						]
-					].
-					op value: acc value: expOrBlock
-				] ifFalse: [
-					 The next element will be an object, we store the operation and return the
-					  present state of the accumulator.  
-					op := expOrBlock.
-					expectObj := true.
-					acc
-				]
-			]."
-
-			alts leftFoldWithInitialValue: exp1
-				  intoBlock: [ :acc :expOrBlock | 			
-			]
-
-		]
+		"To be implemented"
+		^exp1
 	]
 
 	makeRule: ruleName expression: statements [
@@ -2703,13 +2678,47 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		^self ifAtEndThenFailElse: { blockInvoke }
 	]
 
+	makeSequenceExpression: exp actionOrRestriction: action [
+		| expression |
+		"TODO"
+		ETTranscript show: 'Make Sequence: '; show: exp; cr.
+		expression := (exp isKindOfClass: NSArray class) ifTrue: [
+			exp leftFoldWithInitialValue: nil
+				intoBlock: [:acc :exp | 
+					acc = nil ifTrue: [exp]
+						ifFalse: [self genSeq: acc alternate: exp]
+				]
+		]
+			ifFalse: [ expression := exp].
+		action = '' ifFalse: [
+			| actionTemp actionExpr expressionValue expressionTemp |
+			actionTemp := self genTemp.
+			methodStatements addObject: (LKAssignExpr assignWithTarget: actionTemp
+				expr: action).
+			expressionTemp :=  self genTemp.
+			methodStatements addObject: (LKAssignExpr assignWithTarget: expressionTemp expr: expression).
+			expression := expressionTemp.
+			methodStatements addObject: (LKMessageSend messageWithSelectorName: 'attachAction:' arguments:  { actionTemp} ).
+			
+		].
+		^expression
+	]
+
+
+	makePrefix: prefix exp: exp [
+		
+	]
+
 	join: list [
 		| exp |
 		ETTranscript show: 'join: '; show: list ; cr.
 		exp := nil.
-		list do: [:each | 
-			exp = nil ifTrue: [exp := each] ifFalse: [exp := self genOr: exp alternate: each]
-		].
+		"Need to fix how sequenceWith is working"
+		(list respondsToSelector: #do: )  ifTrue: [
+			list do: [:each | 
+				exp = nil ifTrue: [exp := each] ifFalse: [exp := self genOr: exp alternate: each]
+			]
+		] ifFalse: [ exp :=  list ].
 		^exp
 	]
 ]
