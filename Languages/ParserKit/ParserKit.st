@@ -2622,7 +2622,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	makeRuleLookup: ruleName [
 		| msg |
 		msg := LKMessageSend messageWithSelectorName: ('parser', ruleName, 'FromInputStream:')
-			                 arguments: inputStreamDeclaration.
+			                 arguments: { inputStreamDeclaration }.
 		msg setTarget: (LKSelfRef referenceWithSymbol: 'self').
 		^msg.
 	]
@@ -2630,7 +2630,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	makeRuleLookup: ruleName fromSuperGrammar: superGrammar [
 		| msg |
 		msg := LKMessageSend messageWithSelectorName: ('parse', ruleName, 'FromInputStream:')
-			                 arguments: inputStreamDeclaration.
+			                 arguments: { inputStreamDeclaration }.
 		msg setTarget: (LKSuperRef referenceWithSymbol: 'super').
 		^msg.
 	]
@@ -2642,7 +2642,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		  from there.  The external parameter is going to be instance
 		  variable initilize with the corresponding grammar."
 		parseMsg := LKMessageSend messageWithSelectorName: ('parse', ruleName, 'FromInputStream:')
-			                      arguments: inputStreamDeclaration.
+			                      arguments: { inputStreamDeclaration }.
 		parseMsg setTarget: (self genExternalGrammarReferenceFor: grammarName).
 		^parseMsg.
 	]
