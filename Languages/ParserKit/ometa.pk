@@ -46,6 +46,10 @@ Class <- '[' (!']' Range)*:rangeList ']' Spacing -> [join: rangeList]
 
 EtoileOMeta : EtoileBase {
 
+# Special handling for those modifier #
+QUESTION <- '?':expr Spacing -> [maybeBlock]
+STAR <- '*':expr Spacing -> [manyBlock]
+PLUS <- '+':expr Spacing -> [manyOnceBlock]
 
 # Main syntax #
 OmetaList <- Spacing (Ometa+):grammars $ -> grammars

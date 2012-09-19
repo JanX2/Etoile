@@ -2467,6 +2467,20 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		^self
 	]
 
+	maybeBlock [
+		^[:exp |
+			|  ifTest tempExp |
+			tempExp := self genTemp.
+			methodStatements := LKAssignExpr assignWtihTarget: tempExp expr: exp.
+			ifTest := LKMessageSend messageWithSelectorName: 'isFailure'.
+			ifTest setTarget: tempExp.
+			"TODO PKParseMatch alloc initWithInput: list length: 0"
+			^LKIfStatement ifStatementWithCondition: ifTest
+		                                   then: {  }
+		                                   else: { tempExp }
+		]
+	]
+
 	genExternalGrammarReferenceFor: grammarName [
 		^externalParsers at: grammarName ifAbsentPut: [
 			LKDeclRef referenceWithSymbol: 'grammarName'
@@ -2577,6 +2591,10 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	]
 
+	makeSuperGrammar: ident [
+		^ LKSymbolRef referenceWithSymbol: ident.
+	]
+
 	makeGrammar: grammarName parent: parentName rules: methods [
 		| parentClassName newGrammar |
 		parentClassName := (parentName = '') ifTrue: [ 'PKParser'] ifFalse: ['PK',parentName].
@@ -2678,9 +2696,11 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		^self ifAtEndThenFailElse: { blockInvoke }
 	]
 
+	makeExpression:exp modifier: modifier bind: name predicate: predicate [ ]
+
 	makeSequenceExpression: exp actionOrRestriction: action [
 		| expression |
-		"TODO"
+
 		ETTranscript show: 'Make Sequence: '; show: exp; cr.
 		expression := (exp isKindOfClass: NSArray class) ifTrue: [
 			exp leftFoldWithInitialValue: nil
