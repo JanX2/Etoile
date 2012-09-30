@@ -2396,7 +2396,7 @@ PKParserAbstractGenerator subclass: PKParserRuleGenerator [
 
 
 PKParserAbstractGenerator subclass: PKParserASTGenerator [
-	| +rangeBuiltinSelectors externalParsers inputStreamDeclaration tempDecl methodStatements |
+	| +rangeBuiltinSelectors externalParsers inputStreamDeclaration tempDecl methodStatements currentTempsCount |
 
 	+initialize [
 		rangeBuiltinSelectors := NSDictionary alloc initWithObjects:
@@ -2409,14 +2409,10 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	genTemp [
 		| tempName |
-		tempName := 'temp'.
-		[ true ] whileTrue: [
-			tempDecl at: tempName ifAbsentDo: [
-				tempDecl setValue: (LKDeclRef referenceWithSymbol: tempName) forKey: tempName.
-				^tempDecl objectForKey: tempName
-			].
-			tempName := tempName,'a'.
-		].
+		tempName := 'temp', currentTempsCount description.
+		currentTempsCount := currentTempsCount + 1.
+		tempDecl setValue: (LKDeclRef referenceWithSymbol: tempName) forKey: tempName.
+		^tempDecl objectForKey: tempName
 	]
 
 	genOr: first alternate: second [
@@ -2465,7 +2461,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		tempDecl := NSMutableDictionary new.
 		inputStreamDeclaration := LKDeclRef referenceWithSymbol: 'inputStream'.
 		methodStatements := NSMutableArray new.
-		
+		currentTempsCount := 0.
 		^self
 	]
 
@@ -2473,7 +2469,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		^[:expr |
 			|  ifTest tempExp pkMatch emptySuccess |
 			tempExp := self genTemp.
-			methodStatements addObject: LKAssignExpr assignWtihTarget: tempExp expr: expr.
+			methodStatements addObject: (LKAssignExpr assignWithTarget: tempExp expr: expr).
 			ifTest := LKMessageSend messageWithSelectorName: 'isFailure'.
 			ifTest setTarget: tempExp.
 			pkMatch := LKMessageSend messageWithSelectorName: 'alloc'.
@@ -2493,7 +2489,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		returnMatch := self genTemp.
 		emptyMatch := LKMessageSend messageWithSelectorName: 'emptyMatch:' arguments: {inputStreamDeclaration}.
 		emptyMatch setTarget: (LKSymbolRef referenceWithSymbol: 'PKParseMatch').
-		methodStatements addObject: LKAssignExpr assignWtihTarget: returnMatch expr: emptyMatch.
+		methodStatements addObject: (LKAssignExpr assignWithTarget: returnMatch expr: emptyMatch).
 		currentMatchDecl := self genTemp.
 		currentMatch := LKAssignExpr assignWithTarget: currentMatchDecl expr: expr.
 		test := LKMessageSend messageWithSelectorName: 'isSuccess'.
@@ -2510,24 +2506,12 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	]
 
 	manyBlock [
-		"match := PKParseMatch emptyMatch: list.
-		[
-			currentMatch := exp parseInput: list withCurrentParser: parser delegate: delegate.
-			currentMatch isSuccess
-		] whileTrue: [ 
-			match := match sequenceWith: currentMatch.
-		].
-		^(match isEmpty and: canBeEmpty not) 
-            ifTrue: [list popPosition. PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', exp description
-	                                                           cause: currentMatch ]
-			ifFalse: [match]"
 		^[:expr |
 			self genRepeatLoop: expr.
 		]
 	]
 
 	manyOnceBlock [
-		
 		^[:expr | 
 			| test  return pop failure initFailure |
 			return := self genRepeatLoop: expr.
@@ -2765,7 +2749,15 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		^self ifAtEndThenFailElse: { blockInvoke }
 	]
 
-	makeExpression:exp modifier: modifier bind: name predicate: predicate [ ]
+	makeExpression:exp modifier: modifier bind: name predicate: predicate [
+		| suffixExp |
+		ETTranscript show: 'modifier class '; show: modifier class; cr.
+		suffixExp :=  modifier = '' ifTrue: [exp] ifFalse: [ 
+			ETTranscript show: 'Block called';cr.
+			modifier value: exp ] .
+		
+		ETTranscript show: 'suffixExp ', suffixExp description; cr.
+	]
 
 	makeSequenceExpression: exp actionOrRestriction: action [
 		| expression |
@@ -2795,7 +2787,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 
 	makePrefix: prefix exp: exp [
-		
+		ETTranscript show: 'makePrefix:..ex: ', exp description; cr.
 	]
 
 	join: list [
