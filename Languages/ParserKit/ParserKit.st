@@ -200,6 +200,7 @@ NSObject subclass: NSDelayActionArray [
 		
 		^result.
 	]
+
 	description [
 		^anArray leftFoldWithInitialValue: 'Delay:'
 		                        intoBlock: [ :acc :action |
@@ -275,6 +276,7 @@ NSObject subclass: NSDelayInvocation [
 	+invocationWithSelector: aSelector arguments: someArgs originalMatch: match [
 		^self alloc initWithSelector: aSelector arguments: someArgs originalMatch: match
 	]
+
 	initWithSelector: aSelector arguments: someArgs originalMatch: match [
 		super init.
 		selector := aSelector.
@@ -2468,16 +2470,83 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	]
 
 	maybeBlock [
-		^[:exp |
-			|  ifTest tempExp |
+		^[:expr |
+			|  ifTest tempExp pkMatch emptySuccess |
 			tempExp := self genTemp.
-			methodStatements := LKAssignExpr assignWtihTarget: tempExp expr: exp.
+			methodStatements addObject: LKAssignExpr assignWtihTarget: tempExp expr: expr.
 			ifTest := LKMessageSend messageWithSelectorName: 'isFailure'.
 			ifTest setTarget: tempExp.
-			"TODO PKParseMatch alloc initWithInput: list length: 0"
-			^LKIfStatement ifStatementWithCondition: ifTest
-		                                   then: {  }
+			pkMatch := LKMessageSend messageWithSelectorName: 'alloc'.
+			pkMatch setTarget: (LKSymbolRef referenceWithSymbol: 'PKParseMatch').
+			emptySuccess := LKMessageSend messageWithSelectorName:  'initWithInput:length:'
+				arguments: { inputStreamDeclaration. 0 }.
+			emptySuccess setTarget: pkMatch.
+			LKIfStatement ifStatementWithCondition: ifTest
+		                                   then: { emptySuccess }
 		                                   else: { tempExp }
+		]
+	]
+
+	genRepeatLoop: expr [
+		
+		| emptyMatch returnMatch loopTest loop currentMatch currentMatchDecl test newMatch |
+		returnMatch := self genTemp.
+		emptyMatch := LKMessageSend messageWithSelectorName: 'emptyMatch:' arguments: {inputStreamDeclaration}.
+		emptyMatch setTarget: (LKSymbolRef referenceWithSymbol: 'PKParseMatch').
+		methodStatements addObject: LKAssignExpr assignWtihTarget: returnMatch expr: emptyMatch.
+		currentMatchDecl := self genTemp.
+		currentMatch := LKAssignExpr assignWithTarget: currentMatchDecl expr: expr.
+		test := LKMessageSend messageWithSelectorName: 'isSuccess'.
+		test setTarget: currentMatchDecl.
+		loopTest := LKBlockExpr  blockWithArguments: {} locals: {  } statements: {currentMatch. test }.
+		newMatch := LKMessageSend messageWithSelectorName: 'sequenceWith:' arguments: {currentMatchDecl}.
+		newMatch setTarget: returnMatch.
+		newMatch := LKAssignExpr assignWithTarget: returnMatch expr: newMatch.
+		loop := LKBlockExpr blockWithArguments: {} locals: {}  statements:  { newMatch }.
+		loop := LKMessageSend messageWithSelectorName: 'whileTrue:' arguments: {loop}.
+		loop setTarget: loopTest.
+		methodStatements addObject: loop.
+		^returnMatch.
+	]
+
+	manyBlock [
+		"match := PKParseMatch emptyMatch: list.
+		[
+			currentMatch := exp parseInput: list withCurrentParser: parser delegate: delegate.
+			currentMatch isSuccess
+		] whileTrue: [ 
+			match := match sequenceWith: currentMatch.
+		].
+		^(match isEmpty and: canBeEmpty not) 
+            ifTrue: [list popPosition. PKParseFail new initWithInput: list description: 'Unexpected token, expected: ', exp description
+	                                                           cause: currentMatch ]
+			ifFalse: [match]"
+		^[:expr |
+			self genRepeatLoop: expr.
+		]
+	]
+
+	manyOnceBlock [
+		
+		^[:expr | 
+			| test  return pop failure initFailure |
+			return := self genRepeatLoop: expr.
+			test := LKMessageSend messageWithSelectorName: 'isEmpty'.
+			test setTarget: return.
+			pop := LKMessageSend messageWithSelectorName: 'popPosition'.
+			pop setTarget: inputStreamDeclaration.
+			failure := LKMessageSend messageWithSelectorName: 'new'.
+			failure setTarget:  (LKSymbolRef referenceWithSymbol: 'PKParseFail').
+
+			"Argument are temporary wrong instead of the 'return' we
+			should show the 'currentMatch in the genRepeatLoop"
+			initFailure := LKMessageSend messageWithSelectorName: 'initWithInput:description:cause:'
+				arguments: { inputStreamDeclaration. LKStringLiteral literalFromString: 'Unexpected token'. return  }.
+			initFailure setTarget: failure.
+				
+			LKIfStatement ifStatementWithCondition: test
+		                                   then: {  pop. initFailure  }
+		                                   else: { return }
 		]
 	]
 
@@ -2742,4 +2811,3 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		^exp
 	]
 ]
-
