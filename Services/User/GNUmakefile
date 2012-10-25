@@ -12,8 +12,8 @@ include $(GNUSTEP_MAKEFILES)/common.make
 export addressmanager ?= yes
 export dictionaryreader ?= yes
 export fontmanager ?= yes
-export hardware ?= yes
-export lookandbehavior ?= yes
+export hardware ?= no
+export lookandbehavior ?= no
 export melodie ?= no
 export microblog ?= yes
 export stepchat ?= yes
