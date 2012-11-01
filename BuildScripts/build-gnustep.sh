@@ -20,7 +20,7 @@ if [ -n "$MAKE_VERSION" ]; then
 
 	echo "Building & Installing GNUstep Make"
 	cd gnustep-make-${MAKE_VERSION}
-	( $CONFIGURE --prefix=$PREFIX_DIR --with-layout=gnustep --enable-debug-by-default ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
+	( $CONFIGURE --prefix=$PREFIX_DIR --with-layout=gnustep --enable-debug-by-default --enable-objc-nonfragile-abi ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
  	export STATUS=$?
 	cd ..
 
@@ -67,7 +67,7 @@ if [ -n "$RUNTIME_VERSION" ]; then
 
 	echo "Building & Installing GNUstep (second pass)"
 	cd gnustep-make-${MAKE_VERSION}
-	( $CONFIGURE --prefix=$PREFIX_DIR --with-layout=gnustep --enable-debug-by-default ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
+	( $CONFIGURE --prefix=$PREFIX_DIR --with-layout=gnustep --enable-debug-by-default --enable-objc-nonfragile-abi ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
 	export STATUS=$?
 	cd ..
 
@@ -158,7 +158,7 @@ if [ -n "$BACK_VERSION" ]; then
 
 	echo "Building & Installing GNUstep Back"
 	cd gnustep-back-${BACK_VERSION}
-	($MAKE_CLEAN) && ($CONFIGURE) && ($MAKE_BUILD) && ($MAKE_INSTALL)
+	($MAKE_CLEAN) && ( $CONFIGURE --disable-mixedabi ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
 	export STATUS=$?
 	cd ..
 
