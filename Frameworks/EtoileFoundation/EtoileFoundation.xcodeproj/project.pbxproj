@@ -328,7 +328,6 @@
 		60A221EB0FEFF8EF00952E11 /* NSObject+HOM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+HOM.m"; path = "Source/NSObject+HOM.m"; sourceTree = "<group>"; };
 		60A549AB13CA133300261FDC /* NSMapTable+Etoile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSMapTable+Etoile.h"; path = "Headers/NSMapTable+Etoile.h"; sourceTree = "<group>"; };
 		60A549AD13CA134700261FDC /* NSMapTable+Etoile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSMapTable+Etoile.m"; path = "Source/NSMapTable+Etoile.m"; sourceTree = "<group>"; };
-		60ADA9141410D8A7003EACF1 /* UnitKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnitKit.framework; path = /Library/Frameworks/UnitKit.framework; sourceTree = "<absolute>"; };
 		60ADA96D1410E821003EACF1 /* NSBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSBlocks.m; path = Source/NSBlocks.m; sourceTree = "<group>"; };
 		60B27D730FF7B51D0012BB42 /* TestETCollectionHOM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestETCollectionHOM.m; path = Tests/TestETCollectionHOM.m; sourceTree = "<group>"; };
 		60B27D750FF7B54F0012BB42 /* TestUTI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestUTI.m; path = Tests/TestUTI.m; sourceTree = "<group>"; };
@@ -472,7 +471,6 @@
 				66AC42A5108AD6BB00047C26 /* EtoileThread */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				60ADA9141410D8A7003EACF1 /* UnitKit.framework */,
 			);
 			name = FlowAutolayoutExample;
 			sourceTree = "<group>";
