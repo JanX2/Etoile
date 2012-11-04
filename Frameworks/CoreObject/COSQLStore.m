@@ -829,7 +829,7 @@ void CHECK(id db)
 	else
 	{
 		[NSException raise: NSInternalInconsistencyException
-					format: @"Unable to find revision number %q in track %@ to retrieve the current node", 
+					format: @"Unable to find revision number %qd in track %@ to retrieve the current node",
 		                    [newRev revisionNumber], aTrackUUID]; 
 	}
 	[db executeUpdate: @"UPDATE commitTrack SET currentnode = ? WHERE objectuuid = ?",
@@ -912,8 +912,8 @@ void CHECK(id db)
 		else
 		{
 			[NSException raise: NSInternalInconsistencyException
-			            format: @"Unable to find node %q in Commit Track %@ to retrieve revision number", 
-				prevNode, rootObjectUUID]; 
+			            format: @"Unable to find node %qd in Commit Track %@ to retrieve revision number",
+				[prevNode longLongValue], rootObjectUUID]; 
 		}
 	}
 	else
@@ -958,8 +958,8 @@ void CHECK(id db)
 		else
 		{
 			[NSException raise: NSInternalInconsistencyException
-			            format: @"Unable to find node %q in Commit Track %@ to retrieve revision number", 
-				nextNode, rootObjectUUID]; 
+			            format: @"Unable to find node %qd in Commit Track %@ to retrieve revision number",
+				[nextNode longLongValue], rootObjectUUID];
 		}
 	}
 	else

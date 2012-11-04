@@ -278,7 +278,7 @@
 		
 		if (prevRev != nil)
 		{
-			CORevision *newTrackRev = [[editingContext store] undoOnCommitTrack: [self UUID]];
+			//CORevision *newTrackRev = [[editingContext store] undoOnCommitTrack: [self UUID]];
 			CORevision *newRev = [[editingContext store] undoOnCommitTrack: [object UUID]];
 
 			//assert([newTrackRev isEqual: [[[self currentNode] previousNode] revision]]);
@@ -326,7 +326,7 @@
 	
 	if (useCommitTrackRedo)
 	{
-		CORevision *newTrackRev = [[editingContext store] redoOnCommitTrack: [self UUID]];
+		//CORevision *newTrackRev = [[editingContext store] redoOnCommitTrack: [self UUID]];
 		CORevision *newRev = [[editingContext store] redoOnCommitTrack: [object UUID]];
 
 		//assert([newTrackRev isEqual: [[[self currentNode] nextNode] revision]]);

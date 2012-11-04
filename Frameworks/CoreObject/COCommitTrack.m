@@ -250,7 +250,7 @@
 - (COTrackNode *)nextNodeOnTrackFrom: (COTrackNode *)aNode backwards: (BOOL)back
 {
 	/* -cacheNodesForward:backward: can release this cached node */
-	RETAIN(aNode);
+	[aNode retain];
 	NSArray *cachedNodes = [self cachedNodes];
 	NSInteger nodeIndex = [cachedNodes indexOfObject: aNode];
 
