@@ -1,6 +1,7 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import <CoreObject/CoreObject.h>
-#import "EtoileText.h"
+#import <EtoileText/EtoileText.h>
+#import <EtoileXML/ETXMLParser.h>
 
 @interface Visitor : NSObject <ETTextVisitor>
 {
@@ -138,7 +139,9 @@ int main(void)
 
 	TeXScannerDelegate *d = [TeXScannerDelegate new];
 	ETTeXScanner *s = [ETTeXScanner new];
-	NSString * tex = [NSString stringWithContentsOfFile: @"/tmp/tex"];
+	NSString * tex = [NSString stringWithContentsOfFile: @"/tmp/tex"
+											   encoding: NSUTF8StringEncoding
+												  error: NULL];
 	s.delegate = d;
 	[s parseString: tex];
 	[d release];

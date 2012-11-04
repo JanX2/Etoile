@@ -1,6 +1,9 @@
+#import <EtoileFoundation/EtoileFoundation.h>
+#import <EtoileXML/ETXMLWriter.h>
+
 #import "ETTextProtocols.h"
 
-@class ETXHTMLWriter;
+@class ETXHTMLWriter, ETXMLWriter;
 /**
  * Protocol used for element handlers when writing XHTML.  This is similar to
  * the visitor protocol, but takes an ETXHTMLWriter as the first argument.

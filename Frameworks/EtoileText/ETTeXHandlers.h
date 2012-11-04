@@ -1,4 +1,4 @@
-@class NSURL;
+@class NSURL, NSMutableString;
 
 @interface ETTeXSimpleHandler : ETTeXHandler
 {

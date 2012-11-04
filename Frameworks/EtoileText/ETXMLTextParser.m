@@ -2,6 +2,19 @@
 
 @implementation ETXMLTextParser
 @synthesize document;
+- (id) initWithXMLParser: (ETXMLParser*)aParser
+				  parent: (id)parent
+                     key: (id)aKey
+{
+	self = [super initWithXMLParser: aParser
+	                            key: aKey];
+	if (nil == self)
+	{
+		return nil;
+	}
+	// FIXME: What about parent?
+	return self;
+}
 - (void)startElement: (NSString *)aName
           attributes: (NSDictionary*)attributes;
 {

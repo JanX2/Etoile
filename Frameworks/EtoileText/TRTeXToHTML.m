@@ -1,4 +1,4 @@
-#import "EtoileText.h"
+#import <EtoileText/EtoileText.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "ETTeXHandlers.h"
 #import <EtoileUI/NSObject+EtoileUI.h>

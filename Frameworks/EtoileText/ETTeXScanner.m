@@ -46,7 +46,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 		[aString getCharacters: buffer range: range];
 		//NSLog(@"Buffer: %@", [aString substringWithRange: range]);
 		range.location += BUFFER_SIZE;
-		for (unsigned i=0 ; i<range.length ; i++, idx++)
+		for (NSUInteger i=0 ; i<range.length ; i++, idx++)
 		{
 			unichar c = buffer[i];
 			switch (c)
