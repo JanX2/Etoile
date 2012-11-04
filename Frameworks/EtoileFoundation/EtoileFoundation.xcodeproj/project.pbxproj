@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3D01CFAC1646B2E500917AC8 /* UnitKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D01CFA01646B2BE00917AC8 /* UnitKit.framework */; };
+		3D01CFB11646B75F00917AC8 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 603647AC0E409244003377E0 /* EtoileFoundation.framework */; };
 		60073ECB10074D6A007272E6 /* ETXMLDeclaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 60073EB610074D6A007272E6 /* ETXMLDeclaration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		60073ECC10074D6A007272E6 /* ETXMLDeclaration.m in Sources */ = {isa = PBXBuildFile; fileRef = 60073EB710074D6A007272E6 /* ETXMLDeclaration.m */; };
 		60073ECD10074D6A007272E6 /* ETXMLNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 60073EB810074D6A007272E6 /* ETXMLNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -33,7 +34,6 @@
 		60073EE110074D97007272E6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		6010E6C31143DF12003203B2 /* ETPackageDescription.h in Headers */ = {isa = PBXBuildFile; fileRef = 6010E6C11143DF12003203B2 /* ETPackageDescription.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6010E6C91144623C003203B2 /* ETPackageDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 6010E6C81144623C003203B2 /* ETPackageDescription.m */; };
-		6010E6CA1144623C003203B2 /* ETPackageDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 6010E6C81144623C003203B2 /* ETPackageDescription.m */; };
 		601909DC13A61AC300A0F639 /* NSObject+Trait.h in Headers */ = {isa = PBXBuildFile; fileRef = 603647D10E4092EA003377E0 /* NSObject+Trait.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		601909E213A61AF100A0F639 /* NSObject+Trait.m in Sources */ = {isa = PBXBuildFile; fileRef = 6036480E0E40931E003377E0 /* NSObject+Trait.m */; };
 		601909FD13A61C2C00A0F639 /* NSObject+Prototypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 602DC50E0F21FA4C00DF23D9 /* NSObject+Prototypes.m */; };
@@ -41,17 +41,6 @@
 		60190B0813A623CD00A0F639 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		60222D8F101CCA9C00B2B1C1 /* TestReflection.m in Sources */ = {isa = PBXBuildFile; fileRef = 60222D8E101CCA9C00B2B1C1 /* TestReflection.m */; };
 		60222D91101CCAAC00B2B1C1 /* TestEntityDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 60222D90101CCAAC00B2B1C1 /* TestEntityDescription.m */; };
-		60222DB3101CCB4800B2B1C1 /* ETClassMirror.m in Sources */ = {isa = PBXBuildFile; fileRef = 662EA831101BC8610044F013 /* ETClassMirror.m */; };
-		60222DB4101CCB4800B2B1C1 /* ETEntityDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 662EA3F8101916310044F013 /* ETEntityDescription.m */; };
-		60222DB5101CCB4800B2B1C1 /* ETInstanceVariableMirror.m in Sources */ = {isa = PBXBuildFile; fileRef = 662EA832101BC8610044F013 /* ETInstanceVariableMirror.m */; };
-		60222DB6101CCB4800B2B1C1 /* ETMethodMirror.m in Sources */ = {isa = PBXBuildFile; fileRef = 662EA833101BC8610044F013 /* ETMethodMirror.m */; };
-		60222DB7101CCB4800B2B1C1 /* ETObjectMirror.m in Sources */ = {isa = PBXBuildFile; fileRef = 662EA834101BC8610044F013 /* ETObjectMirror.m */; };
-		60222DB8101CCB4800B2B1C1 /* ETPropertyDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 662EA3F9101916310044F013 /* ETPropertyDescription.m */; };
-		60222DB9101CCB4800B2B1C1 /* ETProtocolMirror.m in Sources */ = {isa = PBXBuildFile; fileRef = 662EA835101BC8610044F013 /* ETProtocolMirror.m */; };
-		60222DBA101CCB4800B2B1C1 /* ETReflection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6680CED8101257C800CAF439 /* ETReflection.m */; };
-		60222DBB101CCB4800B2B1C1 /* ETSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 66C3AF8E10181D110046D74A /* ETSocket.m */; };
-		60222DBC101CCB4800B2B1C1 /* ETValidationResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 662EA3FA101916310044F013 /* ETValidationResult.m */; };
-		60222DBD101CCB4800B2B1C1 /* NSData+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 66C3AF8F10181D110046D74A /* NSData+Hash.m */; };
 		60222DC6101CCB8D00B2B1C1 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66C3AFB510181ECD0046D74A /* libcrypto.dylib */; };
 		60222DC7101CCB9000B2B1C1 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66C3AF9910181DDE0046D74A /* libssl.dylib */; };
 		602DC5070F21FA2E00DF23D9 /* ETHistory.h in Headers */ = {isa = PBXBuildFile; fileRef = 602DC5030F21FA2E00DF23D9 /* ETHistory.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -99,69 +88,37 @@
 		603812731021C51B00C221A2 /* TestString.m in Sources */ = {isa = PBXBuildFile; fileRef = 603812721021C51B00C221A2 /* TestString.m */; };
 		603813A31022246300C221A2 /* ETPropertyViewpoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 603813A21022246300C221A2 /* ETPropertyViewpoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		603813A51022247400C221A2 /* ETPropertyViewpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 603813A41022247400C221A2 /* ETPropertyViewpoint.m */; };
-		603813A61022247400C221A2 /* ETPropertyViewpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 603813A41022247400C221A2 /* ETPropertyViewpoint.m */; };
 		60455B5F1356FBDA006A7642 /* TestPlugInRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 60455B5E1356FBDA006A7642 /* TestPlugInRegistry.m */; };
 		605816D810B2BC8C00DF6624 /* UTIClassBindings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 605816D710B2BC8C00DF6624 /* UTIClassBindings.plist */; };
 		605816D910B2BC8C00DF6624 /* UTIClassBindings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 605816D710B2BC8C00DF6624 /* UTIClassBindings.plist */; };
 		6062DE11114BDD320008B771 /* ETModelDescriptionRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 6062DE10114BDD320008B771 /* ETModelDescriptionRepository.m */; };
-		6062DE12114BDD320008B771 /* ETModelDescriptionRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 6062DE10114BDD320008B771 /* ETModelDescriptionRepository.m */; };
 		606A9908113F176300CC89B9 /* ETModelElementDescription.h in Headers */ = {isa = PBXBuildFile; fileRef = 606A9907113F176300CC89B9 /* ETModelElementDescription.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		606A990B113F178800CC89B9 /* ETModelElementDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 606A990A113F178800CC89B9 /* ETModelElementDescription.m */; };
-		606A990C113F178800CC89B9 /* ETModelElementDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 606A990A113F178800CC89B9 /* ETModelElementDescription.m */; };
 		6072CF711360E190003256C5 /* PlugInExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 6072CF701360E190003256C5 /* PlugInExample.m */; };
 		60755B88114BDDAB00FAD90B /* ETModelDescriptionRepository.h in Headers */ = {isa = PBXBuildFile; fileRef = 60755B87114BDDAB00FAD90B /* ETModelDescriptionRepository.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6093347E13A550B40033378C /* TestCollectionTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = 6093347C13A550B40033378C /* TestCollectionTrait.m */; };
 		6093347F13A550B40033378C /* TestTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = 6093347D13A550B40033378C /* TestTrait.m */; };
-		6093353113A561130033378C /* NSObject+Trait.m in Sources */ = {isa = PBXBuildFile; fileRef = 6036480E0E40931E003377E0 /* NSObject+Trait.m */; };
-		6093353213A561300033378C /* NSObject+Prototypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 602DC50E0F21FA4C00DF23D9 /* NSObject+Prototypes.m */; };
 		609B67CA0FEE81740007F842 /* TestBasicHOM.m in Sources */ = {isa = PBXBuildFile; fileRef = 609B66120FEE7CD10007F842 /* TestBasicHOM.m */; };
 		609B67CB0FEE81740007F842 /* TestUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 603648130E40931E003377E0 /* TestUUID.m */; };
-		609B67CE0FEE81740007F842 /* ETCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 603647FC0E40931E003377E0 /* ETCollection.m */; };
-		609B67CF0FEE81740007F842 /* ETException.m in Sources */ = {isa = PBXBuildFile; fileRef = 603647FD0E40931E003377E0 /* ETException.m */; };
-		609B67D10FEE81740007F842 /* ETGetOptionsDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 603647FF0E40931E003377E0 /* ETGetOptionsDictionary.m */; };
-		609B67D20FEE81740007F842 /* ETHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 602DC50C0F21FA4C00DF23D9 /* ETHistory.m */; };
-		609B67D40FEE81740007F842 /* ETPropertyValueCoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 603648020E40931E003377E0 /* ETPropertyValueCoding.m */; };
-		609B67D50FEE81740007F842 /* ETTranscript.m in Sources */ = {isa = PBXBuildFile; fileRef = 602DC50B0F21FA4C00DF23D9 /* ETTranscript.m */; };
-		609B67D60FEE81740007F842 /* NSObject+DoubleDispatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 603648040E40931E003377E0 /* NSObject+DoubleDispatch.m */; };
-		609B67D70FEE81740007F842 /* ETUTI.m in Sources */ = {isa = PBXBuildFile; fileRef = 602DC50D0F21FA4C00DF23D9 /* ETUTI.m */; };
-		609B67D80FEE81740007F842 /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 603648050E40931E003377E0 /* ETUUID.m */; };
-		609B67DA0FEE81740007F842 /* NSFileManager+NameForTempFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 603648080E40931E003377E0 /* NSFileManager+NameForTempFile.m */; };
-		609B67DB0FEE81740007F842 /* NSFileManager+TempFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 603648090E40931E003377E0 /* NSFileManager+TempFile.m */; };
-		609B67DC0FEE81740007F842 /* NSIndexPath+Etoile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6036480A0E40931E003377E0 /* NSIndexPath+Etoile.m */; };
-		609B67DD0FEE81740007F842 /* NSIndexSet+Etoile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6036480B0E40931E003377E0 /* NSIndexSet+Etoile.m */; };
-		609B67DE0FEE81740007F842 /* NSInvocation+Etoile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6036480C0E40931E003377E0 /* NSInvocation+Etoile.m */; };
-		609B67DF0FEE81740007F842 /* NSObject+Etoile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6036480D0E40931E003377E0 /* NSObject+Etoile.m */; };
-		609B67E10FEE81740007F842 /* NSObject+Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 6036480F0E40931E003377E0 /* NSObject+Model.m */; };
-		609B67E30FEE81740007F842 /* NSString+Etoile.m in Sources */ = {isa = PBXBuildFile; fileRef = 603648100E40931E003377E0 /* NSString+Etoile.m */; };
-		609B67E40FEE81740007F842 /* NSURL+Etoile.m in Sources */ = {isa = PBXBuildFile; fileRef = 603648110E40931E003377E0 /* NSURL+Etoile.m */; };
-		609B67E50FEE81740007F842 /* ETPlugInRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 603648150E40931E003377E0 /* ETPlugInRegistry.m */; };
-		60A221EC0FEFF8EF00952E11 /* NSObject+HOM.m in Sources */ = {isa = PBXBuildFile; fileRef = 60A221EB0FEFF8EF00952E11 /* NSObject+HOM.m */; };
 		60A221ED0FEFF8EF00952E11 /* NSObject+HOM.m in Sources */ = {isa = PBXBuildFile; fileRef = 60A221EB0FEFF8EF00952E11 /* NSObject+HOM.m */; };
 		60A222140FEFFC9100952E11 /* NSObject+HOM.h in Headers */ = {isa = PBXBuildFile; fileRef = 609B660C0FEE75C00007F842 /* NSObject+HOM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		60A549AC13CA133300261FDC /* NSMapTable+Etoile.h in Headers */ = {isa = PBXBuildFile; fileRef = 60A549AB13CA133300261FDC /* NSMapTable+Etoile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		60A549AE13CA134700261FDC /* NSMapTable+Etoile.m in Sources */ = {isa = PBXBuildFile; fileRef = 60A549AD13CA134700261FDC /* NSMapTable+Etoile.m */; };
-		60A549AF13CA134700261FDC /* NSMapTable+Etoile.m in Sources */ = {isa = PBXBuildFile; fileRef = 60A549AD13CA134700261FDC /* NSMapTable+Etoile.m */; };
 		60ADA96E1410E821003EACF1 /* NSBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 60ADA96D1410E821003EACF1 /* NSBlocks.m */; };
-		60ADA96F1410E821003EACF1 /* NSBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 60ADA96D1410E821003EACF1 /* NSBlocks.m */; };
 		60B27D740FF7B51D0012BB42 /* TestETCollectionHOM.m in Sources */ = {isa = PBXBuildFile; fileRef = 60B27D730FF7B51D0012BB42 /* TestETCollectionHOM.m */; };
 		60B27D760FF7B54F0012BB42 /* TestUTI.m in Sources */ = {isa = PBXBuildFile; fileRef = 60B27D750FF7B54F0012BB42 /* TestUTI.m */; };
-		60B27D7F0FF7B56C0012BB42 /* ETCollection+HOM.m in Sources */ = {isa = PBXBuildFile; fileRef = 60B27D7C0FF7B56C0012BB42 /* ETCollection+HOM.m */; };
 		60B27D820FF7B56C0012BB42 /* ETCollection+HOM.m in Sources */ = {isa = PBXBuildFile; fileRef = 60B27D7C0FF7B56C0012BB42 /* ETCollection+HOM.m */; };
 		60B27D8B0FF7B6180012BB42 /* ETCollection+HOM.h in Headers */ = {isa = PBXBuildFile; fileRef = 60B27D8A0FF7B6180012BB42 /* ETCollection+HOM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		60B27DB90FF7B7C60012BB42 /* UTIDefinitions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 602DC5410F21FD1500DF23D9 /* UTIDefinitions.plist */; };
 		60C0217210FA40E800A46E65 /* TestIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 60C0217110FA40E800A46E65 /* TestIndexPath.m */; };
 		60C021EE10FA4AB800A46E65 /* ETByteSizeFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 60C021ED10FA4AB800A46E65 /* ETByteSizeFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		60C021F010FA4ACB00A46E65 /* ETByteSizeFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 60C021EF10FA4ACB00A46E65 /* ETByteSizeFormatter.m */; };
-		60C021F110FA4ACB00A46E65 /* ETByteSizeFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 60C021EF10FA4ACB00A46E65 /* ETByteSizeFormatter.m */; };
 		60CED0A712CFCF3D00B5827C /* ETKeyValuePair.h in Headers */ = {isa = PBXBuildFile; fileRef = 60CED0A612CFCF3D00B5827C /* ETKeyValuePair.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		60CED0A912CFCF6800B5827C /* ETKeyValuePair.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CED0A812CFCF6800B5827C /* ETKeyValuePair.m */; };
-		60CED0AA12CFCF6800B5827C /* ETKeyValuePair.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CED0A812CFCF6800B5827C /* ETKeyValuePair.m */; };
 		60DA3AE51359AEAB00D8946F /* TestStackTraceRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 60DA3AE41359AEAB00D8946F /* TestStackTraceRecorder.m */; };
-		60DA3AF11359AFB600D8946F /* ETStackTraceRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 794B2B05123D727C008A4663 /* ETStackTraceRecorder.m */; };
 		60DEB05B1156445E00744298 /* TestModelDescriptionRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 60DEB05A1156445E00744298 /* TestModelDescriptionRepository.m */; };
 		60F6EEEE101471FC003F4508 /* NSFileHandle+Socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 60F6EEED101471FC003F4508 /* NSFileHandle+Socket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		60F6EEF01014722D003F4508 /* NSFileHandle+Socket.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F6EEEF1014722D003F4508 /* NSFileHandle+Socket.m */; };
-		60F6EEF11014722D003F4508 /* NSFileHandle+Socket.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F6EEEF1014722D003F4508 /* NSFileHandle+Socket.m */; };
 		60FEF6161190AC6D00A4E225 /* glibc_hack_unistd.h in Headers */ = {isa = PBXBuildFile; fileRef = 60FEF6151190AC6D00A4E225 /* glibc_hack_unistd.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		662EA3F51019161B0044F013 /* ETEntityDescription.h in Headers */ = {isa = PBXBuildFile; fileRef = 662EA3F21019161B0044F013 /* ETEntityDescription.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		662EA3F61019161B0044F013 /* ETPropertyDescription.h in Headers */ = {isa = PBXBuildFile; fileRef = 662EA3F31019161B0044F013 /* ETPropertyDescription.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -241,6 +198,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = AE923B2B05C3B1CE00549058;
 			remoteInfo = ukrun;
+		};
+		3D01CFAF1646B75B00917AC8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
+			remoteInfo = EtoileFoundation;
 		};
 		60235C541360F35B0048DDEB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -456,6 +420,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D01CFB11646B75F00917AC8 /* EtoileFoundation.framework in Frameworks */,
 				3D01CFAC1646B2E500917AC8 /* UnitKit.framework in Frameworks */,
 				60190A4313A6232400A0F639 /* Foundation.framework in Frameworks */,
 				60222DC7101CCB9000B2B1C1 /* libssl.dylib in Frameworks */,
@@ -952,6 +917,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3D01CFB01646B75B00917AC8 /* PBXTargetDependency */,
 				3D01CFAE1646B33D00917AC8 /* PBXTargetDependency */,
 				3D01CFAB1646B2DE00917AC8 /* PBXTargetDependency */,
 				60235C551360F35B0048DDEB /* PBXTargetDependency */,
@@ -1168,48 +1134,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				60C021F110FA4ACB00A46E65 /* ETByteSizeFormatter.m in Sources */,
-				60222DB3101CCB4800B2B1C1 /* ETClassMirror.m in Sources */,
-				60B27D7F0FF7B56C0012BB42 /* ETCollection+HOM.m in Sources */,
-				609B67CE0FEE81740007F842 /* ETCollection.m in Sources */,
-				60222DB4101CCB4800B2B1C1 /* ETEntityDescription.m in Sources */,
-				609B67CF0FEE81740007F842 /* ETException.m in Sources */,
-				609B67D10FEE81740007F842 /* ETGetOptionsDictionary.m in Sources */,
-				609B67D20FEE81740007F842 /* ETHistory.m in Sources */,
-				60222DB5101CCB4800B2B1C1 /* ETInstanceVariableMirror.m in Sources */,
-				60CED0AA12CFCF6800B5827C /* ETKeyValuePair.m in Sources */,
-				60222DB6101CCB4800B2B1C1 /* ETMethodMirror.m in Sources */,
-				6062DE12114BDD320008B771 /* ETModelDescriptionRepository.m in Sources */,
-				606A990C113F178800CC89B9 /* ETModelElementDescription.m in Sources */,
-				60222DB7101CCB4800B2B1C1 /* ETObjectMirror.m in Sources */,
-				6010E6CA1144623C003203B2 /* ETPackageDescription.m in Sources */,
-				609B67E50FEE81740007F842 /* ETPlugInRegistry.m in Sources */,
-				60222DB8101CCB4800B2B1C1 /* ETPropertyDescription.m in Sources */,
-				609B67D40FEE81740007F842 /* ETPropertyValueCoding.m in Sources */,
-				603813A61022247400C221A2 /* ETPropertyViewpoint.m in Sources */,
-				60222DB9101CCB4800B2B1C1 /* ETProtocolMirror.m in Sources */,
-				60222DBA101CCB4800B2B1C1 /* ETReflection.m in Sources */,
-				60222DBB101CCB4800B2B1C1 /* ETSocket.m in Sources */,
-				60DA3AF11359AFB600D8946F /* ETStackTraceRecorder.m in Sources */,
-				609B67D50FEE81740007F842 /* ETTranscript.m in Sources */,
-				609B67D70FEE81740007F842 /* ETUTI.m in Sources */,
-				609B67D80FEE81740007F842 /* ETUUID.m in Sources */,
-				60222DBC101CCB4800B2B1C1 /* ETValidationResult.m in Sources */,
-				60222DBD101CCB4800B2B1C1 /* NSData+Hash.m in Sources */,
-				60F6EEF11014722D003F4508 /* NSFileHandle+Socket.m in Sources */,
-				609B67DA0FEE81740007F842 /* NSFileManager+NameForTempFile.m in Sources */,
-				609B67DB0FEE81740007F842 /* NSFileManager+TempFile.m in Sources */,
-				609B67DC0FEE81740007F842 /* NSIndexPath+Etoile.m in Sources */,
-				609B67DD0FEE81740007F842 /* NSIndexSet+Etoile.m in Sources */,
-				609B67DE0FEE81740007F842 /* NSInvocation+Etoile.m in Sources */,
-				609B67D60FEE81740007F842 /* NSObject+DoubleDispatch.m in Sources */,
-				609B67DF0FEE81740007F842 /* NSObject+Etoile.m in Sources */,
-				60A221EC0FEFF8EF00952E11 /* NSObject+HOM.m in Sources */,
-				609B67E10FEE81740007F842 /* NSObject+Model.m in Sources */,
-				6093353213A561300033378C /* NSObject+Prototypes.m in Sources */,
-				6093353113A561130033378C /* NSObject+Trait.m in Sources */,
-				609B67E30FEE81740007F842 /* NSString+Etoile.m in Sources */,
-				609B67E40FEE81740007F842 /* NSURL+Etoile.m in Sources */,
 				609B67CA0FEE81740007F842 /* TestBasicHOM.m in Sources */,
 				6093347E13A550B40033378C /* TestCollectionTrait.m in Sources */,
 				60222D91101CCAAC00B2B1C1 /* TestEntityDescription.m in Sources */,
@@ -1223,8 +1147,6 @@
 				6093347F13A550B40033378C /* TestTrait.m in Sources */,
 				60B27D760FF7B54F0012BB42 /* TestUTI.m in Sources */,
 				609B67CB0FEE81740007F842 /* TestUUID.m in Sources */,
-				60A549AF13CA134700261FDC /* NSMapTable+Etoile.m in Sources */,
-				60ADA96F1410E821003EACF1 /* NSBlocks.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1240,6 +1162,11 @@
 			isa = PBXTargetDependency;
 			name = ukrun;
 			targetProxy = 3D01CFAD1646B33D00917AC8 /* PBXContainerItemProxy */;
+		};
+		3D01CFB01646B75B00917AC8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 603647AB0E409244003377E0 /* EtoileFoundation */;
+			targetProxy = 3D01CFAF1646B75B00917AC8 /* PBXContainerItemProxy */;
 		};
 		60235C551360F35B0048DDEB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1326,7 +1253,6 @@
 		609B66D50FEE80CE0007F842 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				PRODUCT_NAME = TestEtoileFoundation;
 			};
 			name = Debug;
@@ -1334,7 +1260,6 @@
 		609B66D60FEE80CE0007F842 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				PRODUCT_NAME = TestEtoileFoundation;
 			};
 			name = Release;
