@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		3D01D09F1646BF0200917AC8 /* UnitKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D01D0941646BEF400917AC8 /* UnitKit.framework */; };
+		3D01D0E01646CDAB00917AC8 /* CoreObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D01D0DF1646CDAB00917AC8 /* CoreObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3D01D0E11646CE3700917AC8 /* COSynchronizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D09B14129B704E006BEDC3 /* COSynchronizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3D01D0E21646CE4C00917AC8 /* COSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D09B15129B704E006BEDC3 /* COSynchronizer.m */; };
 		6019B874163B6DA700D1986F /* SQLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 60988F0F163B6A90009C4F21 /* SQLite.m */; };
 		6019B875163B6DAA00D1986F /* Postgres.m in Sources */ = {isa = PBXBuildFile; fileRef = 60988F0C163B6A90009C4F21 /* Postgres.m */; };
 		6019B881163BFD8400D1986F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60988F16163B6B7A009C4F21 /* Cocoa.framework */; };
@@ -222,6 +225,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		3D01D08A1646BEF400917AC8 /* UnitKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = UnitKit.xcodeproj; path = ../UnitKit/Source/UnitKit.xcodeproj; sourceTree = "<group>"; };
+		3D01D0DF1646CDAB00917AC8 /* CoreObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreObject.h; sourceTree = "<group>"; };
 		6019B880163BFD8400D1986F /* Performance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Performance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6019B884163BFD8500D1986F /* Performance-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Performance-Info.plist"; path = "Performance/Performance-Info.plist"; sourceTree = "<group>"; };
 		6019B886163BFD8500D1986F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -507,6 +511,7 @@
 		6686BDB212592C1B0065DE1A /* CoreObject */ = {
 			isa = PBXGroup;
 			children = (
+				3D01D0DF1646CDAB00917AC8 /* CoreObject.h */,
 				6686BDAD12592BDA0065DE1A /* CoreObject-Info.plist */,
 				6686BDC712592C1B0065DE1A /* Utilities */,
 				6686BDB612592C1B0065DE1A /* Front-end API */,
@@ -703,6 +708,8 @@
 				60A55DE114A25AC4007A9864 /* COTrack.h in Headers */,
 				6039CC7814BC3FBB008A8BA3 /* COCustomTrack.h in Headers */,
 				6028E42A153729ED0003A205 /* COObject.h in Headers */,
+				3D01D0E11646CE3700917AC8 /* COSynchronizer.h in Headers */,
+				3D01D0E01646CDAB00917AC8 /* CoreObject.h in Headers */,
 				6019B8A7163C41AB00D1986F /* COSQLStore.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -989,6 +996,7 @@
 				6039CC7914BC3FBB008A8BA3 /* COCustomTrack.m in Sources */,
 				60EB4F6A155BDAA700CFBC5C /* COError.m in Sources */,
 				6019B8A8163C41AB00D1986F /* COSQLStore.m in Sources */,
+				3D01D0E21646CE4C00917AC8 /* COSynchronizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
