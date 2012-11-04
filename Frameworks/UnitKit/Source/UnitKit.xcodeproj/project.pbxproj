@@ -833,7 +833,6 @@
 					"-Wno-unknown-pragmas",
 				);
 				WRAPPER_EXTENSION = framework;
-				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -874,7 +873,6 @@
 					"-Wno-unknown-pragmas",
 				);
 				WRAPPER_EXTENSION = framework;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -900,7 +898,6 @@
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
-				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -920,7 +917,6 @@
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -952,7 +948,6 @@
 				SECTORDER_FLAGS = "";
 				VERSIONING_SYSTEM = "";
 				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -982,7 +977,6 @@
 				SECTORDER_FLAGS = "";
 				VERSIONING_SYSTEM = "";
 				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -1015,7 +1009,6 @@
 				SECTORDER_FLAGS = "";
 				VERSIONING_SYSTEM = "";
 				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -1042,7 +1035,6 @@
 				SECTORDER_FLAGS = "";
 				VERSIONING_SYSTEM = "";
 				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -1077,7 +1069,6 @@
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
-				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -1107,7 +1098,6 @@
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -1141,7 +1131,6 @@
 				VERSIONING_SYSTEM = "";
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -1169,7 +1158,6 @@
 				VERSIONING_SYSTEM = "";
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
