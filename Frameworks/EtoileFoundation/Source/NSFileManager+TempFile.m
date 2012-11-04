@@ -20,11 +20,25 @@ char *mkdtemp(char *pattern)
 static char * makeTempPattern(void)
 {
 	NSString * patternString = NSTemporaryDirectory();
-	patternString = 
+	patternString =
 		[patternString stringByAppendingPathComponent:[[NSProcessInfo processInfo] processName]];
 	// Make sure that this application's temporary directory exists.
-	[[NSFileManager defaultManager] createDirectoryAtPath: patternString 
-	                                           attributes: nil];
+	NSFileManager * fileManager = [NSFileManager defaultManager];
+#if (MAC_OS_X_VERSION_MIN_REQUIRED >= 1050)
+	BOOL success = [fileManager createDirectoryAtPath: patternString
+						  withIntermediateDirectories: YES
+										   attributes: nil
+												error: NULL];
+	
+	if (success == NO)
+	{
+		NSLog(@"Failed to create a temporary directory.");
+		return NULL;
+	}
+#else
+	[fileManager createDirectoryAtPath: patternString
+							attributes: nil];
+#endif
 	patternString = [patternString stringByAppendingPathComponent:@"tmpXXXXXXXX"];
 	return strdup([patternString UTF8String]);
 }
