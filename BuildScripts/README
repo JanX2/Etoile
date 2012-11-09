@@ -1,0 +1,59 @@
+Build Scripts
+=============
+
+The build scripts in this directory makes possible to compile and install LLVM, GNUstep and Etoile very easily.
+
+For Ubuntu, it can install the required dependencies too.
+Feel free to send us dependency install scripts for other systems :-)
+
+Finally these build scripts can be used to drive test builds and report any build failure by mail (including the logs in attachment). 
+
+The main script is build.sh, this script accepts some options in argument. See 'build.sh --help' for details.
+
+Check testbuild.config to know more about the default build.
+
+
+Build Profiles
+--------------
+
+To maintain and test various build combinations independently, build.sh supports build profiles to control which module versions and is built and how. To miminize the build time, the build script tries to reuse downloaded modules accross invocations.
+
+**Note: Any build.sh option takes priority over the value bound to the same option in the build profile.**
+
+
+If you run:
+
+	./build.sh
+
+A 'build' directory will be created in the current directory and 'testbuild.config' will be used as the build profile, and the compilation result is installed inside the 'build' directory.
+
+You can create a custom build profile and pass it to build.sh:
+
+	./build.sh --profile=./testbuild-clang31-gsreleases-etoiletrunk.profile
+
+For a single build directory, build.sh can accept various build profiles. However in case some build profiles use the same module version but pass different options to the compiler, the output binaries could be incompatible. For example, although it is not supported currently, the same GNUstep Base version could be compiled into two incompatible binaries depending on the fragile or non-fragile ABI option (see -disable-mixedabi).
+
+So to prevent such issue to arise, if you are not sure, use a distinct build directory per build profile:
+
+	./build.sh --profile=./testbuild-clang31-gsreleases-etoiletrunk.profile --build-dir=build-clang31-gsreleases-etoiletrunk
+
+
+Test Builds
+-----------
+
+For test builds, don't forget to comment out the DEPENDENCY_SCRIPT variable in the build profile, because it requires 'sudo' that would prevent the build to happen in background without user feedback.
+
+
+Mail Reporting
+--------------
+
+The test build support gives you the possibility to report build failures by sending a mail. If the same build fails repeatedly for the same error, a mail is sent only once. In other words, a test build can be invoked every hour without getting flooded with the same build failure mail over and over (if the failure isn't quickly fixed).
+
+To set up the mail reporting, you must install the 'sendemail' program and edit mail.config. Once it is done, source mail.config in your shell and try send a mail:
+
+. ./mail.config
+sendemail -f $MAIL_TO -t $MAIL_FROM -s $MAIL_SMTP_SEVER [-xu $MAIL_SMTP_USERNAME -xp $MAIL_SMTP_PASSWORD] -s "build.sh is my subject'
+
+**Note: The options enclosed in bracket are optional.**
+
+If the mail is sent properly, you are ready to run test builds that report failures through the given mail config.

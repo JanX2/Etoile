@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
 # Determine script path and directory
 cd $(dirname "${0}") 
-SCRIPT_DIR=$(pwd -L)
+export SCRIPT_DIR=$(pwd -L)
 cd - 
 
 PROFILE_SCRIPT=$PWD/testbuild.config
@@ -36,7 +36,7 @@ do
       echo "  --build-dir             - Name of the directory inside which the build will "
       echo "                            happen (default: \$PWD/build)"
       echo "  --prefix                - Path where GNUstep and Etoile will be installed"
-      echo "                            (default:  /)"
+      echo "                            (default:  same as --build-dir)"
       echo "  --version               - Version of the Etoile environment to check out and "
       echo "                            and build, either 'stable' or 'trunk'. The related "
       echo "                            repository code will be checked out in "
@@ -73,29 +73,40 @@ PROFILE_SCRIPT=${PROFILE_SCRIPT_override:-"$PROFILE_SCRIPT"}
 . $PROFILE_SCRIPT
 
 # Define variables if not defined on command line or in build profile
+
 BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
 BUILD_DIR=${BUILD_DIR_override:-"$BUILD_DIR"}
 
 PREFIX_DIR=${PREFIX_DIR:-"/"}
 PREFIX_DIR=${PREFIX_DIR_override:-"$PREFIX_DIR"}
 
-ETOILE_VERSION=${ETOILE_VERSION:-"trunk"}
-ETOILE_VERSION=${ETOILE_VERSION_override:-"$ETOILE_VERSION"}
+#ETOILE_VERSION=${ETOILE_VERSION:-"trunk"}
+#ETOILE_VERSION=${ETOILE_VERSION_override:-"$ETOILE_VERSION"}
 
+echo
+echo "Main Build Variables"
+echo
 echo "PROFILE_SCRIPT = $PROFILE_SCRIPT"
 echo "BUILD_DIR = $BUILD_DIR"
+echo "LOG_DIR = $LOG_DIR"
 echo "PREFIX_DIR = $PREFIX_DIR"
+echo "LLVM_VERSION = $LLVM_VERSION"
 echo "ETOILE_VERSION = $ETOILE_VERSION"
+echo
 
 export BUILD_DIR
 export PREFIX_DIR
+
+STATUS=0
+FAILED_MODULE=
 
 # Create a build directory if none exists
 
 if [ ! -d "$BUILD_DIR" ]; then
 	mkdir $BUILD_DIR
 else
-	echo "Found existing build directory"
+	echo "---> Found existing build directory"
+	echo
 fi
 
 cd $BUILD_DIR
@@ -108,88 +119,144 @@ fi
 
 mkdir $LOG_DIR
 
+#
 # Install Etoile and GNUstep dependencies 
+#
 
-#. $SCRIPT_DIR/$DEPENDENCY_SCRIPT
+echo "---> Installing GNUstep and Etoile dependencies if needed"
+$SCRIPT_DIR/$DEPENDENCY_SCRIPT
+echo
 
+#
 # Download, build and install LLVM
+#
 
-export LOG_NAME=llvm-build
+if [ $STATUS -eq 0 ]; then
+	echo "---> Building LLVM/Clang"
+	echo
 
-export LLVM_SOURCE_DIR=$BUILD_DIR/llvm-$LLVM_VERSION
-export LLVM_INSTALL_DIR=$PREFIX_DIR/llvm-install-$LLVM_VERSION
+	# The LLVM build script is sourced (unlike the other build scripts) to let it 
+	# update both PATH and LD_LIBRARY_PATH.
+	# The build status is exported in the script itself.
+	. $SCRIPT_DIR/build-llvm.sh
 
-if [ "$LLVM_VERSION" = "trunk" ]; then
-	if [ ! -d $LLVM_SOURCE_DIR ] 
-	then
-		echo "Fetching LLVM trunk using a GIT mirror at $LLVM_URL_GIT"
-		git clone $LLVM_URL_GIT $LLVM_SOURCE_DIR
-	else
-		echo "Updating LLVM trunk using a GIT mirror at $LLVM_URL_GIT"
-		git pull $LLVM_SOURCE_DIR
+	if [ $STATUS -ne 0 ]; then 
+		FAILED_MODULE="LLVM" 
 	fi
-elif [ -n "$LLVM_VERSION" -a ! -d $LLVM_SOURCE_DIR ]; then
-	echo "Fetching LLVM $LLVM_VERSION from LLVM release server"
-	wget -nc http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.tar.gz
-	tar -xzf llvm-{LLVM_VERSION}.tar.gz
-	echo "Fetching Clang $LLVM_VERSION from LLVM release server"
-	wget -nc  http://llvm.org/releases/${LLVM_VERSION}/clang-${LLVM_VERSION}.tar.gz
-	tar -xzf clang-{LLVM_VERSION}.tar.gz
 fi
 
-if [ -n "$LLVM_VERSION" ]; then
-
-	cd $LLVM_SOURCE_DIR
-	./${LLVM_CONFIGURE} --prefix=$LLVM_INSTALL_DIR && $MAKE_BUILD && $MAKE_INSTALL
-	cd ..
-	# Put LLVM in the path
-	export PATH=$LLVM_INSTALL_DIR/bin:$PATH
-fi
-
+#
 # Download, build and Install GNUstep
-echo "Building GNUstep core libraries"
-. $SCRIPT_DIR/build-gnustep.sh
+#
 
-exit
+if [ $STATUS -eq 0 ]; then
+	echo "---> Building GNUstep core libraries"
+	echo
 
-# Download, build and install Etoile
-echo "Building Etoile"
-export LOG_NAME=etoile-build
+	$SCRIPT_DIR/build-gnustep.sh
+	STATUS=$?
 
-if [ "$ETOILE_VERSION" = "stable" ]; then
-	ETOILE_REP_PATH=stable
-elif [ "$ETOILE_VERSION" = "trunk" ]; then
-	ETOILE_REP_PATH=trunk/Etoile
+	case "$STATUS" in
+		1) FAILED_MODULE="GNUstep Make";;
+		2) FAILED_MODULE="GNUstep libobjc2";;
+		3) FAILED_MODULE="GNUstep Make (second pass)";;
+		4) FAILED_MODULE="GNUstep Base";;
+		5) FAILED_MODULE="GNUstep Gui";;
+		6) FAILED_MODULE="GNUstep Back";;
+		7) FAILED_MODULE="GNUstep Gorm";;
+	esac
+
+	# Source GNUstep.sh to support building Etoile since build-gnustep.sh is not sourced
+	. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
+
+	echo
 fi
 
-if [ -n "$ETOILE_VERSION" ]; then
+#
+# Download, build and install Etoile
+#
 
-	${SVN_ACCESS}svn.gna.org/svn/etoile/${ETOILE_REP_PATH} etoile-${ETOILE_VERSION}
+if [ $STATUS -eq 0 ]; then
+	echo "---> Building Etoile"
+	echo
+	
+	$SCRIPT_DIR/build-etoile.sh
+	STATUS=$?
 
-	cd etoile-${ETOILE_VERSION}
-	$MAKE_BUILD && $MAKE_INSTALL
+	# TODO: Report failed module more precisely... e.g. LanguageKit, EtoileUI
+	if [ $STATUS -ne 0 ]; then 
+		FAILED_MODULE="Etoile" 
+	fi
+fi
+
+#
+# Send email to report build failures (or report success in the shell)
+#
+
+# On a build failure, we compare the content of the last error logs between on 
+# the current build and the previous one. If the contents doesn't match, we 
+# report the build failure by mail, otherwise we don't since the build failure 
+# is the same than previously.
+LAST_ERROR_LOG_FILE=$LOG_BASE_DIR/last-error-`basename $PROFILE_SCRIPT`.log
+LAST_CHANGED_LOG_SUBDIR=$LOG_BASE_DIR/`ls -At $LOG_BASE_DIR 2> /dev/null | head -n 1`
+LAST_CHANGED_LOG_FILE=$LAST_CHANGED_LOG_SUBDIR/`ls -At $LAST_CHANGED_LOG_SUBDIR/*error.log 2> /dev/null | head -n 1 | xargs basename`
+
+if [ -f $LAST_CHANGED_LOG_FILE ]; then
+	if [ -f $LAST_ERROR_LOG_FILE ]; then
+
+		# We limit our diff to the first few lines because Clang warnings
+		# that follow an error don't have a stable ordering accross invocations.
+		#
+		# Note: If we use Bash, temporary named pipes would avoid the temporary file
+
+		head -n 5 $LAST_ERROR_LOG_FILE > ${LAST_ERROR_LOG_FILE}.5
+		BUILD_DELTA=`head -n 5 $LAST_CHANGED_LOG_FILE | diff ${LAST_ERROR_LOG_FILE}.5 -`
+		rm ${LAST_ERROR_LOG_FILE}.5
+	fi
+	cp $LAST_CHANGED_LOG_FILE $LAST_ERROR_LOG_FILE
+fi
+
+if [ $STATUS -ne 0 ]; then
+
+	# If the delta between the error logs has changed in the last two builds,
+	# it is a new build failure that must be reported by mail, otherwise it 
+	# is the same failure than previously (no need to report it once more).
+	if [ -n "$BUILD_DELTA"  ]; then
+		echo "---> Sending mail to $MAIL_TO - $MAIL_SUBJECT"
+		echo
+
+		PLATFORM=`uname -s -i -o`
+		tar -zcf $LOG_BASE_DIR/etoile-build-log.tar.gz -C $LOG_BASE_DIR `basename $LOG_DIR`
+
+		MAIL_SUBJECT="Etoile Build Failure -- $FAILED_MODULE on $PLATFORM"
+		MAIL_ATTACHMENTS="$LOG_BASE_DIR/etoile-build-log.tar.gz $PROFILE_SCRIPT" 
+		MAIL_BODY="Test build failure on $PLATFORM at `date`. See build logs and profile in attachments.\n"
+		. $SCRIPT_DIR/sendmail.sh
+	fi
+
+	echo
+	echo "---> Failed to build Etoile - error in $FAILED_MODULE :-("
+	echo
 
 else
 
-	echo 
-	echo "--> Finished... Warning: Etoile has not been built as requested!"
-	echo
-	exit
+	# For now, setup is pretty much useless and kinda broken
+	#./setup.sh
 
+	echo
+	echo "--> Finished Etoile build :-)"
+	echo
+	
 fi
 
-# For now, setup is pretty much useless and kinda broken
-#./setup.sh
-
-echo
-echo "--> Finished Etoile build :-)"
-echo
+# TODO: Improve support for non-test builds
+#
 #echo "You now need to log out and choose Etoile session in GDM, then log in "
 #echo "to start Etoile."
 #echo
 
 # TODO: Make possible to skip setup.sh and run it later manually
-#echo
+#
 #echo "Installation of Etoile is almost finished, you now need to run setup.sh "
 #echo "script by yourself to have a usable environment."
 #echo

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export LOG_NAME=gnustep-make-build
+LOG_NAME=gnustep-make-build
 
 # Download, build and install GNUstep Make
 
@@ -21,22 +21,22 @@ if [ -n "$MAKE_VERSION" ]; then
 	echo "Building & Installing GNUstep Make"
 	cd gnustep-make-${MAKE_VERSION}
 	( $CONFIGURE --prefix=$PREFIX_DIR --with-layout=gnustep --enable-debug-by-default --enable-objc-nonfragile-abi ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
- 	export STATUS=$?
+ 	STATUS=$?
 	cd ..
 
-	if [ $STATUS -ne 0 ]; then exit $STATUS; fi
+	if [ $STATUS -ne 0 ]; then exit 1; fi
 
 	# Source the GNUstep shell script, and add it to the user's bashrc
 	echo "Sourcing GNUstep.sh"
 	. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
-	echo ". ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh" >> ~/.bashrc
+	#echo ". ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh" >> ~/.bashrc
 
 fi
 echo
 
 # Download, build and install libobjc2 (aka GNUstep runtime)
 
-export LOG_NAME=gnustep-libobjc2-build
+LOG_NAME=gnustep-libobjc2-build
 
 echo "Fetching libobjc2 into $PWD"
 if [ "$RUNTIME_VERSION" = "trunk" ]; then
@@ -56,10 +56,10 @@ if [ -n "$RUNTIME_VERSION" ]; then
 	echo "Building & Installing libobjc2"
 	cd libobjc2-${RUNTIME_VERSION}
 	($MAKE_CLEAN) && ( MAKEOPTS="debug=no" $MAKE_BUILD ) && ( $MAKE_INSTALL strip=yes )
-	export STATUS=$?
+	STATUS=$?
 	cd ..
 
-	if [ $STATUS -ne 0 ]; then exit $STATUS; fi
+	if [ $STATUS -ne 0 ]; then exit 2; fi
 
 	# Reinstall GNUstep Make to get it detect the libobjc2 just installed
 
@@ -68,20 +68,20 @@ if [ -n "$RUNTIME_VERSION" ]; then
 	echo "Building & Installing GNUstep (second pass)"
 	cd gnustep-make-${MAKE_VERSION}
 	( $CONFIGURE --prefix=$PREFIX_DIR --with-layout=gnustep --enable-debug-by-default --enable-objc-nonfragile-abi ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
-	export STATUS=$?
+	STATUS=$?
 	cd ..
 
-	if [ $STATUS -ne 0 ]; then exit $STATUS; fi
+	if [ $STATUS -ne 0 ]; then exit 3; fi
 
 	. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
-	echo ". ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh" >> ~/.bashrc
+	#echo ". ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh" >> ~/.bashrc
 
 fi
 echo 
 
 # Download, build and install GNUstep Base
 
-export LOG_NAME=gnustep-base-build
+LOG_NAME=gnustep-base-build
 
 echo "Fetching GNUstep Base into $PWD"
 if [ "$BASE_VERSION" = "trunk" ]; then
@@ -100,17 +100,17 @@ if [ -n "$BASE_VERSION" ]; then
 	echo "Building & Installing GNUstep Base"
 	cd gnustep-base-${BASE_VERSION}
 	($MAKE_CLEAN) && ($CONFIGURE) && ($MAKE_BUILD) && ($MAKE_INSTALL)
-	export STATUS=$?
+	STATUS=$?
 	cd ..
 
-	if [ $STATUS -ne 0 ]; then exit $STATUS; fi
+	if [ $STATUS -ne 0 ]; then exit 4; fi
 
 fi
 echo
 
 # Download, build and install GNUstep Gui
 
-export LOG_NAME=gnustep-gui-build
+LOG_NAME=gnustep-gui-build
 
 echo "Fetching GNUstep GUI into $PWD"
 if [ "$GUI_VERSION" = "trunk" ]; then
@@ -130,17 +130,17 @@ if [ -n "$GUI_VERSION" ]; then
 	echo "Building & Installing GNUstep Gui"
 	cd gnustep-gui-${GUI_VERSION}
 	($MAKE_CLEAN) && ($CONFIGURE) && ($MAKE_BUILD) && ($MAKE_INSTALL)
-	export STATUS=$?
+	STATUS=$?
 	cd ..
 
-	if [ $STATUS -ne 0 ]; then exit $STATUS; fi
+	if [ $STATUS -ne 0 ]; then exit 5; fi
 
 fi
 echo
 
 # Download, build and install GNUstep Back
 
-export LOG_NAME=gnustep-back-build
+LOG_NAME=gnustep-back-build
 
 echo "Fetching GNUstep Back into $PWD"
 if [ "$BACK_VERSION" = "trunk" ]; then
@@ -159,16 +159,16 @@ if [ -n "$BACK_VERSION" ]; then
 	echo "Building & Installing GNUstep Back"
 	cd gnustep-back-${BACK_VERSION}
 	($MAKE_CLEAN) && ( $CONFIGURE --disable-mixedabi ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
-	export STATUS=$?
+	STATUS=$?
 	cd ..
 
-	if [ $STATUS -ne 0 ]; then exit $STATUS; fi
+	if [ $STATUS -ne 0 ]; then exit 6; fi
 fi
 echo 
 
 # Download, build and install Gorm
 
-export LOG_NAME=gnustep-gorm-build
+LOG_NAME=gnustep-gorm-build
 
 echo "Fetching GNUstep Gorm into $PWD"
 if [ "$GORM_VERSION" = "trunk" ]; then
@@ -187,10 +187,10 @@ if [ -n "$GORM_VERSION" ]; then
 	echo "Building & Installing Gorm"
 	cd gorm-${GORM_VERSION}
 	($MAKE_CLEAN) && ($MAKE_BUILD) && ($MAKE_INSTALL)
-	export STATUS=$?
+	STATUS=$?
 	cd ..
 
-	if [ $STATUS -ne 0 ]; then exit $STATUS; fi
+	if [ $STATUS -ne 0 ]; then exit 7; fi
 
 fi
-echo
+
