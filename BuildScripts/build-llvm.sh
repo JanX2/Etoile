@@ -24,8 +24,8 @@ if [ "$LLVM_VERSION" = "trunk" ]; then
 	if [ "$LLVM_ACCESS" = "svn" ]; then
 
 		echo "Fetching LLVM and Clang $LLVM_VERSION using SVN"
-		#${LLVM_SVN_ACCESS}llvm.org/svn/llvm-project/llvm/${LLVM_VERSION} $LLVM_SOURCE_DIR
-		#${LLVM_SVN_ACCESS}llvm.org/svn/llvm-project/cfe/${LLVM_VERSION} $LLVM_SOURCE_DIR/tools/clang 
+		${LLVM_SVN_ACCESS}llvm.org/svn/llvm-project/llvm/${LLVM_VERSION} $LLVM_SOURCE_DIR
+		${LLVM_SVN_ACCESS}llvm.org/svn/llvm-project/cfe/${LLVM_VERSION} $LLVM_SOURCE_DIR/tools/clang 
 		
 	elif [ "$LLVM_ACCESS" = "git" ]; then
 
