@@ -20,7 +20,7 @@ if [ -n "$MAKE_VERSION" ]; then
 
 	echo "Building & Installing GNUstep Make"
 	cd gnustep-make-${MAKE_VERSION}
-	( $CONFIGURE --prefix=$PREFIX_DIR --with-layout=gnustep --enable-debug-by-default --enable-objc-nonfragile-abi ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
+	($DUMP_ENV) && ( $CONFIGURE --prefix=$PREFIX_DIR --with-layout=gnustep --enable-debug-by-default --enable-objc-nonfragile-abi ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
  	STATUS=$?
 	cd ..
 
@@ -54,7 +54,7 @@ if [ -n "$RUNTIME_VERSION" ]; then
 
 	echo "Building & Installing libobjc2"
 	cd libobjc2-${RUNTIME_VERSION}
-	($MAKE_CLEAN) && ( MAKEOPTS="debug=no" $MAKE_BUILD ) && ( $MAKE_INSTALL strip=yes )
+	($DUMP_ENV) && ($MAKE_CLEAN) && ( MAKEOPTS="debug=no" $MAKE_BUILD ) && ( $MAKE_INSTALL strip=yes )
 	STATUS=$?
 	cd ..
 
@@ -64,7 +64,7 @@ if [ -n "$RUNTIME_VERSION" ]; then
 
 	export LOG_NAME=gnustep-make-build-2
 
-	echo "Building & Installing GNUstep (second pass)"
+	echo "Building & Installing GNUstep Make (second pass)"
 	cd gnustep-make-${MAKE_VERSION}
 	( $CONFIGURE --prefix=$PREFIX_DIR --with-layout=gnustep --enable-debug-by-default --enable-objc-nonfragile-abi ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
 	STATUS=$?
@@ -97,7 +97,7 @@ if [ -n "$BASE_VERSION" ]; then
 
 	echo "Building & Installing GNUstep Base"
 	cd gnustep-base-${BASE_VERSION}
-	($MAKE_CLEAN) && ($CONFIGURE) && ($MAKE_BUILD) && ($MAKE_INSTALL)
+	($DUMP_ENV) && ($MAKE_CLEAN) && ($CONFIGURE) && ($MAKE_BUILD) && ($MAKE_INSTALL)
 	STATUS=$?
 	cd ..
 

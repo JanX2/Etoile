@@ -15,7 +15,7 @@ if [ -n "$ETOILE_VERSION" ]; then
 	${SVN_ACCESS}svn.gna.org/svn/etoile/${ETOILE_REP_PATH} etoile-${ETOILE_VERSION}
 
 	cd etoile-${ETOILE_VERSION}
-	$MAKE_BUILD && $MAKE_INSTALL
+	($DUMP_ENV) && ($MAKE_BUILD) && ($MAKE_INSTALL)
 	exit $?
 
 else

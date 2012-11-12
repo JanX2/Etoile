@@ -12,6 +12,9 @@ if [ -n "$LLVM_INSTALL_DIR" ]; then
 	LLVM_MAKE_INSTALL=$MAKE_INSTALL
 else
 	LLVM_MAKE_INSTALL=
+	# If there is no install dir, LLVM_INSTALL_DIR is set to the build output
+	# directories... bin and lib inside LLVM_SOURCE_DIR
+	LLVM_INSTALL_DIR=$LLVM_SOURCE_DIR/$LLVM_BUILD_OUTPUT
 fi
 
 # LLVM git mirror
@@ -66,10 +69,10 @@ if [ -n "$LLVM_VERSION" ]; then
 	fi
 
 	cd $LLVM_SOURCE_DIR
-	($LLVM_CONFIGURE_ONCE) && ($MAKE_BUILD) && ($LLVM_MAKE_INSTALL)
+	($DUMP_ENV) && ($LLVM_CONFIGURE_ONCE) && ($MAKE_BUILD) && ($LLVM_MAKE_INSTALL)
 	export STATUS=$?
 	cd ..
-
+	
 	if [ $STATUS -eq 0 ]; then 
 		# Put LLVM in the path (it must come first to take over any prior LLVM install)
 		export PATH=$LLVM_INSTALL_DIR/bin:$PATH
