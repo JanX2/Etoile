@@ -20,7 +20,7 @@ Normal Builds
 
 For a non-test build, don't forget to provide the right installation prefix, otherwise build modules go into the build directory. You should usually do:
 
-./build.sh --prefix-dir=/
+./build.sh --prefix-dir=/ --update-bashrc
 
 If you are not on Ubuntu, the DEPENDENCY_SCRIPT in testbuild.config must be updated to match your system or disabled. In the latter case, you must install all the dependencies manually before running the build script.
 

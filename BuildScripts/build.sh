@@ -50,6 +50,13 @@ do
       echo "  --force-llvm-configure  - Boolean value, either 'yes' or 'no', to indicate if "
       echo "                            configure should be run every time LLVM is built. "
       echo "                            (default: no)"
+      echo "  --update-bashrc         - Boolean value, either 'yes' or 'no', to indicate if "
+      echo "                            the ~/.bashrc file should be updated to include the "
+      echo "                            environment variables required for GNUstep and 
+      echo "                            development. If --test-build is yes, this option is 
+      echo "                            ignored."
+      echo "                            (default: no)"
+
 
       echo
       exit 0
@@ -73,8 +80,8 @@ do
       ETOILE_VERSION_override=$optionarg;;
     --test-build)
       TEST_BUILD=$optionarg;; 
-    --force-llvm-configure)
-      FORCE_LLVM_CONFIGURE=$optionarg;; 
+    --update-bash-rc)
+      UPDATE_BASHRC=$optionarg;;
     *)
       ;;
   esac
@@ -276,6 +283,28 @@ else
 	echo "--> Finished Etoile build :-)"
 	echo
 	
+fi
+
+if [ "$TEST_BUILD" != "yes" ]; then
+
+	if [ "$UPDATE_BASHRC" = "yes" ]; then
+
+		echo "export PATH=$LLVM_INSTALL_DIR/bin:$PATH" >> ~/.bashrc
+		echo "export LD_LIBRARY_PATH=$LLVM_INSTALL_DIR/lib:$LD_LIBRARY_PATH" >> ~/.bashrc
+		echo "export CC=clang" >> ~/.bashrc
+		echo ". ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh" >> ~/.bashrc
+	else
+
+		echo "For GNUstep and Etoile development, some environment variables must be set."
+		echo "To do so, just update ~/.bashrc or a similar file to include:"
+		echo
+		echo "export PATH=$LLVM_INSTALL_DIR/bin:\$PATH"
+		echo "export LD_LIBRARY_PATH=$LLVM_INSTALL_DIR/lib:\$LD_LIBRARY_PATH"
+		echo "export CC=clang" >> ~/.bashrc
+		echo ". ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh"
+
+	fi
+	echo
 fi
 
 # TODO: Improve support for non-test builds

@@ -8,7 +8,11 @@
 export LOG_NAME=llvm-build
 
 export LLVM_SOURCE_DIR=$BUILD_DIR/llvm-$LLVM_VERSION
-export LLVM_INSTALL_DIR=$BUILD_DIR/llvm-install-$LLVM_VERSION
+if [ -n "$LLVM_INSTALL_DIR" ]; then
+	LLVM_MAKE_INSTALL=$MAKE_INSTALL
+else
+	LLVM_MAKE_INSTALL=
+fi
 
 # LLVM git mirror
 LLVM_URL_GIT=http://llvm.org/git/llvm.git
@@ -62,7 +66,7 @@ if [ -n "$LLVM_VERSION" ]; then
 	fi
 
 	cd $LLVM_SOURCE_DIR
-	($LLVM_CONFIGURE_ONCE) && ($MAKE_BUILD) && ($MAKE_INSTALL)
+	($LLVM_CONFIGURE_ONCE) && ($MAKE_BUILD) && ($LLVM_MAKE_INSTALL)
 	export STATUS=$?
 	cd ..
 

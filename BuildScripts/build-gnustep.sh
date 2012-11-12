@@ -29,7 +29,6 @@ if [ -n "$MAKE_VERSION" ]; then
 	# Source the GNUstep shell script, and add it to the user's bashrc
 	echo "Sourcing GNUstep.sh"
 	. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
-	#echo ". ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh" >> ~/.bashrc
 
 fi
 echo
@@ -74,7 +73,6 @@ if [ -n "$RUNTIME_VERSION" ]; then
 	if [ $STATUS -ne 0 ]; then exit 3; fi
 
 	. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
-	#echo ". ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh" >> ~/.bashrc
 
 fi
 echo 
