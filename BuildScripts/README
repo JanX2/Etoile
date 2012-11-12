@@ -1,22 +1,44 @@
 Build Scripts
 =============
 
-The build scripts in this directory makes possible to compile and install LLVM, GNUstep and Etoile very easily.
+The build scripts in this directory makes possible to compile and install LLVM, GNUstep and Etoile very easily (or a subset of these modules).
 
 For Ubuntu, it can install the required dependencies too.
 Feel free to send us dependency install scripts for other systems :-)
 
 Finally these build scripts can be used to drive test builds and report any build failure by mail (including the logs in attachment). 
 
-The main script is build.sh, this script accepts some options in argument. See 'build.sh --help' for details.
+The main script is build.sh, this script accepts some options in argument. See 'build.sh --help' for details. 
 
 Check testbuild.config to know more about the default build.
+
+**Note: Any element enclosed in bracket is optional in the examples.**
+
+
+Normal Builds
+-------------
+
+For a non-test build, don't forget to provide the right installation prefix, otherwise build modules go into the build directory. You should usually do:
+
+./build.sh --prefix-dir=/
+
+If you are not on Ubuntu, the DEPENDENCY_SCRIPT in testbuild.config must be updated to match your system or disabled. In the latter case, you must install all the dependencies manually before running the build script.
+
+Don't forget the build script might ask for a password several times, because sudo is invoked to install each built module.
 
 
 Build Profiles
 --------------
 
 To maintain and test various build combinations independently, build.sh supports build profiles to control which module versions and is built and how. To miminize the build time, the build script tries to reuse downloaded modules accross invocations.
+
+You can edit build profile to disable some modules in the build. For example:
+
+	export ETOILE_VERSION=
+
+For the Etoile module, the same can be achieved by passing the right option to the build script:
+
+	./build.sh --etoile-version=
 
 **Note: Any build.sh option takes priority over the value bound to the same option in the build profile.**
 
@@ -45,7 +67,7 @@ For test builds, don't forget to comment out DEPENDENCY_SCRIPT and SUDO variable
 
 Rather than commenting out these variables, you can also request a test build as shown below:
 
-	./build.sh --profile=./someprofile.config --test-build=yes
+	./build.sh [--profile=./someprofile.config] --test-build=yes
 
 
 Mail Reporting
@@ -57,7 +79,5 @@ To set up the mail reporting, you must install the 'sendemail' program and edit 
 
 . ./mail.config
 sendemail -f $MAIL_TO -t $MAIL_FROM -s $MAIL_SMTP_SEVER [-xu $MAIL_SMTP_USERNAME -xp $MAIL_SMTP_PASSWORD] -s "build.sh is my subject'
-
-**Note: The options enclosed in bracket are optional.**
 
 If the mail is sent properly, you are ready to run test builds that report failures through the given mail config.
