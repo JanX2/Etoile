@@ -2,6 +2,8 @@
 
 LOG_NAME=etoile-build
 
+# TODO: Support building tagged versions in Etoile SVN
+
 if [ "$ETOILE_VERSION" = "stable" ]; then
 	ETOILE_REP_PATH=stable
 elif [ "$ETOILE_VERSION" = "trunk" ]; then

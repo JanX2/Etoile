@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Determine script path and directory
+
 cd $(dirname "${0}") 
 export SCRIPT_DIR=$(pwd -L)
 cd - 
@@ -42,6 +43,14 @@ do
       echo "                            repository code will be checked out in "
       echo "                            $build-dir/Etoile"
       echo "                            (default: trunk)"
+      echo "  --testbuild             - Boolean value, either 'yes' or 'no', to disable "    
+      echo "                            some options and commands such as 'sudo' in test "
+      echo "                            builds."
+      echo "                            (default: no)"
+      echo "  --force-llvm-configure  - Boolean value, either 'yes' or 'no', to indicate if "
+      echo "                            configure should be run every time LLVM is built. "
+      echo "                            (default: no)"
+
       echo
       exit 0
       ;;
@@ -61,7 +70,11 @@ do
     --prefix)
       PREFIX_DIR_override=$optionarg;; 
     --version)
-      ETOILE_VERSION_override=$optionarg;; 
+      ETOILE_VERSION_override=$optionarg;;
+    --test-build)
+      TEST_BUILD=$optionarg;; 
+    --force-llvm-configure)
+      FORCE_LLVM_CONFIGURE=$optionarg;; 
     *)
       ;;
   esac
@@ -80,8 +93,16 @@ BUILD_DIR=${BUILD_DIR_override:-"$BUILD_DIR"}
 PREFIX_DIR=${PREFIX_DIR:-"/"}
 PREFIX_DIR=${PREFIX_DIR_override:-"$PREFIX_DIR"}
 
-#ETOILE_VERSION=${ETOILE_VERSION:-"trunk"}
-#ETOILE_VERSION=${ETOILE_VERSION_override:-"$ETOILE_VERSION"}
+ETOILE_VERSION=${ETOILE_VERSION_override:-"$ETOILE_VERSION"}
+
+# Override some variables for test builds
+
+if [ "$TEST_BUILD" = "yes" ]; then
+	DEPENDENCY_SCRIPT=
+	SUDO=
+fi
+
+# For debugging
 
 echo
 echo "Main Build Variables"
@@ -94,8 +115,14 @@ echo "LLVM_VERSION = $LLVM_VERSION"
 echo "ETOILE_VERSION = $ETOILE_VERSION"
 echo
 
+# Export some new or updated variables for subscripts
+
 export BUILD_DIR
 export PREFIX_DIR
+export TEST_BUILD
+export FORCE_LLVM_CONFIGURE
+
+# Declare some initial values for local variables
 
 STATUS=0
 FAILED_MODULE=
@@ -123,9 +150,11 @@ mkdir $LOG_DIR
 # Install Etoile and GNUstep dependencies 
 #
 
-echo "---> Installing GNUstep and Etoile dependencies if needed"
-$SCRIPT_DIR/$DEPENDENCY_SCRIPT
-echo
+if [ -n "$DEPENDENCY_SCRIPT" ]; then
+	echo "---> Installing GNUstep and Etoile dependencies if needed"
+	$SCRIPT_DIR/$DEPENDENCY_SCRIPT
+	echo
+fi
 
 #
 # Download, build and install LLVM
