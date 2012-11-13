@@ -90,6 +90,8 @@ done
 
 PROFILE_SCRIPT=${PROFILE_SCRIPT:-"$PWD/defaultbuild.config"}
 PROFILE_SCRIPT=${PROFILE_SCRIPT_override:-"$PROFILE_SCRIPT"}
+# Turn relative path into absolute path
+PROFILE_SCRIPT=`( cd \`dirname $PROFILE_SCRIPT\` && pwd )`/`basename ${PROFILE_SCRIPT}`
 . $PROFILE_SCRIPT
 
 # Define variables if not defined on command line or in build profile
@@ -257,6 +259,8 @@ if [ -f $LAST_CHANGED_LOG_FILE ]; then
 		head -n 5 $LAST_ERROR_LOG_FILE > ${LAST_ERROR_LOG_FILE}.5
 		BUILD_DELTA=`head -n 5 $LAST_CHANGED_LOG_FILE | diff ${LAST_ERROR_LOG_FILE}.5 -`
 		rm ${LAST_ERROR_LOG_FILE}.5
+	else
+		BUILD_DELTA=`head -n 5 $LAST_CHANGED_LOG_FILE`
 	fi
 	cp $LAST_CHANGED_LOG_FILE $LAST_ERROR_LOG_FILE
 fi
@@ -266,7 +270,7 @@ if [ $STATUS -ne 0 ]; then
 	# If the delta between the error logs has changed in the last two builds,
 	# it is a new build failure that must be reported by mail, otherwise it 
 	# is the same failure than previously (no need to report it once more).
-	if [ -n "$BUILD_DELTA"  ]; then
+	if [ -n "$BUILD_DELTA" ]; then
 		echo "---> Sending mail to $MAIL_TO - $MAIL_SUBJECT"
 		echo
 
