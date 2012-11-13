@@ -44,8 +44,8 @@ if [ "$RUNTIME_VERSION" = "trunk" ]; then
 
 elif [ -n "$RUNTIME_VERSION" ]; then
 
-	wget -nc http://download.gna.org/gnustep/libobjc2-${RUNTIME_VERSION}.tar.gz
-	tar -xzf libobjc2-${RUNTIME_VERSION}.tar.gz
+	wget -nc http://download.gna.org/gnustep/libobjc2-${RUNTIME_VERSION}.tgz
+	tar -xzf libobjc2-${RUNTIME_VERSION}.tgz
 
 fi
 
