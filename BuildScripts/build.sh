@@ -96,11 +96,20 @@ PROFILE_SCRIPT=${PROFILE_SCRIPT_override:-"$PROFILE_SCRIPT"}
 
 BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
 BUILD_DIR=${BUILD_DIR_override:-"$BUILD_DIR"}
+# Turn relative path into absolute path
+BUILD_DIR=`( cd \`dirname $BUILD_DIR\` && pwd )`/`basename ${BUILD_DIR}`
 
-PREFIX_DIR=${PREFIX_DIR:-"/"}
+PREFIX_DIR=${PREFIX_DIR:-"$BUILD_DIR"}
 PREFIX_DIR=${PREFIX_DIR_override:-"$PREFIX_DIR"}
+# Turn relative path into absolute path
+PREFIX_DIR=`( cd \`dirname $PREFIX_DIR\` && pwd )`/`basename ${PREFIX_DIR}`
 
 ETOILE_VERSION=${ETOILE_VERSION_override:-"$ETOILE_VERSION"}
+
+# Interpret some variables that depend on BUILD_DIR or PREFIX_DIR
+
+LOG_BASE_DIR=`eval echo $LOG_BASE_DIR`
+LOG_DIR=`eval echo $LOG_DIR`
 
 # Override some variables for test builds
 

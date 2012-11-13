@@ -10,8 +10,15 @@ export LOG_NAME=llvm-build
 export LLVM_SOURCE_DIR=$BUILD_DIR/llvm-$LLVM_VERSION
 if [ -n "$LLVM_INSTALL_DIR" ]; then
 	LLVM_MAKE_INSTALL=$MAKE_INSTALL
+	LLVM_PREFIX_DIR="--prefix-dir=$LLVM_INSTALL_DIR"
 else
 	LLVM_MAKE_INSTALL=
+	# If we pass --prefix-dir=$LLVM_SOURCE_DIR/$LLVM_BUILD_OUTPUT, then 
+	# Makes.rules in LLVM breaks because it sees a conflict between the 
+	# built products location and the install destination. So we must be 
+	# sure the LLVM configure uses the default prefix (/usr/local) if we
+	# plan no installation.
+	LLVM_PREFIX_DIR=
 	# If there is no install dir, LLVM_INSTALL_DIR is set to the build output
 	# directories... bin and lib inside LLVM_SOURCE_DIR
 	LLVM_INSTALL_DIR=$LLVM_SOURCE_DIR/$LLVM_BUILD_OUTPUT
@@ -44,11 +51,13 @@ if [ "$LLVM_VERSION" = "trunk" ]; then
 elif [ -n "$LLVM_VERSION" -a ! -d $LLVM_SOURCE_DIR ]; then
 
 	echo "Fetching LLVM $LLVM_VERSION from LLVM release server"
-	wget -nc http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.tar.gz
-	tar -xzf llvm-{LLVM_VERSION}.tar.gz
+	wget -nc http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.gz
+	tar -xzf llvm-${LLVM_VERSION}.src.tar.gz 
+	mv llvm-${LLVM_VERSION}.src llvm-${LLVM_VERSION}
 	echo "Fetching Clang $LLVM_VERSION from LLVM release server"
-	wget -nc  http://llvm.org/releases/${LLVM_VERSION}/clang-${LLVM_VERSION}.tar.gz
-	tar -xzf clang-{LLVM_VERSION}.tar.gz
+	wget -nc  http://llvm.org/releases/${LLVM_VERSION}/clang-${LLVM_VERSION}.src.tar.gz
+	tar -xzf clang-${LLVM_VERSION}.src.tar.gz
+	mv clang-${LLVM_VERSION}.src llvm-${LLVM_VERSION}/tools/clang
 fi
 
 echo
