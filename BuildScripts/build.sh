@@ -178,6 +178,8 @@ fi
 # Download, build and install LLVM
 #
 
+LLVM_ENV_FILE=$BUILD_DIR/llvm-${LLVM_VERSION}.sh
+
 if [ $STATUS -eq 0 ]; then
 	echo "---> Building LLVM/Clang"
 	echo
@@ -191,6 +193,11 @@ if [ $STATUS -eq 0 ]; then
 		FAILED_MODULE="LLVM" 
 	fi
 fi
+
+# Source LLVM_ENV_FILE emitted in build-llvm.sh in order to get the right 
+# environment variables set to use the last built LLVM (this means we can skip 
+# the LLVM build above e.g. for debugging)
+. $LLVM_ENV_FILE
 
 #
 # Download, build and Install GNUstep

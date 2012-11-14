@@ -83,9 +83,12 @@ if [ -n "$LLVM_VERSION" ]; then
 	cd ..
 	
 	if [ $STATUS -eq 0 ]; then 
+
+		rm -f $LLVM_ENV_FILE
+
 		# Put LLVM in the path (it must come first to take over any prior LLVM install)
-		export PATH=$LLVM_INSTALL_DIR/bin:$PATH
-		export LD_LIBRARY_PATH=$LLVM_INSTALL_DIR/lib:$LD_LIBRARY_PATH
-		export CC=clang
+		( echo "export PATH=$LLVM_INSTALL_DIR/bin:\$PATH"
+		  echo "export LD_LIBRARY_PATH=$LLVM_INSTALL_DIR/lib:\$LD_LIBRARY_PATH"
+		  echo "export CC=clang" ) > $LLVM_ENV_FILE
 	fi
 fi
