@@ -5,7 +5,7 @@
 /**
  * The ETText protocol is implemented by all objects in a structured text tree.
  * It describes an abstract way of interacting with regions of structured text,
- * which or may not have children.
+ * which may or or may not have children.
  */
 @protocol ETText <NSObject>
 /**
