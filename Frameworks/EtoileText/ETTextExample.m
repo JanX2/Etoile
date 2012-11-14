@@ -1,5 +1,5 @@
 #import <EtoileFoundation/EtoileFoundation.h>
-#import <CoreObject/CoreObject.h>
+//#import <CoreObject/CoreObject.h>
 #import "EtoileText.h"
 
 @interface Visitor : NSObject <ETTextVisitor>

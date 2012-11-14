@@ -8,9 +8,9 @@
 	if (depth > 0)
 	{
 		ETXMLTextParser *childParser =
-			[[isa alloc] initWithXMLParser: parser
-			                        parent: self
-			                           key: @"Text"];
+			[[[self class] alloc] initWithXMLParser: parser
+			                                 parent: self
+			                                    key: @"Text"];
 		childParser.document = document;
 		[childParser startElement: aName
 		               attributes: attributes];
