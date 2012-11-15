@@ -43,7 +43,7 @@ do
       echo "                            repository code will be checked out in "
       echo "                            $build-dir/Etoile"
       echo "                            (default: trunk)"
-      echo "  --testbuild             - Boolean value, either 'yes' or 'no', to disable "    
+      echo "  --test-build            - Boolean value, either 'yes' or 'no', to disable "    
       echo "                            some options and commands such as 'sudo' in test "
       echo "                            builds."
       echo "                            (default: no)"
@@ -83,18 +83,19 @@ do
     --update-bash-rc)
       UPDATE_BASHRC=$optionarg;;
     *)
-      ;;
+      echo "Warning: Unknow option $option"
+      exit;;
   esac
   shift
 done
+
+# Define variables if not defined on command line or in build profile
 
 PROFILE_SCRIPT=${PROFILE_SCRIPT:-"$PWD/defaultbuild.config"}
 PROFILE_SCRIPT=${PROFILE_SCRIPT_override:-"$PROFILE_SCRIPT"}
 # Turn relative path into absolute path
 PROFILE_SCRIPT=`( cd \`dirname $PROFILE_SCRIPT\` && pwd )`/`basename ${PROFILE_SCRIPT}`
 . $PROFILE_SCRIPT
-
-# Define variables if not defined on command line or in build profile
 
 BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
 BUILD_DIR=${BUILD_DIR_override:-"$BUILD_DIR"}
@@ -118,6 +119,25 @@ LOG_DIR=`eval echo $LOG_DIR`
 if [ "$TEST_BUILD" = "yes" ]; then
 	DEPENDENCY_SCRIPT=
 	SUDO=
+fi
+
+# Reset the environment in case a GNUstep intallation is in use
+
+GNUSTEP_CONFIG_TOOL_PATH=`which gnustep-config`
+# 'Tools' (GNUstep layout) or 'bin' (FHS layout)
+GNUSTEP_BIN_PREFIX=`basename \`dirname $GNUSTEP_CONFIG_TOOL_PATH\``
+
+# If FHS layout is in use, don't run GNUstep-reset.sh otherwise $PATH would be mess up
+if [ -n "$GNUSTEP_MAKEFILES" -a "$GNUSTEP_BIN_PREFIX" != "bin" ]; then
+	
+	# Patch bashism in GNUstep-reset.sh
+	cp $GNUSTEP_MAKEFILES/GNUstep-reset.sh $BUILD_DIR/GNUstep-reset.sh
+	sed -i -e 's/function reset_path/reset_path\(\)/' $BUILD_DIR/GNUstep-reset.sh
+
+	. $BUILD_DIR/GNUstep-reset.sh
+	unset GNUSTEP_CONFIG_FILE
+
+	rm $BUILD_DIR/GNUstep-reset.sh
 fi
 
 # For debugging
@@ -219,12 +239,13 @@ if [ $STATUS -eq 0 ]; then
 		6) FAILED_MODULE="GNUstep Back";;
 		7) FAILED_MODULE="GNUstep Gorm";;
 	esac
-
-	# Source GNUstep.sh to support building Etoile since build-gnustep.sh is not sourced
-	. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
-
-	echo
 fi
+
+# Source GNUstep.sh to support building Etoile since build-gnustep.sh is not sourced
+
+echo "Sourcing GNUstep.sh (for Etoile)"
+export GNUSTEP_CONFIG_FILE=${PREFIX_DIR%/}/etc/GNUstep/GNUstep.conf
+. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
 
 #
 # Download, build and install Etoile
