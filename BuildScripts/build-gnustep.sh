@@ -27,7 +27,7 @@ if [ -n "$MAKE_VERSION" ]; then
 	if [ $STATUS -ne 0 ]; then exit 1; fi
 
 	# Source the GNUstep shell script, and add it to the user's bashrc
-	echo "Updating GNUSTEP_CONFIG_FILE and sourcing GNUstep.sh"
+	echo "Sourcing GNUstep.sh"
 	export GNUSTEP_CONFIG_FILE=${PREFIX_DIR%/}/etc/GNUstep/GNUstep.conf
 	. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
 
@@ -73,7 +73,7 @@ if [ -n "$RUNTIME_VERSION" ]; then
 
 	if [ $STATUS -ne 0 ]; then exit 3; fi
 
-	echo "Updating GNUSTEP_CONFIG_FILE and sourcing GNUstep.sh"
+	echo "Sourcing GNUstep.sh"
 	export GNUSTEP_CONFIG_FILE=${PREFIX_DIR%/}/etc/GNUstep/GNUstep.conf
 	. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
 
