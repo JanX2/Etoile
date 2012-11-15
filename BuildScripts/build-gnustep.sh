@@ -27,7 +27,8 @@ if [ -n "$MAKE_VERSION" ]; then
 	if [ $STATUS -ne 0 ]; then exit 1; fi
 
 	# Source the GNUstep shell script, and add it to the user's bashrc
-	echo "Sourcing GNUstep.sh"
+	echo "Updating GNUSTEP_CONFIG_FILE and sourcing GNUstep.sh"
+	export GNUSTEP_CONFIG_FILE=${PREFIX_DIR%/}/etc/GNUstep/GNUstep.conf
 	. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
 
 fi
@@ -72,6 +73,8 @@ if [ -n "$RUNTIME_VERSION" ]; then
 
 	if [ $STATUS -ne 0 ]; then exit 3; fi
 
+	echo "Updating GNUSTEP_CONFIG_FILE and sourcing GNUstep.sh"
+	export GNUSTEP_CONFIG_FILE=${PREFIX_DIR%/}/etc/GNUstep/GNUstep.conf
 	. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
 
 fi
@@ -97,7 +100,7 @@ if [ -n "$BASE_VERSION" ]; then
 
 	echo "Building & Installing GNUstep Base"
 	cd gnustep-base-${BASE_VERSION}
-	($DUMP_ENV) && ($MAKE_CLEAN) && ($CONFIGURE) && ($MAKE_BUILD) && ($MAKE_INSTALL)
+	($DUMP_ENV) && ($MAKE_CLEAN) && ($CONFIGURE --disable-mixedabi) && ($MAKE_BUILD) && ($MAKE_INSTALL)
 	STATUS=$?
 	cd ..
 
@@ -156,7 +159,7 @@ if [ -n "$BACK_VERSION" ]; then
 
 	echo "Building & Installing GNUstep Back"
 	cd gnustep-back-${BACK_VERSION}
-	($MAKE_CLEAN) && ( $CONFIGURE --disable-mixedabi ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
+	($MAKE_CLEAN) && ( $CONFIGURE ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
 	STATUS=$?
 	cd ..
 
