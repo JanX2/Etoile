@@ -82,3 +82,31 @@ To set up the mail reporting, you must install the 'sendemail' program, edit the
 	sendemail -f $MAIL_TO -t $MAIL_FROM -s $MAIL_SMTP_SEVER [-xu $MAIL_SMTP_USERNAME -xp $MAIL_SMTP_PASSWORD] -s "build.sh is my subject'
 
 If the mail is sent properly, you are ready to run test builds that report failures through the given mail config.
+
+
+Debugging Builds
+----------------
+
+If a build fails, it's possible to edit and compile the source code retrieved by build.sh without using it.
+  
+The build script generates some special scripts such as llvm-LLVM_VERSION.sh and PREFIX_DIR/System/Library/Makefiles/GNUstep.sh (LLVM_VERSION and PREFIX_DIR values are based on the build profile and options). You can source these scripts in your shell to hack the built modules inside the build directory:
+
+	# Change current directory to the build directory
+	cd build
+
+	# LLVM_VERSION is trunk here (for LLVM 3.1, the script would be named llvm-3.1.sh)
+	. ./llvm-trunk.sh
+
+	# GNUstep.sh and GNUstep-reset.sh locations depend on PREFIX_DIR and --prefix-dir 
+	# Here the build directory is used as the prefix (this is the default).
+
+	# Don't source GNUstep-reset.sh if there is a prior FHS-based GNUstep install in use.
+	# FHS install means GNUstep tools and libraries are installed in /usr/bin, /usr/lib 
+	# or /usr/local/bin, /usr/local/lib.
+	[. ./System/GNUstep/Library/Makefiles/GNUstep-reset.sh]
+
+	. ./System/GNUstep/Library/Makefiles/GNUstep.sh
+
+Now you can move into modules directories, edit the source code and use **make** and **[sudo -E] make install** to test your changes.
+
+For being able to commit from the built modules (supposing you have commit access the related repositories), before running the build for the first time, SVN_ACCESS (for GNUstep and Etoile) and LLVM_SSVN_ACCESS (for LLVM) variables must be customized in the build profile.
