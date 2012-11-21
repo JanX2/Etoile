@@ -100,7 +100,7 @@ do
       UPDATE_BASHRC=$optionarg;;
     *)
       echo "Warning: Unknow option $option"
-      exit;;
+      exit 1;;
   esac
   shift
 done
@@ -111,6 +111,11 @@ PROFILE_SCRIPT=${PROFILE_SCRIPT:-"$PWD/build.config"}
 PROFILE_SCRIPT=${PROFILE_SCRIPT_override:-"$PROFILE_SCRIPT"}
 # Turn relative path into absolute path
 PROFILE_SCRIPT=`( cd \`dirname $PROFILE_SCRIPT\` && pwd )`/`basename ${PROFILE_SCRIPT}`
+
+if [ ! -f $PROFILE_SCRIPT ]; then
+	echo "Warning: Found no profile script for $PROFILE_SCRIPT"
+	exit 1
+fi
 . $PROFILE_SCRIPT
 
 BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
@@ -333,6 +338,7 @@ if [ $STATUS -ne 0 ]; then
 	echo
 	echo "---> Failed to build Etoile - error in $FAILED_MODULE :-("
 	echo
+	exit 1
 
 else
 
@@ -345,7 +351,7 @@ else
 	
 fi
 
-if [ "$TEST_BUILD" != "yes" ]; then
+if [ $STATUS -eq 0 -a "$TEST_BUILD" != "yes" ]; then
 
 	if [ "$UPDATE_BASHRC" = "yes" ]; then
 
