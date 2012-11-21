@@ -50,6 +50,16 @@ do
       echo "  --force-llvm-configure  - Boolean value, either 'yes' or 'no', to indicate if "
       echo "                            configure should be run every time LLVM is built. "
       echo "                            (default: no)"
+      echo "  --skip-llvm-build       - Boolean value, either 'yes' or 'no', to indicate if "
+      echo "                            LLVM should be built. If 'no' is passed, LLVM must "
+      echo "                            have been built before for the same LLVM version and "
+      echo "                            in the same build directory."
+      echo "                            (default: no)"
+      echo "  --skip-gnustep-build    - Boolean value, either 'yes' or 'no', to indicate if "
+      echo "                            GNUstep should be built. If 'no' is passed, GNUstep "
+      echo "                            must have been built before for the same GNUstep "
+      echo "                            versions and in the same build directory."
+      echo "                            (default: no)"
       echo "  --update-bashrc         - Boolean value, either 'yes' or 'no', to indicate if "
       echo "                            the ~/.bashrc file should be updated to include the "
       echo "                            environment variables required for GNUstep and 
@@ -80,6 +90,12 @@ do
       ETOILE_VERSION_override=$optionarg;;
     --test-build)
       TEST_BUILD=$optionarg;; 
+    --force-llvm-configure)
+      FORCE_LLVM_CONFIGURE=$optionarg;;
+    --skip-llvm-build)
+      SKIP_LLVM_BUILD=$optionarg;;
+    --skip-gnustep-build)
+      SKIP_GNUSTEP_BUILD=$optionarg;;
     --update-bash-rc)
       UPDATE_BASHRC=$optionarg;;
     *)
@@ -200,7 +216,7 @@ fi
 
 LLVM_ENV_FILE=$BUILD_DIR/llvm-${LLVM_VERSION}.sh
 
-if [ $STATUS -eq 0 ]; then
+if [ $STATUS -eq 0 -a "$SKIP_LLVM_BUILD" != "yes" ]; then
 	echo "---> Building LLVM/Clang"
 	echo
 
@@ -218,12 +234,15 @@ fi
 # environment variables set to use the last built LLVM (this means we can skip 
 # the LLVM build above e.g. for debugging)
 . $LLVM_ENV_FILE
+CLANG_SUMMARY=`clang -v 2<&1 | head -n 1`
+echo " == Switched to $CLANG_SUMMARY == " 
+echo
 
 #
 # Download, build and Install GNUstep
 #
 
-if [ $STATUS -eq 0 ]; then
+if [ $STATUS -eq 0 -a "$SKIP_GNUSTEP_BUILD" != "yes" ]; then
 	echo "---> Building GNUstep core libraries"
 	echo
 

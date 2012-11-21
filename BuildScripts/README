@@ -87,6 +87,8 @@ If the mail is sent properly, you are ready to run test builds that report failu
 Debugging Builds
 ----------------
 
+To track build failures, it's convenient to speed up the build time. You can do so by narrowing the build scope, just pass --skip--llvm-build=yes or --skip-gnustep-build=yes to prevent rebuilding modules such as LLVM and GNUstep.
+
 If a build fails, it's possible to edit and compile the source code retrieved by build.sh without using it.
   
 The build script generates some special scripts such as llvm-LLVM_VERSION.sh and PREFIX_DIR/System/Library/Makefiles/GNUstep.sh (LLVM_VERSION and PREFIX_DIR values are based on the build profile and options). You can source these scripts in your shell to hack the built modules inside the build directory:
