@@ -69,6 +69,10 @@ ifeq ($(HAVE_CAIRO), YES)
    ADDITIONAL_OBJCFLAGS += -DHAVE_CAIRO
 endif
 
+ifeq ($(CC), clang)
+   CXX=clang++
+endif
+
 # Use C++ to link library
 LD=${CXX}
 
