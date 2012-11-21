@@ -6,7 +6,7 @@ cd $(dirname "${0}")
 export SCRIPT_DIR=$(pwd -L)
 cd - 
 
-PROFILE_SCRIPT=$PWD/testbuild.config
+PROFILE_SCRIPT=$PWD/build.config
 
 # Process script options second (so they can override build profile)
 
@@ -33,7 +33,7 @@ do
       echo "spaces."
       echo
       echo "  --profile               - Path to the build profile that describe the build "
-      echo "                            process (default: \$PWD/testbuild.config)"
+      echo "                            process (default: \$PWD/build.config)"
       echo "  --build-dir             - Name of the directory inside which the build will "
       echo "                            happen (default: \$PWD/build)"
       echo "  --prefix                - Path where GNUstep and Etoile will be installed"
@@ -91,7 +91,7 @@ done
 
 # Define variables if not defined on command line or in build profile
 
-PROFILE_SCRIPT=${PROFILE_SCRIPT:-"$PWD/defaultbuild.config"}
+PROFILE_SCRIPT=${PROFILE_SCRIPT:-"$PWD/build.config"}
 PROFILE_SCRIPT=${PROFILE_SCRIPT_override:-"$PROFILE_SCRIPT"}
 # Turn relative path into absolute path
 PROFILE_SCRIPT=`( cd \`dirname $PROFILE_SCRIPT\` && pwd )`/`basename ${PROFILE_SCRIPT}`
