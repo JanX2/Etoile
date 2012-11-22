@@ -18,11 +18,11 @@ do
       echo
       echo "`basename $0` - Script to build, test and install the Etoile environment "
       echo
-      echo "Note: this script will append a new line to ~/.bashrc"
+      echo "Note: this script appends a new line to ~/.bashrc for --update-bashrc=yes"
       echo
       echo "Requirements: "
       echo
-      echo "  wget, GNU make and sudo access (sudo access is required by the default profile)"
+      echo "  wget, GNU make, gcc or clang, and sudo access (for installing dependencies)"
       echo
       echo "Actions:"
       echo
@@ -52,8 +52,8 @@ do
       echo "                            (default: no)"
       echo "  --skip-llvm-build       - Boolean value, either 'yes' or 'no', to indicate if "
       echo "                            LLVM should be built. If 'no' is passed, LLVM must "
-      echo "                            have been built before for the same LLVM version and "
-      echo "                            in the same build directory."
+      echo "                            have been built before for the same LLVM version "
+      echo "                            and in the same build directory."
       echo "                            (default: no)"
       echo "  --skip-gnustep-build    - Boolean value, either 'yes' or 'no', to indicate if "
       echo "                            GNUstep should be built. If 'no' is passed, GNUstep "
@@ -62,8 +62,8 @@ do
       echo "                            (default: no)"
       echo "  --update-bashrc         - Boolean value, either 'yes' or 'no', to indicate if "
       echo "                            the ~/.bashrc file should be updated to include the "
-      echo "                            environment variables required for GNUstep and 
-      echo "                            development. If --test-build is yes, this option is 
+      echo "                            environment variables required for GNUstep and "
+      echo "                            development. If --test-build is yes, this option is "
       echo "                            ignored."
       echo "                            (default: no)"
 
