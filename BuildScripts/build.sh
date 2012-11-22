@@ -270,6 +270,7 @@ fi
 echo "Sourcing GNUstep.sh (for Etoile)"
 export GNUSTEP_CONFIG_FILE=${PREFIX_DIR%/}/etc/GNUstep/GNUstep.conf
 . ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
+echo
 
 #
 # Download, build and install Etoile
@@ -300,21 +301,23 @@ LAST_ERROR_LOG_FILE=$LOG_BASE_DIR/last-error-`basename $PROFILE_SCRIPT`.log
 LAST_CHANGED_LOG_SUBDIR=$LOG_BASE_DIR/`ls -At $LOG_BASE_DIR 2> /dev/null | head -n 1`
 LAST_CHANGED_LOG_FILE=$LAST_CHANGED_LOG_SUBDIR/`ls -At $LAST_CHANGED_LOG_SUBDIR/*error.log 2> /dev/null | head -n 1 | xargs basename`
 
-if [ -f $LAST_CHANGED_LOG_FILE ]; then
+if [ $STATUS -ne 0 -a -f $LAST_CHANGED_LOG_FILE ]; then
 	if [ -f $LAST_ERROR_LOG_FILE ]; then
 
-		# We limit our diff to the first few lines because Clang warnings
+		# We limit our diff to the last few lines because Clang warnings
 		# that follow an error don't have a stable ordering accross invocations.
 		#
 		# Note: If we use Bash, temporary named pipes would avoid the temporary file
 
-		head -n 5 $LAST_ERROR_LOG_FILE > ${LAST_ERROR_LOG_FILE}.5
-		BUILD_DELTA=`head -n 5 $LAST_CHANGED_LOG_FILE | diff ${LAST_ERROR_LOG_FILE}.5 -`
-		rm ${LAST_ERROR_LOG_FILE}.5
+		tail -n 10 $LAST_ERROR_LOG_FILE > ${LAST_ERROR_LOG_FILE}.tail
+		BUILD_DELTA=`tail -n 10 $LAST_CHANGED_LOG_FILE | diff ${LAST_ERROR_LOG_FILE}.tail -`
+		rm ${LAST_ERROR_LOG_FILE}.tail
 	else
-		BUILD_DELTA=`head -n 5 $LAST_CHANGED_LOG_FILE`
+		BUILD_DELTA=`tail -n 10 $LAST_CHANGED_LOG_FILE`
 	fi
 	cp $LAST_CHANGED_LOG_FILE $LAST_ERROR_LOG_FILE
+else
+	rm -f $LAST_ERROR_LOG_FILE
 fi
 
 if [ $STATUS -ne 0 ]; then
@@ -335,6 +338,13 @@ if [ $STATUS -ne 0 ]; then
 		. $SCRIPT_DIR/sendmail.sh
 	fi
 
+	echo " =============== WARNING: Build Error =============== "
+	echo
+	echo "`tail -n 15 $LAST_ERROR_LOG_FILE`"
+	echo
+	echo Note: for a full log, see $LAST_ERROR_LOG_FILE
+	echo
+	echo " ==================================================== "
 	echo
 	echo "---> Failed to build Etoile - error in $FAILED_MODULE :-("
 	echo
