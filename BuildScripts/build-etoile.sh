@@ -2,6 +2,9 @@
 
 LOG_NAME=etoile-build
 
+# Languages compilation might break if -j flag is passed to GNUstep Make 
+J=
+
 # TODO: Support building tagged versions in Etoile SVN
 
 if [ "$ETOILE_VERSION" = "stable" ]; then
