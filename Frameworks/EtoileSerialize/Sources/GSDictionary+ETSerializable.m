@@ -83,13 +83,13 @@
 {
 	id* objects = *(id**)&MAP_IVAR;
 	[self init];
-	Class real = self->isa;
-	self->isa = [GSMutableDictionary class];
+	Class real = object_getClass(self);
+	object_setClass(self, [GSMutableDictionary class]);
 	for(unsigned i=1 ; (objects)[i] != nil ; i+=2)
 	{
 		[(GSMutableDictionary*)self setObject:objects[i+1] forKey:objects[i]];
 	}
-	self->isa = real;
+	object_setClass(self, real);
 	free(objects);
 }
 @end
