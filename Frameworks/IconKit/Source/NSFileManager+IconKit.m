@@ -43,7 +43,7 @@
 - (BOOL) checkWithEventuallyCreatingDirectoryAtPath: (NSString *)path
 {
   BOOL isDir;
-  BOOL result; 
+  BOOL result = NO; 
   NSFileManager *fm = [NSFileManager defaultManager];
   
   if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
