@@ -361,14 +361,14 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 }
 
 - (void)removeGraphic:(SKTGraphic *)graphic {
-    unsigned index = [_graphics indexOfObjectIdenticalTo:graphic];
+    NSInteger index = [_graphics indexOfObjectIdenticalTo:graphic];
     if (index != NSNotFound) {
         [self removeGraphicAtIndex:index];
     }
 }
 
 - (void)moveGraphic:(SKTGraphic *)graphic toIndex:(unsigned)newIndex {
-    unsigned curIndex = [_graphics indexOfObjectIdenticalTo:graphic];
+    NSInteger curIndex = [_graphics indexOfObjectIdenticalTo:graphic];
     if (curIndex != newIndex) {
         [[[self undoManager] prepareWithInvocationTarget:self] moveGraphic:graphic toIndex:((curIndex > newIndex) ? curIndex+1 : curIndex)];
         if (curIndex < newIndex) {
@@ -458,7 +458,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        int newIndex = [graphics indexOfObjectIdenticalTo:[rects objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[rects objectAtIndex:index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -471,7 +471,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 - (void)removeFromRectanglesAtIndex:(unsigned)index {
     NSArray *rects = [self rectangles];
     NSArray *graphics = [self graphics];
-    int newIndex = [graphics indexOfObjectIdenticalTo:[rects objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[rects objectAtIndex:index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -483,7 +483,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 - (void)replaceInRectangles:(SKTGraphic *)graphic atIndex:(unsigned)index {
     NSArray *rects = [self rectangles];
     NSArray *graphics = [self graphics];
-    int newIndex = [graphics indexOfObjectIdenticalTo:[rects objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[rects objectAtIndex:index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
         [self insertGraphic:graphic atIndex:newIndex];
@@ -509,7 +509,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        int newIndex = [graphics indexOfObjectIdenticalTo:[circles objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[circles objectAtIndex:index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -522,7 +522,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 - (void)removeFromCirclesAtIndex:(unsigned)index {
     NSArray *circles = [self circles];
     NSArray *graphics = [self graphics];
-    int newIndex = [graphics indexOfObjectIdenticalTo:[circles objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[circles objectAtIndex:index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -534,7 +534,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 - (void)replaceInCircles:(SKTGraphic *)graphic atIndex:(unsigned)index {
     NSArray *circles = [self circles];
     NSArray *graphics = [self graphics];
-    int newIndex = [graphics indexOfObjectIdenticalTo:[circles objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[circles objectAtIndex:index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
         [self insertGraphic:graphic atIndex:newIndex];
@@ -560,7 +560,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        int newIndex = [graphics indexOfObjectIdenticalTo:[lines objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[lines objectAtIndex:index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -573,7 +573,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 - (void)removeFromLinesAtIndex:(unsigned)index {
     NSArray *lines = [self lines];
     NSArray *graphics = [self graphics];
-    int newIndex = [graphics indexOfObjectIdenticalTo:[lines objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[lines objectAtIndex:index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -585,7 +585,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 - (void)replaceInLines:(SKTGraphic *)graphic atIndex:(unsigned)index {
     NSArray *lines = [self lines];
     NSArray *graphics = [self graphics];
-    int newIndex = [graphics indexOfObjectIdenticalTo:[lines objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[lines objectAtIndex:index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
         [self insertGraphic:graphic atIndex:newIndex];
@@ -611,7 +611,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        int newIndex = [graphics indexOfObjectIdenticalTo:[textAreas objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[textAreas objectAtIndex:index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -624,7 +624,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 - (void)removeFromTextAreasAtIndex:(unsigned)index {
     NSArray *textAreas = [self textAreas];
     NSArray *graphics = [self graphics];
-    int newIndex = [graphics indexOfObjectIdenticalTo:[textAreas objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[textAreas objectAtIndex:index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -636,7 +636,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 - (void)replaceInTextAreas:(SKTGraphic *)graphic atIndex:(unsigned)index {
     NSArray *textAreas = [self textAreas];
     NSArray *graphics = [self graphics];
-    int newIndex = [graphics indexOfObjectIdenticalTo:[textAreas objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[textAreas objectAtIndex:index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
         [self insertGraphic:graphic atIndex:newIndex];
@@ -662,7 +662,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        int newIndex = [graphics indexOfObjectIdenticalTo:[images objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[images objectAtIndex:index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -675,7 +675,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 - (void)removeFromImagesAtIndex:(unsigned)index {
     NSArray *images = [self images];
     NSArray *graphics = [self graphics];
-    int newIndex = [graphics indexOfObjectIdenticalTo:[images objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[images objectAtIndex:index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -687,7 +687,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 - (void)replaceInImages:(SKTGraphic *)graphic atIndex:(unsigned)index {
     NSArray *images = [self images];
     NSArray *graphics = [self graphics];
-    int newIndex = [graphics indexOfObjectIdenticalTo:[images objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[images objectAtIndex:index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
         [self insertGraphic:graphic atIndex:newIndex];

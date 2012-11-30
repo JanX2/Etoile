@@ -114,7 +114,7 @@ static int SKT_orderGraphicsFrontToBack(id graphic1, id graphic2, void *gArray) 
 }
 
 - (void)selectGraphic:(SKTGraphic *)graphic {
-    unsigned curIndex = [_selectedGraphics indexOfObjectIdenticalTo:graphic];
+    NSInteger curIndex = [_selectedGraphics indexOfObjectIdenticalTo:graphic];
     if (curIndex == NSNotFound) {
         [[[self undoManager] prepareWithInvocationTarget:self] deselectGraphic:graphic];
         [[[self drawDocument] undoManager] setActionName:NSLocalizedStringFromTable(@"Selection Change", @"UndoStrings", @"Action name for selection changes.")];
@@ -127,7 +127,7 @@ static int SKT_orderGraphicsFrontToBack(id graphic1, id graphic2, void *gArray) 
 }
 
 - (void)deselectGraphic:(SKTGraphic *)graphic {
-    unsigned curIndex = [_selectedGraphics indexOfObjectIdenticalTo:graphic];
+    NSInteger curIndex = [_selectedGraphics indexOfObjectIdenticalTo:graphic];
     if (curIndex != NSNotFound) {
         [[[self undoManager] prepareWithInvocationTarget:self] selectGraphic:graphic];
         [[[self drawDocument] undoManager] setActionName:NSLocalizedStringFromTable(@"Selection Change", @"UndoStrings", @"Action name for selection changes.")];
