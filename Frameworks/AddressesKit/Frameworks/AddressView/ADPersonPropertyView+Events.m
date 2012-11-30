@@ -52,7 +52,7 @@
   
   if([c isKindOfClass: [ADPersonActionCell class]])
     {
-      ADActionType type; NSString *ident, *label; int index;
+      ADActionType type; NSString *ident, *label; NSInteger index;
 
       type = [c actionType];
       

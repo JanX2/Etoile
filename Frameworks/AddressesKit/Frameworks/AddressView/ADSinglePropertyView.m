@@ -50,7 +50,7 @@
     {
       NSString *uid = [_selectedGroup uniqueId];
       [_selectedGroup autorelease];
-      _selectedGroup = [[_book recordForUniqueId: uid] retain];
+      _selectedGroup = (ADGroup*)[[_book recordForUniqueId: uid] retain];
     }
   
   if(!_selectedGroup)

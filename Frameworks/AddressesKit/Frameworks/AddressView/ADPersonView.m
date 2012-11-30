@@ -1213,7 +1213,8 @@ changedHeightFrom: (float) oldH
 + (NSString*) nextLabelAfter: (NSString*) previous
 		 forProperty: (NSString*) property
 {
-  NSArray *arr; int index;
+  NSArray *arr;
+  NSInteger index;
   
   arr = [_labelDict objectForKey: property];
   if(!arr || ![arr count]) arr = [_labelDict objectForKey: @"Default"];

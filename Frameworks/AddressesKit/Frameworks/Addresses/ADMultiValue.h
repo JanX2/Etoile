@@ -31,7 +31,7 @@
 - (NSString*) labelAtIndex: (int) index;
 - (NSString*) identifierAtIndex: (int) index;
     
-- (int) indexForIdentifier: (NSString*) identifier;
+- (NSInteger) indexForIdentifier: (NSString*) identifier;
 
 - (NSString*) primaryIdentifier;
     

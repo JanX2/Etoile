@@ -91,7 +91,7 @@ static ADPropertyType _propTypeFromDict(NSDictionary *dict)
   return [[_arr objectAtIndex: index] objectForKey: @"ID"];
 }
 
-- (int) indexForIdentifier: (NSString*) identifier
+- (NSInteger) indexForIdentifier: (NSString*) identifier
 {
   int i;
 

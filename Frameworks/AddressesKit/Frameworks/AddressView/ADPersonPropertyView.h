@@ -122,7 +122,7 @@ typedef enum {
 - (void) beginEditingInLastCell;
 - (void) endEditing;
 
-- (int) indexOfEditableCellWithDetails: (id) details;
+- (NSInteger) indexOfEditableCellWithDetails: (id) details;
 
 - (NSString*) propertyForDragWithDetails: (id) details;
 - (NSImage*) imageForDraggedProperty: (NSString*) prop;
