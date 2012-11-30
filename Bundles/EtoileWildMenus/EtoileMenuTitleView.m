@@ -50,7 +50,7 @@ static float MenuTitleFillerWidth = 0;
   return height;
 }
 
-- init
+- (id)init
 {
   if ((self = [super init]) != nil)
     {

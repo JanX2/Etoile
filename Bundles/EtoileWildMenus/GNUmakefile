@@ -15,6 +15,7 @@ $(filter-out SyntaxDefinitions/CVS, $(wildcard SyntaxDefinitions/*.syntax))
 
 $(BUNDLE_NAME)_LANGUAGES=$(basename $(wildcard *.lproj))
 $(BUNDLE_NAME)_LOCALIZED_RESOURCE_FILES=$(sort $(notdir $(wildcard *.lproj/*)))
+$(BUNDLE_NAME)_OBJCFLAGS += -Wno-objc-protocol-method-implementation
 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/bundle.make
