@@ -52,7 +52,7 @@ NSDictionary * MESSAGE_TYPES;
 	}
 	correspondent = aRecipient;
 	subject = aSubject;
-	type = type;
+	type = aType;
 	direction = out;
 	return self;
 }

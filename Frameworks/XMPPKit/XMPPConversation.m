@@ -129,10 +129,7 @@ static NSMutableArray * filters;
 	//Are we still talking to the same person?
 	if(![remoteJID isEqual:defaultJID])
 	{
-		if([delegate newRemoteJID:defaultJID])
-		{
-			remoteJID = remoteJID;
-		}
+		[delegate newRemoteJID:defaultJID];
 	}
 	XMPPPresence * presence = [[remotePerson identityForJID:remoteJID] presence];
 	[delegate setPresence:[presence show] withMessage:[presence status]];

@@ -9,6 +9,8 @@
 #import "XMPPStanza.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
 @implementation XMPPStanza
 - (id) initWithXMLParser: (ETXMLParser*) aParser
                      key: (id) aKey
@@ -26,9 +28,9 @@
 {
 	NSString * childSelectorName = [NSString stringWithFormat:@"add%@:", aKey];
 	SEL childSelector = NSSelectorFromString(childSelectorName);
-	if([self respondsToSelector:childSelector])
+	if([self respondsToSelector: childSelector])
 	{
-		[self performSelector:childSelector withObject:aChild];
+		[self performSelector: childSelector withObject:aChild];
 	}
 	else
 	{
