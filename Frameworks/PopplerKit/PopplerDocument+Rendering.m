@@ -34,7 +34,7 @@
       renderer = [[PopplerSplashRenderer alloc] initWithDocument: self];
    }
 
-   return [(NSObject*)renderer autorelease];
+   return [renderer autorelease];
 }
 
 @end

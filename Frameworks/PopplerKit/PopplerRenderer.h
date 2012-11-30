@@ -26,7 +26,7 @@
  * I can render the contents of a PopplerPage directly to
  * the screen.
  */
-@protocol PopplerDirectRenderer
+@protocol PopplerDirectRenderer <NSObject>
 
 - (id) initWithDocument: (PopplerDocument*)aDocument;
 
@@ -46,7 +46,7 @@
  * I render the contents of a PopplerPage to some buffer. The
  * concrete type of this buffer depends on my implementation.
  */
-@protocol PopplerBufferedRenderer
+@protocol PopplerBufferedRenderer <NSObject>
 
 - (id) initWithDocument: (PopplerDocument*)aDocument;
 

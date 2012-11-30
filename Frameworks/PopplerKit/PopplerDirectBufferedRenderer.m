@@ -48,7 +48,7 @@
    self = [super init];
    if (self)
    {
-      bufferedRenderer = [(NSObject*)aRenderer retain];
+      bufferedRenderer = [aRenderer retain];
       lastImage = nil;
       lastPageIndex = 0;
       lastScale = 0.0;

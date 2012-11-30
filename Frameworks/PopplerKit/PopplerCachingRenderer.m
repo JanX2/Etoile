@@ -71,7 +71,7 @@ const unsigned long kDefaultCacheSize = 10485760;
    self = [super init];
    if (self)
    {
-      renderer = [(NSObject*)aRenderer retain];
+      renderer = [aRenderer retain];
       cache = [[MKLRUCache alloc] initWithMaxSize: [PopplerCachingRenderer defaultCacheSize]];
    }
    return self;
