@@ -24,7 +24,7 @@
 /**
  * An embeddable SearchView.
  */
-@interface SearchView : NSView {
+@interface SearchView : NSView <NSTextFieldDelegate> {
    NSTextField* searchTF;
    NSTextField* percentCompletedTF;
    id           controller;

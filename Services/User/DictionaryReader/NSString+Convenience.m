@@ -41,13 +41,13 @@
 - (int) firstIndexOf: (unichar) aCharacter fromIndex: (int) startIndex
 {
 	// NSNotFound means 'not found' or -inside this method- 'not *yet* found'
-	int result = NSNotFound;
+	NSInteger result = NSNotFound;
   
 	// the length of this string
-	unsigned length = [self length];
+	NSInteger length = [self length];
   
 	// the index where we are searching at the moment
-	unsigned index = startIndex;
+	NSInteger index = startIndex;
   
 	while (index < length && result == NSNotFound)
 	{

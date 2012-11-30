@@ -9,7 +9,7 @@ static TWCharacterPanel *sharedInstance;
  * -setState: is reliable to decide whether a cell is selected
  * while -setHighlighted: is not. */
 @implementation TWCharacterCell
-- (void) setState: (int) state
+- (void) setState: (NSInteger) state
 {
 //  NSLog(@"%@ setState: %d", [self stringValue], state);
   [super setState: state];

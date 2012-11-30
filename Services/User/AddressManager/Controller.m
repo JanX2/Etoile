@@ -166,7 +166,7 @@
   if([ud objectForKey: @"DefaultISOCountryCode"])
     {
       NSString *def;
-      int index;
+      NSInteger index;
 
       def = [ud objectForKey: @"DefaultISOCountryCode"];
       index = [prefsAddressLayoutPopup indexOfItemWithRepresentedObject: def];

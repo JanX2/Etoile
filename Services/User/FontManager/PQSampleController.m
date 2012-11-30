@@ -137,7 +137,7 @@
 
 - (void) setSampleTextHistory: (NSArray *)aHistory
 {
-	ASSIGN(sampleTextHistory, aHistory);
+	ASSIGN(sampleTextHistory, [aHistory mutableCopy]);
 }
 
 - (NSArray *) sampleTextHistory
@@ -327,7 +327,7 @@
 {
 	if ([defaultSampleText containsObject: someText] == NO)
 	{
-		unsigned index = [sampleTextHistory indexOfObject: someText];
+		NSInteger index = [sampleTextHistory indexOfObject: someText];
 
 		if (index != NSNotFound)
 		{

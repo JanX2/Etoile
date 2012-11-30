@@ -97,7 +97,7 @@ NSDictionary* normalAttributes;
 	// YES if and only if we are inside a link
 	BOOL inLink = NO;
   
-	unsigned nextBracketIdx;
+	NSInteger nextBracketIdx;
   
 	while (index < strLength) 
 	{
