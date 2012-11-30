@@ -26,7 +26,7 @@
 #endif
 	self = [super init];
 	if (self != nil) {
-		_targetAdapter = [aComponent retain];
+		_targetAdapter = (id)[aComponent retain];
 		_enumeratorStack = [[NSMutableArray alloc] initWithCapacity:10];
 		_branchStack = [[NSMutableArray alloc] initWithCapacity:10];
 		_terminated = NO;

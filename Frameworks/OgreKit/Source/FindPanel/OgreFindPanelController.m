@@ -216,7 +216,7 @@
 
 - (void)setFindPanel:(NSPanel*)aPanel
 {
-	ASSIGN(findPanel, aPanel);
+	ASSIGN(findPanel, (id)aPanel);
 }
 
 - (unsigned int) options

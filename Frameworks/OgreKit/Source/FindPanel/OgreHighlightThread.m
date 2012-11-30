@@ -58,7 +58,7 @@
     OGRegularExpression *regex = [self regularExpression];
     
     /* blending highlight colors */
-    float   hue, saturation, brightness, alpha;
+    CGFloat   hue, saturation, brightness, alpha;
     [[[self highlightColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] 
         getHue: &hue 
         saturation: &saturation 

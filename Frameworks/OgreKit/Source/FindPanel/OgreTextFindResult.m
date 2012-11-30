@@ -167,7 +167,7 @@
 
 - (void)setHighlightColor:(NSColor*)aColor regularExpression:(OGRegularExpression*)regex;
 {
-    float       hue, saturation, brightness, alpha;
+    CGFloat     hue, saturation, brightness, alpha;
     double      dummy;
     
     [[aColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace] 
