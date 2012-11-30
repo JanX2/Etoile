@@ -34,6 +34,17 @@
 
 @interface SCMachineInfo : NSObject
 
+// Platform independent portions
++ (NSString *) humanReadableRealMemory;
++ (NSString *) humanReadableCPUSpeed;
++ (NSString *) tidyCPUName;
++ (NSString *) operatingSystem;
++ (NSString *) operatingSystemVersion;
++ (NSString *) hostName;
++ (NSString *) machineType;
+
+@end
+@interface SCMachineInfo (PlatformDependent)
 /*
  * These methods must be overridden by platform-specific categories
  * to return the real info. The class-implemented methods are simply
@@ -47,14 +58,4 @@
 + (unsigned int) batteryLife;
 + (unsigned char) batteryPercent;
 + (BOOL) isUsingMains;
-
-// Platform independent portions
-+ (NSString *) humanReadableRealMemory;
-+ (NSString *) humanReadableCPUSpeed;
-+ (NSString *) tidyCPUName;
-+ (NSString *) operatingSystem;
-+ (NSString *) operatingSystemVersion;
-+ (NSString *) hostName;
-+ (NSString *) machineType;
-
 @end

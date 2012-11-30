@@ -52,6 +52,9 @@ typedef enum _SCPowerStatus {
 	int time;
 }
 
+@end
+
+@interface SCPower (PlatformDependent)
 - (SCPowerStatus) status;
 
 /* For battery. Return -1 if unknown.
@@ -63,6 +66,4 @@ typedef enum _SCPowerStatus {
    Application should ask for -status before querying time 
    since some implementation may cache time from -status. */
 - (int) time;
-
 @end
-
