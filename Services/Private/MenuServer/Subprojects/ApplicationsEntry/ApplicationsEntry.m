@@ -74,7 +74,7 @@
   [super dealloc];
 }
 
-- init
+- (id)init
 {
   if ((self = [super init]) != nil)
     {
@@ -208,7 +208,7 @@
 - (void) noteAppTerminated: (NSNotification *) notif
 {
   NSDictionary * appInfo = [notif userInfo];
-  int index = [launchedApplications indexOfObject: appInfo],
+  NSInteger index = [launchedApplications indexOfObject: appInfo],
       index2 = [sortedAppNames indexOfObject: [appInfo objectForKey:
         @"NSApplicationName"]];
 

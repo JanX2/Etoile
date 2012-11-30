@@ -155,7 +155,7 @@
 
 static BundleExtensionLoader * shared = nil;
 
-+ shared
++ (id)shared
 {
   if (shared == nil)
     {

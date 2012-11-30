@@ -199,7 +199,7 @@ static NSImage * filler = nil,
   [super dealloc];
 }
 
-- initWithFrame: (NSRect) frame
+- (id)initWithFrame: (NSRect) frame
 {
   if ((self = [super initWithFrame: frame]) != nil)
     {

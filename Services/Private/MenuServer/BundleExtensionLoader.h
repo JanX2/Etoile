@@ -62,7 +62,7 @@ app uses bundles for it's preferences modules).
 @interface BundleExtensionLoader : NSObject
 
  /// Returns a shared instance of BundleExtensionLoader.
-+ shared;
++ (id)shared;
 
  /**
     Searches the filesystem for extension bundles.

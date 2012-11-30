@@ -25,8 +25,8 @@
  *      if the application could not be contacted (either because
  *      of not running or because it could not be launched).
  */
-- connectToApplication: (NSString *) appName
-                launch: (BOOL) launchFlag
+- (id)connectToApplication: (NSString *) appName
+                    launch: (BOOL) launchFlag
 {
   // NOTE: Using [[NSHost currentHost] name]; would make the root proxy lookup 
   // fails, because to reference NSSMessagePortNameServer on GNUstep you must
@@ -81,7 +81,7 @@
  * @param launchFlag A flag which specifies whether the workspace app
  *      should be launched if necessary.
  */
-- connectToWorkspaceApplicationLaunch: (BOOL) launchFlag
+- (id)connectToWorkspaceApplicationLaunch: (BOOL) launchFlag
 {
   NSString * appName = nil;
 

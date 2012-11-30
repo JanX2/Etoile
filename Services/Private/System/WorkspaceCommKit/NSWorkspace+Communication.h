@@ -5,10 +5,10 @@
 
 @interface NSWorkspace (WorkspaceComm)
 
-- connectToApplication: (NSString *) appName
+- (id)connectToApplication: (NSString *) appName
                 launch: (BOOL) launchFlag;
 
-- connectToWorkspaceApplicationLaunch: (BOOL) launchFlag;
+- (id)connectToWorkspaceApplicationLaunch: (BOOL) launchFlag;
 
 @end
 
