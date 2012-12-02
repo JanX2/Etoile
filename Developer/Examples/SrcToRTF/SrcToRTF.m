@@ -8,6 +8,7 @@ int main(int argc, char **argv)
 	if (argc != 2)
 	{
 		fprintf(stderr, "usage: %s {source file}\n", argv[0]);
+		return -1;
 	}
 	[NSAutoreleasePool new];
 	NSString *fileName = [NSString stringWithUTF8String: argv[1]];

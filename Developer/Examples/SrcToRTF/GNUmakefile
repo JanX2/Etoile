@@ -9,6 +9,6 @@ SrcToRTF_OBJC_FILES = \
 CC=clang
 ADDITIONAL_OBJCFLAGS += -fobjc-nonfragile-abi 
 
-ADDITIONAL_LDFLAGS += -lgnustep-gui -lSourceCodeKit
+ADDITIONAL_LDFLAGS += -lgnustep-gui -lSourceCodeKit -lEtoileFoundation
 
 include $(GNUSTEP_MAKEFILES)/tool.make
