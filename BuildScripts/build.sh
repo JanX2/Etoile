@@ -135,6 +135,33 @@ ETOILE_VERSION=${ETOILE_VERSION_override:-"$ETOILE_VERSION"}
 LOG_BASE_DIR=`eval echo $LOG_BASE_DIR`
 LOG_DIR=`eval echo $LOG_DIR`
 
+# Redirect standard output and error to console and log file
+
+export LOG_SUMMARY_FILE=$BUILD_DIR/build.log
+
+rm -f $LOG_SUMMARY_FILE
+
+out="${TMPDIR:-/tmp}/out.$$"
+mkfifo "$out"
+trap 'rm "$out" ' EXIT
+tee $LOG_SUMMARY_FILE < "$out" >&1 &
+exec >> "$out" 2>> "$out"
+
+#
+# Another solution based on two fifos, but doesn't work so well, 
+# because buffering then messes up the console ouput ordering.
+#
+#out="${TMPDIR:-/tmp}/out.$$" err="${TMPDIR:-/tmp}/err.$$"
+#mkfifo "$out" "$err"
+#trap 'rm "$out" "$err"' EXIT
+#tee $LOG_SUMMARY_FILE < "$out" >&1 &
+#tee $LOG_SUMMARY_FILE < "$err" >&2 &
+#exec >> "$out" 2>> "$err"
+
+# For testing the ordering of the console output 
+#echo "bla"
+#cd $LOG_SUMMARY_FILE
+
 # Override some variables for test builds
 
 if [ "$TEST_BUILD" = "yes" ]; then
@@ -322,6 +349,17 @@ fi
 
 if [ $STATUS -ne 0 ]; then
 
+	echo " =============== WARNING: Build Error =============== "
+	echo
+	echo "`tail -n 15 $LAST_ERROR_LOG_FILE`"
+	echo
+	echo Note: for a full log, see $LAST_ERROR_LOG_FILE
+	echo
+	echo " ==================================================== "
+	echo
+	echo "---> Failed to build Etoile - error in $FAILED_MODULE :-("
+	echo
+
 	# If the delta between the error logs has changed in the last two builds,
 	# it is a new build failure that must be reported by mail, otherwise it 
 	# is the same failure than previously (no need to report it once more).
@@ -334,20 +372,10 @@ if [ $STATUS -ne 0 ]; then
 
 		MAIL_SUBJECT="Etoile Build Failure -- $FAILED_MODULE on $PLATFORM"
 		MAIL_ATTACHMENTS="$LOG_BASE_DIR/etoile-build-log.tar.gz $PROFILE_SCRIPT" 
-		MAIL_BODY="Test build failure on $PLATFORM at `date`. See build logs and profile in attachments.\n"
+		MAIL_BODY="Test build failure on $PLATFORM at `date` -- Detailed build logs and profile are available in attachments -- \n\n`cat $LOG_SUMMARY_FILE`\n\n"
 		. $SCRIPT_DIR/sendmail.sh
 	fi
 
-	echo " =============== WARNING: Build Error =============== "
-	echo
-	echo "`tail -n 15 $LAST_ERROR_LOG_FILE`"
-	echo
-	echo Note: for a full log, see $LAST_ERROR_LOG_FILE
-	echo
-	echo " ==================================================== "
-	echo
-	echo "---> Failed to build Etoile - error in $FAILED_MODULE :-("
-	echo
 	exit 1
 
 else
