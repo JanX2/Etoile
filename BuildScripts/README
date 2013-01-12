@@ -105,9 +105,9 @@ The build script generates some special scripts such as llvm-LLVM_VERSION.sh and
 	# Don't source GNUstep-reset.sh if there is a prior FHS-based GNUstep install in use.
 	# FHS install means GNUstep tools and libraries are installed in /usr/bin, /usr/lib 
 	# or /usr/local/bin, /usr/local/lib.
-	[. ./System/GNUstep/Library/Makefiles/GNUstep-reset.sh]
+	[. ./System/Library/Makefiles/GNUstep-reset.sh]
 
-	. ./System/GNUstep/Library/Makefiles/GNUstep.sh
+	. ./System/Library/Makefiles/GNUstep.sh
 
 Now you can move into modules directories, edit the source code and use **make** and **[sudo -E] make install** to test your changes.
 
