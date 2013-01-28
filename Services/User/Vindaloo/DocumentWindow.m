@@ -29,7 +29,7 @@
 @implementation DocumentWindow
 
 - (id) initWithContentRect: (NSRect)aContentRect
-                 styleMask: (unsigned int)aStyleMask
+                 styleMask: (NSUInteger)aStyleMask
                    backing: (NSBackingStoreType) aBackingType
                      defer: (BOOL)defer
 {
