@@ -65,7 +65,7 @@ static OgreFindPanel *sharedInstance;
 }
 
 - (id) initWithContentRect: (NSRect) frame
-		 styleMask: (unsigned int) mask
+		 styleMask: (NSUInteger) mask
 		   backing: (NSBackingStoreType) type
 		     defer: (BOOL) defer
 {
