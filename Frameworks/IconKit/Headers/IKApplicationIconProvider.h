@@ -20,9 +20,8 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import <UnitKit/UKTest.h>
 
-@interface IKApplicationIconProvider : NSObject <UKTest>
+@interface IKApplicationIconProvider : NSObject
 {
   NSString *_path;
   NSString *_identifier;

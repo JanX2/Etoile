@@ -32,8 +32,9 @@ Mac OS X support
 ----------------
 
 A subset of IconKit API is supported on Mac OS X (by relying on Carbon Icon 
-Services). 
-An Xcode project is provided to build it, but it is currently not well tested.
+Services).
+
+**Warning:** Xcode 4 is required to build the project.
 
 
 Developer Notes

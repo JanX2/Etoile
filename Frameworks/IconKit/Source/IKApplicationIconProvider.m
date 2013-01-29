@@ -49,8 +49,11 @@ static NSFileManager *fileManager = nil;
 @end
 
 // Private methods
-
+#ifdef HAVE_UKTEST
+@interface IKApplicationIconProvider (Private) <UKTest>
+#else
 @interface IKApplicationIconProvider (Private)
+#endif
 - (NSImage *) _blankDocumentIcon;
 - (NSImage *) _blankPluginIcon;
 - (BOOL) _buildDirectoryStructureForCompositedIconsCache;
