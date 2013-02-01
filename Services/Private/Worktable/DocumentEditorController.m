@@ -6,7 +6,6 @@
 	License:  Modified BSD (see COPYING)
  */
 
-#import <CoreObject/COEditingContext.h>
 #import <EtoileUI/ETLayoutItem+CoreObject.h>
 #import "DocumentEditorController.h"
 
@@ -47,9 +46,8 @@
 {
 	[self setUpMenus];
 
-	//COEditingContext *ctxt = [COEditingContext contextWithURL: [NSURL fileURLWithPath: [@"~/TestDocumentStore" stringByExpandingTildeInPath]]];
 	COEditingContext *ctxt = [COEditingContext contextWithURL: 
-		[NSURL fileURLWithPath: [@"~/TestObjectStore" stringByExpandingTildeInPath]]];
+		[NSURL fileURLWithPath: [@"~/TestObjectStore.sqlite" stringByExpandingTildeInPath]]];
 
 	[COEditingContext setCurrentContext: ctxt];
 
@@ -121,7 +119,7 @@
 {
 	for (ETUUID *uuid in [self openedDocumentUUIDsFromDefaults])
 	{
-		ETLayoutItemGroup *documentItem = (id)[[COEditingContext currentContext] objectWithUUID: uuid];
+		ETLayoutItemGroup *documentItem = [[[COEditingContext currentContext] persistentRootForUUID: uuid] rootObject];
 		if (documentItem == nil)
 		{
 			ETLog(@"WARNING: Found no document %@", uuid);
@@ -148,11 +146,12 @@
 - (void) rememberOpenedDocumentItem: (ETLayoutItem *)anItem
 {
 	NSArray *openedDocUUIDs = [self openedDocumentUUIDsFromDefaults];
+	ETUUID *persistentRootUUID = [[anItem persistentRoot] persistentRootUUID];
 
-	if ([openedDocUUIDs containsObject: [anItem UUID]])
+	if ([openedDocUUIDs containsObject: persistentRootUUID])
 		return;
 
-	openedDocUUIDs = [openedDocUUIDs arrayByAddingObject: [anItem UUID]];
+	openedDocUUIDs = [openedDocUUIDs arrayByAddingObject: persistentRootUUID];
 	[[NSUserDefaults standardUserDefaults] setObject: [[openedDocUUIDs mappedCollection] stringValue]
 	                                          forKey: @"kETOpenedDocumentUUIDs"];
 }
@@ -160,11 +159,12 @@
 - (void) rememberClosedDocumentItem: (ETLayoutItem *)anItem
 {
 	NSArray *openedDocUUIDs = [self openedDocumentUUIDsFromDefaults];
+	ETUUID *persistentRootUUID = [[anItem persistentRoot] persistentRootUUID];
 
-	if ([openedDocUUIDs containsObject: [anItem UUID]] == NO)
+	if ([openedDocUUIDs containsObject: persistentRootUUID] == NO)
 		return;
 
-	openedDocUUIDs = [openedDocUUIDs arrayByRemovingObject: [anItem UUID]];
+	openedDocUUIDs = [openedDocUUIDs arrayByRemovingObject: persistentRootUUID];
 	[[NSUserDefaults standardUserDefaults] setObject: openedDocUUIDs 
 	                                          forKey: @"kETOpenedDocumentUUIDs"];
 }
