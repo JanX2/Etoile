@@ -206,7 +206,7 @@
            options: (NSDictionary *)options
 {
 	ETAssert([anItem compoundDocument] != nil);
-	[[anItem editingContext] commit];
+	[[anItem persistentRoot] commit];
 	return YES;
 }
 
@@ -216,7 +216,8 @@
 	NSAssert(editingContext != nil, @"Current editing context must not be nil to create a new item");
 
 	ETLayoutItem *item = [super newItemWithURL: aURL options: options];
-	[item becomePersistentInContext: editingContext rootObject: item];
+
+	[editingContext insertNewPersistentRootWithRootObject: item];
 	return item;
 }
 
