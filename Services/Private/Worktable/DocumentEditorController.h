@@ -19,3 +19,7 @@
 }
 
 @end
+
+@interface ETUIBuilderDemoController : ETController
+- (IBAction)increment: (id)sender;
+@end

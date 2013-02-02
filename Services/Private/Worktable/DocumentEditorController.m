@@ -244,3 +244,15 @@
 }
 
 @end
+
+
+@implementation ETUIBuilderDemoController
+
+- (IBAction)increment: (id)sender
+{
+	NSTextField *counterView = [[[self content] itemForIdentifier: @"counter"] view];
+	NSLog(@"Increment counter %@", counterView);
+	[counterView setIntegerValue: [counterView integerValue] + 1];
+}
+
+@end
