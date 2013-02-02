@@ -9,7 +9,7 @@ $(APP_NAME)_OBJC_FILES = $(wildcard *.m)
 
 $(APP_NAME)_PRINCIPAL_CLASS = ETApplication
 
-$(APP_NAME)_RESOURCE_FILES = DocumentEditorInfo.plist
+$(APP_NAME)_RESOURCE_FILES = $(APP_NAME)Info.plist
 
 $(APP_NAME)_GUI_LIBS = -lEtoileFoundation -lCoreObject -lEtoileUI
 
