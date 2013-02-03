@@ -107,6 +107,8 @@
 	[picker reloadAndUpdateLayout];
 
 	[[itemFactory windowGroup] addItem: picker];
+	
+	[ETApp toggleDevelopmentMenu: nil];
 
 	/*ETShape *shape = [ETShape rectangleShape];
 
@@ -250,9 +252,34 @@
 
 - (IBAction)increment: (id)sender
 {
-	NSTextField *counterView = [[[self content] itemForIdentifier: @"counter"] view];
-	NSLog(@"Increment counter %@", counterView);
-	[counterView setIntegerValue: [counterView integerValue] + 1];
+	ETLayoutItem *counterItem = [[self content] itemForIdentifier: @"counter"];
+
+	NSLog(@"Increment counter %@", counterItem);
+
+	[[counterItem view] setIntegerValue: [[counterItem view] integerValue] + 1];
+	[counterItem didChangeValueForProperty: kETViewProperty];
+	[counterItem commit];
+}
+
+@end
+
+@implementation  ETApplication (UIBuilder)
+
+- (IBAction) toggleLiveDevelopment: (id)sender
+{
+	ETDocumentController *controller = (id)[[[ETLayoutItemFactory factory] windowGroup] controller];
+	ETLayoutItem *documentItem = [controller activeItem];
+	BOOL isLiveDevelopmentActive = [[documentItem layout] isKindOfClass: [ETFreeLayout class]];
+
+	if (isLiveDevelopmentActive)
+	{
+		[documentItem setLayout: [ETFixedLayout layout]];
+	}
+	else
+	{
+		[documentItem setLayout: [ETFreeLayout layout]];
+	}
+	[documentItem commit];
 }
 
 @end
