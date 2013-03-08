@@ -1,0 +1,2 @@
+#!/bin/sh
+exec edlc -b `dirname $0`

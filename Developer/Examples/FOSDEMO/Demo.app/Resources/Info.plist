@@ -1,0 +1,5 @@
+{
+	ApplicationDescription = "FOSDEM 2013 Demo Application";
+	ApplicationName = "FOSDEMO";
+	NSMainNibFile = MainMenu;
+}

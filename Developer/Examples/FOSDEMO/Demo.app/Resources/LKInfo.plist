@@ -1,0 +1,12 @@
+{
+    "Development Mode" = YES;
+    Frameworks = (
+	EtoileUI,
+	ScriptKit
+    );
+    PrincipalClass = Demo;
+    Sources = (
+	"Demo.st",
+	"DynamicDevelopment.st",
+    );
+}

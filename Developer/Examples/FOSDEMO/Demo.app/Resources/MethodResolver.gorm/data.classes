@@ -1,0 +1,24 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "abort:",
+	    "compile:",
+	    "inspectReceiver:"
+	);
+	Super = NSObject;
+    };
+    MethodResolver = {
+	Actions = (
+	    "compile:",
+	    "abort:",
+	    "inspectReceiver:"
+	);
+	Outlets = (
+	    textView,
+	    window,
+	    messageBox
+	);
+	Super = NSObject;
+    };
+}
