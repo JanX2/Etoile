@@ -55,9 +55,13 @@ if [ -n "$RUNTIME_VERSION" ]; then
 
 	echo "Building & Installing libobjc2"
 	cd libobjc2-${RUNTIME_VERSION}
-	($DUMP_ENV) && ($MAKE_CLEAN) && ( MAKEOPTS="debug=no" $MAKE_BUILD ) && ( $MAKE_INSTALL strip=yes )
+	rm -rf Build && mkdir Build
+	cd Build 
+	INSTALL_TARGET="install/strip"
+	($DUMP_ENV) && ( eval cmake -DCMAKE_CXX_COMPILER=clang++ -DTESTS=FALSE .. $LOG_RULE_TEMPLATE ) && ($MAKE_BUILD) && ($MAKE_INSTALL)
 	STATUS=$?
-	cd ..
+	INSTALL_TARGET="install"
+	cd ../..
 
 	if [ $STATUS -ne 0 ]; then exit 2; fi
 
