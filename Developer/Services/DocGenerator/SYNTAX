@@ -1,0 +1,66 @@
+Text Elements:
+
+<p>
+<example>
+<strong>
+<em>
+<code>
+<br />
+
+Paragraph markup is automatically inserted when two new-lines are present between two text blocks.
+So using <p> is rarely needed.
+
+List Elements:
+
+<list> or <ul>
+A simple, unnumbered list of items, each contained within an <item> or <li> tag.
+<enum>
+A numbered list (<item> or <ol> tags).
+<deflist> or <dl>
+A list of terms with definitions, marked as alternating <term> or <dt> and <desc> or <dd> tags.
+
+Header Elements:
+
+<title>
+<abstract>
+<author><email>
+<version>
+<date>
+<copy>
+
+In addition, we can parse the following declarations that corresponds to <copy>, <author> and <date>:
+
+Copyright © Year Name
+Author: or Authors: name mailaddress
+Date:
+
+/** <title>DocPageWeaver</title>
+
+	<abstract>A documentation builder that produce pages based on the input 
+	content.</abstract>
+
+	Copyright (C) 2010 Quentin Mathe
+
+	Author:  Quentin Mathe <quentin.mathe@gmail.com>
+	Date:  November 2010
+	License:  Modified BSD (see COPYING)
+ */
+
+Method/Function Description Elements:
+
+- text and list elements
+- @param
+- @return
+- @task
+
+and text and list elements
+
+In-Between Method or Function Elements:
+
+- @taskunit
+
+Class,  protocol and category description Elements:
+
+- text and list elements
+- @section
+- @group
