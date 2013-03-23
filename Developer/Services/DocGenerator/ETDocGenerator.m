@@ -102,7 +102,8 @@ void generateClassMapping(NSString *classFile)
 
 NSString *indexFileInDirectory(NSString *aDirectory)
 {
-	NSArray *paths = [[NSFileManager defaultManager] directoryContentsAtPath: aDirectory];
+	NSArray *paths =  [[NSFileManager defaultManager]
+		contentsOfDirectoryAtPath: aDirectory error: NULL];
 	assert([[paths pathsMatchingExtensions: (A(@"igsdoc"))] count] == 1);
 	NSString *indexFilename = [[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject];
 
@@ -111,7 +112,8 @@ NSString *indexFileInDirectory(NSString *aDirectory)
 
 NSString *orderedSymbolDeclarationsFileInDirectory(NSString *aDirectory)
 {
-	NSArray *paths = [[NSFileManager defaultManager] directoryContentsAtPath: aDirectory];
+	NSArray *paths =  [[NSFileManager defaultManager]
+		contentsOfDirectoryAtPath: aDirectory error: NULL];
 	assert([paths containsObject: @"OrderedSymbolDeclarations.plist"]);
 	return [aDirectory stringByAppendingPathComponent: @"OrderedSymbolDeclarations.plist"];
 }
@@ -172,7 +174,7 @@ int main (int argc, const char * argv[])
 
 	if (checkOptions(options) == NO)
 	{
-		return 1;
+		return EXIT_FAILURE;
 	}
 
 	NSString *projectName = [options objectForKey: @"n"];

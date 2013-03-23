@@ -28,6 +28,10 @@
 	return Nil;
 }
 
+- (void) presentError: (NSError *)anError
+{
+	NSLog(@"%@", anError);
+}
 
 /* Although we collect README, INSTALL and NEWS in each raw source directory 
 provided through etdocgen option. In practice, 'documentation.make' provides  
@@ -60,7 +64,16 @@ presently. */
                additionalSourceFiles: (NSArray *)additionalSourceFiles
                         templateFile: (NSString *)aTemplatePath
 {
-	NSArray *parserFileNames = [[NSFileManager defaultManager] directoryContentsAtPath: aParserDirPath];
+	NSError *error = nil;
+	NSArray *parserFileNames = [[NSFileManager defaultManager]
+		contentsOfDirectoryAtPath: aParserDirPath error: &error];
+
+	if (error != nil)
+	{
+		[self presentError: error];
+		exit(EXIT_FAILURE);
+	}
+
 	NSArray *parserFiles = [[aParserDirPath stringsByAppendingPaths: parserFileNames] pathsMatchingExtensions: fileExtensions];
 	NSMutableArray *otherFiles = [NSMutableArray array];
 
@@ -68,7 +81,8 @@ presently. */
 	// option, which means this loop use is limited presently.
 	for (NSString *dirPath in otherDirPaths)
 	{
-		NSArray *otherFileNames = [[NSFileManager defaultManager] directoryContentsAtPath: dirPath];
+		NSArray *otherFileNames =  [[NSFileManager defaultManager]
+			contentsOfDirectoryAtPath: dirPath error: NULL];
 
 		if (otherFileNames == nil)
 		{
