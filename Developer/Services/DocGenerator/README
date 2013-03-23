@@ -23,6 +23,8 @@ Read INSTALL document.
 Mac OS X support
 ----------------
 
+**Warning:** Xcode 4 is required to build the project.
+
 DocGenerator is supported on Mac OS X and comes with a Xcode project.
 
 The Xcode project requires:

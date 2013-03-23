@@ -46,6 +46,33 @@ Square brackets "[ ]" are used to indicate optional parameters.
    * [sudo [-E]] make install
 
 
+Mac OS X support
+----------------
+
+**Warning:** Xcode 4 is required to build the project.
+
+For Mac OS X, you must download and install Graphviz and Discount. 
+
+For installation purpose, [Graphviz website](http://www.graphviz.org/Download_macos.php) 
+provides a .pkg bundle that can be double-clicked. This should install Graphivz 
+in /usr/local, where DocGenerator Xcode project searches for Graphviz headers 
+and library.
+
+For Discount, you have to download the source code. First, Xcode command-line 
+tools must be installed to get a working Unix toolchain. To do so, go to the 
+Downloads tab in the Xcode preferences, then in the Program Components subtab. 
+If 'Command-Line Tools' are not installed, click the button 'Install'.
+
+Now launch the Terminal, in the shell go the Discount directory. Now build and 
+and install Discount as shown below:
+
+	./configure.sh && make && sudo -E make install
+
+This should install Discount library and tool into /usr/local. DocGenerator 
+Xcode project expects the 'discount' tool directory to be in your shell PATH 
+variable.
+
+
 Trouble
 -------
 

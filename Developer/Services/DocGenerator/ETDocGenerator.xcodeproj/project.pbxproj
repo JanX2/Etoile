@@ -16,6 +16,7 @@
 		03FF77480DFB1D21007D79D3 /* GSDocParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF77470DFB1D21007D79D3 /* GSDocParser.m */; };
 		03FF78E50DFB75C9007D79D3 /* DocFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF78E40DFB75C9007D79D3 /* DocFunction.m */; };
 		03FF79AF0DFCA7B4007D79D3 /* DocPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FF79AE0DFCA7B4007D79D3 /* DocPage.m */; };
+		6012E32616FB723500A0335D /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6012E31B16FB722800A0335D /* EtoileFoundation.framework */; };
 		601A56A412E89AB100727DAA /* DocCategoryPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 601A56A212E89AB100727DAA /* DocCategoryPage.m */; };
 		602363D6128B3E6600C9EC82 /* DocPageWeaver.m in Sources */ = {isa = PBXBuildFile; fileRef = 602363D5128B3E6600C9EC82 /* DocPageWeaver.m */; };
 		60444F8912FF70B600F9E93B /* GraphWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 60444F8712FF70B600F9E93B /* GraphWriter.m */; };
@@ -23,40 +24,46 @@
 		608A56ED12C61ED7007CD303 /* DocDeclarationReorderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 608A56EC12C61ED7007CD303 /* DocDeclarationReorderer.m */; };
 		60AF049E12B788F800BAF537 /* DocMacro.m in Sources */ = {isa = PBXBuildFile; fileRef = 60AF049B12B788F800BAF537 /* DocMacro.m */; };
 		60AF049F12B788F800BAF537 /* DocTOCPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 60AF049D12B788F800BAF537 /* DocTOCPage.m */; };
-		60B289FB11DA0C4000FC8C20 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */; };
 		60F7F14412AF91970031E9F1 /* DocCDataType.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F7F14312AF91970031E9F1 /* DocCDataType.m */; };
 		8DD76F9A0486AA7600D96B5E /* ETDocGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		602DC5ED11DB9C6D007C36B6 /* PBXContainerItemProxy */ = {
+		6012E31816FB722800A0335D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 603647AB0E409244003377E0;
-			remoteInfo = EtoileFoundation;
-		};
-		60B289F511DA0C2400FC8C20 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
+			containerPortal = 6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 60073EAD10074D26007272E6;
 			remoteInfo = EtoileXML;
 		};
-		60B289F711DA0C2400FC8C20 /* PBXContainerItemProxy */ = {
+		6012E31A16FB722800A0335D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
+			containerPortal = 6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 603647AC0E409244003377E0;
 			remoteInfo = EtoileFoundation;
 		};
-		60B289F911DA0C2400FC8C20 /* PBXContainerItemProxy */ = {
+		6012E31C16FB722800A0335D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
+			containerPortal = 6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
 			remoteInfo = TestEtoileFoundation;
+		};
+		6012E31E16FB722800A0335D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6072CF691360E144003256C5;
+			remoteInfo = PlugInExample;
+		};
+		6012E32716FB724100A0335D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
+			remoteInfo = EtoileFoundation;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -94,6 +101,11 @@
 		08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETDocGenerator.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* ETDocGenerator_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETDocGenerator_Prefix.pch; sourceTree = "<group>"; };
+		6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = "<group>"; };
+		6012E32916FB759500A0335D /* INSTALL */ = {isa = PBXFileReference; lastKnownFileType = text; path = INSTALL; sourceTree = "<group>"; };
+		6012E32A16FB759500A0335D /* NEWS */ = {isa = PBXFileReference; lastKnownFileType = text; path = NEWS; sourceTree = "<group>"; };
+		6012E32B16FB759600A0335D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		6012E32C16FB7DFD00A0335D /* SYNTAX */ = {isa = PBXFileReference; lastKnownFileType = text; path = SYNTAX; sourceTree = "<group>"; };
 		601A56A212E89AB100727DAA /* DocCategoryPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocCategoryPage.m; sourceTree = "<group>"; };
 		601A56A312E89AB100727DAA /* DocCategoryPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocCategoryPage.h; sourceTree = "<group>"; };
 		602363D4128B3E6600C9EC82 /* DocPageWeaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocPageWeaver.h; sourceTree = "<group>"; };
@@ -108,7 +120,6 @@
 		60AF049B12B788F800BAF537 /* DocMacro.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocMacro.m; sourceTree = "<group>"; };
 		60AF049C12B788F800BAF537 /* DocTOCPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocTOCPage.h; sourceTree = "<group>"; };
 		60AF049D12B788F800BAF537 /* DocTOCPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocTOCPage.m; sourceTree = "<group>"; };
-		60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		60F7F14212AF91970031E9F1 /* DocCDataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocCDataType.h; sourceTree = "<group>"; };
 		60F7F14312AF91970031E9F1 /* DocCDataType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocCDataType.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* ETDocGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ETDocGenerator; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,8 +130,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6012E32616FB723500A0335D /* EtoileFoundation.framework in Frameworks */,
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
-				60B289FB11DA0C4000FC8C20 /* EtoileFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +141,10 @@
 		08FB7794FE84155DC02AAC07 /* ETDocGenerator */ = {
 			isa = PBXGroup;
 			children = (
-				60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */,
+				6012E32B16FB759600A0335D /* README */,
+				6012E32916FB759500A0335D /* INSTALL */,
+				6012E32A16FB759500A0335D /* NEWS */,
+				6012E32C16FB7DFD00A0335D /* SYNTAX */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
@@ -184,6 +198,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */,
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 			);
 			name = "External Frameworks and Libraries";
@@ -197,12 +212,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		60B289F011DA0C2400FC8C20 /* Products */ = {
+		6012E30A16FB722800A0335D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				60B289F611DA0C2400FC8C20 /* EtoileXML.framework */,
-				60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */,
-				60B289FA11DA0C2400FC8C20 /* TestEtoileFoundation.bundle */,
+				6012E31916FB722800A0335D /* EtoileXML.framework */,
+				6012E31B16FB722800A0335D /* EtoileFoundation.framework */,
+				6012E31D16FB722800A0335D /* TestEtoileFoundation.bundle */,
+				6012E31F16FB722800A0335D /* PlugInExample.plugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -221,7 +237,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				602DC5EE11DB9C6D007C36B6 /* PBXTargetDependency */,
+				6012E32816FB724100A0335D /* PBXTargetDependency */,
 			);
 			name = ETDocGenerator;
 			productInstallPath = "$(HOME)/bin";
@@ -248,8 +264,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 60B289F011DA0C2400FC8C20 /* Products */;
-					ProjectRef = 60B289EF11DA0C2400FC8C20 /* EtoileFoundation.xcodeproj */;
+					ProductGroup = 6012E30A16FB722800A0335D /* Products */;
+					ProjectRef = 6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -260,25 +276,32 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		60B289F611DA0C2400FC8C20 /* EtoileXML.framework */ = {
+		6012E31916FB722800A0335D /* EtoileXML.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = EtoileXML.framework;
-			remoteRef = 60B289F511DA0C2400FC8C20 /* PBXContainerItemProxy */;
+			remoteRef = 6012E31816FB722800A0335D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		60B289F811DA0C2400FC8C20 /* EtoileFoundation.framework */ = {
+		6012E31B16FB722800A0335D /* EtoileFoundation.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = EtoileFoundation.framework;
-			remoteRef = 60B289F711DA0C2400FC8C20 /* PBXContainerItemProxy */;
+			remoteRef = 6012E31A16FB722800A0335D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		60B289FA11DA0C2400FC8C20 /* TestEtoileFoundation.bundle */ = {
+		6012E31D16FB722800A0335D /* TestEtoileFoundation.bundle */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = TestEtoileFoundation.bundle;
-			remoteRef = 60B289F911DA0C2400FC8C20 /* PBXContainerItemProxy */;
+			remoteRef = 6012E31C16FB722800A0335D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6012E31F16FB722800A0335D /* PlugInExample.plugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = PlugInExample.plugin;
+			remoteRef = 6012E31E16FB722800A0335D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -312,10 +335,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		602DC5EE11DB9C6D007C36B6 /* PBXTargetDependency */ = {
+		6012E32816FB724100A0335D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = EtoileFoundation;
-			targetProxy = 602DC5ED11DB9C6D007C36B6 /* PBXContainerItemProxy */;
+			targetProxy = 6012E32716FB724100A0335D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -323,14 +346,7 @@
 		1DEB927508733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = ETDocGenerator_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = ETDocGenerator;
 			};
@@ -339,11 +355,6 @@
 		1DEB927608733DD40010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = ETDocGenerator_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = ETDocGenerator;
 			};
@@ -352,44 +363,55 @@
 		1DEB927908733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/local/graphviz/include/graphviz;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/usr/local/include/graphviz,
+					/usr/local/graphviz/include,
+					/usr/local/graphviz/include/graphviz,
+				);
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/graphviz/lib,
+					/usr/local/lib,
 					/usr/local/graphviz/lib/graphviz,
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = (
-					"-lgraph",
+					"-lcgraph",
 					"-lgvc",
 				);
-				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wall";
 			};
 			name = Debug;
 		};
 		1DEB927A08733DD40010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/local/graphviz/include/graphviz;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/usr/local/include/graphviz,
+					/usr/local/graphviz/include,
+					/usr/local/graphviz/include/graphviz,
+				);
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/graphviz/lib,
+					/usr/local/lib,
 					/usr/local/graphviz/lib/graphviz,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = (
-					"-lgraph",
+					"-lcgraph",
 					"-lgvc",
 				);
-				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wall";
 			};
 			name = Release;
 		};

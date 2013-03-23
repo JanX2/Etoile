@@ -11,7 +11,7 @@
 	mNodes = [NSMutableDictionary new];
 	mEdges = [NSMutableArray new];
 	mGraphContext = gvContext();
-	mGraph = agopen("g", AGDIGRAPH);
+	mGraph = agopen("g", Agdirected, NULL);
 	[self setGraphAttribute: @"rankdir" with: @"BT"];
 	[self setGraphAttribute: @"size" with: @"2."];
 	[self setGraphAttribute: @"dpi" with: @"72"];
@@ -66,7 +66,7 @@
 	if (pointer)
 		return pointer;
 
-	Agnode_t *n = agnode(mGraph, (char*)[node UTF8String]);
+	Agnode_t *n = agnode(mGraph, (char*)[node UTF8String], 0);
 	NSValue* value = [NSValue valueWithPointer: n];
 	[mNodes setObject: value forKey: node];
 	return value;
@@ -76,7 +76,7 @@
 {
 	NSValue* A = [self addNode: nodeA];
 	NSValue* B = [self addNode: nodeB];
-	agedge(mGraph, [A pointerValue], [B pointerValue]);
+	agedge(mGraph, [A pointerValue], [B pointerValue], "", 1);
 }
 
 - (void) setAttribute: (NSString*) attribute
