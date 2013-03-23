@@ -126,6 +126,16 @@
 	                                                               withString: content]);
 }
 
+/* For running etdocgen in Xcode, markdown must be installed in /usr/local/bin 
+   and the path harcoded because we cannot customize the environnment through 
+   the shell PATH variable. */
+- (NSString *)markdownLaunchPath
+{
+	NSString *launchPath = [[[NSProcessInfo processInfo] environment] objectForKey: @"MARKDOWN_TOOL_PATH"];
+	BOOL isXcodeRun = (launchPath != nil);
+	return (isXcodeRun ? launchPath : @"markdown");
+}
+
 - (NSString *) HTMLStringWithMarkdownFile: (NSString *)aPath
 {
 	NSParameterAssert(aPath != nil);
@@ -135,7 +145,7 @@
 	NSTask *markdownTask = [[NSTask alloc] init]; 
 	NSString *html = @"";
 
-	[markdownTask setLaunchPath: @"markdown"];
+	[markdownTask setLaunchPath: [self markdownLaunchPath]];
 	[markdownTask setArguments: [NSArray arrayWithObject: aPath]];
 	[markdownTask setStandardOutput: pipe];
 	@try

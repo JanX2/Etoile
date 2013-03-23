@@ -68,9 +68,10 @@ and install Discount as shown below:
 
 	./configure.sh && make && sudo -E make install
 
-This should install Discount library and tool into /usr/local. DocGenerator 
-Xcode project expects the 'discount' tool directory to be in your shell PATH 
-variable.
+This should install Discount library and tool into /usr/local. For running 
+DocGenerator inside Xcode, the 'discount' tool must be installed in 
+/usr/local/bin. If the tool is run from the shell, the 'discount' tool directory 
+must be in your shell PATH variable.
 
 
 Trouble

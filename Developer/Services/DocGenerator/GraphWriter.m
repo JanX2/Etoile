@@ -66,7 +66,7 @@
 	if (pointer)
 		return pointer;
 
-	Agnode_t *n = agnode(mGraph, (char*)[node UTF8String], 0);
+	Agnode_t *n = agnode(mGraph, (char*)[node UTF8String], 1);
 	NSValue* value = [NSValue valueWithPointer: n];
 	[mNodes setObject: value forKey: node];
 	return value;
