@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8DD76F960486AA7600D96B5E"
-               BuildableName = "ETDocGenerator"
-               BlueprintName = "ETDocGenerator"
-               ReferencedContainer = "container:ETDocGenerator.xcodeproj">
+               BuildableName = "etdocgen"
+               BlueprintName = "etdocgen"
+               ReferencedContainer = "container:DocGenerator.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8DD76F960486AA7600D96B5E"
-            BuildableName = "ETDocGenerator"
-            BlueprintName = "ETDocGenerator"
-            ReferencedContainer = "container:ETDocGenerator.xcodeproj">
+            BuildableName = "etdocgen"
+            BlueprintName = "etdocgen"
+            ReferencedContainer = "container:DocGenerator.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -53,9 +53,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8DD76F960486AA7600D96B5E"
-            BuildableName = "ETDocGenerator"
-            BlueprintName = "ETDocGenerator"
-            ReferencedContainer = "container:ETDocGenerator.xcodeproj">
+            BuildableName = "etdocgen"
+            BlueprintName = "etdocgen"
+            ReferencedContainer = "container:DocGenerator.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -128,9 +128,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8DD76F960486AA7600D96B5E"
-            BuildableName = "ETDocGenerator"
-            BlueprintName = "ETDocGenerator"
-            ReferencedContainer = "container:ETDocGenerator.xcodeproj">
+            BuildableName = "etdocgen"
+            BlueprintName = "etdocgen"
+            ReferencedContainer = "container:DocGenerator.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

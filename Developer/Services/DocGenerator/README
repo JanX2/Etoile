@@ -36,9 +36,9 @@ The Xcode project requires:
 
 For further details, see INSTALL.
 
-To build DocGenerator on Mac OS X, select ETDocGenerator in the target menu. You can then build and run this target, the tool will automatically generate test documentation from the TestFiles contents. The arguments and options passed to the tool for the generated test documenated are under the Run section of the ETDocGenerator scheme.
+To build DocGenerator on Mac OS X, select etdocgen in the target menu. You can then build and run this target, the tool will automatically generate test documentation from the TestFiles contents. The arguments and options passed to the tool for the generated test documenated are under the Run section of the DocGenerator scheme.
 
-For generating the test documentation, the current directory must be set to the Documentation subdirectory of DocGenerator project directory. ETDocGenerator scheme sets this working directory by relying on $PROJECT_DIR (a built-in Xcode variable).
+For generating the test documentation, the current directory must be set to the Documentation subdirectory of DocGenerator project directory. DocGenerator scheme sets this working directory by relying on $PROJECT_DIR (a built-in Xcode variable).
 
 
 Usage
