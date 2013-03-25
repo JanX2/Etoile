@@ -25,7 +25,7 @@
 		60AF049E12B788F800BAF537 /* DocMacro.m in Sources */ = {isa = PBXBuildFile; fileRef = 60AF049B12B788F800BAF537 /* DocMacro.m */; };
 		60AF049F12B788F800BAF537 /* DocTOCPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 60AF049D12B788F800BAF537 /* DocTOCPage.m */; };
 		60F7F14412AF91970031E9F1 /* DocCDataType.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F7F14312AF91970031E9F1 /* DocCDataType.m */; };
-		8DD76F9A0486AA7600D96B5E /* ETDocGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */; settings = {ATTRIBUTES = (); }; };
+		8DD76F9A0486AA7600D96B5E /* etdocgen.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* etdocgen.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -98,9 +98,8 @@
 		03FF78E40DFB75C9007D79D3 /* DocFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocFunction.m; sourceTree = "<group>"; };
 		03FF79AD0DFCA7B4007D79D3 /* DocPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocPage.h; sourceTree = "<group>"; };
 		03FF79AE0DFCA7B4007D79D3 /* DocPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocPage.m; sourceTree = "<group>"; };
-		08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETDocGenerator.m; sourceTree = "<group>"; };
+		08FB7796FE84155DC02AAC07 /* etdocgen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = etdocgen.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		32A70AAB03705E1F00C91783 /* ETDocGenerator_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETDocGenerator_Prefix.pch; sourceTree = "<group>"; };
 		6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = "<group>"; };
 		6012E32916FB759500A0335D /* INSTALL */ = {isa = PBXFileReference; lastKnownFileType = text; path = INSTALL; sourceTree = "<group>"; };
 		6012E32A16FB759500A0335D /* NEWS */ = {isa = PBXFileReference; lastKnownFileType = text; path = NEWS; sourceTree = "<group>"; };
@@ -155,8 +154,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				32A70AAB03705E1F00C91783 /* ETDocGenerator_Prefix.pch */,
-				08FB7796FE84155DC02AAC07 /* ETDocGenerator.m */,
+				08FB7796FE84155DC02AAC07 /* etdocgen.m */,
 				602363D4128B3E6600C9EC82 /* DocPageWeaver.h */,
 				602363D5128B3E6600C9EC82 /* DocPageWeaver.m */,
 				608A56EB12C61ED7007CD303 /* DocDeclarationReorderer.h */,
@@ -314,7 +312,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8DD76F9A0486AA7600D96B5E /* ETDocGenerator.m in Sources */,
+				8DD76F9A0486AA7600D96B5E /* etdocgen.m in Sources */,
 				03FF75330DF9EFED007D79D3 /* DocHeader.m in Sources */,
 				03FF75360DF9F159007D79D3 /* DocHTMLElement.m in Sources */,
 				03FF75DE0DFAAFEB007D79D3 /* DocMethod.m in Sources */,
