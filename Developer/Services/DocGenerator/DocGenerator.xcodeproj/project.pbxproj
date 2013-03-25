@@ -22,6 +22,7 @@
 		60444F8912FF70B600F9E93B /* GraphWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 60444F8712FF70B600F9E93B /* GraphWriter.m */; };
 		606D338D12946F1500AA7554 /* DocIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 606D338C12946F1500AA7554 /* DocIndex.m */; };
 		608A56ED12C61ED7007CD303 /* DocDeclarationReorderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 608A56EC12C61ED7007CD303 /* DocDeclarationReorderer.m */; };
+		609CFEC917005B1200D01AAB /* SourceCodeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609CFEC817005AF900D01AAB /* SourceCodeKit.framework */; };
 		60AF049E12B788F800BAF537 /* DocMacro.m in Sources */ = {isa = PBXBuildFile; fileRef = 60AF049B12B788F800BAF537 /* DocMacro.m */; };
 		60AF049F12B788F800BAF537 /* DocTOCPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 60AF049D12B788F800BAF537 /* DocTOCPage.m */; };
 		60F7F14412AF91970031E9F1 /* DocCDataType.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F7F14312AF91970031E9F1 /* DocCDataType.m */; };
@@ -64,6 +65,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 603647AB0E409244003377E0;
 			remoteInfo = EtoileFoundation;
+		};
+		609CFEC717005AF900D01AAB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 609CFEBF17005AF900D01AAB /* SourceCodeKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 609CFDB516FFD31700D01AAB;
+			remoteInfo = SourceCodeKit;
+		};
+		609CFECA17005B1D00D01AAB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 609CFEBF17005AF900D01AAB /* SourceCodeKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 609CFDB416FFD31700D01AAB;
+			remoteInfo = SourceCodeKit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -115,6 +130,7 @@
 		606D338C12946F1500AA7554 /* DocIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocIndex.m; sourceTree = "<group>"; };
 		608A56EB12C61ED7007CD303 /* DocDeclarationReorderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocDeclarationReorderer.h; sourceTree = "<group>"; };
 		608A56EC12C61ED7007CD303 /* DocDeclarationReorderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocDeclarationReorderer.m; sourceTree = "<group>"; };
+		609CFEBF17005AF900D01AAB /* SourceCodeKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SourceCodeKit.xcodeproj; path = ../../../Languages/SourceCodeKit/SourceCodeKit.xcodeproj; sourceTree = "<group>"; };
 		60AF049A12B788F800BAF537 /* DocMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocMacro.h; sourceTree = "<group>"; };
 		60AF049B12B788F800BAF537 /* DocMacro.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocMacro.m; sourceTree = "<group>"; };
 		60AF049C12B788F800BAF537 /* DocTOCPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocTOCPage.h; sourceTree = "<group>"; };
@@ -130,6 +146,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6012E32616FB723500A0335D /* EtoileFoundation.framework in Frameworks */,
+				609CFEC917005B1200D01AAB /* SourceCodeKit.framework in Frameworks */,
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */,
+				609CFEBF17005AF900D01AAB /* SourceCodeKit.xcodeproj */,
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 			);
 			name = "External Frameworks and Libraries";
@@ -221,6 +239,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		609CFEC017005AF900D01AAB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				609CFEC817005AF900D01AAB /* SourceCodeKit.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -235,6 +261,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				609CFECB17005B1D00D01AAB /* PBXTargetDependency */,
 				6012E32816FB724100A0335D /* PBXTargetDependency */,
 			);
 			name = etdocgen;
@@ -267,6 +294,10 @@
 				{
 					ProductGroup = 6012E30A16FB722800A0335D /* Products */;
 					ProjectRef = 6012E30916FB722800A0335D /* EtoileFoundation.xcodeproj */;
+				},
+				{
+					ProductGroup = 609CFEC017005AF900D01AAB /* Products */;
+					ProjectRef = 609CFEBF17005AF900D01AAB /* SourceCodeKit.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -305,6 +336,13 @@
 			remoteRef = 6012E31E16FB722800A0335D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		609CFEC817005AF900D01AAB /* SourceCodeKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SourceCodeKit.framework;
+			remoteRef = 609CFEC717005AF900D01AAB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -340,6 +378,11 @@
 			isa = PBXTargetDependency;
 			name = EtoileFoundation;
 			targetProxy = 6012E32716FB724100A0335D /* PBXContainerItemProxy */;
+		};
+		609CFECB17005B1D00D01AAB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SourceCodeKit;
+			targetProxy = 609CFECA17005B1D00D01AAB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
