@@ -21,6 +21,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6037746816B9DDBC00B7EEB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60988F15163B6B7A009C4F21;
+			remoteInfo = SQLClient;
+		};
+		6037746A16B9DDBC00B7EEB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6019B880163BFD8400D1986F;
+			remoteInfo = Performance;
+		};
+		6037746C16B9DDBC00B7EEB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60C913B3165BBED000E0C5F4;
+			remoteInfo = BasicPersistence;
+		};
 		6068BDEF1474283C00953B26 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */;
@@ -137,21 +158,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 6686BDAC12592BDA0065DE1A /* CoreObject.framework */;
+			remoteGlobalIDString = 6686BDAC12592BDA0065DE1A;
 			remoteInfo = CoreObject;
 		};
 		6073460C154176D4002558C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 791B4E2D1299C79300CCF472 /* Test */;
+			remoteGlobalIDString = 791B4E2D1299C79300CCF472;
 			remoteInfo = Test;
 		};
 		6073460E154176D4002558C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 66D099C4129AE111006BEDC3 /* StoreTest */;
+			remoteGlobalIDString = 66D099C4129AE111006BEDC3;
 			remoteInfo = StoreTest;
 		};
 		60E6AC0B147B9B3B00AD684D /* PBXContainerItemProxy */ = {
@@ -316,8 +337,11 @@
 			isa = PBXGroup;
 			children = (
 				6073460B154176D4002558C7 /* CoreObject.framework */,
+				6037746916B9DDBC00B7EEB5 /* SQLClient.framework */,
+				6037746B16B9DDBC00B7EEB5 /* Performance.framework */,
 				6073460D154176D4002558C7 /* Test */,
 				6073460F154176D4002558C7 /* StoreTest */,
+				6037746D16B9DDBC00B7EEB5 /* BasicPersistence */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -398,6 +422,27 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		6037746916B9DDBC00B7EEB5 /* SQLClient.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SQLClient.framework;
+			remoteRef = 6037746816B9DDBC00B7EEB5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6037746B16B9DDBC00B7EEB5 /* Performance.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Performance.framework;
+			remoteRef = 6037746A16B9DDBC00B7EEB5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6037746D16B9DDBC00B7EEB5 /* BasicPersistence */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = BasicPersistence;
+			remoteRef = 6037746C16B9DDBC00B7EEB5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		6068BDF01474283C00953B26 /* EtoileXML.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -611,19 +656,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../../../Frameworks/EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-					"$(PROJECT_DIR)/../../../Frameworks/EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-					"$(PROJECT_DIR)/../../../Frameworks/CoreObject/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-					"$(PROJECT_DIR)/../../../Frameworks/IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-					"$(BUILT_PRODUCTS_DIR)",
-				);
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/../../../Frameworks/EtoileFoundation/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/CoreObject/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/EtoileUI/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(PROJECT_DIR)/../../../Frameworks/IconKit/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -633,7 +671,8 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				SDKROOT = macosx10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};

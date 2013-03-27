@@ -62,7 +62,7 @@
 	//[[NSFileManager defaultManager] 
 	//	removeFileAtPath: [@"~/TestObjectStore" stringByExpandingTildeInPath] handler: nil];
 	COEditingContext *ctxt = [COEditingContext contextWithURL: 
-		[NSURL fileURLWithPath: [@"~/TestObjectStore" stringByExpandingTildeInPath]]];
+		[NSURL fileURLWithPath: [@"~/TestObjectStore.sqlite" stringByExpandingTildeInPath]]];
 
 	[COEditingContext setCurrentContext: ctxt];
 }
@@ -265,9 +265,9 @@
 	[[ctxt tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag, snowTag)];
 	[[[ctxt tagLibrary] tagGroups] addObjects: A(natureTagGroup, weatherTagGroup, unclassifiedTagGroup)];
 
-	[ctxt commitWithType: @"Object Creation" 
-	    shortDescription: @"Created Initial Core Objects"
-	     longDescription: @"Created various core objects such as photos, cities etc. organized by tags and libraries"];
+	[ctxt commitWithMetadata: D(@"Object Creation", @"summary",
+		@"Created Initial Core Objects", @"shortDescription",
+		@"Created various core objects such as photos, cities etc. organized by tags and libraries", @"longDescription")];
 }
 
 @end

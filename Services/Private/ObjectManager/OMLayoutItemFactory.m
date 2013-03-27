@@ -29,7 +29,7 @@
 		@"Type", @"Version", @"Tags");
 
 	[layout setDisplayedProperties: A(@"icon", @"name", @"modificationDate", @"creationDate", 
-		@"typeDescription", @"lastVersionDescription", @"tagDescription")];
+		@"typeDescription", @"revisionDescription", @"tagDescription")];
 
 	[layout setFormatter: [self dateFormatter] forProperty: @"modificationDate"];
 	[layout setFormatter: [self dateFormatter] forProperty: @"creationDate"];

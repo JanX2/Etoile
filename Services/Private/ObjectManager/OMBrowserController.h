@@ -70,4 +70,11 @@ content is presented in an ObjectManager window */
 
 - (void) addTag: (COGroup *)aTag;
 
+- (IBAction) remove: (id)sender;
+
+@end
+
+/** A category that adds convenient methods for ObjectManager needs */
+@interface COEditingContext (OMAdditions)
+- (void)deleteObjects: (NSSet *)objects;
 @end

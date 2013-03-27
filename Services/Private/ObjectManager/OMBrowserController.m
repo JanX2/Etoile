@@ -9,6 +9,7 @@
 #import <CoreObject/COCommitTrack.h>
 #import <CoreObject/COHistoryTrack.h>
 #import <CoreObject/COObject.h>
+#import <CoreObject/COPersistentRoot.h>
 #import "OMBrowserController.h"
 #import "OMLayoutItemFactory.h"
 #import "OMAppController.h"
@@ -97,7 +98,7 @@
 
 - (ETLayoutItemGroup *) whatGroupItem
 {
-	return [sourceListItem itemAtIndex: 1];
+	return (id)[sourceListItem itemAtIndex: 1];
 }
 
 - (COGroup *) whenGroup
@@ -121,7 +122,7 @@
 		else
 		{
 			ETAssert([selectedObject isKindOfClass: [COTagGroup class]]);
-			[tags addObjectsFromArray: [selectedObject contentArray]];
+			[tags addObjectsFromArray: [(COTagGroup *)selectedObject contentArray]];
 		}
 	}
 	return tags;
@@ -367,12 +368,7 @@
 	if ([selectedItems isEmpty])
 		return;
 
-	NSArray *coreObjects =  [[selectedItems mappedCollection] representedObject];
-
-	for (COObject *object in coreObjects)
-	{
-		[[self editingContext] deleteObject: object];
-	}
+	[[self editingContext] deleteObjects: [[selectedItems mappedCollection] representedObject]];
 	[[self editingContext] commit];
 }
 
@@ -388,8 +384,26 @@
 	NSString *shortDesc = [NSString stringWithFormat: @"Renamed to %@", [[anItem representedObject] name]];
 
 	[[self editingContext] commitWithType: @"Object Renaming" 
-	                     shortDescription: shortDesc
-	                      longDescription: nil];
+	                     shortDescription: shortDesc];
+}
+
+@end
+
+@implementation COEditingContext (OMAdditions)
+
+- (void)deleteObjects: (NSSet *)objects
+{
+	for (COObject *object in objects)
+	{
+		if ([object isRoot])
+		{
+			[self deletePersistentRootForRootObject: object];
+		}
+		else
+		{
+			[[object persistentRoot] deleteObject: object];
+		}
+	}
 }
 
 @end
