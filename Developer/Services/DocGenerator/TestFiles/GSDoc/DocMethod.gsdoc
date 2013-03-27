@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocMethod">
+  <head>
+    <title>DocMethod class documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>Methods in the doc element tree.</abstract>
+    <copy>2008 Nicolas Roard</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocMethod class
+      </heading>
+      <class name="DocMethod" super="DocSubroutine">
+        <declared>DocMethod.h</declared>
+        <conform>GSDocParserDelegate</conform>
+        <desc>
+          <p>
+            @group Doc Element Tree
+          </p>
+          <p>
+            A DocMethod object represents a method in the
+            documentation element tree.
+          </p>
+        </desc>
+        <method type="BOOL">
+          <sel>isClassMethod</sel>
+          <desc>
+            <p>
+              @taskunit Method Kind
+            </p>
+            <p>
+              Returns <code>NO</code> when the receiver
+              represents an instance method, otherwise
+              returns <code>YES</code>.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>refMarkup</sel>
+          <desc>
+            <p>
+              @taskunit Link Generation
+            </p>
+            <p>
+              Returns a valid ETDoc method link, relative to
+              the current class in the documentation page, that can
+              be turned into a real link in the output
+              representation such as HTML.
+            </p>
+            <p>
+              For example, would return
+              <em>
+                <ref type="method" id="-refMarkup">
+                  -refMarkup
+                </ref>
+              </em>
+              for this method.
+            </p>
+            <p>
+              -[DocElement
+              insertLinksWithDocIndex:forString:]
+              can detect the links returned by these refMarkupXXX
+              methods and hand them to a HTMLDocIndex, which in
+              turn will return a HTML link to replace this markup.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>refMarkupWithClassName:</sel>
+          <arg type="NSString*">aClassName</arg>
+          <desc>
+            <p>
+              Returns a valid ETDoc method link, relative to
+              the given class, that can be turned into a real link
+              in the output representation such as HTML.
+            </p>
+            <p>
+              For example, would return
+              <em>-[DocMethod refMarkup]</em> for this method.
+            </p>
+            <p>
+              See also
+              <ref type="method" id="-refMarkup">
+                -refMarkup
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>refMarkupWithProtocolName:</sel>
+          <arg type="NSString*">aProtocolName</arg>
+          <desc>
+            <p>
+              Returns a valid ETDoc method link, relative to
+              the given protocol, that can be turned into a real
+              link in the output representation such as HTML.
+            </p>
+            <p>
+              For example, would return
+              <em>-[(DocMethod) refMarkup]</em> for this method.
+            </p>
+            <p>
+              See also
+              <ref type="method" id="-refMarkup">
+                -refMarkup
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

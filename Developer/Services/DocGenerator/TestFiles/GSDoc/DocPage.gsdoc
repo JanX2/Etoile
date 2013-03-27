@@ -1,0 +1,315 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocPage">
+  <head>
+    <title>DocPage class documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>
+      DocPage represents a documentation page.
+    </abstract>
+    <copy>2008 Nicolas Roard</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocPage class
+      </heading>
+      <class name="DocPage" super="NSObject">
+        <declared>DocPage.h</declared>
+        <desc>
+          <p>
+            @group Page Generation
+          </p>
+          <p>
+            A documentation page that weaves various HTML, GSDoc,
+            Markdown and plist files (usually provided on the
+            command-line), into a new HTML
+            representation based on the template tags
+            embedded in the HTML or Markdown content.
+          </p>
+          <p>
+            You usually don't instantiate this class, but give the
+            documentation input files to DocPageWeaver
+            which will create new DocPage instances and return
+            them. <br /> The returned pages can then be written
+            to disk with
+            <ref type="method" id="-writeToURL:">
+              -writeToURL:
+            </ref>
+            or their HTML representation retrieved with
+            <ref type="method" id="-HTMLString">
+              -HTMLString
+            </ref>
+            .
+          </p>
+          <p>
+            Subclasses can be written to customize the
+            presentation and how the various elements
+            (methods, macros, menu etc.) are laid out.
+            Subclassing support is experimental and
+            untested.
+          </p>
+        </desc>
+        <ivariable type="NSMutableArray*" name="constants" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableArray*" name="functions" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableArray*" name="macros" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableArray*" name="methods" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableArray*" name="otherDataTypes" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableArray*" name="subheaders" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <method type="DocHTMLElement*">
+          <sel>HTMLOverviewRepresentationForGroupNamed:</sel>
+          <arg type="NSString*">aGroup</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*" override="dummy">
+          <sel>HTMLRepresentationForHeader:</sel>
+          <arg type="DocHeader*">aHeader</arg>
+          <desc>
+            <p>
+              Returns the HTML element tree into which the main
+              header should be rendered.
+            </p>
+            <p>
+              By default, returns the -[DocHeader
+              HTMLRepresentation].
+            </p>
+            <p>
+              Can be overriden to return a custom representation.
+            </p>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>HTMLRepresentationWithTitle:</sel>
+          <arg type="NSString*">aTitle</arg>
+          <sel>elements:</sel>
+          <arg type="NSArray*">elementsByGroup</arg>
+          <sel>HTMLRepresentationSelector:</sel>
+          <arg type="SEL">repSelector</arg>
+          <sel>groupSeparator:</sel>
+          <arg type="DocHTMLElement*">aSeparator</arg>
+          <desc>
+            <p>
+              Returns the given doc elements rendered as a HTML
+              element tree.
+            </p>
+            <p>
+              The array argument must contain ETKeyValuePair and
+              not DocElement objects. <br /> For -[ETKeyValuePair
+              value], every pairs must return a mutable array
+              that contains DocElement objects only.
+            </p>
+            <p>
+              Doc elements are sorted by their -[ETKeyValuePair
+              key] such as task or group name, before being
+              rendered to HTML.
+            </p>
+            <p>
+              Group or task names are output with a &lt;h4&gt;
+              header (&lt;h3&gt; when the title is
+              <code>nil</code>). <br /> A title is also added,
+              which uses a &lt;h3&gt; header.
+            </p>
+            <p>
+              <var>repSelector</var> should usually be
+              <ref type="method" id="-HTMLRepresentation">
+                -HTMLRepresentation
+              </ref>
+              . Additional representations can be added to the
+              DocElement subclasses such as -[DocHeader
+              HTMLTOCRepresentation]. You can
+              pass such a selector in argument to use a custom
+              representation in the output.
+            </p>
+            <p>
+              See also DocElement.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>HTMLString</sel>
+          <desc>
+            <p>
+              @taskunit HTML Generation
+            </p>
+            <p>
+              Returns a string representation of the whole page
+              by weaving the input files.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>addConstant:</sel>
+          <arg type="DocConstant*">aConstant</arg>
+          <desc>
+            <p>
+              Adds a constant documentation to the page.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>addFunction:</sel>
+          <arg type="DocFunction*">aFunction</arg>
+          <desc>
+            <p>
+              Adds a function documentation to the page.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>addMacro:</sel>
+          <arg type="DocMacro*">aMacro</arg>
+          <desc>
+            <p>
+              Adds a macro documentation to the page.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>addMethod:</sel>
+          <arg type="DocMethod*">aMethod</arg>
+          <desc>
+            <p>
+              Adds a method documentation to the page.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>addOtherDataType:</sel>
+          <arg type="DocCDataType*">anotherDataType</arg>
+          <desc>
+            <p>
+              Adds another data type documentation to the page.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>addSubheader:</sel>
+          <arg type="DocHeader*">aHeader</arg>
+          <desc>
+            <p>
+              Adds a subheader to the page.
+            </p>
+            <p>
+              Subheaders are expected to be positioned under
+              the main header. <br /> A subheader can be used to
+              regroup related documentation tree elements.
+            </p>
+          </desc>
+        </method>
+        <method type="DocHeader*">
+          <sel>header</sel>
+          <desc>
+            <p>
+              Returns the page header.
+            </p>
+          </desc>
+        </method>
+        <method type="id">
+          <sel>initWithDocumentFile:</sel>
+          <arg type="NSString*">aDocumentPath</arg>
+          <sel>templateFile:</sel>
+          <arg type="NSString*">aTemplatePath</arg>
+          <sel>menuFile:</sel>
+          <arg type="NSString*">aMenuPath</arg>
+          <desc>
+            <p>
+              @taskunit Initialization and Identity
+            </p>
+            <p>
+              Initialises and returns a new documentation
+              page that combines the given input files.
+            </p>
+          </desc>
+        </method>
+        <method type="NSArray*">
+          <sel>mainContentHTMLRepresentations</sel>
+          <desc>
+            <p>
+              Returns the main page content rendered as an
+              DocHTMLElement array, including elements
+              such as <em>Instance Methods</em>, <em>Macros</em>
+              etc.
+            </p>
+            <p>
+              Menu, navigation bar etc. are not present in the
+              returned HTML representation unlike
+              <ref type="method" id="-HTMLString">
+                -HTMLString
+              </ref>
+              which does include them in its ouput.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>name</sel>
+          <desc>
+            <p>
+              Returns the page name.
+            </p>
+            <p>
+              Can be used as a file name when saving the page, as
+              <em>etdocgen</em> does.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>setHeader:</sel>
+          <arg type="DocHeader*">aHeader</arg>
+          <desc>
+            <p>
+              @taskunit Page Building
+            </p>
+            <p>
+              Sets the page header.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>writeToURL:</sel>
+          <arg type="NSURL*">outputURL</arg>
+          <desc>
+            <p>
+              @taskunit Writing to File
+            </p>
+            <p>
+              Writes the page to the given URL atomically.
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

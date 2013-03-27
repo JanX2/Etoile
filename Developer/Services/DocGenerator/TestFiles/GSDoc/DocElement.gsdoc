@@ -1,0 +1,406 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocElement">
+  <head>
+    <title>DocElement documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>
+      Base class to represent element in a doc element tree.
+    </abstract>
+    <copy>2008 Nicolas Roard</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocElement class
+      </heading>
+      <class name="DocElement" super="NSObject">
+        <declared>DocElement.h</declared>
+        <conform>NSCopying</conform>
+        <desc>
+          <p>
+            @group Doc Element Tree
+          </p>
+          <p>
+            DocElement is an abstract class, whose
+            subclasses represents concrete nodes such as
+            methods, constants, etc. in the documentation
+            element tree.
+          </p>
+          <p>
+            Each DocElement subclass is expected to implement both
+            the GSDoc parsing and HTML generation that pertains to
+            the element type.
+          </p>
+          <p>
+            Any ETDoc markup parsing should be delegated to
+            DocDescriptionParser, see
+            <ref type="method" id="-addInformationFrom:">
+              -addInformationFrom:
+            </ref>
+            .
+          </p>
+          <p>
+            The doc element tree is rooted in a page. See DocPage.
+          </p>
+        </desc>
+        <method type="NSString*" factory="yes">
+          <sel>defaultTask</sel>
+          <desc>
+            <p>
+              @taskunit Basic Documentation Properties
+            </p>
+            <p>
+              Returns the task name returned by
+              <ref type="method" id="-task">
+                -task
+              </ref>
+              when no custom task was set.
+            </p>
+            <p>
+              The default task name is <em>Default</em>.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*" factory="yes">
+          <sel>forthcomingDescription</sel>
+          <desc>
+            <p>
+              @taskunit Attached Description
+            </p>
+            <p>
+              Returns the text to denote a empty description
+              yet to be written.
+            </p>
+            <p>
+              For every missing or empty descriptions in a header
+              or source file, autogsdoc inserts this text.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*" override="dummy">
+          <sel>GSDocElementName</sel>
+          <desc>
+            <p>
+              @taskunit GSDoc Parsing
+            </p>
+            <p>
+              Returns the GSDoc element name to be parsed to
+              initialize the instance.
+            </p>
+            <p>
+              Can be overriden to return an element name, and then
+              called in the GSDocParserDelegate methods to reuse
+              their implementation in a subclass hierarchy.
+              <br /> For example, DocCDataType returns
+              <em>type</em> and its subclass DocConstant returns
+              <em>constant</em>, this way DocConstant doesn't
+              override
+              <ref type="method" id="-parser:startElement:withAttributes:">-parser:startElement:withAttributes:</ref> but inherits DocCDataType implementation:
+            </p>
+<example>
+	if ([elementName isEqualToString: [self GSDocElementName]])
+	{
+		[self setName: [attributeDict objectForKey: @"name"]];
+		// more code
+	}
+</example>
+            <p>
+              By default, returns <em>type</em>.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>HTMLDescriptionWithDocIndex:</sel>
+          <arg type="DocHTMLIndex*">aDocIndex</arg>
+          <desc>
+            <p>
+              @taskunit HTML Generation
+            </p>
+            <p>
+              Returns a HTML formatted description from the
+              filtered description.
+            </p>
+            <p>
+              The returned description includes API symbol links.
+            </p>
+            <p>
+              See
+              <ref type="method" id="-filteredDescription">
+                -filteredDescription
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*" override="dummy">
+          <sel>HTMLRepresentation</sel>
+          <desc>
+            <p>
+              Returns the HTML element tree into which the
+              receiver should be rendered.
+            </p>
+            <p>
+              By default, returns the +[DocHTMLElement
+              blankElement].
+            </p>
+            <p>
+              Should be overriden to return a custom
+              representation.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>addInformationFrom:</sel>
+          <arg type="DocDescriptionParser*">aParser</arg>
+          <desc>
+            <p>
+              Updates the receiver properties listed below
+              based on the values parsed in the raw description
+              by the given DocDescriptionParser object.
+            </p>
+            <list>
+              <item>task</item> <item>task unit</item>
+              <item>filtered description</item>
+            </list>
+            <p>
+              You usually call this method to parse an element
+              description and initialize the receiver. For
+              example, when handling the closing tag in
+              -[(GSDocParserDelegate)
+              parser:endElement:withContent:]
+              a subclass can do:
+            </p>
+<example>
+DocDescriptionParser *descParser = AUTORELEASE([[DocDescriptionParser alloc] init]);
+
+[descParser parse: [self rawDescription]];
+[self addInformationFrom: descParser];
+</example>
+            <p>
+              Can be overriden in a subclass to update additional
+              markup values.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>appendToRawDescription:</sel>
+          <arg type="NSString*">aDescription</arg>
+          <desc>
+            <p>
+              Appends the given text to the raw description.
+            </p>
+            <p>
+              For example, subclasses call this method in their
+              GSDocParserDelegate method
+              implementations.
+            </p>
+            <p>
+              See also
+              <ref type="method" id="-rawDescription">
+                -rawDescription
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>insertLinksWithDocIndex:</sel>
+          <arg type="DocIndex*">aDocIndex</arg>
+          <sel>forString:</sel>
+          <arg type="NSString*">aDescription</arg>
+          <desc>
+            <p>
+              Parses valid ETDoc symbol names in the given
+              description and replaces them with links
+              built by the given doc index.
+            </p>
+            <p>
+              Symbol names can be detected even when not
+              surrounded by whitespaces, but enclosed by
+              common punctuation patterns.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>rawDescription</sel>
+          <desc>
+            <p>
+              Returns the raw description which still contains
+              ETDoc markup.
+            </p>
+          </desc>
+        </method>
+        <method type="SEL" override="dummy">
+          <sel>weaveSelector</sel>
+          <desc>
+            <p>
+              Returns the selector matching a CodeDocWeaving
+              method, that should be used to weave the receiver
+              into a page.
+            </p>
+            <p>
+              The returned selector must take a single argument.
+            </p>
+            <p>
+              e.g. -[(CodeDocWeaving) weaveOtherDataType:] or
+              -[(CodeDocWeaving) weaveConstant:].
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the DocElementGroup class
+      </heading>
+      <class name="DocElementGroup" super="DocElement">
+        <declared>DocElement.h</declared>
+        <desc>
+          <p>
+            @group Doc Element Tree @abstract Base class to
+            represent related element constructs in a doc
+            element tree.
+          </p>
+          <p>
+            DocElementGroup can be used to represent
+            arbitrary element grouping in a page layout.
+          </p>
+          <p>
+            Alternatively subclasses can be created to
+            represent concrete language constructs such as a
+            class, a category etc.
+          </p>
+        </desc>
+        <method type="void">
+          <sel>addElement:</sel>
+          <arg type="DocElement*">anElement</arg>
+          <desc>
+            <p>
+              @taskunit Element Collection
+            </p>
+            <p>
+              Adds the given element to the receiver.
+            </p>
+            <p>
+              The element must be KVC-compliant for
+              <ref type="method" id="-subgroupKey">
+                -subgroupKey
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="id" init="yes">
+          <sel>initWithHeader:</sel>
+          <arg type="DocHeader*">aHeader</arg>
+          <sel>subgroupKey:</sel>
+          <arg type="NSString*">aKey</arg>
+          <desc>
+            <p>
+              @taskunit Initialization
+            </p>
+            <p>
+              Initializes and returns a new doc element
+              group whose HTML representation should start with
+              the given header.
+            </p>
+            <p>
+              The elements hold in the receiver will be organized
+              into subgroups based on the subgroup key. See
+              <ref type="method" id="-subgroupKey">
+                -subgroupKey
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the DocSubroutine class
+      </heading>
+      <class name="DocSubroutine" super="DocElement">
+        <declared>DocElement.h</declared>
+        <desc>
+          <p>
+            @group Doc Element Tree @abstract Base class to
+            represent function-like constructs in a doc
+            element tree.
+          </p>
+          <p>
+            DocSubroutine is an abstract class whose
+            subclasses represent function-like constructs
+            suchs methods, C functions or macros.
+          </p>
+        </desc>
+        <method type="DocHTMLElement*">
+          <sel>HTMLAddendumRepresentation</sel>
+          <desc>
+            <p>
+              @taskunit HTML Generation
+            </p>
+            <p>
+              Returns the HTML element tree that corresponds to
+              the described parameters and return value.
+            </p>
+            <p>
+              Subclasses can use this method to include this
+              addendum representation into the HTML element
+              tree returned by
+              <ref type="method" id="-HTMLRepresentation">
+                -HTMLRepresentation
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>addParameter:</sel>
+          <arg type="DocParameter*">aParameter</arg>
+          <desc>
+            <p>
+              @taskunit Parameters
+            </p>
+            <p>
+              Declares a new parameter that follow any
+              previously added parameters.
+            </p>
+          </desc>
+        </method>
+        <method type="NSArray*">
+          <sel>parameters</sel>
+          <desc>
+            <p>
+              Returns the parameters.
+            </p>
+          </desc>
+        </method>
+        <method type="DocParameter*">
+          <sel>returnParameter</sel>
+          <desc>
+            <p>
+              Returns the return type as an anonymous parameter
+              object to which a HTML representation of the type
+              can be asked.
+            </p>
+            <p>
+              When generating the HTML representation for the
+              return type, the parameter object will insert
+              symbol links and apply standard formatting (e.g.
+              class name + space + star) as expected.
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

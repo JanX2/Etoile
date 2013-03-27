@@ -1,0 +1,355 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocHTMLElement">
+  <head>
+    <title>DocHTMLElement class documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+    <copy>2008 Nicolas Roard</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocHTMLElement class
+      </heading>
+      <class name="DocHTMLElement" super="NSObject">
+        <declared>DocHTMLElement.h</declared>
+        <desc>
+          <p>
+            @group HTML Support @abstract HTML element class to
+            output HTML in a concise way.
+          </p>
+          <p>
+            DocHTMLElement is a Seaside-inspired class
+            that provides a DSL to write compact HTML generation
+            code.
+          </p>
+          <p>
+            DocHTMLElement comes with null-like element
+            that doesn't emit the element markup when evaluated.
+            See
+            <ref type="method" id="+blankElement">
+              +blankElement
+            </ref>
+            .
+          </p>
+          <p>
+            TODO: DocHTMLElement DSL should be more clean and
+            formalized. For example,
+            <ref type="method" id="-and:">
+              -and:
+            </ref>
+            , <ref type="method" id="-with:">-with:</ref> and
+            <ref type="method" id="-add:">
+              -add:
+            </ref>
+            are the same, but it isn't entirely clear-cut when one
+            should be preferred to the others. <br /> For now, a
+            single <ref type="method" id="-with:">-with:</ref>
+            should be used per message chains. Any subsequent
+            concatenation messages should use
+            <ref type="method" id="-and:">
+              -and:
+            </ref>
+            . e.g.
+            <ref type="method" id="-with:and:and:">
+              -with:and:and:
+            </ref>
+            is valid but
+            <ref type="method" id="-with:with:and:">
+              -with:with:and:
+            </ref>
+            is not. <br /> The obscure point is what to do when we
+            send a single concatenation message. Should we
+            recommend
+            <ref type="method" id="-with:">
+              -with:
+            </ref>
+            , <ref type="method" id="-and:">-and:</ref> or -add:?
+            Should we take in account the type of the concatened
+            content such DocHTMLElement or NSString, then make
+            a distinction between
+            <ref type="method" id="-add:">
+              -add:
+            </ref>
+            and <ref type="method" id="-addText:">-addText:</ref>.
+            <br /> Is DocHTMLElement DSL really needed or the
+            right answer to what we need?
+          </p>
+        </desc>
+        <ivariable type="NSMutableDictionary*" name="attributes" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSSet*" name="blockElementNames" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableArray*" name="children" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="elementName" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <method type="DocHTMLElement*" factory="yes">
+          <sel>blankElement</sel>
+          <desc>
+            <p>
+              @taskunit Initialization and Factory Methods
+            </p>
+            <p>
+              Returns a new HTML element whose content is not
+              wrapped into opening and closing tags
+              corresponding to the receiver, but limited
+              to the child content.
+            </p>
+            <p>
+              When the content is evaluated, the element name and
+              attributes are ignored, but each child content
+              is evaluated normally.
+            </p>
+            <p>
+              When the receiver has no children,
+              <ref type="method" id="-content">
+                -content
+              </ref>
+              returns an empty string.
+            </p>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*" factory="yes">
+          <sel>elementWithName:</sel>
+          <arg type="NSString*">aName</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>add:</sel>
+          <arg type="DocHTMLElement*">anElem</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>addText:</sel>
+          <arg type="NSString*">aText</arg>
+          <desc>
+            <p>
+              @taskunit Tree Building Primitives
+            </p>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>and:</sel>
+          <arg type="id">something</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>class:</sel>
+          <arg type="NSString*">aClass</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>content</sel>
+          <desc>
+            <p>
+              @taskunit HTML Generation
+            </p>
+            <p>
+              Returns the HTML string representation of the
+              element tree rooted in the receiver.
+            </p>
+            <p>
+              This HTML generation is done in a recursive manner
+              by invoking
+              <ref type="method" id="-content">
+                -content
+              </ref>
+              on the child elements.
+            </p>
+            <p>
+              TODO: Document a bit better and when line breaks
+              are inserted.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>description</sel>
+          <desc>
+            <p>
+              Returns
+              <ref type="method" id="-content">
+                -content
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>id:</sel>
+          <arg type="NSString*">anID</arg>
+          <desc>
+            <p>
+              @taskunit HTML Attributes Support
+            </p>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>initWithName:</sel>
+          <arg type="NSString*">aName</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>name:</sel>
+          <arg type="NSString*">aName</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <desc>
+            <p>
+              @taskunit Tree Building Syntactic Sugar
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the
+        DocHTMLElement(CommonUseCases)
+        category
+      </heading>
+      <category name="CommonUseCases" class="DocHTMLElement">
+        <declared>DocHTMLElement.h</declared>
+        <desc>
+          <p>
+            @group HTML Support
+          </p>
+          <p>
+            Category on DocHTMLElement to prevent compiler
+            warning since DocHTMLElement has no fixed API but
+            support a large number of message chaining
+            variations.
+          </p>
+        </desc>
+        <method type="DocHTMLElement*">
+          <sel>class:</sel>
+          <arg type="NSString*">aClass</arg>
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>class:</sel>
+          <arg type="NSString*">aClass</arg>
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <sel>and:</sel>
+          <arg type="id">someOtherThing</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>class:</sel>
+          <arg type="NSString*">aClass</arg>
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <sel>and:</sel>
+          <arg type="id">someOtherThing</arg>
+          <sel>and:</sel>
+          <arg type="id">someThirdThing</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>id:</sel>
+          <arg type="NSString*">anID</arg>
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>id:</sel>
+          <arg type="NSString*">anID</arg>
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <sel>and:</sel>
+          <arg type="id">someOtherThing</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>id:</sel>
+          <arg type="NSString*">anID</arg>
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <sel>and:</sel>
+          <arg type="id">someOtherThing</arg>
+          <sel>and:</sel>
+          <arg type="id">someThirdThing</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <sel>and:</sel>
+          <arg type="id">someOtherThing</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <sel>and:</sel>
+          <arg type="id">someOtherThing</arg>
+          <sel>and:</sel>
+          <arg type="id">someThirdThing</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>with:</sel>
+          <arg type="id">something</arg>
+          <sel>and:</sel>
+          <arg type="id">someOtherthing</arg>
+          <sel>and:</sel>
+          <arg type="id">someThirdThing</arg>
+          <sel>and:</sel>
+          <arg type="id">someForthThing</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+      </category>
+    </chapter>
+  </body>
+</gsdoc>

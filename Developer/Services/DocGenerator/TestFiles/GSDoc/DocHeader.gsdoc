@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocHeader">
+  <head>
+    <title>DocHeader class documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>
+      Documentation page header or subheader.
+    </abstract>
+    <copy>2008 Nicolas Roard</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocHeader class
+      </heading>
+      <class name="DocHeader" super="DocElement">
+        <declared>DocHeader.h</declared>
+        <conform>GSDocParserDelegate</conform>
+        <desc>
+          <p>
+            @group Doc Element Tree
+          </p>
+        </desc>
+        <ivariable type="NSString*" name="abstract" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableArray*" name="adoptedProtocolNames" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSMutableArray*" name="authors" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="categoryName" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="className" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="declaredIn" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="fileOverview" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="group" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="overview" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="protocolName" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="superclassName" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="title" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <method type="DocHTMLElement*">
+          <sel>HTMLOverviewRepresentation</sel>
+          <desc>
+            <p>
+              @taskunit HTML Generation
+            </p>
+            <p>
+              Returns the overview rendered as a HTML element
+              tree.
+            </p>
+            <p>
+              Will return +[DocHTMLElement blankElement] if no
+              overview is available.
+            </p>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>HTMLRepresentation</sel>
+          <desc>
+            <p>
+              Returns the entire header rendered as a HTML
+              element tree.
+            </p>
+            <p>
+              The returned representation includes
+              <ref type="method" id="-HTMLOverviewRepresentation">
+                -HTMLOverviewRepresentation
+              </ref>
+              .
+            </p>
+            <p>
+              The method creates a title block and hands it to
+              <ref type="method" id="-HTMLRepresentationWithTitleBlockElement:">-HTMLRepresentationWithTitleBlockElement:</ref> in order to obtain the HTML representation that should be returned.
+            </p>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>HTMLRepresentationWithTitleBlockElement:</sel>
+          <arg type="DocHTMLElement*">hTitleBlock</arg>
+          <desc>
+            <p>
+              Returns the entire header rendered as a HTML
+              element tree with a custom title element at the
+              beginning.
+            </p>
+            <p>
+              The returned representation includes
+              <ref type="method" id="-HTMLOverviewRepresentation">
+                -HTMLOverviewRepresentation
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>HTMLTOCRepresentation</sel>
+          <desc>
+            <p>
+              Returns a <strong>short</strong> header, limited
+              to its overview, rendered as a HTML element tree.
+            </p>
+            <p>
+              The returned representation includes
+              <ref type="method" id="-HTMLOverviewRepresentation">
+                -HTMLOverviewRepresentation
+              </ref>
+              .
+            </p>
+            <p>
+              See DocTOCPage which uses this custom representation.
+              e.g. to present all the classes, categories and
+              protocol on the API overview page.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>addAdoptedProtocolName:</sel>
+          <arg type="NSString*">aName</arg>
+          <desc>
+            <p>
+              @taskunit Documented <strong>Class</strong>,
+              Protocol or Category
+            </p>
+            <p>
+              Adds a protocol name to
+              <ref type="method" id="-adoptedProtocolNames">
+                -adoptedProtocolNames
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>addAuthor:</sel>
+          <arg type="NSString*">aName</arg>
+          <desc>
+            <p>
+              @taskunit Basic Infos
+            </p>
+            <p>
+              Adds the given author name to the author list.
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

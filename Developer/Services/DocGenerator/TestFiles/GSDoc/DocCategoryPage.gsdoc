@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocCategoryPage">
+  <head>
+    <title>DocCategoryPage class documentation</title>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>
+      DocCategoryPage represents a page where all the
+      categories on the same class are regrouped.
+    </abstract>
+    <copy>2010 Quentin Mathe</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocCategoryPage class
+      </heading>
+      <class name="DocCategoryPage" super="DocPage">
+        <declared>DocCategoryPage.h</declared>
+        <desc>
+          <p>
+            @group Page Generation
+          </p>
+        </desc>
+        <method type="void">
+          <sel>addMethodGroup:</sel>
+          <arg type="DocElementGroup*">aMethodGroup</arg>
+          <desc>
+            <p>
+              Adds a method group representing a category
+              documentation to the page.
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

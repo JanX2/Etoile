@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocParameter">
+  <head>
+    <title>DocParameter class documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <copy>2008 Nicolas Roard</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocParameter class
+      </heading>
+      <class name="DocParameter" super="NSObject">
+        <declared>DocParameter.h</declared>
+        <desc>
+          <p>
+            @group Doc Element Tree @abstract Parameters in the
+            doc element tree.
+          </p>
+          <p>
+            A DocParameter object can be used to represent both
+            method argument, and function or macro parameter in
+            the documentation element tree.
+          </p>
+          <p>
+            This class is used by DocSubroutine class and
+            subclasses such DocMethod, DocFunction and
+            DocMacro.
+          </p>
+          <p>
+            DocParameter can extract class, protocol
+            names, and some type modifiers used in prefix or
+            suffix position. See
+            <ref type="method" id="-parseType:">
+              -parseType:
+            </ref>
+            which documents the type parsing support.
+          </p>
+        </desc>
+        <ivariable type="NSString*" name="className" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="description" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="name" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="protocolName" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="type" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="typePrefix" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <ivariable type="NSString*" name="typeSuffix" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <method type="id" factory="yes">
+          <sel>parameterWithName:</sel>
+          <arg type="NSString*">aName</arg>
+          <sel>type:</sel>
+          <arg type="NSString*">aType</arg>
+          <desc>
+            <p>
+              @taskunit Initialization and Factory Methods
+            </p>
+            <p>
+              Returns a new autoreleased parameter with the
+              given name and type.
+            </p>
+          </desc>
+        </method>
+        <method type="DocHTMLElement*">
+          <sel>HTMLRepresentationWithParentheses:</sel>
+          <arg type="BOOL">usesParentheses</arg>
+          <desc>
+            <p>
+              @taskunit HTML Generation
+            </p>
+            <p>
+              Returns the parameter rendered as a HTML element
+              tree.
+            </p>
+            <p>
+              When <var>usesParentheses</var> is <code>YES</code>,
+              the ouput will be wrapped into parentheses e.g.
+              <em>(NSString *)</em> rather than
+              <em>NSString *</em>.
+            </p>
+            <p>
+              The ouput includes both the name and the type.
+            </p>
+          </desc>
+        </method>
+        <method type="id" init="yes">
+          <sel>initWithName:</sel>
+          <arg type="NSString*">aName</arg>
+          <sel>type:</sel>
+          <arg type="NSString*">aType</arg>
+          <desc>
+            <p>
+              Initializes and returns a new parameter with
+              the given name and type.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>parseType:</sel>
+          <arg type="NSString*">aType</arg>
+          <desc>
+            <p>
+              @taskunit Type Infos
+            </p>
+            <p>
+              We support parsing protocol and classe type such as:
+            </p>
+            <list>
+              <item>id&lt;ProtocolName&gt;</item>
+              <item>id&lt;ProtocolName&gt;*</item>
+              <item>ClassName*</item> <item>ClassName**</item>
+              <item>ClassName&lt;ProtocolName&gt;*</item>
+              <item>ClassName&lt;ProtocolName&gt;**</item>
+            </list>
+            <p>
+              These declarations can be wrapped with a prefix and
+              suffix too, but this isn't well tested yet. e.g.
+              const.
+            </p>
+            <p>
+              We won't parse a protocol name that doesn't begin with
+              a uppercase letter (parsing code limitation). Doesn't
+              matter so much given we have no way to recognize a
+              class name without a uppercase letter (unless we
+              use the doc index to check its existence, but that
+              would make the parsing slower without observable
+              benefit since ObjC tradition requires class and
+              protocol names to use camel case).
+            </p>
+            <p>
+              We support parsing protocol and classe type such as:
+            </p>
+            <list>
+              <item>id&lt;ProtocolName&gt;</item>
+              <item>id&lt;ProtocolName&gt;*</item>
+              <item>ClassName*</item> <item>ClassName**</item>
+              <item>ClassName&lt;ProtocolName&gt;*</item>
+              <item>ClassName&lt;ProtocolName&gt;**</item>
+            </list>
+            <p>
+              These declarations can be wrapped with a prefix and
+              suffix too, but this isn't well tested yet. e.g.
+              const.
+            </p>
+            <p>
+              We won't parse a protocol name that doesn't begin with
+              a uppercase letter (parsing code limitation). Doesn't
+              matter so much given we have no way to recognize a
+              class name without a uppercase letter (unless we
+              use the doc index to check its existence, but that
+              would make the parsing slower without observable
+              benefit since ObjC tradition requires class and
+              protocol names to use camel case).
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

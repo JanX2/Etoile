@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocFunction">
+  <head>
+    <title>DocFunction class documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>Functions in the doc element tree.</abstract>
+    <copy>2008 Nicolas Roard</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocFunction class
+      </heading>
+      <class name="DocFunction" super="DocSubroutine">
+        <declared>DocFunction.h</declared>
+        <conform>GSDocParserDelegate</conform>
+        <desc>
+          <p>
+            @group Doc Element Tree
+          </p>
+          <p>
+            A DocFunction object represents a function in the
+            documentation element tree.
+          </p>
+        </desc>
+        <method type="NSString*" override="dummy">
+          <sel>GSDocElementName</sel>
+          <desc>
+            <p>
+              @taskunit GSDoc Parsing
+            </p>
+            <p>
+              Returns <em>function</em>.
+            </p>
+            <p>
+              See -[DocElement GSDocElementName].
+            </p>
+          </desc>
+        </method>
+        <method type="SEL" override="dummy">
+          <sel>weaveSelector</sel>
+          <desc>
+            <p>
+              Returns
+              <ref type="method" id="-weaveFunction:">
+                -weaveFunction:
+              </ref>
+              .
+            </p>
+            <p>
+              See -[DocElement weaveSelector].
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocCDataType">
+  <head>
+    <title>DocCDataType documentation</title>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>
+      C data types in the doc element tree.
+    </abstract>
+    <copy>2010 Quentin Mathe</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocCDataType class
+      </heading>
+      <class name="DocCDataType" super="DocElement">
+        <declared>DocCDataType.h</declared>
+        <conform>GSDocParserDelegate</conform>
+        <desc>
+          <p>
+            @group Doc Element Tree
+          </p>
+          <p>
+            DocCDataType objects are used to represent
+            various C data types:
+          </p>
+          <list>
+            <item>structure</item> <item>function pointer</item>
+          </list>
+          <p>
+            Enum and union are represented with DocConstant
+            <ref type="method" id="-weaveSelector">
+              -weaveSelector
+            </ref>
+            .
+          </p>
+        </desc>
+        <ivariable type="NSString*" name="type" validity="protected">
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </ivariable>
+        <method type="NSString*" override="dummy">
+          <sel>GSDocElementName</sel>
+          <desc>
+            <p>
+              @taskunit GSDoc Parsing
+            </p>
+            <p>
+              Returns <em>type</em>.
+            </p>
+            <p>
+              See -[DocElement GSDocElementName].
+            </p>
+          </desc>
+        </method>
+        <method type="SEL" override="dummy">
+          <sel>weaveSelector</sel>
+          <desc>
+            <p>
+              Returns
+              <ref type="method" id="-weaveOtherDataType:">
+                -weaveOtherDataType:
+              </ref>
+              .
+            </p>
+            <p>
+              See -[DocElement weaveSelector].
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the DocConstant class
+      </heading>
+      <class name="DocConstant" super="DocCDataType">
+        <declared>DocCDataType.h</declared>
+        <desc>
+          <p>
+            @group Doc Element Tree @abstract C constant-like
+            types in the doc element tree.
+          </p>
+          <p>
+            DocConstant objects are used to represent
+            various constant-like C data types:
+          </p>
+          <list>
+            <item>const variable or pointer</item>
+            <item>enum</item> <item>union</item>
+          </list>
+        </desc>
+        <method type="NSString*" override="dummy">
+          <sel>GSDocElementName</sel>
+          <desc>
+            <p>
+              @taskunit GSDoc Parsing
+            </p>
+            <p>
+              Returns <em>constant</em>.
+            </p>
+            <p>
+              See -[DocElement GSDocElementName].
+            </p>
+          </desc>
+        </method>
+        <method type="SEL" override="dummy">
+          <sel>weaveSelector</sel>
+          <desc>
+            <p>
+              Returns
+              <ref type="method" id="-weaveConstant:">
+                -weaveConstant:
+              </ref>
+              .
+            </p>
+            <p>
+              See -[DocElement weaveSelector].
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the DocVariable class
+      </heading>
+      <class name="DocVariable" super="DocCDataType">
+        <declared>DocCDataType.h</declared>
+        <desc>
+          <p>
+            @group Doc Element Tree @abstract Global variables
+            in the doc element tree.
+          </p>
+          <p>
+            DocVariable objects are used to represent
+            global variables not declared as constants (in that
+            DocConstant would be used).
+          </p>
+        </desc>
+        <method type="NSString*" override="dummy">
+          <sel>GSDocElementName</sel>
+          <desc>
+            <p>
+              @taskunit GSDoc Parsing
+            </p>
+            <p>
+              Returns <em>variable</em>.
+            </p>
+            <p>
+              See -[DocElement GSDocElementName].
+            </p>
+          </desc>
+        </method>
+        <method type="SEL" override="dummy">
+          <sel>weaveSelector</sel>
+          <desc>
+            <p>
+              Returns
+              <ref type="method" id="-weaveConstant:">
+                -weaveConstant:
+              </ref>
+              .
+            </p>
+            <p>
+              See -[DocElement weaveSelector].
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocTOCPage">
+  <head>
+    <title>DocTOCPage class documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>
+      DocTOCPage represents a Table Of Contents page.
+    </abstract>
+    <copy>2010 Quentin Mathe</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocTOCPage class
+      </heading>
+      <class name="DocTOCPage" super="DocPage">
+        <declared>DocTOCPage.h</declared>
+        <desc>
+          <p>
+            @group Page Generation
+          </p>
+        </desc>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

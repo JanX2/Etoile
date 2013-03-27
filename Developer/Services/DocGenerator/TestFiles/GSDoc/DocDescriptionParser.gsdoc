@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocDescriptionParser">
+  <head>
+    <title>DocDescriptionParser documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>ETDoc markup parser.</abstract>
+    <copy>2008 Nicolas Roard</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocDescriptionParser
+        class
+      </heading>
+      <class name="DocDescriptionParser" super="NSObject">
+        <declared>DocDescriptionParser.h</declared>
+        <desc>
+          <p>
+            @group ETDoc Parsing
+          </p>
+          <p>
+            Parser to extract ETDoc markup located in method,
+            function and macro descriptions.
+          </p>
+        </desc>
+        <method type="NSString*">
+          <sel>description</sel>
+          <desc>
+            <p>
+              @taskunit Parsing Result
+            </p>
+            <p>
+              Returns the parsed main description.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>descriptionForParameter:</sel>
+          <arg type="NSString*">aName</arg>
+          <desc>
+            <p>
+              Returns the parsed content for the
+              <em>@param &lt;aName&gt;</em> tag sequence.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>parse:</sel>
+          <arg type="NSString*">corpus</arg>
+          <desc>
+            <p>
+              Resets the parser state and parses ETDoc markup in
+              the given API description.
+            </p>
+            <p>
+              Query the receiver to retrieve the parsing result.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>returnDescription</sel>
+          <desc>
+            <p>
+              Returns the parsed content for <em>@return</em>
+              tag.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>task</sel>
+          <desc>
+            <p>
+              Returns the parsed content for <em>@task</em>
+              tag.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>taskUnit</sel>
+          <desc>
+            <p>
+              Returns the parsed content for <em>@taskunit</em>
+              tag.
+            </p>
+          </desc>
+        </method>
+        <method type="NSArray*">
+          <sel>validTagsAfterMainDescription</sel>
+          <desc>
+            <p>
+              Returns the tags allowed before the main
+              description.
+            </p>
+            <p>
+              The element order matters, see
+              <ref type="method" id="-validTagsBeforeMainDescription">
+                -validTagsBeforeMainDescription
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="NSArray*">
+          <sel>validTagsBeforeMainDescription</sel>
+          <desc>
+            <p>
+              Returns the tags allowed before the main
+              description.
+            </p>
+            <p>
+              The element order matters. e.g. @taskunit must
+              preceded @task, otherwise @taskunit is parsed as
+              @task.
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the
+        DocMethodGroupDescriptionParser
+        class
+      </heading>
+      <class name="DocMethodGroupDescriptionParser" super="DocDescriptionParser">
+        <declared>DocDescriptionParser.h</declared>
+        <desc>
+          <p>
+            @group ETDoc Parsing
+          </p>
+          <p>
+            Parser to extract ETDoc markup located in class,
+            protocol or category descriptions.
+          </p>
+        </desc>
+        <method type="NSString*">
+          <sel>abstract</sel>
+          <desc>
+            <p>
+              Returns the parsed content for <em>@abstract</em>
+              tag.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>group</sel>
+          <desc>
+            <p>
+              @taskunit Parsing Result
+            </p>
+            <p>
+              Returns the parsed content for <em>@group</em>
+              tag.
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the NSString(DocGenerator)
+        category
+      </heading>
+      <category name="DocGenerator" class="NSString">
+        <declared>DocDescriptionParser.h</declared>
+        <desc>
+          <p>
+            @abstract None
+          </p>
+        </desc>
+        <method type="NSString*">
+          <sel>stringByTrimmingWhitespacesAndNewlinesByLine</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>trimmedString</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+      </category>
+    </chapter>
+  </body>
+</gsdoc>

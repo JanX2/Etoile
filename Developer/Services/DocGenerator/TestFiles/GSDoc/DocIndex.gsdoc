@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocIndex">
+  <head>
+    <title>DocIndex documentation</title>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>
+      A documentation index that can be used to create links.
+    </abstract>
+    <copy>2010 Quentin Mathe</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocHTMLIndex class
+      </heading>
+      <class name="DocHTMLIndex" super="DocIndex">
+        <declared>DocIndex.h</declared>
+        <desc>
+          <p>
+            @group Link Generation
+          </p>
+        </desc>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the DocIndex class
+      </heading>
+      <class name="DocIndex" super="NSObject">
+        <declared>DocIndex.h</declared>
+        <desc>
+          <p>
+            @group Link Generation
+          </p>
+          <p>
+            DocIndex represents an autgsdoc-compatible
+            documentation index.
+          </p>
+          <p>
+            It must be initialized with the igsdoc file
+            corresponding to the gsdoc sources passed to
+            the DocPageWeaver instance in use.
+          </p>
+          <p>
+            Concrete subclasses such DocHTMLIndex can be used
+            to create links. For example, DocHTMLIndex can be used
+            in -[DocElement HTMLRepresentation] code to wrap every
+            symbol name in a HTML link.
+          </p>
+        </desc>
+        <method type="id" factory="yes">
+          <sel>currentIndex</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void" factory="yes">
+          <sel>setCurrentIndex:</sel>
+          <arg type="DocIndex*">anIndex</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="id">
+          <sel>initWithGSDocIndexFile:</sel>
+          <arg type="NSString*">anIndexFile</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="BOOL">
+          <sel>isInformalProtocolSymbolName:</sel>
+          <arg type="NSString*">aSymbolName</arg>
+          <desc>
+            <p>
+              Returns whether the given symbol name is declared
+              as an an informal protocol in the GSDoc index.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>linkForClassName:</sel>
+          <arg type="NSString*">aClassName</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>linkForGSDocRef:</sel>
+          <arg type="NSString*">aRef</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>linkForLocalMethodRef:</sel>
+          <arg type="NSString*">aRef</arg>
+          <sel>relativeTo:</sel>
+          <arg type="DocElement*">anElement</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>linkForProtocolName:</sel>
+          <arg type="NSString*">aProtocolName</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>linkForSymbolName:</sel>
+          <arg type="NSString*">aSymbol</arg>
+          <sel>ofKind:</sel>
+          <arg type="NSString*">aKind</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>linkWithName:</sel>
+          <arg type="NSString*">aName</arg>
+          <sel>forSymbolName:</sel>
+          <arg type="NSString*">aSymbol</arg>
+          <sel>ofKind:</sel>
+          <arg type="NSString*">aKind</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>linkWithName:</sel>
+          <arg type="NSString*">aName</arg>
+          <sel>ref:</sel>
+          <arg type="NSString*">aRef</arg>
+          <sel>anchor:</sel>
+          <arg type="NSString*">anAnchor</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSArray*">
+          <sel>projectSymbolNamesOfKind:</sel>
+          <arg type="NSString*">aKind</arg>
+          <desc>
+            <p>
+              Returns all the symbol names present in the
+              project that match the given kind.
+            </p>
+            <p>
+              Valid kinds are the ones returned by
+              <ref type="method" id="-symbolKinds">
+                -symbolKinds
+              </ref>
+              .
+            </p>
+            <p>
+              For example, 'classes' would return 'DocIndex',
+              'DocElement', 'DocMethod' etc.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>refFileExtension</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>regenerate</sel>
+          <desc>
+            <p>
+              Regenerates the index refs by merging
+              external refs, project refs and custom refs.
+            </p>
+            <p>
+              You must call this method before generating the
+              document output e.g. invoking
+              <ref type="method" id="-HTMLRepresentation">
+                -HTMLRepresentation
+              </ref>
+              on any doc element.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>setProjectRef:</sel>
+          <arg type="NSString*">aRef</arg>
+          <sel>forSymbolName:</sel>
+          <arg type="NSString*">aSymbol</arg>
+          <sel>ofKind:</sel>
+          <arg type="NSString*">aKind</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="NSArray*">
+          <sel>symbolKinds</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

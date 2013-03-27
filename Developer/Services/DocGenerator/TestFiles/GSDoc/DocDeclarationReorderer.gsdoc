@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocDeclarationReorderer">
+  <head>
+    <title>DocDeclarationReorderer class documentation</title>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>
+      A DocPageWeaver decorator which can be used to reorder GSDoc
+      symbols declarations, in order to match the source
+      header.
+    </abstract>
+    <copy>2010 Quentin Mathe</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocDeclarationReorderer
+        class
+      </heading>
+      <class name="DocDeclarationReorderer" super="NSObject">
+        <declared>DocDeclarationReorderer.h</declared>
+        <conform>CodeDocWeaving</conform>
+        <desc>
+          <p>
+            @group GSDoc Parsing
+          </p>
+          <p>
+            DocPageWeaver uses this class internally.
+          </p>
+          <p>
+            See
+            <ref type="method" id="-initWithWeaver:orderedSymbols:">
+              -initWithWeaver:orderedSymbols:
+            </ref>
+            .
+          </p>
+        </desc>
+        <method type="id" init="yes">
+          <sel>initWithWeaver:</sel>
+          <arg type="id&lt;CodeDocWeaving&gt;">aWeaver</arg>
+          <sel>orderedSymbols:</sel>
+          <arg type="NSDictionary*">symbolArraysByKind</arg>
+          <desc>
+            <p>
+              Initializes and returns a new reorderer that
+              can receive parsed symbols through CodeDocWeaving
+              protocol it implements, and emit reordered
+              symbols by invoking CodeDocWeaving methods on the
+              weaver.
+            </p>
+            <p>
+              The weaver argument should be a DocPageWeaver object.
+              <br /> The parser calling CodeDocWeaving methods
+              on a DocDeclarationReorderer object should be a
+              GSDocParser. <br />
+            </p>
+            <p>
+              The returned object reorders the symbols to match
+              their ordering in the given property list, whose
+              structure must match
+              <em>OrderedSymbolDeclarations.plist</em> output by
+              autogsdoc.
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

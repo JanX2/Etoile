@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocMacro">
+  <head>
+    <title>DocMacro class documentation</title>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>Macros in the doc element tree.</abstract>
+    <copy>2010 Quentin Mathe</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocMacro class
+      </heading>
+      <class name="DocMacro" super="DocFunction">
+        <declared>DocMacro.h</declared>
+        <desc>
+          <p>
+            @group Doc Element Tree
+          </p>
+          <p>
+            A DocMacro object represents a macro in the documentation
+            element tree.
+          </p>
+        </desc>
+        <method type="NSString*" override="dummy">
+          <sel>GSDocElementName</sel>
+          <desc>
+            <p>
+              @taskunit GSDoc Parsing
+            </p>
+            <p>
+              Returns <em>macro</em>.
+            </p>
+            <p>
+              See -[DocElement GSDocElementName].
+            </p>
+          </desc>
+        </method>
+        <method type="SEL" override="dummy">
+          <sel>weaveSelector</sel>
+          <desc>
+            <p>
+              Returns
+              <ref type="method" id="-weaveMacro:">
+                -weaveMacro:
+              </ref>
+              .
+            </p>
+            <p>
+              See -[DocElement weaveSelector].
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+  </body>
+</gsdoc>

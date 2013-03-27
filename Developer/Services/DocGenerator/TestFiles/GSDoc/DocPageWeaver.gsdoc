@@ -1,0 +1,538 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="DocPageWeaver">
+  <head>
+    <title>DocPageWeaver class documentation</title>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>
+      A documentation builder that produce pages based on the input
+      content.
+    </abstract>
+    <copy>2010 Quentin Mathe</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the DocPageWeaver class
+      </heading>
+      <class name="DocPageWeaver" super="NSObject">
+        <declared>DocPageWeaver.h</declared>
+        <conform>CodeDocWeaving</conform>
+        <desc>
+          <p>
+            @group Page Generation
+          </p>
+          <p>
+            DocPageWeaver is DocGenerator core class that
+            controls the documentation generation process.
+            <br /> <em>etdocgen</em> tool creates a new page
+            weaver based on the options and arguments the user
+            provides on the command-line, then triggers the
+            page generation with
+            <ref type="method" id="-weaveAllPages">
+              -weaveAllPages
+            </ref>
+            which in turn returns the final pages. See DocPage
+            API to understand how these pages can be turned into
+            HTML.
+          </p>
+          <p>
+            You initialize a new page weaver with various input
+            documentation source files and an optional
+            template file. Based on the source file types,
+            DocPageWeaver looks up a parser. When no
+            parser is available, it hands the file content
+            directly to a new documentation page (see DocPage
+            that provides a template-based substitution
+            mechanism). Otherwise it delegates the source
+            file parsing to the right parser e.g. GSDocParser,
+            which will instantiate new doc elements and weave
+            them through the CodeDocWeaving protocol as the
+            parsing goes.
+          </p>
+          <p>
+            DocPageWeaver is free to weave multiple pages
+            from a single source file, or gather doc elements and
+            consolidate them onto a common page. <br /> So
+            in addition to act as coordinator in the doc generation
+            process, DocPageWeaver implements a strategy to
+            organize the doc elements into a book-like
+            structure.
+          </p>
+          <p>
+            By invoking
+            <ref type="method" id="-weaveNewPage">
+              -weaveNewPage
+            </ref>
+            based on some precise criterias (e.g.
+            <ref type="method" id="-weaveClassNamed:superclassName:">
+              -weaveClassNamed:superclassName:
+            </ref>
+            was called), DocPageWeaver defines page generation
+            rules which correspond to a precise book-like
+            structure. <br /> The doc element arrangement on
+            each weaved page is delegated to DocPage class and
+            subclasses.
+          </p>
+          <p>
+            Subclassing altough experimental and untested,
+            can be used to customize the existing page generation
+            strategy or implement a new one.
+          </p>
+        </desc>
+        <method type="Class" factory="yes">
+          <sel>parserClassForFileType:</sel>
+          <arg type="NSString*">aFileExtension</arg>
+          <desc>
+            <p>
+              @taskunit Parser Choice
+            </p>
+            <p>
+              Returns the right parser class or Nil for the
+              given file type.
+            </p>
+            <p>
+              For <em>gsdoc</em>, returns GSDocParser.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>currentClassName</sel>
+          <desc>
+            <p>
+              Returns the name of the class whose documentation
+              is currently parsed from
+              <ref type="method" id="-currentSourceFile">
+                -currentSourceFile
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="DocHeader*">
+          <sel>currentHeader</sel>
+          <desc>
+            <p>
+              Returns the header of the page currently weaved.
+              See
+              <ref type="method" id="-currentPage">
+                -currentPage
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="DocPage*">
+          <sel>currentPage</sel>
+          <desc>
+            <p>
+              Returns the documentation page currently weaved.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>currentSourceFile</sel>
+          <desc>
+            <p>
+              @taskunit Progress and Status
+            </p>
+            <p>
+              Returns the documentation source file currently
+              parsed.
+            </p>
+          </desc>
+        </method>
+        <method type="id">
+          <sel>initWithParserSourceDirectory:</sel>
+          <arg type="NSString*">aParserDirPath</arg>
+          <sel>fileTypes:</sel>
+          <arg type="NSArray*">fileExtensions</arg>
+          <sel>rawSourceDirectories:</sel>
+          <arg type="NSArray*">otherDirPaths</arg>
+          <sel>additionalSourceFiles:</sel>
+          <arg type="NSArray*">additionalSourceFiles</arg>
+          <sel>templateFile:</sel>
+          <arg type="NSString*">aTemplatePath</arg>
+          <desc>
+            <p>
+              @taskunit Initialization
+            </p>
+            <p>
+              Initializes and returns a new weaver, which
+              will attempt to gather and parse every files from
+              the first directory argument that matches the given
+              file types, and will look up additional files in
+              HTML or Markdown to be directly inserted without
+              parsing in the second directory argument.
+            </p>
+            <p>
+              A page template file, usually in HTML can be passed as
+              the last argument. Each DocPage class or subclass
+              instantiated by DocPageWeaver will be
+              initialized with this template, unless
+              <ref type="method" id="-templateFileForSourceFile:">
+                -templateFileForSourceFile:
+              </ref>
+              returns a custom one.
+            </p>
+            <p>
+              TODO: Specify the argument constraints precisely
+              and clarify the template file use (it is currently
+              ignored all the time).
+            </p>
+          </desc>
+        </method>
+        <method type="id" init="yes">
+          <sel>initWithSourceFiles:</sel>
+          <arg type="NSArray*">paths</arg>
+          <sel>templateFile:</sel>
+          <arg type="NSString*">aTemplatePath</arg>
+          <desc>
+            <p>
+              Initializes and returns a new weaver that
+              will attempt to process and parse the given source
+              file <var>paths</var> based on their file types.
+            </p>
+            <p>
+              A page template file, usually in HTML can be passed as
+              the last argument. Each DocPage class or subclass
+              instantiated by DocPageWeaver will be
+              initialized with this template, unless
+              templateFileForSourceFile:
+              returns a custom one.
+            </p>
+            <p>
+              TODO: Specify the argument constraints precisely
+              and clarify the template file use (it is currently
+              ignored all the time).
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>pathForRawSourceFileNamed:</sel>
+          <arg type="NSString*">aName</arg>
+          <desc>
+            <p>
+              Returns the first source file path that matches
+              the given file name.
+            </p>
+            <p>
+              The source paths are the ones passed to
+              <ref type="method" id="-initWithSourceFiles:templateFile:">-initWithSourceFiles:templateFile:</ref>.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>setExternalMappingFile:</sel>
+          <arg type="NSString*">aMappingPath</arg>
+          <desc>
+            <p>
+              Sets the external index file path.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>setMenuFile:</sel>
+          <arg type="NSString*">aMenuPath</arg>
+          <desc>
+            <p>
+              @taskunit Additional Sources
+            </p>
+            <p>
+              Sets the menu template file path.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>templateFileForSourceFile:</sel>
+          <arg type="NSString*">aSourceFile</arg>
+          <desc>
+            <p>
+              Returns the page template file path to be used to
+              initialize new DocPage objects when processing
+              the given source file.
+            </p>
+            <p>
+              By default, returns the path to
+              <em>etoile-documentation-template.html</em> for a
+              <em>gsdoc</em> file, otherwise returns the path to
+              <em>etoile-documentation-markdown-template.html</em>
+              .
+            </p>
+            <p>
+              Can be overriden to return custom page templates
+              based on the file types or even some other
+              criterias (for example the page weaver state).
+            </p>
+          </desc>
+        </method>
+        <method type="NSArray*">
+          <sel>weaveAllPages</sel>
+          <desc>
+            <p>
+              @taskunit Weaving Pages
+            </p>
+            <p>
+              Weaves one or more pages from all the source
+              files.
+            </p>
+            <p>
+              The number of weaved pages is unrelated to the number
+              of source files.
+            </p>
+          </desc>
+        </method>
+        <method type="NSArray*">
+          <sel>weaveCurrentSourcePages</sel>
+          <desc>
+            <p>
+              Weaves one or more pages for the current source
+              file.
+            </p>
+            <p>
+              You should usually call
+              <ref type="method" id="-weaveAllPages">
+                -weaveAllPages
+              </ref>
+              rather than this method directly.
+            </p>
+            <p>
+              See also
+              <ref type="method" id="-currentSourceFile">
+                -currentSourceFile
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveNewPage</sel>
+          <desc>
+            <p>
+              Starts a new page into which doc elements can be
+              weaved.
+            </p>
+            <p>
+              Each time,
+              <ref type="method" id="-weaveNewPage">
+                -weaveNewPage
+              </ref>
+              is called,
+              <ref type="method" id="-currentPage">
+                -currentPage
+              </ref>
+              changes.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveOverviewFile</sel>
+          <desc>
+            <p>
+              Inserts an overview from a file if available,
+              into the current page.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weavePageForCategoryNamed:</sel>
+          <arg type="NSString*">aCategoryName</arg>
+          <sel>className:</sel>
+          <arg type="NSString*">aClassName</arg>
+          <desc>
+            <p>
+              @taskunit Consolidated Symbol Pages
+            </p>
+            <p>
+              Looks up the page on which the given category
+              should be consolidated, if needed creates it, then
+              makes it the current page.
+            </p>
+            <p>
+              By default, looks up the page that regroups the
+              categories on the class that appears in the
+              category symbol.
+            </p>
+            <p>
+              The category symbol syntax is
+              <em>ClassName(CategoryName)</em>.
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the CodeDocParser protocol
+      </heading>
+      <protocol name="CodeDocParser">
+        <declared>DocPageWeaver.h</declared>
+        <desc>
+          <p>
+            @abstract A weaver such as DocPageWeaver controls
+            a documentation source parser through this protocol.
+            @group Weaving and Parsing
+          </p>
+          <p>
+            Any documentation source parser must implement this
+            protocol to let the weaver initiates the parsing.
+            In addition, the parser must reports its parsing result
+            to the weaver through the CodeDocWeaving protocol.
+            <br /> Parsing usually involves to build new
+            DocElement subclass instances and hand them to
+            the weaver.
+          </p>
+        </desc>
+        <method type="id">
+          <sel>initWithString:</sel>
+          <arg type="NSString*">aString</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>parseAndWeave</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>setWeaver:</sel>
+          <arg type="id&lt;CodeDocWeaving&gt;">aDocWeaver</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="id&lt;CodeDocWeaving&gt;">
+          <sel>weaver</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+      </protocol>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the CodeDocWeaving protocol
+      </heading>
+      <protocol name="CodeDocWeaving">
+        <declared>DocPageWeaver.h</declared>
+        <conform>NSObject</conform>
+        <desc>
+          <p>
+            @group Weaving and Parsing @abstract A documentation
+            source parser reports parsing result to a weaver
+            through this protocol.
+          </p>
+          <p>
+            Any weaver must implement this protocol. <br /> When
+            required, multiple weavers can be chained. For
+            instance, parsing GSDoc documents requires to
+            reorder the parsed declarations with
+            DocDeclarationReorder before handing
+            them to DocPageWeaver. Hence the weaver set on
+            GSDocParser is then a DocDeclarationReorderer
+            instance rather than a DocPageWeaver one.
+          </p>
+          <p>
+            Each time a documentation source document (e.g. a
+            gsdoc file) has been parsed, the parser must invoke
+            <ref type="method" id="-finishWeaving">
+              -finishWeaving
+            </ref>
+            .
+          </p>
+          <p>
+            New page creation is entirely up to the weaver e.g. in
+            reaction to a CodeDocWeaving method called back by
+            the parser.
+          </p>
+        </desc>
+        <method type="DocHeader*">
+          <sel>currentHeader</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>finishWeaving</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveCategoryNamed:</sel>
+          <arg type="NSString*">aCategoryName</arg>
+          <sel>className:</sel>
+          <arg type="NSString*">aClassName</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveClassNamed:</sel>
+          <arg type="NSString*">aClassName</arg>
+          <sel>superclassName:</sel>
+          <arg type="NSString*">aSuperclassName</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveConstant:</sel>
+          <arg type="DocConstant*">aConstant</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveFunction:</sel>
+          <arg type="DocFunction*">aFunction</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveHeader:</sel>
+          <arg type="DocHeader*">aHeader</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveMacro:</sel>
+          <arg type="DocMacro*">aMacro</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveMethod:</sel>
+          <arg type="DocMethod*">aMethod</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveOtherDataType:</sel>
+          <arg type="DocCDataType*">aDataType</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>weaveProtocolNamed:</sel>
+          <arg type="NSString*">aProtocolName</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+      </protocol>
+    </chapter>
+  </body>
+</gsdoc>

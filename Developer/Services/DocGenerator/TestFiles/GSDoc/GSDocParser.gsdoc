@@ -1,0 +1,334 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN" "http://www.gnustep.org/gsdoc-1_0_3.dtd">
+<gsdoc base="GSDocParser">
+  <head>
+    <title>GSDocParser class documentation</title>
+    <author name="Nicolas Roard">
+    </author>
+    <author name="Quentin Mathe">
+      <email address="quentin.mathe@gmail.com">
+        quentin.mathe@gmail.com
+      </email>
+    </author>
+    <abstract>
+      GSDoc parser that can drive a DocPageWeaver through
+      CodeDocWeaving protocol.
+    </abstract>
+    <copy>2008 Nicolas Roard</copy>
+  </head>
+  <body>
+    <front><contents /></front>
+    <chapter>
+      <heading>
+        Software documentation for the GSDocParser class
+      </heading>
+      <class name="GSDocParser" super="NSObject">
+        <declared>GSDocParser.h</declared>
+        <conform>GSDocParserDelegate</conform>
+        <desc>
+          <p>
+            @group GSDoc Parsing
+          </p>
+          <p>
+            Main GSDoc parser which wraps a NSXMLParser
+            internally, handles the basic XML parsing and
+            preprocessing, but delegates the rest to
+            DocElement objects instantiated based on the
+            class returned by
+            <ref type="method" id="-elementClassForName:">
+              -elementClassForName:
+            </ref>
+            . <br /> For example &lt;method&gt; is delegated to
+            DocMethod through GSDocParserDelegate methods.
+          </p>
+          <p>
+            The parsing state is managed as a delegate parser stack
+            that contains the receiver itself and zero or more
+            DocElement objects pushed on top.
+          </p>
+          <p>
+            To parse a GDoc document, you have to initialize a new
+            GSDocParser, use
+            <ref type="method" id="-setWeaver:">
+              -setWeaver:
+            </ref>
+            to set the object which handles the parsing ouput such
+            DocDeclarationReorderer or
+            DocPageWeaver, and triggers the parsing with
+            <ref type="method" id="-parseAndWeave">
+              -parseAndWeave
+            </ref>
+            .
+          </p>
+          <p>
+            All XML parsing related methods are used internally,
+            you can ignore them.
+          </p>
+        </desc>
+        <method type="NSString*">
+          <sel>argTypeFromArgsAttributes:</sel>
+          <arg type="NSDictionary*">attributeDict</arg>
+          <desc>
+            <p>
+              Retrieves the value for the <em>type</em> key
+              in the given XML attributes, usually retrieved with
+              <ref type="method" id="-currentAttributes">
+                -currentAttributes
+              </ref>
+              when parsing the element <em>arg</em>, and returns
+              the type or a blank string if no type is declared.
+            </p>
+          </desc>
+        </method>
+        <method type="NSDictionary*">
+          <sel>currentAttributes</sel>
+          <desc>
+            <p>
+              @taskunit XML Attribute Retrieval
+            </p>
+            <p>
+              Returns the XML attributes in the last parsed
+              element.
+            </p>
+          </desc>
+        </method>
+        <method type="Class">
+          <sel>elementClassForName:</sel>
+          <arg type="NSString*">anElementName</arg>
+          <desc>
+            <p>
+              Returns the class to be instantiated while
+              parsing the given XML element.
+            </p>
+            <p>
+              When a valid class is returned, once instantiated,
+              the parsing gets delegated to it through
+              GSDocParserDelegate until the given
+              XML element end is reached.
+            </p>
+          </desc>
+        </method>
+        <method type="NSString*">
+          <sel>indentSpaces</sel>
+          <desc>
+            <p>
+              Returns the current indenting in use.
+            </p>
+            <p>
+              The indentation varies each time a parser delegate is
+              popped or pushed.
+            </p>
+          </desc>
+        </method>
+        <method type="id">
+          <sel>initWithString:</sel>
+          <arg type="NSString*">aContent</arg>
+          <desc>
+            <p>
+              @taskunit Initialization
+            </p>
+            <p>
+              Returns a GSDoc parser initialized with the given
+              GSDoc document content.
+            </p>
+            <p>
+              Call
+              <ref type="method" id="-setWeaver:">
+                -setWeaver:
+              </ref>
+              on the returned object to be ready to parse.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>newContent</sel>
+          <desc>
+            <p>
+              @taskunit XML Parsing
+            </p>
+            <p>
+              Reinitializes the current CDATA stored in
+              the content variable.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>parseAndWeave</sel>
+          <desc>
+            <p>
+              Parses the GSDoc XML with which the receiver was
+              initialized, and at the same time weaves the
+              produced doc elements through CodeDocWeaving
+              methods.
+            </p>
+            <p>
+              DocElement subclass objects are created, when
+              parsing an XML element to which a valid class is
+              bound to with
+              <ref type="method" id="-elementClassForName:">
+                -elementClassForName:
+              </ref>
+              .
+            </p>
+            <p>
+              @task Parsing and Weaving
+            </p>
+          </desc>
+        </method>
+        <method type="id&lt;GSDocParserDelegate&gt;">
+          <sel>parserDelegate</sel>
+          <desc>
+            <p>
+              Returns the current parser delegate.
+            </p>
+            <p>
+              The parser delegate is usually a DocElement object or
+              the receiver iself.
+            </p>
+            <p>
+              Never returns <code>nil</code>.
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>popParserDelegate</sel>
+          <desc>
+            <p>
+              Pops the last pushed parser delegate to which the
+              XML parsing was delegated to until now.
+            </p>
+            <p>
+              You usually don't have to call this method, it is
+              called each time we reach the end of an XML
+              element bound to a valid class in
+              <ref type="method" id="-elementClassForName:">
+                -elementClassForName:
+              </ref>
+              .
+            </p>
+            <p>
+              See also
+              <ref type="method" id="-pushParserDelegate:">
+                -pushParserDelegate:
+              </ref>
+              and
+              <ref type="method" id="-parserDelegate">
+                -parserDelegate
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>pushParserDelegate:</sel>
+          <arg type="id&lt;GSDocParserDelegate&gt;">aDelegate</arg>
+          <desc>
+            <p>
+              Pushes a new parser delegate to which the XML
+              parsing should be delegated to.
+            </p>
+            <p>
+              Will be popped once we reach the end of the XML
+              element that triggered the delegate creation.
+            </p>
+            <p>
+              You usually don't have to call this method, it is
+              called each time
+              <ref type="method" id="-elementClassForName:">
+                -elementClassForName:
+              </ref>
+              returns a valid class.
+            </p>
+            <p>
+              The given delegate must not be <code>nil</code>.
+            </p>
+            <p>
+              See also
+              <ref type="method" id="-popParserDelegate">
+                -popParserDelegate
+              </ref>
+              and
+              <ref type="method" id="-parserDelegate">
+                -parserDelegate
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>setWeaver:</sel>
+          <arg type="id&lt;CodeDocWeaving&gt;">aDocWeaver</arg>
+          <desc>
+            <p>
+              Sets the weaver on which the receiver should call
+              back CodeDocWeaving methods while parsing the GSDoc
+              XML provided at initialization time.
+            </p>
+          </desc>
+        </method>
+        <method type="id&lt;CodeDocWeaving&gt;">
+          <sel>weaver</sel>
+          <desc>
+            <p>
+              Returns the weaver currently in use or
+              <code>nil</code>.
+            </p>
+            <p>
+              See also
+              <ref type="method" id="-setWeaver:">
+                -setWeaver:
+              </ref>
+              .
+            </p>
+          </desc>
+        </method>
+      </class>
+    </chapter>
+    <chapter>
+      <heading>
+        Software documentation for the GSDocParserDelegate
+        protocol
+      </heading>
+      <protocol name="GSDocParserDelegate">
+        <declared>GSDocParser.h</declared>
+        <desc>
+          <p>
+            @group GSDoc Parsing
+          </p>
+          <p>
+            @abstract None
+          </p>
+          <p>
+            Parsing protocol usually implemented by DocElement
+            subclass, so the parsing can be delegated per
+            major XML elements (e.g. class, method etc.) to a
+            newly instantied doc element and initialize it in
+            this way.
+          </p>
+        </desc>
+        <method type="void">
+          <sel>parser:</sel>
+          <arg type="GSDocParser*">parser</arg>
+          <sel>endElement:</sel>
+          <arg type="NSString*">anElement</arg>
+          <sel>withContent:</sel>
+          <arg type="NSString*">aContent</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="void">
+          <sel>parser:</sel>
+          <arg type="GSDocParser*">parser</arg>
+          <sel>startElement:</sel>
+          <arg type="NSString*">anElement</arg>
+          <sel>withAttributes:</sel>
+          <arg type="NSDictionary*">theAttributes</arg>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+      </protocol>
+    </chapter>
+  </body>
+</gsdoc>
