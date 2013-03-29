@@ -12,7 +12,7 @@
 #ifndef GNUSTEP
 #import <EtoileFoundation/GNUstep.h>
 #endif
-#import <CoreObject/COGroup.h>
+#import <CoreObject/CoreObject.h>
 #import <EtoileUI/EtoileUI.h>
 
 @class OMBrowserController;
@@ -22,7 +22,7 @@
 
 }
 
-- (ETLayoutItemGroup *) browserWithGroup: (id <ETCollection>)aGroup;
+- (ETLayoutItemGroup *) browserWithGroup: (id <ETCollection>)aGroup editingContext: (COEditingContext *)aContext;
 - (ETLayoutItemGroup *) browserBodyWithGroup: (id <ETCollection>)aGroup controller: (id)aController;
 - (ETLayoutItem *) viewPopUpWithController: (OMBrowserController *)aController;
 - (ETLayoutItemGroup *) browserTopBarWithController: (id)aController;

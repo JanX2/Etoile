@@ -12,17 +12,17 @@
 #ifndef GNUSTEP
 #import <EtoileFoundation/GNUstep.h>
 #endif
-#import <CoreObject/COEditingContext.h>
-#import <CoreObject/COGroup.h>
+#import <CoreObject/CoreObject.h>
 #import <EtoileUI/EtoileUI.h>
 
 /** An abstract controller class that provides access to the editing context. */
 @interface OMController : ETController
+- (COPersistentRoot *)persistentRootFromSelection;
 - (COEditingContext *) editingContext;
 @end
 
 /** The controller to supervise the whole ObjectManager window */
-@interface OMBrowserController : OMController
+@interface OMBrowserController : ETController
 {
 	ETLayoutItemGroup *contentViewItem;
 	ETLayoutItemGroup *sourceListItem;
@@ -45,6 +45,7 @@
 /** @taskunit Actions */
 
 - (IBAction) addNewTag: (id)sender;
+- (IBAction) add: (id)sender;
 - (IBAction) remove: (id)sender;
 
 - (IBAction) doubleClick: (id)sender;
@@ -68,7 +69,12 @@ content is presented in an ObjectManager window */
 
 }
 
+/** Returns the selected persistent root or the editing context. */
+- (id <COPersistentObjectContext>)persistentObjectContext;
+
 - (void) addTag: (COGroup *)aTag;
+
+/** @taskunit Actions */
 
 - (IBAction) remove: (id)sender;
 
@@ -76,5 +82,7 @@ content is presented in an ObjectManager window */
 
 /** A category that adds convenient methods for ObjectManager needs */
 @interface COEditingContext (OMAdditions)
+/** Deletes either persistent roots or just the passed inner objects, based on 
+the represented object type (root object or inner object). */
 - (void)deleteObjects: (NSSet *)objects;
 @end

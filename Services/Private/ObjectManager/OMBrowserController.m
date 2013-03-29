@@ -6,19 +6,30 @@
 	License:  Modified BSD  (see COPYING)
  */
 
-#import <CoreObject/COCommitTrack.h>
-#import <CoreObject/COHistoryTrack.h>
-#import <CoreObject/COObject.h>
-#import <CoreObject/COPersistentRoot.h>
 #import "OMBrowserController.h"
 #import "OMLayoutItemFactory.h"
 #import "OMAppController.h"
 
 @implementation OMController
 
-- (COEditingContext *) editingContext
+- (COPersistentRoot *)persistentRootFromSelection
 {
-	return [COEditingContext currentContext];
+	NSArray *selectedItems = [[self content] selectedItemsInLayout];
+	
+	if ([selectedItems count] == 1)
+	{
+		return [[[selectedItems lastObject] representedObject] persistentRoot];
+	}
+	return nil;
+}
+
+- (COEditingContext *)editingContext
+{
+	if ([[self persistentObjectContext] respondsToSelector: @selector(parentContext)])
+	{
+		return [(COPersistentRoot *)[self persistentObjectContext] parentContext];
+	}
+	return (COEditingContext *)[self persistentObjectContext];
 }
 
 @end
@@ -240,6 +251,11 @@
 	// TODO: [[contentViewItem lastItem] beginEditingForProperty: @"name"];
 }
 
+- (IBAction) add: (id)sender
+{
+	[[contentViewItem controller] add: sender];
+}
+
 - (IBAction) remove: (id)sender
 {
 	[[contentViewItem controller] remove: sender];
@@ -354,6 +370,54 @@
 
 @implementation OMBrowserContentController
 
+- (id) init
+{
+	SUPERINIT;
+
+	/* baseTemplate is used for unknown COObject subclasses and 
+	   baseGroupTemplate is used for unknown COCollection subclasses */
+	ETItemTemplate *noteTemplate =
+		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] item]
+	                         objectClass: [COContainer class]];
+	ETItemTemplate *bookmarkTemplate = 
+		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] item]
+	                         objectClass: [COBookmark class]];
+	ETItemTemplate *tagTemplate =
+		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] itemGroup]
+	                         objectClass: [COTag class]];
+	ETItemTemplate *libraryTemplate =
+		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] itemGroup]
+	                         objectClass: [COLibrary class]];
+	ETItemTemplate *baseTemplate = [self templateForType: [self currentObjectType]];
+	ETItemTemplate *baseGroupTemplate = [self templateForType: [self currentGroupType]];
+
+	[self setTemplate: baseTemplate forType: [ETUTI typeWithClass: [COObject class]]];
+	[self setTemplate: baseGroupTemplate forType: [ETUTI typeWithClass: [COCollection class]]];
+	[self setTemplate: noteTemplate forType: [ETUTI typeWithClass: [COContainer class]]];
+	[self setTemplate: bookmarkTemplate forType: [ETUTI typeWithClass: [COBookmark class]]];
+	[self setTemplate: tagTemplate forType: [ETUTI typeWithClass: [COTag class]]];
+	[self setTemplate: libraryTemplate forType: [ETUTI typeWithClass: [COLibrary class]]];
+
+	ETUTI *librarySubtype = [ETUTI typeWithClass: [COTagLibrary class]];
+	ETAssert([[self templateForType: librarySubtype] isEqual: libraryTemplate]);
+
+	return self;
+}
+
+- (id <COPersistentObjectContext>)persistentObjectContext
+{
+	COPersistentRoot *persistentRoot = [self persistentRootFromSelection];
+	return (persistentRoot != nil ? persistentRoot : [super persistentObjectContext]);
+}
+
+- (ETUTI *)currentObjectType
+{
+	// TODO: COSmartGroup doesn't respond to -objectType. COCollection and
+	// COSmartGroup could implement a new COCollection protocol. Not sure it's needed.
+	ETUTI *contentType = [[[[self content] representedObject] ifResponds] objectType];
+	return (contentType !=  nil ? contentType : [super currentObjectType]);
+}
+
 - (void) addTag: (COGroup *)aTag
 {
 	ETItemTemplate *template = [self templateForType: [self currentGroupType]];
@@ -368,6 +432,7 @@
 	if ([selectedItems isEmpty])
 		return;
 
+	/* Delete persistent roots or particular inner objects  */
 	[[self editingContext] deleteObjects: [[selectedItems mappedCollection] representedObject]];
 	[[self editingContext] commit];
 }
@@ -383,13 +448,14 @@
 
 	NSString *shortDesc = [NSString stringWithFormat: @"Renamed to %@", [[anItem representedObject] name]];
 
-	[[self editingContext] commitWithType: @"Object Renaming" 
-	                     shortDescription: shortDesc];
+	[[[anItem representedObject] persistentRoot] commitWithType: @"Object Renaming"
+	                                           shortDescription: shortDesc];
 }
 
 @end
 
 @implementation COEditingContext (OMAdditions)
+
 
 - (void)deleteObjects: (NSSet *)objects
 {

@@ -97,9 +97,10 @@
 	return size;
 }
 
-- (ETLayoutItemGroup *) browserWithGroup: (id <ETCollection>)aGroup
+- (ETLayoutItemGroup *) browserWithGroup: (id <ETCollection>)aGroup editingContext: (COEditingContext *)aContext;
 {
 	OMBrowserController *controller = AUTORELEASE([[OMBrowserController alloc] init]);
+	[controller setPersistentObjectContext: aContext];
 	ETLayoutItemGroup *topBar = [self browserTopBarWithController: controller];
 	ETLayoutItemGroup *body = [self browserBodyWithGroup: (id <ETCollection>)aGroup controller: controller];
 	ETLayoutItemGroup *browser = [self itemGroupWithItems: A(topBar, body)];
@@ -158,6 +159,9 @@
 	ETLayoutItem *newGroupItem = [self buttonWithIconNamed: @"list-add" 
 	                                                   target: aController
 	                                                   action: @selector(addNewTag:)];
+	ETLayoutItem *newObjectItem = [self buttonWithIconNamed: @"list-add"
+	                                                 target: aController
+	                                                 action: @selector(add:)];
 	ETLayoutItem *removeItem = [self buttonWithIconNamed: @"list-remove" 
 	                                              target: aController
 	                                              action: @selector(remove:)];
@@ -173,6 +177,7 @@
 	// FIXME: [[itemGroup layout] setSeparatorTemplateItem: [self flexibleSpaceSeparator]];
 	[itemGroup addItems: 
 		A([self barElementFromItem: newGroupItem withLabel: _(@"New Tag…")],
+		[self barElementFromItem: newObjectItem withLabel: _(@"New Object")],
 		[self barElementFromItem: removeItem withLabel: _(@"Remove")],
 		[self barElementFromItem: [self viewPopUpWithController: aController] withLabel: _(@"View")],
 		[self barElementFromItem: searchFieldItem withLabel: _(@"Filter")])];
@@ -262,6 +267,7 @@
 	[itemGroup setSource: itemGroup];
 	[itemGroup setLayout: [self listLayoutForBrowser]];	
 	[itemGroup setController: AUTORELEASE([[OMBrowserContentController alloc] init])];
+	[[itemGroup controller] setPersistentObjectContext: [aController persistentObjectContext]];
 	[itemGroup reload];
 
 	[aController setContentViewItem: itemGroup];

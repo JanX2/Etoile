@@ -140,7 +140,7 @@
 
 - (IBAction) browseMainGroup: (id)sender
 {
-	[[itemFactory windowGroup] addObject: [itemFactory browserWithGroup: [self sourceListGroups]]];
+	[[itemFactory windowGroup] addObject: [itemFactory browserWithGroup: [self sourceListGroups] editingContext: [COEditingContext currentContext]]];
 	[openedGroups addObject: [[COEditingContext currentContext] mainGroup]];
 }
 
@@ -214,7 +214,7 @@
 	/* Libraries */
 
 	// TODO: For every library, the name should be made read-only.
-	[[ctxt libraryGroup] addObjects: A(cityGroup, pictureGroup, personGroup)];
+	//[[ctxt libraryGroup] addObjects: A(cityGroup, pictureGroup, personGroup)];
 	
 	/* Scenery Tag */
 
@@ -263,7 +263,7 @@
 	/* Declare the groups used as tags and commit */
 
 	[[ctxt tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag, snowTag)];
-	[[[ctxt tagLibrary] tagGroups] addObjects: A(natureTagGroup, weatherTagGroup, unclassifiedTagGroup)];
+	[[ctxt tagLibrary] setTagGroups: A(natureTagGroup, weatherTagGroup, unclassifiedTagGroup)];
 
 	[ctxt commitWithMetadata: D(@"Object Creation", @"summary",
 		@"Created Initial Core Objects", @"shortDescription",
