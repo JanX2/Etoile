@@ -24,21 +24,8 @@
 	COCustomTrack *mainUndoTrack;
 }
 
-- (NSArray *) sourceListGroups;
-
 - (IBAction) browseMainGroup: (id)sender;
 - (IBAction) undo: (id)sender;
 - (IBAction) redo: (id)sender;
 
-- (void) buildCoreObjectGraphDemo;
-
-@end
-
-// TODO: Allow icon customization without subclassing... For COCollection at least.
-@interface OMGroup : COGroup
-- (NSImage *) icon;
-@end
-
-@interface OMSmartGroup : COSmartGroup
-- (NSImage *) icon;
 @end
