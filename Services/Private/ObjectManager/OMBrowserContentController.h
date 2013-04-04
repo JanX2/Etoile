@@ -15,7 +15,7 @@
 #import <CoreObject/CoreObject.h>
 #import <EtoileUI/EtoileUI.h>
 #import <EtoileUI/CoreObjectUI.h>
-#import "OMBrowserController.h"
+#import "OMController.h"
 
 /** The subcontroller to supervise the view where the source list selection 
 content is presented in an ObjectManager window */

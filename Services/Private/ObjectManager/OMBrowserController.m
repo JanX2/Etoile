@@ -8,32 +8,9 @@
 
 #import "OMBrowserController.h"
 #import "OMAppController.h"
-#import "OMLayoutItemFactory.h"
 #import "OMBrowserContentController.h"
-
-@implementation OMController
-
-- (COPersistentRoot *)persistentRootFromSelection
-{
-	NSArray *selectedItems = [[self content] selectedItemsInLayout];
-	
-	if ([selectedItems count] == 1)
-	{
-		return [[[selectedItems lastObject] representedObject] persistentRoot];
-	}
-	return nil;
-}
-
-- (COEditingContext *)editingContext
-{
-	if ([[self persistentObjectContext] respondsToSelector: @selector(parentContext)])
-	{
-		return [(COPersistentRoot *)[self persistentObjectContext] parentContext];
-	}
-	return (COEditingContext *)[self persistentObjectContext];
-}
-
-@end
+#import "OMCollectionAdditions.h"
+#import "OMLayoutItemFactory.h"
 
 @implementation OMBrowserController
 
@@ -51,6 +28,7 @@
 	DESTROY(contentViewItem);
 	DESTROY(sourceListItem);
 	DESTROY(viewPopUpItem);
+	DESTROY(statusLabelItem);
 	DESTROY(browsedGroup);
 	[super dealloc];
 }
@@ -83,20 +61,6 @@
 		selectedObject = [self browsedGroup];
 	}
 	return selectedObject;
-}
-
-- (BOOL) isSameKindAmongObjects: (NSArray *)objects
-{
-	Class kind = [[objects firstObject] class];
-
-	for (id obj in objects)
-	{
-		if ([obj isKindOfClass: kind] == NO && [kind isSubclassOfClass: [obj class]] == NO)
-		{
-			return NO;
-		}
-	}
-	return YES;
 }
 
 - (ETHistory *)history
@@ -142,24 +106,6 @@
 	return tags;
 }
 
-- (COSmartGroup *) whereUnionGroup
-{
-	COSmartGroup *selectionGroup = AUTORELEASE([[COSmartGroup alloc] init]);
-	COContentBlock block = ^() {
-		NSMutableSet *objects = [NSMutableSet set];
-
-		for (COCollection *collection in [self whereGroup])
-		{
-			[objects addObjectsFromArray: [collection contentArray]];
-		}
-
-		return [objects contentArray];
-	};
-
-	[selectionGroup setContentBlock: block];
-	return selectionGroup;
-}
-
 - (void) sourceListSelectionDidChange: (NSNotification *)aNotif
 {
 	ETLog(@"Did change selection in %@", [aNotif object]);
@@ -167,7 +113,7 @@
 	NSArray *selectedObjects = [[selectedItems mappedCollection] representedObject];
 	BOOL isSingleSelection = ([selectedObjects count] == 1);
 	BOOL isMultipleSelectionInSingleCategory = ([selectedObjects count] > 1 
-		&& [self isSameKindAmongObjects: selectedObjects]);
+		&& [selectedObjects isSameKindAmongObjects]);
 
 	if (isSingleSelection)
 	{
@@ -198,8 +144,8 @@
             [NSPredicate predicateWithFormat: @"ALL %@ IN tags", [self selectedTags]];
 		COSmartGroup *tagFilteredGroup = AUTORELEASE([[COSmartGroup alloc] init]);
 
-		[tagFilteredGroup setTargetCollection: [self whereUnionGroup]];
-
+		[tagFilteredGroup setTargetCollection:
+			[COSmartGroup unionGroupWithCollections: [self whereGroup]]];
 		[tagFilteredGroup setQuery: [COQuery queryWithPredicate: predicate]];
 
 		[self setBrowsedGroup: tagFilteredGroup];
@@ -377,8 +323,8 @@
 		// TODO: Should use -openDocument: on OMAppController
 		OMLayoutItemFactory *itemFactory = [OMLayoutItemFactory factory];
 		ETLayoutItemGroup *browser =
-		[itemFactory browserWithGroup: [[self sourceListItem] representedObject]
-					   editingContext: [self editingContext]];
+			[itemFactory browserWithGroup: [[self sourceListItem] representedObject]
+			               editingContext: [self editingContext]];
 		
 		[(OMBrowserController *)[browser controller] setBrowsedGroup: clickedObject];
 		[[itemFactory windowGroup] addObject: browser];

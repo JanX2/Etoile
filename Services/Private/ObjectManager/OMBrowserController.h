@@ -15,12 +15,7 @@
 #import <CoreObject/CoreObject.h>
 #import <EtoileUI/EtoileUI.h>
 #import <EtoileUI/CoreObjectUI.h>
-
-/** An abstract controller class that provides access to the editing context. */
-@interface OMController : ETController
-- (COPersistentRoot *)persistentRootFromSelection;
-- (COEditingContext *) editingContext;
-@end
+#import "OMController.h"
 
 /** The controller to supervise the whole ObjectManager window */
 @interface OMBrowserController : OMController
