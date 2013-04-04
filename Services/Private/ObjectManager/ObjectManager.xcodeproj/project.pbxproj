@@ -14,6 +14,7 @@
 		6068BE4514742B2800953B26 /* OMLayoutItemFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 6068BE4414742B2800953B26 /* OMLayoutItemFactory.m */; };
 		60734610154176DD002558C7 /* CoreObject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6073460B154176D4002558C7 /* CoreObject.framework */; };
 		609C01A91705ED8A00D01AAB /* OMModelFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 609C01A81705ED8900D01AAB /* OMModelFactory.m */; };
+		609C0221170D762B00D01AAB /* OMBrowserContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 609C0220170D762600D01AAB /* OMBrowserContentController.m */; };
 		60E6AB15147AB5EC00AD684D /* OMBrowserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E6AB14147AB5EC00AD684D /* OMBrowserController.m */; };
 		60E6AC0D147B9B4200AD684D /* IconKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60E6AC0C147B9B3B00AD684D /* IconKit.framework */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -202,6 +203,8 @@
 		60734604154176D4002558C7 /* CoreObject.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoreObject.xcodeproj; path = ../../../Frameworks/CoreObject/CoreObject.xcodeproj; sourceTree = SOURCE_ROOT; };
 		609C01A71705ED8900D01AAB /* OMModelFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMModelFactory.h; sourceTree = "<group>"; };
 		609C01A81705ED8900D01AAB /* OMModelFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMModelFactory.m; sourceTree = "<group>"; };
+		609C021F170D762500D01AAB /* OMBrowserContentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMBrowserContentController.h; sourceTree = "<group>"; };
+		609C0220170D762600D01AAB /* OMBrowserContentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMBrowserContentController.m; sourceTree = "<group>"; };
 		60E6AB13147AB5EC00AD684D /* OMBrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMBrowserController.h; sourceTree = "<group>"; };
 		60E6AB14147AB5EC00AD684D /* OMBrowserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMBrowserController.m; sourceTree = "<group>"; };
 		60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = IconKit.xcodeproj; path = ../../../Frameworks/IconKit/IconKit.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -232,6 +235,8 @@
 				6068BE36147429E000953B26 /* OMAppController.m */,
 				60E6AB13147AB5EC00AD684D /* OMBrowserController.h */,
 				60E6AB14147AB5EC00AD684D /* OMBrowserController.m */,
+				609C021F170D762500D01AAB /* OMBrowserContentController.h */,
+				609C0220170D762600D01AAB /* OMBrowserContentController.m */,
 				6068BE4314742B2800953B26 /* OMLayoutItemFactory.h */,
 				6068BE4414742B2800953B26 /* OMLayoutItemFactory.m */,
 				609C01A71705ED8900D01AAB /* OMModelFactory.h */,
@@ -605,6 +610,7 @@
 				6068BE4514742B2800953B26 /* OMLayoutItemFactory.m in Sources */,
 				60E6AB15147AB5EC00AD684D /* OMBrowserController.m in Sources */,
 				609C01A91705ED8A00D01AAB /* OMModelFactory.m in Sources */,
+				609C0221170D762B00D01AAB /* OMBrowserContentController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,6 +9,7 @@
 #import <IconKit/IconKit.h>
 #import "OMLayoutItemFactory.h"
 #import "OMBrowserController.h"
+#import "OMBrowserContentController.h"
 
 @implementation OMLayoutItemFactory
 
