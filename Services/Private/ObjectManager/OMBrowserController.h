@@ -36,6 +36,11 @@
 @property (nonatomic, retain) id <ETCollection> browsedGroup;
 @property (nonatomic, readonly) id selectedObject;
 
+/** @taskunit Selection */
+
+- (id) selectedObjectInContentView;
+- (id) selectedObjectsInSourceList;
+
 /** @taskunit Notifications */
 
 - (void) sourceListSelectionDidChange: (NSNotification *)aNotif;

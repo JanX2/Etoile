@@ -52,7 +52,7 @@
 	[[self history] addObject: aGroup];
 }
 
-- (id) selectedObject
+- (id) selectedObjectInContentView
 {
 	id selectedObject = [[[[self contentViewItem] selectedItemsInLayout] firstObject] representedObject];
 
@@ -61,6 +61,11 @@
 		selectedObject = [self browsedGroup];
 	}
 	return selectedObject;
+}
+
+- (NSArray *) selectedObjectsInSourceList
+{
+	return [[[[self sourceListItem] selectedItemsInLayout] mappedCollection] representedObject];
 }
 
 - (ETHistory *)history
@@ -106,11 +111,24 @@
 	return tags;
 }
 
+- (COSmartGroup *) unionGroupWithTags: (id <ETCollection>)tags
+{
+	// TODO: Finish filtering on whenPredicate & whatPredicate & searchPredicate
+	NSPredicate *predicate =
+		[NSPredicate predicateWithFormat: @"ALL %@ IN tags", [self selectedTags]];
+	COSmartGroup *tagFilteredGroup = AUTORELEASE([[COSmartGroup alloc] init]);
+
+	[tagFilteredGroup setTargetCollection:
+		[COSmartGroup unionGroupWithCollections: [self whereGroup]]];
+	[tagFilteredGroup setQuery: [COQuery queryWithPredicate: predicate]];
+
+	return tagFilteredGroup;
+}
+
 - (void) sourceListSelectionDidChange: (NSNotification *)aNotif
 {
 	ETLog(@"Did change selection in %@", [aNotif object]);
-	NSArray *selectedItems = [[aNotif object] selectedItemsInLayout];
-	NSArray *selectedObjects = [[selectedItems mappedCollection] representedObject];
+	NSArray *selectedObjects = [self selectedObjectsInSourceList];
 	BOOL isSingleSelection = ([selectedObjects count] == 1);
 	BOOL isMultipleSelectionInSingleCategory = ([selectedObjects count] > 1 
 		&& [selectedObjects isSameKindAmongObjects]);
@@ -121,34 +139,12 @@
 	}
 	else if (isMultipleSelectionInSingleCategory)
 	{
-		COSmartGroup *selectionGroup = AUTORELEASE([[COSmartGroup alloc] init]);
-
-		COContentBlock block = ^() {
-			NSMutableSet *objects = [NSMutableSet set];
-
-			for (COCollection *collection in selectedObjects)
-			{
-				[objects addObjectsFromArray: [collection contentArray]];
-			}
-
-			return [objects contentArray];
-		};
-
-		[selectionGroup setContentBlock: block];
-		[self setBrowsedGroup: selectionGroup];
+		/* Selected objects are collections (either libraries, tags, tag groups etc.) */
+		[self setBrowsedGroup: [COSmartGroup unionGroupWithCollections: selectedObjects]];
 	}
 	else
 	{
-		// TODO: Finish filtering on whenPredicate & whatPredicate & searchPredicate
-		NSPredicate *predicate =
-            [NSPredicate predicateWithFormat: @"ALL %@ IN tags", [self selectedTags]];
-		COSmartGroup *tagFilteredGroup = AUTORELEASE([[COSmartGroup alloc] init]);
-
-		[tagFilteredGroup setTargetCollection:
-			[COSmartGroup unionGroupWithCollections: [self whereGroup]]];
-		[tagFilteredGroup setQuery: [COQuery queryWithPredicate: predicate]];
-
-		[self setBrowsedGroup: tagFilteredGroup];
+		[self setBrowsedGroup: [self unionGroupWithTags: [self selectedTags]]];
 	}
 }
 
@@ -173,19 +169,22 @@
 	[self doesNotRecognizeSelector: _cmd];
 }
 
-- (IBAction) addNewTag: (id)sender
+- (void) expandItem: (ETLayoutItem *)anItem
 {
-	/* Ensure the What item group is expanded */
-	
-	[(NSOutlineView *)[[[self sourceListItem] layout] tableView] 
-		expandItem: [self whatGroupItem] expandChildren: NO];
+	[(NSOutlineView *)[[[self sourceListItem] layout] tableView]
+		expandItem: anItem expandChildren: NO];
+}
 
-	/* First select the right Tag Group in the Source list */
+- (void) deselectAllInSourceList
+{
+	[[self sourceListItem] setSelectionIndexPaths: [NSArray array]];
+}
+
+- (void) selectTagGroupForInsertingTagInSourceList
+{
+	[self deselectAllInSourceList];
 
 	NSArray *selectedTagGroupItems = [[self whatGroupItem] selectedItems];
-
-	/* Deselect everything in the source list */
-	[[self sourceListItem] setSelectionIndexPaths: [NSArray array]];
 
 	if ([selectedTagGroupItems isEmpty])
 	{
@@ -196,9 +195,10 @@
 	{
 		[[self whatGroupItem] setSelectedItems: A([selectedTagGroupItems firstObject])];
 	}
+}
 
-	/* Create the new Tag */
-
+- (void) insertNewTagInSelectedTagGroup
+{
 	COEditingContext *ctxt = [self editingContext];
 	COGroup *tag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
 
@@ -208,8 +208,13 @@
 	[(OMBrowserContentController *)[contentViewItem controller] addTag: tag];
 
 	[ctxt commitWithType: @"Tag Creation" shortDescription: @"Created Tag"];
+}
 
-	/* Finally let the user edit the tag name */
+- (IBAction) addNewTag: (id)sender
+{
+	[self expandItem: [self whatGroupItem]];
+	[self selectTagGroupForInsertingTagInSourceList];
+	[self insertNewTagInSelectedTagGroup];
 
 	// TODO: [[contentViewItem lastItem] beginEditingForProperty: @"name"];
 }
@@ -361,10 +366,10 @@
 
 - (IBAction) browseHistory: (id)sender
 {
-	if ([[self selectedObject] isPersistent] == NO)
+	if ([[self selectedObjectInContentView] isPersistent] == NO)
 		return;
 
-	COTrack *track = [[self selectedObject] commitTrack];
+	COTrack *track = [[self selectedObjectInContentView] commitTrack];
 	ETLayoutItemGroup *browser =
 		[[ETLayoutItemFactory factory] historyBrowserWithRepresentedObject: track
 		                                                             title: nil];
@@ -386,7 +391,7 @@
 	// Check wether the revision to be undone was written in the main custom 
 	// undo track. When it is not the case, disable Undo in Selection or skip 
 	// the checked object (then test the next selected object).
-	[[[self selectedObject] commitTrack] undo];
+	[[[self selectedObjectInContentView] commitTrack] undo];
 }
 
 @end

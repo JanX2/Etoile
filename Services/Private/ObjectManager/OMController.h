@@ -18,6 +18,14 @@
 
 /** An abstract controller class that provides access to the editing context. */
 @interface OMController : ETController
+
+/** @taskunit Persistency Integration */
+
 - (COPersistentRoot *)persistentRootFromSelection;
 - (COEditingContext *) editingContext;
+
+/** @taskunit Selection Interaction */
+
+- (NSArray *) selectedObjects;
+
 @end

@@ -94,13 +94,13 @@
 
 - (IBAction) remove: (id)sender
 {
-	NSArray *selectedItems = [[self content] selectedItemsInLayout];
+	NSArray *selectedObjects = [self selectedObjects];
 
-	if ([selectedItems isEmpty])
+	if ([selectedObjects isEmpty])
 		return;
 
 	/* Delete persistent roots or particular inner objects  */
-	[[self editingContext] deleteObjects: [[selectedItems mappedCollection] representedObject]];
+	[[self editingContext] deleteObjects: selectedObjects];
 	[[self editingContext] commit];
 }
 
@@ -117,11 +117,6 @@
 
 	[[[anItem representedObject] persistentRoot] commitWithType: @"Object Renaming"
 	                                           shortDescription: shortDesc];
-}
-
-- (NSArray *) selectedObjects
-{
-	return [[[[self content] selectedItemsInLayout] mappedCollection] representedObject];
 }
 
 - (NSInteger)menuInsertionIndex

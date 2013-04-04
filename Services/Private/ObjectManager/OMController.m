@@ -30,4 +30,9 @@
 	return (COEditingContext *)[self persistentObjectContext];
 }
 
+- (NSArray *) selectedObjects
+{
+	return [[[[self content] selectedItemsInLayout] mappedCollection] representedObject];
+}
+
 @end
