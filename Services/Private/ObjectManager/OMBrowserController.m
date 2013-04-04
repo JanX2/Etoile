@@ -65,16 +65,12 @@
 		return;
 
 	ETLog(@"Browse group %@", aGroup);
+
 	ASSIGN(browsedGroup, aGroup);
-	
-	// NOTE: Will update the window title
-	[contentViewItem setRepresentedObject: browsedGroup];
-	[contentViewItem reload];
-	[contentViewItem setSelectionIndex: NSNotFound];
+	[(id)[contentViewItem controller] prepareForNewRepresentedObject: aGroup];
+	[[statusLabelItem view] setObjectValue: aGroup];
 
-	//statusLabelItem view setObjectValue: anObject.
-
-	//history addObject: (mainViewItem representedObject).
+	[[self history] addObject: aGroup];
 }
 
 - (id) selectedObject
@@ -100,6 +96,12 @@
 		}
 	}
 	return YES;
+}
+
+- (ETHistory *)history
+{
+	// TODO: Return 'Recently Visted' from WHEN group
+	return nil;
 }
 
 - (COGroup *) whereGroup
@@ -210,6 +212,20 @@
 		[NSPredicate predicateWithFormat: @"representedObject == %@", tagLibrary]] firstObject];
 }
 
+#pragma mark -
+#pragma mark Object Insertion and Deletion Actions
+
+- (IBAction) add: (id)sender
+{
+	[[contentViewItem controller] add: sender];
+}
+
+- (IBAction) addNewObjectFromTemplate: (id)sender
+{
+	// TODO: Implement
+	[self doesNotRecognizeSelector: _cmd];
+}
+
 - (IBAction) addNewTag: (id)sender
 {
 	/* Ensure the What item group is expanded */
@@ -251,9 +267,9 @@
 	// TODO: [[contentViewItem lastItem] beginEditingForProperty: @"name"];
 }
 
-- (IBAction) add: (id)sender
+- (IBAction) addNewGroup: (id)sender
 {
-	[[contentViewItem controller] add: sender];
+	// TODO: Implement New Smart Group...
 }
 
 - (IBAction) remove: (id)sender
@@ -261,12 +277,78 @@
 	[[contentViewItem controller] remove: sender];
 }
 
+#pragma mark -
+#pragma mark Presentation Actions
+
+- (void) changePresentationViewToMenuItem: (NSMenuItem *)aMenuItem
+{
+	ETLayout *templateLayout = [aMenuItem representedObject];
+	[contentViewItem setLayout: AUTORELEASE([templateLayout copy])];
+}
+
+- (NSString *) currentPresentationTitle
+{
+	return [[[[ETApp layoutItem] controller] ifResponds] currentPresentationTitle];
+}
+
+- (void) setCurrentPresentationTitle: (NSString *)aTitle
+{
+	[[[[ETApp layoutItem] controller] ifResponds] setCurrentPresentationTitle: aTitle];
+}
+
+- (void) updateForNewSelectedItemTitle: (NSString *)newTitle
+                              oldTitle: (NSString *)oldTitle
+                                inMenu: (NSMenu *)aMenu
+{
+	BOOL hasExpectedAppController = ([self currentPresentationTitle] != nil);
+
+	if (hasExpectedAppController == NO)
+		return;
+
+	[[aMenu itemWithTitle: oldTitle] setState: NSOffState];
+	[[aMenu itemWithTitle: newTitle] setState: NSOnState];
+}
+
+- (IBAction) changePresentationViewFromPopUp: (id)sender
+{
+	ETAssert(viewPopUpItem != nil);
+
+	[self changePresentationViewToMenuItem: [[viewPopUpItem view] selectedItem]];
+
+	NSString *newSelectedTitle = [[[viewPopUpItem view] selectedItem] title];
+	
+	[self updateForNewSelectedItemTitle: newSelectedTitle
+	                           oldTitle: [self currentPresentationTitle]
+	                             inMenu: [[ETApp viewMenuItem] submenu]];
+	[self setCurrentPresentationTitle: newSelectedTitle];
+}
+
+- (IBAction) changePresentationViewFromMenuItem: (id)sender
+{
+	[self updateForNewSelectedItemTitle: [sender title]
+	                           oldTitle: [self currentPresentationTitle]
+	                             inMenu: [sender menu]];
+	[self changePresentationViewToMenuItem: sender];
+
+	[self setCurrentPresentationTitle: [sender title]];
+	[(NSPopUpButton *)[viewPopUpItem view] selectItemWithTitle: [self currentPresentationTitle]];
+}
+
+- (IBAction) changeInspectorViewFromMenuItem: (id)sender
+{
+	// TODO: Implement
+	[self doesNotRecognizeSelector: _cmd];
+}
+
+#pragma mark -
+#pragma Other Object Actions
+
 - (IBAction) search: (id)sender
 {
 	NSString *searchString = [sender stringValue];
-
+	
 	ETLog(@"Search %@ with %@", [searchString description], [[contentViewItem controller] description]);
-
+	
 	if ([searchString isEqual: @""])
 	{
 		[[contentViewItem controller] setFilterPredicate: nil];
@@ -274,11 +356,11 @@
 	else
 	{
 		// TODO: Improve (Full-text, SQL, more properties, Object Matching integration)
-		NSString *queryString = 
-			@"(name CONTAINS %@) OR (typeDescription CONTAINS %@) OR (tagDescription CONTAINS %@)";
+		NSString *queryString =
+		@"(name CONTAINS %@) OR (typeDescription CONTAINS %@) OR (tagDescription CONTAINS %@)";
 		NSPredicate *predicate = [NSPredicate predicateWithFormat: queryString
-			                                        argumentArray: A(searchString, searchString, searchString)]; 
-
+			                                        argumentArray: A(searchString, searchString, searchString)];
+		
 		[[contentViewItem controller] setFilterPredicate: predicate];
 	}
 }
@@ -286,16 +368,17 @@
 - (IBAction) doubleClick: (id)sender
 {
 	id clickedObject = [[sender doubleClickedItem] representedObject];
-
+	
 	ETLog(@"Double click %@", [clickedObject description]);
-
+	
 	if ([clickedObject isGroup])
 	{
 		// TODO: Should use -openDocument: on OMAppController
 		OMLayoutItemFactory *itemFactory = [OMLayoutItemFactory factory];
-		ETLayoutItemGroup *browser = 
-			[itemFactory browserWithGroup: [(OMAppController *)[[itemFactory windowGroup] controller] sourceListGroups]];
-	
+		ETLayoutItemGroup *browser =
+		[itemFactory browserWithGroup: [[self sourceListItem] representedObject]
+					   editingContext: [self editingContext]];
+		
 		[(OMBrowserController *)[browser controller] setBrowsedGroup: clickedObject];
 		[[itemFactory windowGroup] addObject: browser];
 	}
@@ -305,31 +388,28 @@
 	}
 }
 
-- (IBAction) changePresentationViewFromPopUp: (id)sender
-{
-	ETAssert(viewPopUpItem != nil);
-	ETLayout *templateLayout = [[(NSPopUpButton *)[viewPopUpItem view] selectedItem] representedObject];
-	[contentViewItem setLayout: AUTORELEASE([templateLayout copy])];
-}
-
 - (IBAction) open: (id)sender
 {
-
+	// TODO: Implement
+	[self doesNotRecognizeSelector: _cmd];
 }
 
 - (IBAction) openSelection: (id)sender
 {
-
+	// TODO: Implement
+	[self doesNotRecognizeSelector: _cmd];
 }
 
 - (IBAction) markVersion: (id)sender
 {
-
+	// TODO: Implement
+	[self doesNotRecognizeSelector: _cmd];
 }
 
 - (IBAction) revertTo: (id)sender
 {
-
+	// TODO: Implement
+	[self doesNotRecognizeSelector: _cmd];
 }
 
 - (IBAction) browseHistory: (id)sender
@@ -337,21 +417,18 @@
 	if ([[self selectedObject] isPersistent] == NO)
 		return;
 
-	//COTrack *track = [COCommitTrack trackWithObject: [self selectedObject]];
 	COTrack *track = [[self selectedObject] commitTrack];
-	ETLayoutItemGroup *browser = [[ETLayoutItemFactory factory] historyBrowserWithRepresentedObject: track];
+	ETLayoutItemGroup *browser =
+		[[ETLayoutItemFactory factory] historyBrowserWithRepresentedObject: track
+		                                                             title: nil];
 
 	[[[ETLayoutItemFactory factory] windowGroup] addItem: browser];
 }
 
 - (IBAction) export: (id)sender
 {
-
-}
-
-- (IBAction) showInfos: (id)sender
-{
-
+	// TODO: Implement
+	[self doesNotRecognizeSelector: _cmd];
 }
 
 - (IBAction)undoInSelection: (id)sender
@@ -377,7 +454,7 @@
 	/* baseTemplate is used for unknown COObject subclasses and 
 	   baseGroupTemplate is used for unknown COCollection subclasses */
 	ETItemTemplate *noteTemplate =
-		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] item]
+		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] itemGroup]
 	                         objectClass: [COContainer class]];
 	ETItemTemplate *bookmarkTemplate = 
 		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] item]
@@ -402,6 +479,31 @@
 	ETAssert([[self templateForType: librarySubtype] isEqual: libraryTemplate]);
 
 	return self;
+}
+
+- (void)prepareForNewRepresentedObject: (id)browsedGroup
+{
+	// NOTE: Will update the window title
+	[[self content] setRepresentedObject: browsedGroup];
+	[[self content] reload];
+	[[self content] setSelectionIndex: NSNotFound];
+}
+
+- (void)setContent:(ETLayoutItemGroup *)anItem
+{
+	if ([self content] != nil)
+	{
+		[self stopObserveObject: [self content]
+		    forNotificationName: ETItemGroupSelectionDidChangeNotification];
+	}
+	[super setContent: anItem];
+
+	if (anItem != nil)
+	{
+		[self startObserveObject: anItem
+		     forNotificationName: ETItemGroupSelectionDidChangeNotification
+		                selector: @selector(contentSelectionDidChange:)];
+	}
 }
 
 - (id <COPersistentObjectContext>)persistentObjectContext
@@ -452,10 +554,66 @@
 	                                           shortDescription: shortDesc];
 }
 
+- (NSArray *) selectedObjects
+{
+	return [[[[self content] selectedItemsInLayout] mappedCollection] representedObject];
+}
+
+- (NSInteger)menuInsertionIndex
+{
+	NSMenuItem *editMenuItem = [[ETApp mainMenu] itemWithTag: ETEditMenuTag];
+	return [[ETApp mainMenu] indexOfItem: editMenuItem];
+}
+
+- (void)hideMenusForModelObject: (id)anObject
+{
+	if (menuProvider == nil)
+		return;
+	
+	if ([[menuProvider class] isEqual: [anObject class]])
+		return;
+
+	NSInteger nbOfMenusToRemove = [[[menuProvider class] menuItems] count];
+
+	for (NSInteger i = 0; i < nbOfMenusToRemove; i++)
+	{
+		[[ETApp mainMenu] removeItemAtIndex: [self menuInsertionIndex] + 1];
+	}
+	DESTROY(menuProvider);
+}
+
+- (void)showMenusForModelObject: (id)anObject
+{
+	if (anObject == nil)
+		return;
+
+	if ([[menuProvider class] isEqual: [anObject class]])
+		return;
+
+	NSArray *menuItems = [[anObject class] menuItems];
+
+	if ([menuItems isEmpty])
+		return;
+
+	for (NSMenuItem *item in [menuItems reverseObjectEnumerator])
+	{
+		[[ETApp mainMenu] insertItem: item atIndex: [self menuInsertionIndex] + 1];
+	}
+	ASSIGN(menuProvider, anObject);
+}
+
+- (void) contentSelectionDidChange: (NSNotification *)aNotif
+{
+	NSArray *selectedObjects = [self selectedObjects];
+	id selectedObject = ([selectedObjects count] == 1 ? [selectedObjects lastObject] : nil);
+
+	[self hideMenusForModelObject: selectedObject];
+	[self showMenusForModelObject: selectedObject];
+}
+
 @end
 
 @implementation COEditingContext (OMAdditions)
-
 
 - (void)deleteObjects: (NSSet *)objects
 {

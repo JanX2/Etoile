@@ -14,15 +14,32 @@
 #endif
 #import <CoreObject/CoreObject.h>
 #import <EtoileUI/EtoileUI.h>
+#import <EtoileUI/CoreObjectUI.h>
 
 @class OMLayoutItemFactory;
 
+/** The controller to supervise the entire ObjectManager application */
 @interface OMAppController : ETDocumentController
 {
 	OMLayoutItemFactory *itemFactory;
 	NSMutableSet *openedGroups;
 	COCustomTrack *mainUndoTrack;
+	NSString *currentPresentationTitle;
 }
+
+/** @taskunit Menu Management */
+
+/**
+ * The checkmarked menu items among the various presentations (icon, list etc.) 
+ * in the View menu.
+ *
+ * As an alternative, we could have a method -[ETController becomeActive] 
+ * invoked one every first responder change to memorize the current presentation 
+ * title in OMBrowserController directly.
+ */
+@property (nonatomic, retain) NSString *currentPresentationTitle;
+
+/** @taskunit Actions */
 
 - (IBAction) browseMainGroup: (id)sender;
 - (IBAction) undo: (id)sender;

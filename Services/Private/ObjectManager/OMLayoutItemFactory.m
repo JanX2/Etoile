@@ -79,6 +79,11 @@
 	return [ETBrowserLayout layout];
 }
 
+- (ETLayout *) noteLayoutForBrowser
+{
+	return nil;
+}
+
 - (ETLayoutItem *) buttonWithIconNamed: (NSString *)aName target: (id)aTarget action: (SEL)anAction
 {
 	NSImage *icon = [[IKIcon iconWithIdentifier: aName] image];
@@ -239,16 +244,15 @@
 		[itemGroup addItem: listItem];
 	}
 
-	// FIXME: We ought to reload outline views transparently (even with no 
-	// source on the source list)
-	/*NSOutlineView *ov = (NSOutlineView *)[[itemGroup layout] tableView];
-	[ov reloadData];
-	[ov expandItem: [itemGroup firstItem]];*/
-
 	[aController setSourceListItem: itemGroup];
 	[aController startObserveObject: itemGroup
 	            forNotificationName: ETItemGroupSelectionDidChangeNotification
                            selector: @selector(sourceListSelectionDidChange:)];
+
+	NSOutlineView *ov = (NSOutlineView *)[[itemGroup layout] tableView];
+	[ov reloadData];
+	[ov expandItem: [itemGroup firstItem]];
+	[ov expandItem: [itemGroup itemAtIndex: 1]];
 
 	return itemGroup;
 }
@@ -280,8 +284,6 @@
 
 @implementation ETApplication (ObjectManager)
 
-/** Returns the visible Object menu if there is one already inserted in the 
-menu bar, otherwise builds a new instance and returns it. */
 - (NSMenuItem *) objectMenuItem
 {
 	NSMenuItem *menuItem = (id)[[self mainMenu] itemWithTag: ETObjectMenuTag];
@@ -296,10 +298,18 @@ menu bar, otherwise builds a new instance and returns it. */
 
 
 	[menu addItemWithTitle: _(@"New Object From Template…")
+	                action: @selector(addNewObjectFromTemplate:)
+	         keyEquivalent: @""];
+
+	[menu addItemWithTitle:  _(@"New Object")
 	                action: @selector(add:)
 	         keyEquivalent: @""];
 
-	[menu addItemWithTitle:  _(@"New Group")
+	[menu addItemWithTitle:  _(@"New Tag")
+	                action: @selector(addNewTag:)
+	         keyEquivalent: @""];
+
+	[menu addItemWithTitle:  _(@"New Smart Group")
 	                action: @selector(addNewGroup:)
 	         keyEquivalent: @""];
 
@@ -339,6 +349,62 @@ menu bar, otherwise builds a new instance and returns it. */
 
 	[menu addItemWithTitle: _(@"Show Infos")
 	                action: @selector(showInfos:)
+	         keyEquivalent: @""];
+
+	return menuItem;
+}
+
+- (NSMenuItem *) viewMenuItem
+{
+	OMLayoutItemFactory *itemFactory = [OMLayoutItemFactory factory];
+	NSMenuItem *menuItem = (id)[[self mainMenu] itemWithTitle: _(@"View")];
+
+	if (menuItem != nil)
+		return menuItem;
+
+	menuItem = [NSMenuItem menuItemWithTitle: _(@"View")
+	                                     tag: 0
+	                                  action: NULL];
+	NSMenu *menu = [menuItem submenu];
+
+
+	[menu addItemWithTitle: _(@"Icon")
+	                action: @selector(changePresentationViewFromMenuItem:)
+	         keyEquivalent: @""];
+	[[menu lastItem] setRepresentedObject: [itemFactory iconLayoutForBrowser]];
+
+	[menu addItemWithTitle:  _(@"List")
+	                action: @selector(changePresentationViewFromMenuItem:)
+	         keyEquivalent: @""];
+	[[menu lastItem] setRepresentedObject: [itemFactory listLayoutForBrowser]];
+
+	[menu addItemWithTitle: _(@"Note")
+	                action: @selector(changePresentationViewFromMenuItem:)
+	         keyEquivalent: @""];
+	[[menu lastItem] setRepresentedObject: [itemFactory noteLayoutForBrowser]];
+
+	[menu addItem: [NSMenuItem separatorItem]];
+
+	[menu addItemWithTitle: _(@"Show Inspector")
+	                action: @selector(toggleInspector:)
+	         keyEquivalent: @""];
+
+	[menu addItemWithTitle: _(@"New Inspector")
+	                action: @selector(showInspectorInStandaloneWindow:)
+	         keyEquivalent: @""];
+			
+	[menu addItem: [NSMenuItem separatorItem]];
+
+	[menu addItemWithTitle: _(@"Infos")
+	                action: @selector(changeInspectorFromMenuItem:)
+	         keyEquivalent: @""];
+
+	[menu addItemWithTitle: _(@"Tags")
+	                action: @selector(changeInspectorFromMenuItem:)
+	         keyEquivalent: @""];
+
+	[menu addItemWithTitle: _(@"History")
+	                action: @selector(changeInspectorFromMenuItem:)
 	         keyEquivalent: @""];
 
 	return menuItem;

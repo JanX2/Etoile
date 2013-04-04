@@ -14,6 +14,7 @@
 #endif
 #import <CoreObject/CoreObject.h>
 #import <EtoileUI/EtoileUI.h>
+#import <EtoileUI/CoreObjectUI.h>
 
 /** An abstract controller class that provides access to the editing context. */
 @interface OMController : ETController
@@ -22,13 +23,17 @@
 @end
 
 /** The controller to supervise the whole ObjectManager window */
-@interface OMBrowserController : ETController
+@interface OMBrowserController : OMController
 {
 	ETLayoutItemGroup *contentViewItem;
 	ETLayoutItemGroup *sourceListItem;
 	ETLayoutItem *viewPopUpItem;
+	ETLayoutItem *statusLabelItem;
 	id <ETCollection> browsedGroup;
+
 }
+
+/** @taskunit Accessing UI and Model Objects */
 
 @property (nonatomic, retain) ETLayoutItemGroup *contentViewItem;
 @property (nonatomic, retain) ETLayoutItemGroup *sourceListItem;
@@ -36,21 +41,27 @@
 @property (nonatomic, retain) id <ETCollection> browsedGroup;
 @property (nonatomic, readonly) id selectedObject;
 
-//- (void) updatePresentedContent;
-
 /** @taskunit Notifications */
 
 - (void) sourceListSelectionDidChange: (NSNotification *)aNotif;
 
-/** @taskunit Actions */
+/** @taskunit Object Insertion and Deletion Actions */
 
-- (IBAction) addNewTag: (id)sender;
 - (IBAction) add: (id)sender;
+- (IBAction) addNewObjectFromTemplate: (id)sender;
+- (IBAction) addNewTag: (id)sender;
+- (IBAction) addNewGroup: (id)sender;
 - (IBAction) remove: (id)sender;
 
-- (IBAction) doubleClick: (id)sender;
-- (IBAction) changePresentationViewFromPopUp: (id)sender;
+/** @taskunit Presentation Actions */
 
+- (IBAction) changePresentationViewFromPopUp: (id)sender;
+- (IBAction) changePresentationViewFromMenuItem: (id)sender;
+- (IBAction) changeInspectorViewFromMenuItem: (id)sender;
+
+/** @taskunit Other Object Actions */
+
+- (IBAction) doubleClick: (id)sender;
 - (IBAction) search: (id)sender;
 - (IBAction) open: (id)sender;
 - (IBAction) openSelection: (id)sender;
@@ -58,7 +69,6 @@
 - (IBAction) revertTo: (id)sender;
 - (IBAction) browseHistory: (id)sender;
 - (IBAction) export: (id)sender;
-- (IBAction) showInfos: (id)sender;
 
 @end
 
@@ -66,12 +76,17 @@
 content is presented in an ObjectManager window */
 @interface OMBrowserContentController : OMController
 {
-
+	id menuProvider;
 }
+
+/** @taskunit Persistency Integration */
 
 /** Returns the selected persistent root or the editing context. */
 - (id <COPersistentObjectContext>)persistentObjectContext;
 
+/** @taskunit Mutating Content */
+
+- (void) prepareForNewRepresentedObject: (id)anObject;
 - (void) addTag: (COGroup *)aTag;
 
 /** @taskunit Actions */

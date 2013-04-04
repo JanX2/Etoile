@@ -10,11 +10,11 @@
 
 @implementation OMModelFactory
 
-- (COGroup *) whereGroup
+- (COSmartGroup *) whereGroup
 {
 	// TODO: Turn whereGroup into a smart group that dynamically computes the content
 	COSmartGroup *whereGroup = [[OMSmartGroup alloc] init];
-	COGroup *mainGroup = [[COEditingContext currentContext] mainGroup];
+	COSmartGroup *mainGroup = [[COEditingContext currentContext] mainGroup];
 	id <ETCollection> content = [A(mainGroup) arrayByAddingObjectsFromArray:
 		[[[COEditingContext currentContext] libraryGroup] contentArray]];
 
@@ -24,7 +24,7 @@
 	return whereGroup;
 }
 
-- (COGroup *) whatGroup
+- (COSmartGroup *) whatGroup
 {
 	COSmartGroup *whatGroup = [[OMSmartGroup alloc] init];
 	id <ETCollection> content = [[[COEditingContext currentContext] tagLibrary] tagGroups];
@@ -35,7 +35,7 @@
 	return whatGroup;
 }
 
-- (COGroup *) whenGroup
+- (COSmartGroup *) whenGroup
 {
 	COSmartGroup *whenGroup = [[OMSmartGroup alloc] init];
 	
@@ -183,6 +183,32 @@
 - (NSImage *) icon
 {
 	return nil;
+}
+
+@end
+
+@implementation COContainer (OMNote)
+
++ (NSMenuItem *) noteMenuItem
+{
+	NSMenuItem *menuItem = [NSMenuItem menuItemWithTitle: _(@"Note")
+	                                                 tag: 0
+	                                              action: NULL];
+
+	[menuItem setRepresentedObject: self];
+
+	NSMenu *menu = [menuItem submenu];
+
+	[menu addItemWithTitle: _(@"New List…")
+	                action: @selector(addNewList:)
+	         keyEquivalent: @""];
+
+	return menuItem;
+}
+
++ (NSArray *) menuItems
+{
+	return A([self noteMenuItem]);
 }
 
 @end

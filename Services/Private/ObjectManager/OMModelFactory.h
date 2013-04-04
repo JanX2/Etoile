@@ -34,3 +34,7 @@
 @interface OMSmartGroup : COSmartGroup
 - (NSImage *) icon;
 @end
+
+@interface COContainer (OMNote)
++ (NSArray *) menuItems;
+@end

@@ -10,17 +10,16 @@
 #import "OMLayoutItemFactory.h"
 #import "OMModelFactory.h"
 
-@interface OMAppController (Private)
-- (NSArray *) makeDemoLibraries;
-@end
-
 @implementation OMAppController
+
+@synthesize currentPresentationTitle;
 
 - (void) dealloc
 {
 	DESTROY(itemFactory);
 	DESTROY(openedGroups);
 	DESTROY(mainUndoTrack);
+	DESTROY(currentPresentationTitle);
 	[super dealloc];
 }
 
@@ -36,6 +35,10 @@
 {
 	[[ETApp mainMenu] addItem: [ETApp objectMenuItem]];
 	[[ETApp mainMenu] addItem: [ETApp editMenuItem]];
+	[[ETApp mainMenu] addItem: [ETApp viewMenuItem]];
+	
+	[[[[ETApp viewMenuItem] submenu] itemWithTitle: _(@"List")] setState: NSOnState];
+	ASSIGN(currentPresentationTitle,  _(@"List"));
 }
 
 - (void) setUpUndoTrack
@@ -114,7 +117,7 @@
 - (IBAction) browseUndoHistory: (id)sender
 {
 	ETLayoutItemGroup *browser = [[ETLayoutItemFactory factory] 
-		historyBrowserWithRepresentedObject: mainUndoTrack];
+		historyBrowserWithRepresentedObject: mainUndoTrack title: nil];
 
 	[[[ETLayoutItemFactory factory] windowGroup] addItem: browser];
 }

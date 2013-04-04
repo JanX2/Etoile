@@ -35,4 +35,7 @@
 /** Returns the visible Object menu if there is one already inserted in the 
 menu bar, otherwise builds a new instance and returns it. */
 - (NSMenuItem *) objectMenuItem;
+/** Returns the visible View menu if there is one already inserted in the
+ menu bar, otherwise builds a new instance and returns it. */
+- (NSMenuItem *) viewMenuItem;
 @end
