@@ -17,7 +17,7 @@ static NSString *root = @"root";
 
 @implementation DocDeclarationReorderer
 
-- (id) initWithWeaver: (id <CodeDocWeaving>)aWeaver
+- (id) initWithWeaver: (id <DocWeaving>)aWeaver
        orderedSymbols: (NSDictionary *)symbolArraysByKind
 {
 	NILARG_EXCEPTION_TEST(aWeaver);

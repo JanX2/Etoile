@@ -40,7 +40,7 @@ static DocIndex *currentIndex = nil;
 
 - (id) initWithGSDocIndexFile: (NSString *)anIndexFile
 {
-	NILARG_EXCEPTION_TEST(anIndexFile);
+	// NILARG_EXCEPTION_TEST(anIndexFile);
 	SUPERINIT;
 	ASSIGN(projectName, @"Untitled");
 	indexContent = [[NSDictionary alloc] initWithContentsOfFile: anIndexFile];

@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import <EtoileFoundation/EtoileFoundation.h>
 #ifdef __APPLE__
 // NOTE: For solving an ObjC header conflict on some Mac OS X versions (10.6)
 #undef TRUE
@@ -41,7 +42,7 @@ generation with EtoileUI.
 @section Removals to FAME/EMOF
 
 NamedElement and NestedElement protocols don't exist explicitly. */
-@interface GraphWriter : NSObject
+@interface DocGraphWriter : NSObject
 {
 	NSMutableDictionary* mNodes;
 	NSMutableArray* mEdges;

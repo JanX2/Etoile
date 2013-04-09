@@ -18,10 +18,10 @@
 DocPageWeaver uses this class internally.
 
 See -initWithWeaver:orderedSymbols:. */
-@interface DocDeclarationReorderer : NSObject <CodeDocWeaving>
+@interface DocDeclarationReorderer : NSObject <DocWeaving>
 {
 	@private
-	id <CodeDocWeaving> weaver;
+	id <DocWeaving> weaver;
 	NSDictionary *orderedSymbols;
 	/* The accumulated doc elements by nesting level.
 	   Four key kinds are possible:
@@ -38,17 +38,17 @@ See -initWithWeaver:orderedSymbols:. */
 
 /** <init />
 Initializes and returns a new reorderer that can receive parsed symbols through 
-CodeDocWeaving protocol it implements, and emit reordered symbols by invoking 
-CodeDocWeaving methods on the weaver.
+DocWeaving protocol it implements, and emit reordered symbols by invoking 
+DocWeaving methods on the weaver.
 
 The weaver argument should be a DocPageWeaver object.<br />
-The parser calling CodeDocWeaving methods on a DocDeclarationReorderer object 
+The parser calling DocWeaving methods on a DocDeclarationReorderer object
 should be a GSDocParser.<br />
 
 The returned object reorders the symbols to match their ordering in the given 
 property list, whose structure must match <em>OrderedSymbolDeclarations.plist</em>
  output by autogsdoc. */
-- (id) initWithWeaver: (id <CodeDocWeaving>)aWeaver 
+- (id) initWithWeaver: (id <DocWeaving>)aWeaver
        orderedSymbols: (NSDictionary *)symbolArraysByKind;
 
 @end

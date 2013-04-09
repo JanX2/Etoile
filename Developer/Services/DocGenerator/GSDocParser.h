@@ -1,6 +1,6 @@
 /**
 	<abstract>GSDoc parser that can drive a DocPageWeaver through 
-	CodeDocWeaving protocol.</abstract>
+	DocWeaving protocol.</abstract>
 
 	Copyright (C) 2008 Nicolas Roard
 
@@ -50,10 +50,10 @@ DocDeclarationReorderer or DocPageWeaver, and triggers the parsing with
 -parseAndWeave.
 
 All XML parsing related methods are used internally, you can ignore them. */
-@interface GSDocParser : NSObject <GSDocParserDelegate>
+@interface GSDocParser : NSObject <DocSourceParsing, GSDocParserDelegate>
 {
 	@private
-	id <CodeDocWeaving> weaver; /* Weak ref */
+	id <DocWeaving> weaver; /* Weak ref */
 	NSXMLParser *xmlParser;
 	NSMutableArray *parserDelegateStack;
 	NSString *indentSpaces;
@@ -74,16 +74,16 @@ All XML parsing related methods are used internally, you can ignore them. */
 
 Call -setWeaver: on the returned object to be ready to parse. */
 - (id) initWithString: (NSString *)aContent;
-/** Sets the weaver on which the receiver should call back CodeDocWeaving 
+/** Sets the weaver on which the receiver should call back DocWeaving
 methods while parsing the GSDoc XML provided at initialization time. */
-- (void) setWeaver: (id <CodeDocWeaving>)aDocWeaver;
+- (void) setWeaver: (id <DocWeaving>)aDocWeaver;
 /** Returns the weaver currently in use or nil. 
 
 See also -setWeaver:. */
-- (id <CodeDocWeaving>) weaver;
+- (id <DocWeaving>) weaver;
 
 /** Parses the GSDoc XML with which the receiver was initialized, and at the same 
-time weaves the produced doc elements through CodeDocWeaving methods.
+time weaves the produced doc elements through DocWeaving methods.
 
 DocElement subclass objects are created, when parsing an XML element to which 
 a valid class is bound to with -elementClassForName:.

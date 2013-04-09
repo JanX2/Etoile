@@ -14,7 +14,7 @@
 #import "DocMethod.h"
 #import "GSDocParser.h"
 #import "DocHTMLElement.h"
-#import "GraphWriter.h"
+#import "DocGraphWriter.h"
 
 @interface DocPage (Private)
 - (void) addElement: (DocElement *)anElement toDictionaryNamed: (NSString *)anIvarName forKey: (NSString *)aKey;
@@ -61,10 +61,11 @@ name is parsed and set. */
 	RELEASE(elements);
 }
 
+/* I renamed GraphWriter class (.h & .m) to DocGraphWriter. */
 - (void) addCategoryNodeNamed: (NSString *)categoryName 
                     className: (NSString *)className
                 protocolNames: (NSArray *)adoptedProtocolNames
-                toGraphWriter: (GraphWriter *)writer 
+                toGraphWriter: (DocGraphWriter *)writer
 {
 	if (categoryName == nil)
 		return;
@@ -81,9 +82,10 @@ name is parsed and set. */
 	}
 }
 
+/* I renamed GraphWriter class (.h & .m) to DocGraphWriter. */
 - (void) addProtocolNodeNamed: (NSString *)protocolName 
                 protocolNames: (NSArray *)adoptedProtocolNames
-                toGraphWriter: (GraphWriter *)writer 
+                toGraphWriter: (DocGraphWriter *)writer
 {
 	if (protocolName == nil)
 		return;
@@ -101,10 +103,11 @@ name is parsed and set. */
 	}
 }
 
+/* I renamed GraphWriter class (.h & .m) to DocGraphWriter. */
 - (void) addClassNodeNamed: (NSString *)className 
            superclassNames: (NSString *)superclassName
              protocolNames: (NSArray *)protocolNames
-             toGraphWriter: (GraphWriter *)writer 
+             toGraphWriter: (DocGraphWriter *)writer
 {
 	if (className == nil)
 		return;
@@ -128,7 +131,7 @@ name is parsed and set. */
 
 - (NSString *) graphImageLinkWithGroupName: (NSString *)aName elements: (NSArray *)elements
 {
-	GraphWriter *writer = AUTORELEASE([GraphWriter new]);
+	DocGraphWriter *writer = AUTORELEASE([DocGraphWriter new]);
 	NSArray *visibleSuperclassNames = (id)[[elements mappedCollection] className];
 	/* Size to min width from Start Document global.css and some trial-and-error tests
 	   TODO: Find out which is the precise width based on the css. */

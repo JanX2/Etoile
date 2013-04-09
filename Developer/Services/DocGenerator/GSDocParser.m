@@ -75,13 +75,13 @@
 	[super dealloc];
 }
 
-- (void) setWeaver: (id <CodeDocWeaving>)aDocWeaver
+- (void) setWeaver: (id <DocWeaving>)aDocWeaver
 {
 	/* The weaver retains the parser */
 	weaver = aDocWeaver;
 }
 
-- (id <CodeDocWeaving>) weaver
+- (id <DocWeaving>) weaver
 {
 	return weaver;
 }

@@ -27,8 +27,8 @@ Each time a documentation source document (e.g. a gsdoc file) has been parsed,
 the parser must invoke -finishWeaving.
 
 New page creation is entirely up to the weaver e.g. in reaction to a 
-CodeDocWeaving method called back by the parser.  */
-@protocol CodeDocWeaving <NSObject>
+DocWeaving method called back by the parser.  */
+@protocol DocWeaving <NSObject>
 - (void) weaveClassNamed: (NSString *)aClassName 
           superclassName: (NSString *)aSuperclassName;
 - (void) weaveProtocolNamed: (NSString *)aProtocolName;
@@ -50,13 +50,13 @@ CodeDocWeaving method called back by the parser.  */
 
 Any documentation source parser must implement this protocol to let the weaver 
 initiates the parsing. In addition, the parser must reports its parsing result 
-to the weaver through the CodeDocWeaving protocol.<br />
+to the weaver through the DocWeaving protocol.<br />
 Parsing usually involves to build new DocElement subclass instances and hand 
 them to the weaver.  */
-@protocol CodeDocParser
+@protocol DocSourceParsing
 - (id) initWithString: (NSString *)aString;
-- (void) setWeaver: (id <CodeDocWeaving>)aDocWeaver;
-- (id <CodeDocWeaving>) weaver;
+- (void) setWeaver: (id <DocWeaving>)aDocWeaver;
+- (id <DocWeaving>) weaver;
 - (void) parseAndWeave;
 @end
 
@@ -75,7 +75,7 @@ parser. When no parser is available, it hands the file content directly to a new
 documentation page (see DocPage that provides a template-based substitution 
 mechanism). Otherwise it delegates the source file parsing to the right parser 
 e.g. GSDocParser, which will instantiate new doc elements and weave them through 
-the CodeDocWeaving protocol as the parsing goes.
+the DocWeaving protocol as the parsing goes.
 
 DocPageWeaver is free to weave multiple pages from a single source file, or 
 gather doc elements and consolidate them onto a common page.<br />
@@ -91,7 +91,7 @@ and subclasses.
 
 Subclassing altough experimental and untested, can be used to customize the 
 existing page generation strategy or implement a new one. */
-@interface DocPageWeaver : NSObject <CodeDocWeaving>
+@interface DocPageWeaver : NSObject <DocWeaving>
 {
 	@private
 	/* Documentation Source & Templates */
@@ -107,7 +107,7 @@ existing page generation strategy or implement a new one. */
 	DocIndex *docIndex;
 
 	/* Decorator to reorder GSDocParser parsing output */
-	id <CodeDocWeaving> reorderingWeaver;
+	id <DocWeaving> reorderingWeaver;
 
 	/* Parser whose weaver is set to the receiver or reorderingWeaver */	
 	id currentParser;

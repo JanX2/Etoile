@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <unistd.h>
-#include "GraphWriter.h"
-#import <EtoileFoundation/EtoileFoundation.h>
+#include "DocGraphWriter.h"
 
-@implementation GraphWriter
+@implementation DocGraphWriter
 
 - (id) init
 {
