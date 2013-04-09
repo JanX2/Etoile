@@ -100,7 +100,7 @@
 		return;
 
 	/* Delete persistent roots or particular inner objects  */
-	[[self editingContext] deleteObjects: selectedObjects];
+	[[self editingContext] deleteObjects: [NSSet setWithArray: selectedObjects]];
 	[[self editingContext] commit];
 }
 
