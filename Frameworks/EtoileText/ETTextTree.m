@@ -32,10 +32,50 @@ typedef struct
 
 @implementation ETTextTree
 @synthesize length, parent, textType, customAttributes;
+
++ (void)initialize
+{
+	if ([ETTextTree class] != self)
+		return;
+
+	[self applyTraitFromClass: [ETCollectionTrait class]];
+	[self applyTraitFromClass: [ETMutableCollectionTrait class]];
+}
+
++ (ETEntityDescription*)newEntityDescription
+{
+	ETEntityDescription *entity = [self newBasicEntityDescription];
+	
+	// For subclasses that don't override -newEntityDescription, we must not add 
+	// the property descriptions that we will inherit through the parent
+	if ([[entity name] isEqual: [ETTextTree className]] == NO)
+		return entity;
+
+	// FIXME: Support protocol as type for ETText children
+	ETPropertyDescription *children =
+		[ETPropertyDescription descriptionWithName: @"children" type: (id)@"ETTextTree"];
+	[children setMultivalued: YES];
+	[children setOrdered: YES];
+	ETPropertyDescription *stringValue =
+		[ETPropertyDescription descriptionWithName: @"stringValue" type: (id)@"NSString"];
+	[stringValue setDerived: YES];
+
+	NSArray *transientProperties = A(stringValue);
+	NSArray *persistentProperties = A(children);
+	
+	[[persistentProperties mappedCollection] setPersistent: YES];
+	[entity setPropertyDescriptions:
+		[persistentProperties arrayByAddingObjectsFromArray: transientProperties]];
+	
+	return entity;
+}
+
 - (id)initWithChildren: (NSArray*)anArray
 {
 	SUPERINIT;
 	children = [anArray mutableCopy];
+	[(id <ETText>)[children mappedCollection] setParent: self];
+	[self recalculateLength];
 	return self;
 }
 + (ETTextTree*)textTreeWithChildren: (NSArray*)anArray
@@ -49,8 +89,26 @@ typedef struct
 - (void)dealloc
 {
 	[children release];
+	[textType release];
+	[customAttributes release];
 	[super dealloc];
 }
+
+- (void) becomePersistentInContext: (COPersistentRoot*)aContext
+{
+	if ([self isPersistent])
+		return;
+
+	[super becomePersistentInContext: aContext];
+
+	for (id <ETText> childNode in children)
+	{
+		ETAssert([childNode isKindOfClass: [COObject class]]);
+		ETAssert([(COObject *)childNode isPersistent]);
+		[(COObject *)childNode becomePersistentInContext: aContext];
+	}
+}
+
 - (NSString*)description
 {
 	NSString *typeName = [textType objectForKey: kETTextStyleName];
@@ -75,19 +133,57 @@ typedef struct
 		{
 			childNode.index = childIndex;
 			childNode.start = start;
+			break;
 		}
 		start = end;
 		childIndex++;
 	}
 	return childNode;
 }
-- (void)appendTextFragment: (id<ETText>)aFragment
+
+- (void)insertTextFragment: (id<ETText>)aFragment atIndex: (NSUInteger)anIndex
 {
+	id oldCollection = [[children mutableCopy] autorelease];
+	[self willChangeValueForProperty: @"children"];
+	
 	length += [aFragment length];
-	[children addObject: aFragment];
+	if (ETUndeterminedIndex == anIndex)
+	{
+		[children addObject: aFragment];
+	}
+	else
+	{
+		[children insertObject: aFragment atIndex: anIndex];
+	}
 	aFragment.parent = self;
 	[parent childDidChange: self];
+	
+	[self didChangeValueForProperty: @"children" oldValue: oldCollection];
 }
+
+- (void)appendTextFragment: (id<ETText>)aFragment
+{
+	[self insertTextFragment: aFragment atIndex: ETUndeterminedIndex];
+}
+
+- (void)removeTextFragment: (id<ETText>)aFragment
+{
+	id oldCollection = [[children mutableCopy] autorelease];
+	[self willChangeValueForProperty: @"children"];
+	
+	length -= [aFragment length];
+	[children removeObject: aFragment];
+	aFragment.parent = nil;
+	[parent childDidChange: self];
+	
+	[self didChangeValueForProperty: @"children" oldValue: oldCollection];
+}
+
+- (NSArray *)children
+{
+	return [NSArray arrayWithArray: children];
+}
+
 - (unichar)characterAtIndex: (NSUInteger)anIndex
 {
 	ETTextTreeChild child = [self childNodeForIndex: anIndex];
@@ -112,6 +208,7 @@ typedef struct
 {
 	[self recalculateLength];
 }
+
 - (void)replaceCharactersInRange: (NSRange)aRange
                       withString: (NSString*)aString
 {
@@ -263,6 +360,17 @@ typedef struct
 	str.text = self;
 	return [str autorelease];
 }
+
+- (void)setStringValue: (NSString*)aString
+{
+	[children removeAllObjects];
+	ETTextFragment *child = [[ETTextFragment alloc] initWithString: aString];
+	[children addObject: child];
+	[child release];
+	[self recalculateLength];
+	ETAssert([[self stringValue] isEqual: aString]);
+}
+
 - (void)replaceChild: oldChild withNode: aNode
 {
 	NSInteger idx = [children indexOfObjectIdenticalTo: oldChild];
@@ -284,25 +392,31 @@ typedef struct
 {
 	[(ETTextTree*)parent replaceChild: self withNode: aNode];
 }
-- (NSArray*)properties
-{
-	return A(@"textType", @"customAttributes");
-}
+
 - (BOOL)isOrdered
 {
 	return YES;
 }
-- (BOOL)isEmpty
-{
-	return [children count] == 0;
-}
-- (id)content
+
+- (id) content
 {
 	return children;
 }
-- (NSArray*)contentArray
+
+- (NSArray *) contentArray
 {
-	return children;
+	return [NSArray arrayWithArray: children];
 }
+
+- (void) insertObject: (id)object atIndex: (NSUInteger)index hint: (id)hint
+{
+	[self insertTextFragment: object atIndex: index];
+}
+
+- (void) removeObject: (id)object atIndex: (NSUInteger)index hint: (id)hint
+{
+	[self removeTextFragment: object];
+}
+
 @end
 

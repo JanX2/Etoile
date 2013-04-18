@@ -14,12 +14,14 @@
 {
 	NSMutableString *text;
 }
++ (id)fragmentWithString: (NSString*)aString;
+/**
+ * Initializes the text fragment with a string.
+ */
+- (id)initWithString: (NSString*)string;
 /**
  * The parent object in the text tree.
  */
 @property (nonatomic, assign) id<ETTextGroup> parent;
-/**
- * Initializes the text fragment with a string.  
- */
-- (id)initWithString: (NSString*)string;
+
 @end

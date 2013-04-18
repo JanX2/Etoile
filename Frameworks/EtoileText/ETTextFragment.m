@@ -8,6 +8,10 @@
 
 @implementation ETTextFragment
 @synthesize parent, textType, customAttributes;
++ (id)fragmentWithString: (NSString*)aString
+{
+	return [[[self alloc] initWithString: aString] autorelease];
+}
 - (id)initWithString: (NSString*)string
 {
 	SUPERINIT;
@@ -17,6 +21,13 @@
 - (id)init
 {
 	return [self initWithString: @""];
+}
+- (void) dealloc
+{
+	DESTROY(text);
+	DESTROY(textType);
+	DESTROY(customAttributes);
+	[super dealloc];
 }
 - (NSString*)description
 {
@@ -88,6 +99,11 @@
 - (NSString*)stringValue
 {
 	return text;
+}
+- (void)setStringValue: (NSString*)aString
+{
+	[text setString: aString];
+	[parent childDidChange: self];
 }
 - (void)replaceInParentWithTextNode: (id<ETText>)aNode
 {

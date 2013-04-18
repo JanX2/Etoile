@@ -71,6 +71,12 @@
  */
 - (NSString*)stringValue;
 /**
+ * Sets a string representing the receiver.
+ *
+ * The implementation must notify the parent using -[ETTextGroup childDidChange].
+ */
+- (void)setStringValue: (NSString*)aString;
+/**
  * Replace this text node in its parent with the one given as the argument.
  */
 - (void)replaceInParentWithTextNode: (id<ETText>)aNode;

@@ -49,7 +49,6 @@
 		603B851917182A3400F016FC /* TWTextTreeDocumentTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 603B851817182A3400F016FC /* TWTextTreeDocumentTemplate.m */; };
 		608C64171718DD7D0036F220 /* TWEditorContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 608C64161718DD7D0036F220 /* TWEditorContentController.m */; };
 		60E182761720249C00953736 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 603B83751718081C00F016FC /* Cocoa.framework */; };
-		60E1827C1720249C00953736 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60E1827A1720249C00953736 /* InfoPlist.strings */; };
 		60E18281172024FD00953736 /* ETStyleBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 603B83D6171808E000F016FC /* ETStyleBuilder.m */; };
 		60E18282172024FD00953736 /* ETTeXHandlers.m in Sources */ = {isa = PBXBuildFile; fileRef = 603B83D8171808E000F016FC /* ETTeXHandlers.m */; };
 		60E18283172024FD00953736 /* ETTeXScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 603B83DA171808E000F016FC /* ETTeXScanner.m */; };
@@ -817,7 +816,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				60E1827C1720249C00953736 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
