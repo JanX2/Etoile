@@ -39,7 +39,8 @@ EtoileText_HEADER_FILES = \
 	EtoileText.h
 
 ifeq ($(test), yes)
-  EtoileText_OBJC_FILES = \
+  EtoileText_OBJC_FILES += \
+	Tests/TestCommon.m\
 	Tests/TestTextStorage.m\
 	Tests/TestTextTree.m
 endif
