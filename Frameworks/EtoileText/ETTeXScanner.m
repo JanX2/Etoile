@@ -15,7 +15,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 
 #define SET_INDEX(n) \
 	idx = n;\
-	i = idx - range.location - BUFFER_SIZE;\
+	i = idx - range.location - (NSUInteger)BUFFER_SIZE;\
 	if (i >= range.length)\
 	{\
 		range.location = idx + 1;\
@@ -46,7 +46,7 @@ static NSCharacterSet *CommandEndCharacterSet;
 		[aString getCharacters: buffer range: range];
 		//NSLog(@"Buffer: %@", [aString substringWithRange: range]);
 		range.location += BUFFER_SIZE;
-		for (unsigned i=0 ; i<range.length ; i++, idx++)
+		for (NSUInteger i=0 ; i<range.length ; i++, idx++)
 		{
 			unichar c = buffer[i];
 			switch (c)

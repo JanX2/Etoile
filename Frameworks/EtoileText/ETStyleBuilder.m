@@ -29,7 +29,7 @@
 }
 - (void)addAttributesForType: (id)type
 {
-	NSString *name = [type valueForKey: ETStyleName];
+	NSString *name = [type valueForKey: kETTextStyleName];
 
 	if (nil == name) { return; }
 
@@ -41,6 +41,10 @@
 		[self addCustomAttributes: attributes];
 	}
 
+}
+- (void)addAttributesForStyle: (id)style
+{
+	// TODO: Combine with -addAttributeForType:
 }
 - (void)addCustomAttributes: (NSDictionary*)attributes
 {

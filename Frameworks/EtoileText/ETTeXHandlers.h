@@ -1,4 +1,6 @@
-@class NSURL;
+#import <EtoileText/ETTeXScanner.h>
+
+@class NSURL, NSMutableString;
 
 @interface ETTeXSimpleHandler : ETTeXHandler
 {

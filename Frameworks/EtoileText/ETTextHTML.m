@@ -21,11 +21,11 @@
 	// Emit a numbered link to the footnote now.
 	NSInteger footnoteNumber = [footnotes count];
 	NSString *linkText = 
-		[NSString stringWithFormat: @"%d", footnoteNumber];
+		[NSString stringWithFormat: @"%ld", (long)footnoteNumber];
 	// Footnote labels are always internal, so we don't need to do anything
 	// clever here.
 	NSString *footnoteLabel = 
-		[NSString stringWithFormat: @"#footnote%d", footnoteNumber];
+		[NSString stringWithFormat: @"#footnote%ld", (long)footnoteNumber];
 
 	ETXMLWriter *writer = aWriter.writer;
 	[writer startElement: @"a"
@@ -51,9 +51,9 @@
 	for (id<ETText> footnote in footnotes)
 	{
 		NSString *linkText = 
-			[NSString stringWithFormat: @"%d", footnoteNumber];
+			[NSString stringWithFormat: @"%ld", (long)footnoteNumber];
 		NSString *footnoteLabel = 
-			[NSString stringWithFormat: @"footnote%d", footnoteNumber];
+			[NSString stringWithFormat: @"footnote%ld", (long)footnoteNumber];
 		[writer startElement: @"p"
 		          attributes: D(ETTextFootnoteType, @"class")];
 		[writer startElement: @"sup"];
@@ -304,8 +304,12 @@
 	}
 	if (writeChaptersToFiles)
 	{
+		NSError *error = nil;
 		[html writeToFile: [chapterTitle stringByAppendingPathExtension: @"html"]
-			   atomically: NO];
+			   atomically: NO
+				 encoding: NSUTF8StringEncoding
+					error: &error];
+		ETAssert(nil == error);
 		NSLog(@"Writing %@", [chapterTitle stringByAppendingPathExtension: @"html"]);
 	}
 	return [writer endDocument];

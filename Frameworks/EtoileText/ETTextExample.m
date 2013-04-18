@@ -138,7 +138,11 @@ int main(void)
 
 	TeXScannerDelegate *d = [TeXScannerDelegate new];
 	ETTeXScanner *s = [ETTeXScanner new];
-	NSString * tex = [NSString stringWithContentsOfFile: @"/tmp/tex"];
+	NSError *error = nil;
+	NSString *tex = [NSString stringWithContentsOfFile: @"/tmp/tex"
+	                                          encoding: NSUTF8StringEncoding
+	                                             error: &error];
+	NSCAssert(error == nil, @"%@", error);
 	s.delegate = d;
 	[s parseString: tex];
 	[d release];
