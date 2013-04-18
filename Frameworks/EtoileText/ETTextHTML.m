@@ -309,7 +309,7 @@
 			   atomically: NO
 				 encoding: NSUTF8StringEncoding
 					error: &error];
-		ETAssert(nil == error);
+		NSCAssert1(error == nil, @"%@", error);
 		NSLog(@"Writing %@", [chapterTitle stringByAppendingPathExtension: @"html"]);
 	}
 	return [writer endDocument];

@@ -142,7 +142,7 @@ int main(void)
 	NSString *tex = [NSString stringWithContentsOfFile: @"/tmp/tex"
 	                                          encoding: NSUTF8StringEncoding
 	                                             error: &error];
-	NSCAssert(error == nil, @"%@", error);
+	NSCAssert1(error == nil, @"%@", error);
 	s.delegate = d;
 	[s parseString: tex];
 	[d release];
