@@ -8,6 +8,38 @@
 
 @implementation ETTextFragment
 @synthesize parent, textType, customAttributes;
+
++ (ETEntityDescription*)newEntityDescription
+{
+	ETEntityDescription *entity = [self newBasicEntityDescription];
+	
+	// For subclasses that don't override -newEntityDescription, we must not add
+	// the property descriptions that we will inherit through the parent
+	if ([[entity name] isEqual: [ETTextFragment className]] == NO)
+		return entity;
+	
+	// FIXME: Support protocol as type for ETTextGroup
+	ETPropertyDescription *parent =
+		[ETPropertyDescription descriptionWithName: @"parent" type: (id)@"ETTextTree"];
+	[parent setIsContainer: YES];
+	[parent setOpposite: (id)@"ETTextTree.children"];
+	[parent setReadOnly: YES];
+	ETPropertyDescription *stringValue =
+		[ETPropertyDescription descriptionWithName: @"stringValue" type: (id)@"NSString"];
+	// FIXME: Define accepted types for persisting textType
+	ETPropertyDescription *textType =
+		[ETPropertyDescription descriptionWithName: @"textType" type: (id)@"NSObject"];
+	ETPropertyDescription *customAttributes =
+		[ETPropertyDescription descriptionWithName: @"customAttributes" type: (id)@"NSDictionary"];
+
+	NSArray *persistentProperties = A(stringValue, parent, textType, customAttributes);
+	
+	[[persistentProperties mappedCollection] setPersistent: YES];
+	[entity setPropertyDescriptions: persistentProperties];
+	
+	return entity;
+}
+
 + (id)fragmentWithString: (NSString*)aString
 {
 	return [[[self alloc] initWithString: aString] autorelease];
@@ -38,6 +70,13 @@
 	}
 	return [NSString stringWithFormat: @"<%@>%@</%@>", typeName, text, typeName];
 }
+
+// FIXME: See same method comment in ETTextTree
+- (void)updateRelationshipConsistencyForProperty: (NSString *)key oldValue: (id)oldValue
+{
+	
+}
+
 - (void)setCustomAttributes: (NSDictionary*)attributes 
                       range: (NSRange)aRange
 {
@@ -109,9 +148,6 @@
 {
 	[(ETTextTree*)parent replaceChild: self withNode: aNode];
 }
-- (NSArray*)properties
-{
-	return A(@"textType", @"customAttributes", @"text");
-}
+
 @end
 

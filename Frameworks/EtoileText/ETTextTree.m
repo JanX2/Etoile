@@ -53,15 +53,29 @@ typedef struct
 
 	// FIXME: Support protocol as type for ETText children
 	ETPropertyDescription *children =
-		[ETPropertyDescription descriptionWithName: @"children" type: (id)@"ETTextTree"];
+		[ETPropertyDescription descriptionWithName: @"children" type: (id)@"ETTextFragment"];
 	[children setMultivalued: YES];
 	[children setOrdered: YES];
+	[children setOpposite: (id)@"ETTextFragment.parent"];
+	// FIXME: Support protocol as type for ETTextGroup
+	ETPropertyDescription *parent =
+		[ETPropertyDescription descriptionWithName: @"parent" type: (id)@"ETTextTree"];
+	[parent setIsContainer: YES];
+	[parent setOpposite: (id)@"ETTextTree.children"];
+	[parent setReadOnly: YES];
+	// FIXME: Define accepted types for persisting textType
+	ETPropertyDescription *textType =
+		[ETPropertyDescription descriptionWithName: @"textType" type: (id)@"NSObject"];
+	ETPropertyDescription *customAttributes =
+		[ETPropertyDescription descriptionWithName: @"customAttributes" type: (id)@"NSDictionary"];
 	ETPropertyDescription *stringValue =
 		[ETPropertyDescription descriptionWithName: @"stringValue" type: (id)@"NSString"];
 	[stringValue setDerived: YES];
 
 	NSArray *transientProperties = A(stringValue);
-	NSArray *persistentProperties = A(children);
+	// FIXME: Include parent among the persistent properties once we support 
+	// modeling relationships around EText/ETGroup protocols
+	NSArray *persistentProperties = A(children, textType, customAttributes);
 	
 	[[persistentProperties mappedCollection] setPersistent: YES];
 	[entity setPropertyDescriptions:
@@ -107,6 +121,17 @@ typedef struct
 		ETAssert([(COObject *)childNode isPersistent]);
 		[(COObject *)childNode becomePersistentInContext: aContext];
 	}
+}
+
+// FIXME: Disabled relationship consistency because
+// -collectionForProperty:removalIndex: cannot access properties through ivar
+// but only through KVC. In our case, -children returns a immutable array. So we
+// need to implement ETInstanceVariableValueForKey(). Also in the long run, any
+// text tree builder should disable relationship consistency temporarily for
+// performance reasons (e.g. by setting -[COEditingContext checker] to nil).
+- (void)updateRelationshipConsistencyForProperty: (NSString *)key oldValue: (id)oldValue
+{
+	
 }
 
 - (NSString*)description
