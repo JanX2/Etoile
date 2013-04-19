@@ -30,6 +30,8 @@ Finally you need from Etoile itself:
 
    * EtoileFoundation, which can be found in Etoile/Frameworks/EtoileFoundation
 
+   * SourceCodeKit, which can be found in Etoile/Languages/SourceCodeKit
+
 These last dependencies are automatically handled when DocGenerator is built by 
 running 'make' tool in the root 'Etoile' directory of the current branch.
 
@@ -72,6 +74,9 @@ This should install Discount library and tool into /usr/local. For running
 DocGenerator inside Xcode, the 'discount' tool must be installed in 
 /usr/local/bin. If the tool is run from the shell, the 'discount' tool directory 
 must be in your shell PATH variable.
+
+**Note:** You must also install libclang headers as explained in SourceCodeKit 
+INSTALL.
 
 
 Trouble
