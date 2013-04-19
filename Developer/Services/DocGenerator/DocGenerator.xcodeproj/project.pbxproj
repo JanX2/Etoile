@@ -414,6 +414,7 @@
 					/usr/local/include/graphviz,
 					/usr/local/graphviz/include,
 					/usr/local/graphviz/include/graphviz,
+					../../../Languages/SourceCodeKit,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
@@ -439,6 +440,7 @@
 					/usr/local/include/graphviz,
 					/usr/local/graphviz/include,
 					/usr/local/graphviz/include/graphviz,
+					../../../Languages/SourceCodeKit,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
