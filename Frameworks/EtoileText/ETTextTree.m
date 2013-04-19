@@ -7,21 +7,26 @@
 @interface ETTextString : NSString
 @property (nonatomic, retain) id<ETText> text;
 @end
+
 @implementation ETTextString
 @synthesize text;
+
 - (NSUInteger)length
 {
 	return [text length];
 }
+
 - (unichar)characterAtIndex: (NSUInteger)anIndex
 {
 	return [text characterAtIndex: anIndex];
 }
+
 - (void)dealloc
 {
 	[text release];
 	[super dealloc];
 }
+
 @end
 
 typedef struct 
@@ -84,6 +89,11 @@ typedef struct
 	return entity;
 }
 
++ (ETTextTree*)textTreeWithChildren: (NSArray*)anArray
+{
+	return [[[self alloc] initWithChildren: anArray] autorelease];
+}
+
 - (id)initWithChildren: (NSArray*)anArray
 {
 	SUPERINIT;
@@ -92,14 +102,12 @@ typedef struct
 	[self recalculateLength];
 	return self;
 }
-+ (ETTextTree*)textTreeWithChildren: (NSArray*)anArray
-{
-	return [[[self alloc] initWithChildren: anArray] autorelease];
-}
+
 - (id)init
 {
 	return [self initWithChildren: [NSArray array]];
 }
+
 - (void)dealloc
 {
 	[children release];
@@ -145,6 +153,7 @@ typedef struct
 	[desc appendFormat: @"</%@>", typeName];
 	return desc;
 }
+
 - (ETTextTreeChild)childNodeForIndex: (NSUInteger)anIndex
 {
 	ETTextTreeChild childNode = { NSNotFound, 0};
@@ -215,6 +224,7 @@ typedef struct
 	return [[children objectAtIndex: child.index] 
 			characterAtIndex: (anIndex - child.start)];
 }
+
 - (void)recalculateLength
 {
 	// FIXME: O(n)  No good!
@@ -229,6 +239,7 @@ typedef struct
 		[parent childDidChange: self];
 	}
 }
+
 - (void)childDidChange: (id<ETText>)aChild
 {
 	[self recalculateLength];
@@ -282,6 +293,7 @@ typedef struct
 		[self recalculateLength];
 	}
 }
+
 - (void)appendString: (NSString*)aString;
 {
 	// Special case for inserting into an empty tree
@@ -295,6 +307,7 @@ typedef struct
 	}
 	[[children lastObject] appendString: aString];
 }
+
 - (void)setCustomAttributes: (NSDictionary*)attributes 
                       range: (NSRange)aRange
 {
@@ -343,11 +356,13 @@ typedef struct
 		child = [children objectAtIndex: startChild.index];
 	} while(nil != child);
 }
+
 - (NSUInteger)buildStyleFromIndex: (NSUInteger)anIndex
                  withStyleBuilder: (ETStyleBuilder*)aBuilder
 {
 	return -1;
 }
+
 - (id<ETText>)splitAtIndex: (NSUInteger)anIndex
 {
 	ETTextTreeChild splitChild = [self childNodeForIndex: anIndex];
@@ -370,6 +385,7 @@ typedef struct
 	[children removeObjectsInRange: firstRange];
 	return firstPart;
 }
+
 - (void)visitWithVisitor: (id<ETTextVisitor>)aVisitor
 {
 	[aVisitor startTextNode: self];
@@ -379,6 +395,7 @@ typedef struct
 	}
 	[aVisitor endTextNode: self];
 }
+
 - (NSString*)stringValue
 {
 	ETTextString *str = [[ETTextString alloc] init];
@@ -413,6 +430,7 @@ typedef struct
 		[self recalculateLength];
 	}
 }
+
 - (void)replaceInParentWithTextNode: (id<ETText>)aNode
 {
 	[(ETTextTree*)parent replaceChild: self withNode: aNode];

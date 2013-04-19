@@ -44,12 +44,14 @@
 {
 	return [[[self alloc] initWithString: aString] autorelease];
 }
+
 - (id)initWithString: (NSString*)string
 {
 	SUPERINIT;
 	text = [string mutableCopy];
 	return self;
 }
+
 - (id)init
 {
 	return [self initWithString: @""];
@@ -61,6 +63,7 @@
 	DESTROY(customAttributes);
 	[super dealloc];
 }
+
 - (NSString*)description
 {
 	NSString *typeName = [textType objectForKey: kETTextStyleName];
@@ -89,6 +92,7 @@
 	}
 	self.customAttributes = attributes;
 }
+
 - (void)replaceCharactersInRange: (NSRange)range
                       withString: (NSString*)aString
 {
@@ -96,11 +100,13 @@
 	                    withString: aString];
 	[parent childDidChange: self];
 }
+
 - (void)appendString: (NSString*)aString
 {
 	[text appendString: aString];
 	[parent childDidChange: self];
 }
+
 - (NSUInteger)buildStyleFromIndex: (NSUInteger)anIndex
                  withStyleBuilder: (ETStyleBuilder*)aBuilder
 {
@@ -111,14 +117,17 @@
 	}
 	return [text length];
 }
+
 - (NSUInteger)length
 {
 	return [text length];
 }
+
 - (unichar)characterAtIndex: (NSUInteger)anIndex
 {
 	return [text characterAtIndex: anIndex];
 }
+
 - (id<ETText>)splitAtIndex: (NSUInteger)anIndex
 {
 	NSString *str = [text substringToIndex: anIndex];
@@ -129,25 +138,28 @@
 	[text deleteCharactersInRange: r];
 	return [first autorelease];
 }
+
 - (void)visitWithVisitor: (id<ETTextVisitor>)aVisitor
 {
 	[aVisitor startTextNode: self];
 	[aVisitor visitTextNode: self];
 	[aVisitor endTextNode: self];
 }
+
 - (NSString*)stringValue
 {
 	return text;
 }
+
 - (void)setStringValue: (NSString*)aString
 {
 	[text setString: aString];
 	[parent childDidChange: self];
 }
+
 - (void)replaceInParentWithTextNode: (id<ETText>)aNode
 {
 	[(ETTextTree*)parent replaceChild: self withNode: aNode];
 }
 
 @end
-
