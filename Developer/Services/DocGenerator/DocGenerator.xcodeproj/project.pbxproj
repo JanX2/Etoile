@@ -67,6 +67,13 @@
 			remoteGlobalIDString = 603647AB0E409244003377E0;
 			remoteInfo = EtoileFoundation;
 		};
+		601C525817253DF6002E55C6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 609CFEBF17005AF900D01AAB /* SourceCodeKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 601C522817253CDC002E55C6;
+			remoteInfo = TestSourceCodeKit;
+		};
 		609CFEC717005AF900D01AAB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 609CFEBF17005AF900D01AAB /* SourceCodeKit.xcodeproj */;
@@ -248,6 +255,7 @@
 			isa = PBXGroup;
 			children = (
 				609CFEC817005AF900D01AAB /* SourceCodeKit.framework */,
+				601C525917253DF6002E55C6 /* TestSourceCodeKit.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -259,6 +267,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "etdocgen" */;
 			buildPhases = (
+				601C52BB172595F7002E55C6 /* ShellScript */,
 				8DD76F990486AA7600D96B5E /* Sources */,
 				8DD76F9B0486AA7600D96B5E /* Frameworks */,
 				8DD76F9E0486AA7600D96B5E /* CopyFiles */,
@@ -341,6 +350,13 @@
 			remoteRef = 6012E31E16FB722800A0335D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		601C525917253DF6002E55C6 /* TestSourceCodeKit.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestSourceCodeKit.bundle;
+			remoteRef = 601C525817253DF6002E55C6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		609CFEC817005AF900D01AAB /* SourceCodeKit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -349,6 +365,23 @@
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		601C52BB172595F7002E55C6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Removing previous documentation output in ${PROJECT_DIR}/Documentation\"\nrm -f ${PROJECT_DIR}/Documentation/*.html\nrm -f ${PROJECT_DIR}/Documentation/*.png";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8DD76F990486AA7600D96B5E /* Sources */ = {
