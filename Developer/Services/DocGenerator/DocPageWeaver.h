@@ -110,7 +110,7 @@ existing page generation strategy or implement a new one. */
 	id <DocWeaving> reorderingWeaver;
 
 	/* Parser whose weaver is set to the receiver or reorderingWeaver */	
-	id currentParser;
+	id <DocSourceParsing> currentParser;
 
 	/* Current Parsing/Weaving State */
 	NSString *currentClassName;
