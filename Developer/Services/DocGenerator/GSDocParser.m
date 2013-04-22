@@ -24,16 +24,15 @@
 
 - (id) init
 {
-	return [self initWithString: nil];
+	return [self initWithSourceFile: nil];
 }
 
-- (id) initWithString: (NSString *)aContent
+- (id) initWithSourceFile: (NSString *)aSourceFile;
 {
-	NSParameterAssert(aContent != nil);
+	NSParameterAssert(aSourceFile != nil);
 	SUPERINIT;
 
-	xmlParser = [[NSXMLParser alloc] initWithData: 
-		[aContent dataUsingEncoding: NSUTF8StringEncoding]];
+	xmlParser = [[NSXMLParser alloc] initWithContentsOfURL: [NSURL fileURLWithPath: aSourceFile]];
 	[xmlParser setDelegate: self];
 	parserDelegateStack = [[NSMutableArray alloc] initWithObjects: [NSValue valueWithNonretainedObject: self], nil];
 	indentSpaces = @"";

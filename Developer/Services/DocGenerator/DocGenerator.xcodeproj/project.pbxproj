@@ -28,6 +28,7 @@
 		60F7F14412AF91970031E9F1 /* DocCDataType.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F7F14312AF91970031E9F1 /* DocCDataType.m */; };
 		8DD76F9A0486AA7600D96B5E /* etdocgen.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* etdocgen.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		A50064261721640300759754 /* DocSourceCodeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A50064251721640300759754 /* DocSourceCodeParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,6 +139,8 @@
 		60F7F14212AF91970031E9F1 /* DocCDataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocCDataType.h; sourceTree = "<group>"; };
 		60F7F14312AF91970031E9F1 /* DocCDataType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocCDataType.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* etdocgen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = etdocgen; sourceTree = BUILT_PRODUCTS_DIR; };
+		A50064241721640300759754 /* DocSourceCodeParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocSourceCodeParser.h; sourceTree = "<group>"; };
+		A50064251721640300759754 /* DocSourceCodeParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocSourceCodeParser.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,6 +209,8 @@
 				606D338C12946F1500AA7554 /* DocIndex.m */,
 				602EA7E0171407CB00D499A9 /* DocGraphWriter.h */,
 				602EA7E1171407CC00D499A9 /* DocGraphWriter.m */,
+				A50064241721640300759754 /* DocSourceCodeParser.h */,
+				A50064251721640300759754 /* DocSourceCodeParser.m */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -368,6 +373,7 @@
 				608A56ED12C61ED7007CD303 /* DocDeclarationReorderer.m in Sources */,
 				601A56A412E89AB100727DAA /* DocCategoryPage.m in Sources */,
 				602EA7E2171407CC00D499A9 /* DocGraphWriter.m in Sources */,
+				A50064261721640300759754 /* DocSourceCodeParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

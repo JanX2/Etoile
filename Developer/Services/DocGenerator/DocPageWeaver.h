@@ -54,7 +54,7 @@ to the weaver through the DocWeaving protocol.<br />
 Parsing usually involves to build new DocElement subclass instances and hand 
 them to the weaver.  */
 @protocol DocSourceParsing
-- (id) initWithString: (NSString *)aString;
+- (id) initWithSourceFile: (NSString *)aSourceFile;
 - (void) setWeaver: (id <DocWeaving>)aDocWeaver;
 - (id <DocWeaving>) weaver;
 - (void) parseAndWeave;

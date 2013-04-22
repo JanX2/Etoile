@@ -190,4 +190,13 @@
 	}
 }
 
+- (void) parseProgramComponent: (SCKMethod *)programComponent
+{
+    __unused NSString *name = [programComponent name];
+    __unused SCKSourceLocation *declaration = [programComponent declaration];
+    __unused SCKSourceLocation *definition = [programComponent definition];
+    __unused NSString *typeEncoding = [programComponent typeEncoding];
+
+}
+
 @end

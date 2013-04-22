@@ -50,7 +50,7 @@ DocDeclarationReorderer or DocPageWeaver, and triggers the parsing with
 -parseAndWeave.
 
 All XML parsing related methods are used internally, you can ignore them. */
-@interface GSDocParser : NSObject <DocSourceParsing, GSDocParserDelegate>
+@interface GSDocParser : NSObject <DocSourceParsing, GSDocParserDelegate, NSXMLParserDelegate>
 {
 	@private
 	id <DocWeaving> weaver; /* Weak ref */
@@ -70,10 +70,10 @@ All XML parsing related methods are used internally, you can ignore them. */
 
 /** @taskunit Initialization */
 
-/** Returns a GSDoc parser initialized with the given GSDoc document content.
+/** Returns a GSDoc parser initialized with the given GSDoc document.
 
 Call -setWeaver: on the returned object to be ready to parse. */
-- (id) initWithString: (NSString *)aContent;
+- (id) initWithSourceFile: (NSString *)aSourceFile;
 /** Sets the weaver on which the receiver should call back DocWeaving
 methods while parsing the GSDoc XML provided at initialization time. */
 - (void) setWeaver: (id <DocWeaving>)aDocWeaver;

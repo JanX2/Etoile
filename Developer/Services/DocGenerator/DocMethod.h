@@ -11,6 +11,7 @@
 
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
+#import <SourceCodeKit/SourceCodeKit.h>
 #import "GSDocParser.h"
 #import "DocElement.h"
 
@@ -56,5 +57,7 @@ For example, would return <em>-[(DocMethod) refMarkup]</em> for this method.
 
 See also -refMarkup. */
 - (NSString *) refMarkupWithProtocolName: (NSString *)aProtocolName;
+
+- (void) parseProgramComponent: (SCKMethod *)programComponent;
 
 @end

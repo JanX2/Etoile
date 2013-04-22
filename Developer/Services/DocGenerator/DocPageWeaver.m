@@ -301,11 +301,7 @@ presently. */
 	}
 	else
 	{
-		NSString *sourceContent = [NSString stringWithContentsOfFile: [self currentSourceFile] 
-		                                                    encoding: NSUTF8StringEncoding 
-		                                                       error: NULL];
-
-		currentParser = [[parserClass alloc] initWithString: sourceContent];
+		currentParser = [[parserClass alloc] initWithSourceFile: [self currentSourceFile]];
 		[currentParser setWeaver: reorderingWeaver];
 		[currentParser parseAndWeave];
 	}
