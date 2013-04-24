@@ -159,7 +159,7 @@ typedef struct _GSCellRect {
     }
 }
 
-- (NSRect) rectOfItemAtIndex: (int)index
+- (NSRect) rectOfItemAtIndex: (NSInteger)index
 {
   GSCellRect aRect;
 
