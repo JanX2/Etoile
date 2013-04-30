@@ -479,7 +479,7 @@ static BOOL grabbed = NO;
     }
   else
     {
-      NSLog (@"Unexpected event: %d during event tracking in NSMenuView", type);
+      NSLog (@"Unexpected event: %lu during event tracking in NSMenuView", type);
       end = NSLeftMouseUp;
       eventMask |= NSLeftMouseUpMask | NSLeftMouseDraggedMask;
       eventMask |= NSLeftMouseDownMask;

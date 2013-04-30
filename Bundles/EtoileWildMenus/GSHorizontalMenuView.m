@@ -213,7 +213,7 @@ typedef struct _GSCellRect {
   int        i;
   int        howMany = [_itemCells count];
   NSRectEdge sides[] = {NSMinYEdge, NSMinYEdge};  
-  float      grays[] = {NSBlack, NSDarkGray};
+  const CGFloat      grays[] = {NSBlack, NSDarkGray};
   float offset;
 
   NSDrawTiledRects(_bounds, rect, sides, grays, 2);
