@@ -19,7 +19,7 @@ StepChat_RESOURCE_FILES = \
         Resources/StepChat.tiff
 
 StepChat_LOCALIZED_RESOURCE_FILES = \
-          MainMenu.nib\
+          MainMenu.gorm\
           AccountBox.nib\
           PasswordBox.nib
 ifeq ($(FOUNDATION_LIB), apple)

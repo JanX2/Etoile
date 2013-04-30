@@ -424,7 +424,7 @@ NSMutableArray * rosterControllers = nil;
 	return [self optimalSize];
 }
 
-- (id) outlineView:(NSOutlineView *)_outlineView child:(int)_index ofItem:(id)_item
+- (id) outlineView:(NSOutlineView *)_outlineView child:(NSInteger)_index ofItem:(id)_item
 {
 	if(_item == nil)
 	{
@@ -557,7 +557,7 @@ NSMutableArray * rosterControllers = nil;
                             contextInfo:(__bridge void*)item];                
 	}
 }
-- (int)outlineView:(NSOutlineView *)_outlineView numberOfChildrenOfItem:(id)_item
+- (NSInteger)outlineView:(NSOutlineView *)_outlineView numberOfChildrenOfItem:(id)_item
 {
         //Root node.  Children are all groups
 	if(_item == nil)
@@ -729,7 +729,7 @@ inline static XMPPConversation * createChatWithPerson(id self, XMPPPerson* perso
 }
 
 //Can drop?
-- (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id < NSDraggingInfo >)info proposedItem:(id)item proposedChildIndex:(int)anIndex
+- (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id < NSDraggingInfo >)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex
 {
 	NSPasteboard * pboard = [info draggingPasteboard];
 	if([item isKindOfClass:[XMPPPerson class]])
@@ -749,7 +749,7 @@ inline static XMPPConversation * createChatWithPerson(id self, XMPPPerson* perso
 	return NSDragOperationNone;
 }
 //Drop
-- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id < NSDraggingInfo >)info item:(id)item childIndex:(int)anIndex
+- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id < NSDraggingInfo >)info item:(id)item childIndex:(NSInteger)anIndex
 {
 	NSPasteboard * pboard = [info draggingPasteboard];
 	[pboard types];

@@ -17,12 +17,12 @@
 	presences = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CustomPresence"] keysSortedByValueUsingSelector:@selector(compare:)];
 }
 
-- (int)numberOfItemsInComboBox:(NSComboBox *)aComboBox
+- (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
 	return [presences count];
 }
 
-- (unsigned int)comboBox:(NSComboBox *)aComboBox indexOfItemWithStringValue:(NSString *)aString
+- (NSUInteger)comboBox:(NSComboBox *)aComboBox indexOfItemWithStringValue:(NSString *)aString
 {
 	return [presences indexOfObject:aString];
 }
@@ -57,7 +57,7 @@
 	return uncompletedString;
 }
 
-- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)_index
+- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(NSInteger)_index
 {
 	return [presences objectAtIndex:_index];
 }
