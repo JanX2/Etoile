@@ -1,0 +1,131 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    AddContactWindowController = {
+	Actions = (
+	    "cancel:",
+	    "addPerson:"
+	);
+	Outlets = (
+	    jid,
+	    name,
+	    group
+	);
+	Super = NSWindowController;
+    };
+    ChatLogMenuController = {
+	Actions = (
+	    "openChatLog:"
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    CustomPresenceWindowController = {
+	Actions = (
+	    "okay:",
+	    "cancel:"
+	);
+	Outlets = (
+	    message,
+	    name,
+	    presence
+	);
+	Super = NSWindowController;
+    };
+    FirstResponder = {
+	Actions = (
+	    "addPerson:",
+	    "away:",
+	    "chat:",
+	    "custom:",
+	    "dnd:",
+	    "none:",
+	    "offline:",
+	    "okay:",
+	    "online:",
+	    "openChatLog:",
+	    "playMessageSound:",
+	    "playOfflineSound:",
+	    "playOnlineSound:",
+	    "remove:",
+	    "selectMessageSound:",
+	    "selectOfflineSound:",
+	    "selectOnlineSound:",
+	    "setCustomPresence:",
+	    "showRosterWindow:",
+	    "xa:"
+	);
+	Super = NSObject;
+    };
+    HideMenuController = {
+	Actions = (
+	    "offline:",
+	    "xa:",
+	    "away:",
+	    "none:",
+	    "dnd:"
+	);
+	Outlets = (
+	    current
+	);
+	Super = NSObject;
+    };
+    JabberApp = {
+	Actions = (
+	    "showRosterWindow:",
+	    "setCustomPresence:"
+	);
+	Outlets = (
+	    customPresenceWindow,
+	    debugMenu,
+	    xmlLogBox
+	);
+	Super = NSObject;
+    };
+    PreferenceWindowController = {
+	Actions = (
+	    "selectMessageSound:",
+	    "playMessageSound:",
+	    "selectOfflineSound:",
+	    "playOnlineSound:",
+	    "playOfflineSound:",
+	    "selectOnlineSound:"
+	);
+	Outlets = (
+	    offlineColour,
+	    dndColour,
+	    onlineSoundBox,
+	    onlineColour,
+	    offlineSoundBox,
+	    chatColour,
+	    xaColour,
+	    messageSoundBox,
+	    awayColour,
+	    unknownColour
+	);
+	Super = NSWindowController;
+    };
+    PresenceLogController = {
+	Actions = (
+	);
+	Outlets = (
+	    view
+	);
+	Super = NSWindowController;
+    };
+    PresenceMenuController = {
+	Actions = (
+	    "offline:",
+	    "custom:",
+	    "chat:",
+	    "xa:",
+	    "online:",
+	    "away:",
+	    "dnd:"
+	);
+	Outlets = (
+	    current
+	);
+	Super = NSObject;
+    };
+}
