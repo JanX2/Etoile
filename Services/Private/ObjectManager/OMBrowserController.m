@@ -33,6 +33,26 @@
 	[super dealloc];
 }
 
+- (ETLayoutItemGroup *) bodyItem
+{
+	return [[self sourceListItem] parentItem];
+}
+
+- (ETLayoutItemGroup *) contentViewWrapperItem
+{
+	return [[self contentViewItem] parentItem];
+}
+
+- (ETLayoutItemGroup *) tagFilterEditorItem
+{
+	return [[self contentViewWrapperItem] itemForIdentifier: @"tagFilterEditor"];
+}
+
+- (ETLayoutItemGroup *) inspectorItem
+{
+	return [[self bodyItem] itemForIdentifier: @"inspector"];
+}
+
 - (void) setBrowsedGroup: (id <ETCollection>)aGroup
 {
 	ETAssert(aGroup != nil);
@@ -146,6 +166,71 @@
 	{
 		[self setBrowsedGroup: [self unionGroupWithTags: [self selectedTags]]];
 	}
+}
+
+- (BOOL) isTagFilterItem: (ETLayoutItem *)anItem
+{
+	return [[anItem name] isEqual: _(@"Tag Filter")];
+}
+
+- (void) didBecomeFocusedItem: (ETLayoutItem *)anItem
+{
+	NSLog(@"Did become focused item %@", [anItem primitiveDescription]);
+
+	if ([self isTagFilterItem: anItem] == NO)
+		return;
+
+	[self showTagFilterEditor];
+}
+
+- (void) didResignFocusedItem: (ETLayoutItem *)anItem
+{
+	NSLog(@"Did resign focused item %@", [anItem primitiveDescription]);
+
+	if ([self isTagFilterItem: anItem] == NO)
+		return;
+
+	[self hideTagFilterEditor];
+}
+
+- (void) showTagFilterEditor
+{
+	COTagLibrary *tagLibrary = [[self editingContext] tagLibrary];
+	NSSize editorSize = NSMakeSize([[self contentViewWrapperItem] width], [[OMLayoutItemFactory factory] defaultTagFilterEditorHeight]);
+	ETLayoutItemGroup *editorItem =
+		[[OMLayoutItemFactory factory] tagFilterEditorWithTagLibrary: tagLibrary
+	                                                            size: editorSize
+	                                                      controller: self];
+
+	[[self contentViewItem] setHeight: [[self contentViewItem] height] - [editorItem height]];
+	[[self contentViewWrapperItem] insertItem: editorItem atIndex: 0];
+}
+
+- (void) hideTagFilterEditor
+{
+	ETLayoutItem *editorItem = [self tagFilterEditorItem];
+	ETAssert([[self contentViewWrapperItem] containsItem: editorItem]);
+
+	[[self contentViewItem] setHeight: [[self contentViewItem] height] + [editorItem height]];
+	[[self contentViewWrapperItem] removeItem: editorItem];
+}
+
+- (void) showInspector
+{
+	NSSize size = NSMakeSize([[OMLayoutItemFactory factory] defaultInspectorWidth], [[self bodyItem] height]);
+	ETLayoutItemGroup *inspectorItem =
+		[[OMLayoutItemFactory factory] inspectorWithObject: [self selectedObjectInContentView]
+	                                                  size: size
+	                                            controller: self];
+
+	[[self contentViewWrapperItem] setWidth: [[self contentViewWrapperItem] width] - [inspectorItem width]];
+	[[self bodyItem] addItem: inspectorItem];
+}
+
+- (void) hideInspector
+{
+	ETAssert([[self bodyItem] containsItem: [self inspectorItem]]);
+	[[self bodyItem] removeItem: [self inspectorItem]];
 }
 
 - (ETLayoutItem *) tagLibraryItem
@@ -292,6 +377,20 @@
 	[self doesNotRecognizeSelector: _cmd];
 }
 
+- (IBAction) toggleInspector: (id)sender
+{
+	BOOL isInspectorHidden = ([self inspectorItem] == nil);
+
+	if (isInspectorHidden)
+	{
+		[self showInspector];
+	}
+	else
+	{
+		[self hideInspector];
+	}
+}
+
 #pragma mark -
 #pragma Other Object Actions
 
@@ -315,6 +414,11 @@
 		
 		[[contentViewItem controller] setFilterPredicate: predicate];
 	}
+}
+
+- (IBAction) filter: (id)sender
+{
+	
 }
 
 - (IBAction) doubleClick: (id)sender

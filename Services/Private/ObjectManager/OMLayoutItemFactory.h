@@ -22,12 +22,24 @@
 
 }
 
+/** @taskunit Default Sizes */
+
+- (CGFloat) defaultTagFilterEditorHeight;
+- (CGFloat) defaultInspectorWidth;
+
+/** @taskunit Main UI */
+
 - (ETLayoutItemGroup *) browserWithGroup: (id <ETCollection>)aGroup editingContext: (COEditingContext *)aContext;
 - (ETLayoutItemGroup *) browserBodyWithGroup: (id <ETCollection>)aGroup controller: (id)aController;
 - (ETLayoutItem *) viewPopUpWithController: (OMBrowserController *)aController;
 - (ETLayoutItemGroup *) browserTopBarWithController: (id)aController;
 - (ETLayoutItemGroup *) sourceListWithGroup: (id <ETCollection>)aGroup controller: (id)aController;
 - (ETLayoutItemGroup *) contentViewWithGroup: (id <ETCollection>)aGroup controller: (id)aController;
+
+/** @taskunit Accessory UI */
+
+- (ETLayoutItemGroup *) tagFilterEditorWithTagLibrary: (COTagLibrary *)aTagLibrary size: (NSSize)aSize controller: (id)aController;
+- (ETLayoutItemGroup *) inspectorWithObject: (id)anObject size: (NSSize)aSize controller: (id)aController;
 
 @end
 

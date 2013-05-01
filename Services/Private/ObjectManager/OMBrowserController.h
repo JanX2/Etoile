@@ -18,7 +18,7 @@
 #import "OMController.h"
 
 /** The controller to supervise the whole ObjectManager window */
-@interface OMBrowserController : OMController
+@interface OMBrowserController : OMController <ETEditionCoordinator>
 {
 	ETLayoutItemGroup *contentViewItem;
 	ETLayoutItemGroup *sourceListItem;
@@ -31,6 +31,7 @@
 /** @taskunit Accessing UI and Model Objects */
 
 @property (nonatomic, retain) ETLayoutItemGroup *contentViewItem;
+@property (nonatomic, readonly) ETLayoutItemGroup *contentViewWrapperItem;
 @property (nonatomic, retain) ETLayoutItemGroup *sourceListItem;
 @property (nonatomic, retain) ETLayoutItem *viewPopUpItem;
 @property (nonatomic, retain) id <ETCollection> browsedGroup;
@@ -45,6 +46,19 @@
 
 - (void) sourceListSelectionDidChange: (NSNotification *)aNotif;
 
+/** @taskunit Edition Coordinator */
+
+- (void) didBecomeFocusedItem: (ETLayoutItem *)anItem;
+- (void) didResignFocusedItem: (ETLayoutItem *)anItem;
+
+/** @taskunit Presentation */
+
+- (void) showTagFilterEditor;
+- (void) hideTagFilterEditor;
+- (BOOL) isInspectorHidden;
+- (void) showInspector;
+- (void) hideInspector;
+
 /** @taskunit Object Insertion and Deletion Actions */
 
 - (IBAction) add: (id)sender;
@@ -58,11 +72,13 @@
 - (IBAction) changePresentationViewFromPopUp: (id)sender;
 - (IBAction) changePresentationViewFromMenuItem: (id)sender;
 - (IBAction) changeInspectorViewFromMenuItem: (id)sender;
+- (IBAction) toggleInspector: (id)sender;
 
 /** @taskunit Other Object Actions */
 
 - (IBAction) doubleClick: (id)sender;
 - (IBAction) search: (id)sender;
+- (IBAction) filter: (id)sender;
 - (IBAction) open: (id)sender;
 - (IBAction) openSelection: (id)sender;
 - (IBAction) markVersion: (id)sender;

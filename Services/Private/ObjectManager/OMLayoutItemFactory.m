@@ -93,7 +93,7 @@
 
 - (NSSize) defaultBrowserSize
 {
-	return NSMakeSize(800, 400);
+	return NSMakeSize(900, 500);
 }
 
 - (NSSize) defaultBrowserBodySize
@@ -101,6 +101,26 @@
 	NSSize size = [self defaultBrowserSize];
 	size.height -= [self defaultIconAndLabelBarHeight];
 	return size;
+}
+
+- (CGFloat) defaultSourceListWidth
+{
+	return 180;
+}
+
+- (CGFloat) defaultContentViewWidth
+{
+	return [self defaultBrowserBodySize].width - [self defaultSourceListWidth];
+}
+
+- (CGFloat) defaultTagFilterEditorHeight
+{
+	return 100;
+}
+
+- (CGFloat) defaultInspectorWidth
+{
+	return 400;
 }
 
 - (ETLayoutItemGroup *) browserWithGroup: (id <ETCollection>)aGroup editingContext: (COEditingContext *)aContext;
@@ -128,16 +148,17 @@
 - (ETLayoutItemGroup *) browserBodyWithGroup: (id <ETCollection>)aGroup controller: (id)aController
 {
 	ETLayoutItemGroup *sourceList = [self sourceListWithGroup: aGroup controller: aController];
-	ETLayoutItemGroup *contentView = [self contentViewWithGroup: [[aGroup contentArray] firstObject]
-	                                                controller: aController];
+	ETLayoutItemGroup *contentViewWrapper = [self contentViewWrapperWithGroup: [[aGroup contentArray] firstObject]
+	                                                               controller: aController];
 	ETLayoutItemGroup *body = [self itemGroupWithRepresentedObject: aGroup];
 
 	NSLog(@"Groups in source list %@", [aGroup contentArray]);
 
+	[body setIdentifier: @"browserBody"];
 	[body setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
 	[body setSize: [self defaultBrowserBodySize]]; // FIXME: Avoid negative size if -setSize: is not called
 	[body setLayout: [ETLineLayout layout]];
-	[body addItems: A(sourceList, contentView)];
+	[body addItems: A(sourceList, contentViewWrapper)];
 
 	return body;
 }
@@ -173,22 +194,26 @@
 	                                              action: @selector(remove:)];
 	ETLayoutItem *searchFieldItem = [self searchFieldWithTarget: aController 
 	                                                     action: @selector(search:)];
+	ETLayoutItem *filterFieldItem = [self searchFieldWithTarget: aController
+	                                                     action: @selector(filter:)];
 	//ETLayoutItemGroup *searchItemGroup = [self itemGroupWithItem: searchFieldItem];
 
 	[(NSSearchFieldCell *)[[searchFieldItem view] cell] setSendsSearchStringImmediately: YES];
 
+	[itemGroup setIdentifier: @"browserTopBar"];
 	[itemGroup setWidth: [self defaultBrowserSize].width];
 	[itemGroup setHeight: [self defaultIconAndLabelBarHeight]];
 	[itemGroup setLayout: [ETLineLayout layout]];
 	// FIXME: [[itemGroup layout] setSeparatorTemplateItem: [self flexibleSpaceSeparator]];
-	[itemGroup addItems: 
+	[itemGroup addItems:
 		A([self barElementFromItem: newGroupItem withLabel: _(@"New Tag…")],
 		[self barElementFromItem: newObjectItem withLabel: _(@"New Object")],
 		[self barElementFromItem: removeItem withLabel: _(@"Remove")],
 		[self barElementFromItem: [self viewPopUpWithController: aController] withLabel: _(@"View")],
-		[self barElementFromItem: searchFieldItem withLabel: _(@"Filter")])];
+		[self barElementFromItem: filterFieldItem withLabel: _(@"Tag Filter")],
+		[self barElementFromItem: searchFieldItem withLabel: _(@"Search")])];
 	[itemGroup updateLayout];
-
+	
 	return itemGroup;
 }
 
@@ -199,13 +224,14 @@
 
 	[tool setAllowsEmptySelection: NO];
 
+	[itemGroup setIdentifier: @"browserSourceList"];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleHeight];
 	[itemGroup setHeight: [self defaultBrowserBodySize].height];
-	[itemGroup setWidth: 250];
+	[itemGroup setWidth: [self defaultSourceListWidth]];
 	[itemGroup setLayout: [ETOutlineLayout layout]];
 	[[itemGroup layout] setContentFont: [NSFont controlContentFontOfSize: [NSFont smallSystemFontSize]]];
 	[[itemGroup layout] setDisplayedProperties: A(@"icon", @"displayName")];
-	[[[itemGroup layout] columnForProperty: @"displayName"] setWidth: 250];
+	[[[itemGroup layout] columnForProperty: @"displayName"] setWidth: [self defaultSourceListWidth]];
 	[[[itemGroup layout] columnForProperty: @"icon"] setWidth: 32]; // 20 if not two levels deep
 	[[itemGroup layout] setAttachedTool: tool];
 	[[[itemGroup layout] tableView] setHeaderView: nil];
@@ -258,16 +284,34 @@
 	return itemGroup;
 }
 
+- (ETLayoutItemGroup *) contentViewWrapperWithGroup: (id <ETCollection>)aGroup controller: (id)aController
+{
+	ETLayoutItemGroup *contentView = [self contentViewWithGroup: [[aGroup contentArray] firstObject]
+													 controller: aController];
+	ETLayoutItemGroup *itemGroup = [self itemGroup];
+
+	[itemGroup setIdentifier: @"contentViewWrapper"];
+	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
+	[itemGroup setHeight: [self defaultBrowserBodySize].height];
+	// TODO: The width should be computed by the body layout
+	[itemGroup setWidth: [self defaultContentViewWidth]];
+	[itemGroup setLayout: [ETColumnLayout layout]];
+	[itemGroup addItem: contentView];
+
+	return itemGroup;
+}
+
 - (ETLayoutItemGroup *) contentViewWithGroup: (id <ETCollection>)aGroup controller: (id)aController
 {
 	ETLayoutItemGroup *itemGroup = [self itemGroupWithRepresentedObject: aGroup];
 
+	[itemGroup setIdentifier: @"contentView"];
 	/* The controller templates are set up in -[MBEntityViewController init] */
 	//[itemGroup setController: AUTORELEASE([[MBEntityViewController alloc] init])];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
 	[itemGroup setHeight: [self defaultBrowserBodySize].height];
 	// TODO: The width should be computed by the body layout
-	[itemGroup setWidth: 550];
+	[itemGroup setWidth: [self defaultContentViewWidth]];
 	[itemGroup setHasVerticalScroller: YES];
 	[itemGroup setSource: itemGroup];
 	[itemGroup setLayout: [self listLayoutForBrowser]];	
@@ -277,6 +321,52 @@
 
 	[aController setContentViewItem: itemGroup];
 
+	return itemGroup;
+}
+
+- (ETTokenLayout *) tokenLayoutForTagFilterEditor
+{
+	ETTokenLayout *layout = [ETTokenLayout layout];
+
+	return layout;
+}
+
+- (ETLayoutItemGroup *) tagFilterEditorWithTagLibrary: (COTagLibrary *)aTagLibrary
+                                                 size: (NSSize)aSize
+                                           controller: (id)aController
+{
+	ETLayoutItemGroup *itemGroup = [self itemGroupWithRepresentedObject: aTagLibrary];
+
+	[itemGroup setIdentifier: @"tagFilterEditor"];
+	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
+	[itemGroup setSize: aSize];
+	[itemGroup setSource: itemGroup];
+	[itemGroup setLayout: [self tokenLayoutForTagFilterEditor]];
+	[itemGroup reload];
+	
+	return itemGroup;
+}
+
+- (ETLayoutItemGroup *) inspectorWithObject: (id)anObject
+                                       size: (NSSize)aSize
+                                 controller: (id)aController
+{
+	ETModelDescriptionRenderer *renderer = [ETModelDescriptionRenderer renderer];
+	
+	// NOTE: Could add back later 'icon' and 'content'
+	[renderer setRenderedPropertyNames: A(@"displayName", @"typeDescription",
+		@"modificationDate", @"creationDate", @"lastVersionDescription", @"tags")];
+	[(ETLayoutItem *)[[renderer templateItems] mappedCollection] setWidth: 200];
+
+	//[[[renderer entityLayout] positionalLayout] setIsContentSizeLayout: YES];
+
+	ETLayoutItemGroup *itemGroup = [renderer renderObject: anObject];
+	
+	[itemGroup setIdentifier: @"inspector"];
+	// FIXME: Remove ETAutoresizingFlexibleLeftMargin
+	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleHeight | ETAutoresizingFlexibleLeftMargin];
+	[itemGroup setSize: aSize];
+	
 	return itemGroup;
 }
 
