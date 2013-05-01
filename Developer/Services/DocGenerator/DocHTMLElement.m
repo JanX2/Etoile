@@ -19,7 +19,7 @@
 
 - (NSString *) content
 {
-	NSMutableString *buf = AUTORELEASE([NSMutableString new]);
+	NSMutableString *buf = [NSMutableString new];
 	[self collectChildContentWithString: buf];
 	return buf;
 }
@@ -31,12 +31,12 @@
 
 + (DocHTMLElement *) blankElement
 {
-	return AUTORELEASE([[BlankHTMLElement alloc] initWithName: @"Blank"]);
+	return [[BlankHTMLElement alloc] initWithName: @"Blank"];
 }
 
 + (DocHTMLElement *) elementWithName: (NSString *) aName
 {
-	return AUTORELEASE([[DocHTMLElement alloc] initWithName: aName]);
+	return [[DocHTMLElement alloc] initWithName: aName];
 }
 
 - (DocHTMLElement *) initWithName: (NSString *) aName
@@ -49,14 +49,6 @@
 	return self;
 }
 
-- (void) dealloc
-{
-	[children release];
-	[attributes release];
-	[elementName release];
-	[blockElementNames release];
-	[super dealloc];
-}
 
 - (BOOL) isEqual: (id)anObject
 {
@@ -155,16 +147,40 @@
 
 		if ([component length] == 0)
 			continue;
-
-		//NSLog (@"component <%@>", component);
-		CALLM(@"id",id);
-		CALLM(@"class",class);
-		CALLM(@"with",with);
-		CALLM(@"and",and);
+        
+        //NSLog (@"component <%@>", component);
+        if ([component isEqualToString: @"id"])
+        {
+            __unsafe_unretained id arg;
+            [invocation getArgument: &arg atIndex: i + 2];
+            [self id: arg];
+        }
+        
+        if ([component isEqualToString: @"class"])
+        {
+            __unsafe_unretained id arg;
+            [invocation getArgument: &arg atIndex: i + 2];
+            [self class: arg];
+        }
+        
+        if ([component isEqualToString: @"with"])
+        {
+            __unsafe_unretained id arg;
+            [invocation getArgument: &arg atIndex: i + 2];
+            [self with: arg];
+        }
+        
+        if ([component isEqualToString: @"and"])
+        {
+            __unsafe_unretained id arg;
+            [invocation getArgument: &arg atIndex: i + 2];
+            [self and: arg];
+        }
 	}
 
 	//NSLog (@"after invocation of <%@>:\n%@", sig, [self content]);
-	[invocation setReturnValue: &self];
+	//__unsafe_unretained id newSelf = self;
+	[invocation setReturnValue: (void *)&self];
 }
 
 - (DocHTMLElement *) with: (id) something
@@ -205,7 +221,7 @@
 
 - (NSString *) content
 {
-	NSMutableString* buf = AUTORELEASE([NSMutableString new]);
+	NSMutableString* buf = [NSMutableString new];
 	BOOL insertNewLine = [blockElementNames containsObject: elementName];
 
 	[buf appendFormat: @"<%@", elementName];

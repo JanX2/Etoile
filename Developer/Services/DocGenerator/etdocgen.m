@@ -169,82 +169,82 @@ BOOL checkOptions(NSDictionary *options)
  */
 int main (int argc, const char * argv[]) 
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSDictionary *options = ETGetOptionsDictionary("hn:c:r:t:m:e:p:o:i:", argc, (char **)argv);
+	@autoreleasepool {
+		NSDictionary *options = ETGetOptionsDictionary("hn:c:r:t:m:e:p:o:i:", argc, (char **)argv);
 
-	if (checkOptions(options) == NO)
-	{
-		return EXIT_FAILURE;
+		if (checkOptions(options) == NO)
+		{
+			return EXIT_FAILURE;
+		}
+
+		NSString *projectName = [options objectForKey: @"n"];
+		NSArray *explicitSourceFiles = [options objectForKey: @""];
+		NSString *parserSourceDir = [options objectForKey: @"c"];
+		NSString *rawSourceDir = [options objectForKey: @"r"];
+		NSString *supportDir = [options objectForKey: @"i"];
+		NSString *templateFile = [options objectForKey: @"t"];
+		NSString *menuFile = [options objectForKey: @"m"];
+		NSString *externalClassFile = [options objectForKey: @"e"];
+		//NSString * projectClassFile = [options objectForKey: @"p"];
+		NSString *outputDir = [options objectForKey: @"o"];;
+		NSNumber *help = [options objectForKey: @"h"];
+
+		if ([help boolValue])
+		{
+			printHelp();
+			return 0;
+		}
+
+		DocPageWeaver *weaver = [DocPageWeaver alloc];
+
+		if (parserSourceDir != nil || rawSourceDir != nil)
+		{
+			NSArray *rawSourceDirs = (rawSourceDir != nil ? [NSArray arrayWithObject: rawSourceDir] : [NSArray array]);
+
+			weaver = [weaver initWithParserSourceDirectory: parserSourceDir
+			                                     fileTypes: A(@"gsdoc", @"igsdoc", @"plist")
+			                          rawSourceDirectories: rawSourceDirs
+			                         additionalSourceFiles: explicitSourceFiles
+			                                  templateFile: templateFile];    
+		}
+		else
+		{
+			explicitSourceFiles = sourceFilesByAddingSupportFilesFromDirectory(explicitSourceFiles, supportDir);
+			weaver = [weaver initWithSourceFiles: explicitSourceFiles
+			                        templateFile: templateFile];
+		}
+
+		[weaver setMenuFile: menuFile];
+		[weaver setExternalMappingFile: externalClassFile];
+		//[weaver setProjectMappingFile: projectClassFile];
+
+		[[DocIndex currentIndex] setProjectName: projectName];
+
+		NSArray *pages = [weaver weaveAllPages];
+
+		if (outputDir == nil)
+		{
+			outputDir = [[NSFileManager defaultManager] currentDirectoryPath];
+		}
+
+		[[DocIndex currentIndex] setOutputDirectory: outputDir];
+		[[DocIndex currentIndex] regenerate];
+
+		NSMutableSet *usedPaths = [NSMutableSet set];
+
+		for (DocPage *page in pages)
+		{
+			NSString *outputPath = [outputDir stringByAppendingPathComponent: [page name]];
+			
+			// FIXME: Doesn't compile... ETAssert([usedPaths containsObject: outputPath] == NO);
+			assert([usedPaths containsObject: outputPath] == NO);
+			//NSLog(@"Write %@ to %@", page, [outputPath stringByAppendingPathExtension: @"html"]);
+
+			[page writeToURL: [NSURL fileURLWithPath: [outputPath stringByAppendingPathExtension: @"html"]]];
+
+			[usedPaths addObject: outputPath];
+		}
+
 	}
-
-	NSString *projectName = [options objectForKey: @"n"];
-	NSArray *explicitSourceFiles = [options objectForKey: @""];
-	NSString *parserSourceDir = [options objectForKey: @"c"];
-	NSString *rawSourceDir = [options objectForKey: @"r"];
-	NSString *supportDir = [options objectForKey: @"i"];
-	NSString *templateFile = [options objectForKey: @"t"];
-	NSString *menuFile = [options objectForKey: @"m"];
-	NSString *externalClassFile = [options objectForKey: @"e"];
-	//NSString * projectClassFile = [options objectForKey: @"p"];
-	NSString *outputDir = [options objectForKey: @"o"];;
-	NSNumber *help = [options objectForKey: @"h"];
-
-	if ([help boolValue])
-	{
-		printHelp();
-		return 0;
-	}
-
-	DocPageWeaver *weaver = [DocPageWeaver alloc];
-
-	if (parserSourceDir != nil || rawSourceDir != nil)
-	{
-		NSArray *rawSourceDirs = (rawSourceDir != nil ? [NSArray arrayWithObject: rawSourceDir] : [NSArray array]);
-
-		weaver = [weaver initWithParserSourceDirectory: parserSourceDir
-		                                     fileTypes: A(@"gsdoc", @"igsdoc", @"plist")
-		                          rawSourceDirectories: rawSourceDirs
-		                         additionalSourceFiles: explicitSourceFiles
-		                                  templateFile: templateFile];    
-	}
-	else
-	{
-		explicitSourceFiles = sourceFilesByAddingSupportFilesFromDirectory(explicitSourceFiles, supportDir);
-		weaver = [weaver initWithSourceFiles: explicitSourceFiles
-		                        templateFile: templateFile];
-	}
-
-	[weaver setMenuFile: menuFile];
-	[weaver setExternalMappingFile: externalClassFile];
-	//[weaver setProjectMappingFile: projectClassFile];
-
-	[[DocIndex currentIndex] setProjectName: projectName];
-
-	NSArray *pages = [weaver weaveAllPages];
-
-	if (outputDir == nil)
-	{
-		outputDir = [[NSFileManager defaultManager] currentDirectoryPath];
-	}
-
-	[[DocIndex currentIndex] setOutputDirectory: outputDir];
-	[[DocIndex currentIndex] regenerate];
-
-	NSMutableSet *usedPaths = [NSMutableSet set];
-
-	for (DocPage *page in pages)
-	{
-		NSString *outputPath = [outputDir stringByAppendingPathComponent: [page name]];
-		
-		// FIXME: Doesn't compile... ETAssert([usedPaths containsObject: outputPath] == NO);
-		assert([usedPaths containsObject: outputPath] == NO);
-		//NSLog(@"Write %@ to %@", page, [outputPath stringByAppendingPathExtension: @"html"]);
-
-		[page writeToURL: [NSURL fileURLWithPath: [outputPath stringByAppendingPathExtension: @"html"]]];
-
-		[usedPaths addObject: outputPath];
-	}
-
-	[pool drain];
 	return 0;
 }

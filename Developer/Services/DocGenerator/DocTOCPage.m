@@ -46,19 +46,17 @@ name is parsed and set. */
 		[elements addObjectsFromArray: groupedElements];
 	}
 
-	NSSortDescriptor *groupSortDesc = AUTORELEASE([[NSSortDescriptor alloc] initWithKey: @"group" ascending: YES]);
-	NSSortDescriptor *nameSortDesc = AUTORELEASE([[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES]);
+	NSSortDescriptor *groupSortDesc = [[NSSortDescriptor alloc] initWithKey: @"group" ascending: YES];
+	NSSortDescriptor *nameSortDesc = [[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES];
 
 	[elements sortedArrayUsingDescriptors: [NSArray arrayWithObjects: groupSortDesc, nameSortDesc, nil]];
 
-	RETAIN(elements);
 	[subheaders removeAllObjects];
 
 	for (DocHeader *element in elements)
 	{
 		[self addElement: element toDictionaryNamed: @"subheaders" forKey: [element group]];
 	}
-	RELEASE(elements);
 }
 
 /* I renamed GraphWriter class (.h & .m) to DocGraphWriter. */
@@ -131,7 +129,7 @@ name is parsed and set. */
 
 - (NSString *) graphImageLinkWithGroupName: (NSString *)aName elements: (NSArray *)elements
 {
-	DocGraphWriter *writer = AUTORELEASE([DocGraphWriter new]);
+	DocGraphWriter *writer = [DocGraphWriter new];
 	NSArray *visibleSuperclassNames = (id)[[elements mappedCollection] className];
 	/* Size to min width from Start Document global.css and some trial-and-error tests
 	   TODO: Find out which is the precise width based on the css. */

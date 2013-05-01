@@ -23,8 +23,7 @@
 
 - (void) dealloc
 {
-	DESTROY(methodGroups);
-	[super dealloc];
+	methodGroups = nil;
 }
 
 - (void) addMethodGroup: (DocElementGroup *)aMethodGroup

@@ -44,14 +44,14 @@ The doc element tree is rooted in a page. See DocPage. */
 The default task name is <em>Default</em>. */
 + (NSString *) defaultTask;
 /** The element name. */
-@property (retain, nonatomic) NSString *name;
+@property (strong, nonatomic) NSString *name;
 /** The task to which the receiver belongs to. 
 
 When a taskUnit is set on the receiver and the task is nil, the returned task 
 is the taskUnit, otherwise +defaultTaskName is returned if both are nil.
 
 See also +defaultTask. */
-@property (retain, nonatomic) NSString *task;
+@property (strong, nonatomic) NSString *task;
 /** The task to which the receiver, and the elements that follow it on the page, 
 belongs to.
 
@@ -60,7 +60,7 @@ share the same task than the last previously added method whose task unit was
 not nil.
 
 See also -task. */
-@property (retain, nonatomic) NSString *taskUnit;
+@property (strong, nonatomic) NSString *taskUnit;
 
 /** @taskunit Attached Description */
 
@@ -83,7 +83,7 @@ See also -rawDescription. */
 
 DocDescriptionParser can be used to filter the raw description and 
 -addInformationFrom: to retrieve it. */
-@property (retain, nonatomic) NSString *filteredDescription;
+@property (strong, nonatomic) NSString *filteredDescription;
 /** Updates the receiver properties listed below based on the values parsed 
 in the raw description by the given DocDescriptionParser object.
 
@@ -114,7 +114,7 @@ symbols in the element documentation.
 
 As an example, -ownerSymbolName is a local symbol that is resolved and replaced 
 by a link in -insertLinksWithDocIndex:forString:. */
-@property (nonatomic, retain) NSString *ownerSymbolName;
+@property (nonatomic, strong) NSString *ownerSymbolName;
 /** Parses valid ETDoc symbol names in the given description and replaces them 
 with links built by the given doc index.
 
@@ -193,9 +193,9 @@ constructs suchs methods, C functions or macros. */
 /** @taskunit Returned Value */
 
 /** Declares the return type. e.g. NSString * or void. */
-@property (retain, nonatomic) NSString *returnType;
+@property (strong, nonatomic) NSString *returnType;
 /** An optional description of the return value role and use. */
-@property (retain, nonatomic) NSString *returnDescription;
+@property (strong, nonatomic) NSString *returnDescription;
 /** Returns the return type as an anonymous parameter object to which a HTML 
 representation of the type can be asked. 
 
@@ -254,7 +254,7 @@ subgroup key. See -subgroupKey. */
 
 /** @taskunit Basic Properties */
 
-@property (retain, nonatomic) DocHeader *header;
+@property (strong, nonatomic) DocHeader *header;
 /** The subgroup kind name use to arrange the elements hold by the receiver into 
 subgroups. 
 
@@ -277,7 +277,7 @@ The element must be KVC-compliant for -subgroupKey. */
 </deflist>
 
 See also -subgroupKey. */
-@property (readonly, nonatomic) NSArray *elementsBySubgroup;
+@property (unsafe_unretained, readonly, nonatomic) NSArray *elementsBySubgroup;
 
 @end
 

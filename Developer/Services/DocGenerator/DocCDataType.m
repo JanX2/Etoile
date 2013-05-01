@@ -17,12 +17,6 @@
 
 @synthesize type;
 
-- (void) dealloc
-{
-	DESTROY(type);
-	[super dealloc];
-}
-
 - (BOOL) isConstant
 {
 	return ([type hasPrefix: @"enum"] || [type hasPrefix: @"union"] 
@@ -49,6 +43,9 @@
 	}
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
 - (void) parser: (GSDocParser *)parser
      endElement: (NSString *)elementName
     withContent: (NSString *)trimmed
@@ -67,15 +64,17 @@
 		//NSLog(@"C Data Type raw description <%@>", [self rawDescription]);
 		
 		[self addInformationFrom: descParser];
-		[descParser release];
 
 		/* Switch the class to get the right -weaveSelector */
 		[self turnIntoDocConstantIfNeeded];
+
 		[(id)[parser weaver] performSelector: [self weaveSelector] withObject: self];
-		
+
 		ENDLOG2(name, [self task]);
 	}
 }
+
+#pragma clang diagnostic pop
 
 - (NSString *) GSDocElementName
 {

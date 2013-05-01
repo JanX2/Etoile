@@ -8,10 +8,12 @@
 
 #import "DocPageWeaver.h"
 #import "DocCategoryPage.h"
+#import "DocCDataType.h"
 #import "DocDeclarationReorderer.h"
 #import "DocElement.h"
 #import "DocHeader.h"
 #import "DocIndex.h"
+#import "DocMacro.h"
 #import "DocMethod.h"
 #import "DocPage.h"
 #import "DocTOCPage.h"
@@ -130,10 +132,10 @@ presently. */
 	                                                     orderedSymbols: orderedSymbolDeclarations];
 	
 	/* Don't include igsdoc or plist, we don't want to turn them into a page */
-	ASSIGN(sourcePaths, [self validSourceFilesInFiles: paths]);
+	sourcePaths = [self validSourceFilesInFiles: paths];
 	sourcePathQueue = [paths mutableCopy];
-	ASSIGN(templatePath, aTemplatePath);
-	ASSIGN(templateDirPath, [aTemplatePath stringByDeletingLastPathComponent]);
+	templatePath = aTemplatePath;
+	templateDirPath = [aTemplatePath stringByDeletingLastPathComponent];
 	allWeavedPages = [[NSMutableArray alloc] init];
 	weavedPages = [[NSMutableArray alloc] init];
 	categoryPages = [[NSMutableDictionary alloc] init];
@@ -143,27 +145,26 @@ presently. */
 
 - (void) dealloc
 {
-	DESTROY(sourcePaths);
-	DESTROY(sourcePathQueue);
-	DESTROY(templatePath);
-	DESTROY(templateDirPath);
-	DESTROY(menuPath);
-	DESTROY(externalMappingPath);
-	DESTROY(projectMappingPath);
-	DESTROY(docIndex);
-	DESTROY(currentParser);
-	DESTROY(currentClassName);
-	DESTROY(currentProtocolName);
-	DESTROY(currentHeader);
-	DESTROY(allWeavedPages);
-	DESTROY(weavedPages);
-	DESTROY(categoryPages);
-	DESTROY(apiOverviewPage);
-	DESTROY(functionPage);
-	DESTROY(constantPage);
-	DESTROY(macroPage);
-	DESTROY(otherDataTypePage);
-	[super dealloc];
+	sourcePaths = nil;
+	sourcePathQueue = nil;
+	templatePath = nil;
+	templateDirPath = nil;
+	menuPath = nil;
+	externalMappingPath = nil;
+	projectMappingPath = nil;
+	docIndex = nil;
+	currentParser = nil;
+	currentClassName = nil;
+	currentProtocolName = nil;
+	currentHeader = nil;
+	allWeavedPages = nil;
+	weavedPages = nil;
+	categoryPages = nil;
+	apiOverviewPage = nil;
+	functionPage = nil;
+	constantPage = nil;
+	macroPage = nil;
+	otherDataTypePage = nil;
 }
 
 - (NSString *) templateDirectory
@@ -173,18 +174,18 @@ presently. */
 
 - (void) setMenuFile: (NSString *)aMenuPath
 {
-	ASSIGN(menuPath, aMenuPath);
+	menuPath = aMenuPath;
 }
 
 - (void) setExternalMappingFile: (NSString *)aMappingPath
 {
-	ASSIGN(externalMappingPath, aMappingPath);
+	externalMappingPath = aMappingPath;
 	[docIndex setExternalRefs: [NSDictionary dictionaryWithContentsOfFile: aMappingPath]];
 }
 
 - (void) setProjectMappingFile: (NSString *)aMappingPath
 {
-	ASSIGN(projectMappingPath, aMappingPath);
+	projectMappingPath = aMappingPath;
 }
 
 - (NSString *) pathForRawSourceFileNamed: (NSString *)aName
@@ -218,12 +219,12 @@ presently. */
 	                                                     templateFile: templateFile                                       
 	                                                         menuFile: menuPath];
 
-	[page setHeader: AUTORELEASE([[DocHeader alloc] init])];
+	[page setHeader: [[DocHeader alloc] init]];
 	[[page header] setName: aName];
 	[[page header] setTitle: aName];
 	[[page header] setAbstract: anOverview];
 
-	[allWeavedPages addObject: AUTORELEASE(page)];
+	[allWeavedPages addObject: page];
 	return page;
 }
 
@@ -235,22 +236,22 @@ presently. */
 - (void) weaveMainPages
 {
 	// TODO: Perhaps pass an overview to insert in the header... or use the document file?
-	ASSIGN(apiOverviewPage, [self weaveMainPageOfClass: [DocTOCPage class] withName: @"API Overview" overview: @"Classes, Protocols and Categories by Groups"]);
+	apiOverviewPage = [self weaveMainPageOfClass: [DocTOCPage class] withName: @"API Overview" overview: @"Classes, Protocols and Categories by Groups"];
 
 	NSString *functionOverview = [NSString stringWithFormat: @"All the public Functions in %@", [docIndex projectName]];
-	ASSIGN(functionPage, [self weaveMainPageWithName: @"Functions" overview: functionOverview]);
+	functionPage = [self weaveMainPageWithName: @"Functions" overview: functionOverview];
 
 	NSString *constantOverview = 
 		[NSString stringWithFormat: @"All the public Constants, Enums and Unions in %@", [docIndex projectName]];
-	ASSIGN(constantPage, [self weaveMainPageWithName: @"Constants" overview: constantOverview]);
+	constantPage = [self weaveMainPageWithName: @"Constants" overview: constantOverview];
 
 	NSString *macroOverview = 
 		[NSString stringWithFormat: @"All the public Macros in %@", [docIndex projectName]];
-	ASSIGN(macroPage, [self weaveMainPageWithName: @"Macros" overview: macroOverview]);
+	macroPage = [self weaveMainPageWithName: @"Macros" overview: macroOverview];
 
 	NSString *otherOverview = 
 		[NSString stringWithFormat: @"All the public Structures and Function Pointers in %@", [docIndex projectName]];
-	ASSIGN(otherDataTypePage, [self weaveMainPageWithName: @"Other Data Types" overview: otherOverview]);
+	otherDataTypePage = [self weaveMainPageWithName: @"Other Data Types" overview: otherOverview];
 }
 
 - (void) weavePagesFromSourceFiles
@@ -279,7 +280,7 @@ presently. */
 {
 	[DocIndex setCurrentIndex: docIndex];
 	[weavedPages removeAllObjects];
-	DESTROY(currentParser);
+	currentParser = nil;
 
 	NSSet *skippedFileNames = S(@"ClassesTOC.gsdoc", 
 		[[docIndex projectName] stringByAppendingPathExtension: @"gsdoc"]);
@@ -335,8 +336,8 @@ presently. */
 	   protocol and category declarations in GSDoc format.
 	   The header can be valid for multiple pages too. e.g. When a gsdoc file 
 	   contains multiple class documentations. */
-	DESTROY(currentClassName);
-	DESTROY(currentProtocolName);
+	currentClassName = nil;
+	currentProtocolName = nil;
 }
 
 - (void) weaveNewPageOfClass: (Class)aPageClass
@@ -346,7 +347,7 @@ presently. */
 	DocPage *page = [[aPageClass alloc] initWithDocumentFile: [self currentSourceFile]
 	                                templateFile: [self templateFileForSourceFile: [self currentSourceFile]]
 	                                    menuFile: menuPath];
-    [weavedPages addObject: AUTORELEASE(page)];
+    [weavedPages addObject: page];
 }
 
 - (void) weaveNewPage
@@ -362,7 +363,7 @@ presently. */
 - (void) weaveHeader: (DocHeader *)aHeader
 {
 	/* We set the header on the current page in methods such as -weaveClassNamed:superclassName: */
-	ASSIGN(currentHeader, aHeader);
+	currentHeader = aHeader;
  	[self weaveOverviewFile];
 }
 
@@ -396,8 +397,8 @@ presently. */
 {
 	[self weaveNewPage];
 
-	ASSIGN(currentClassName, aClassName);
-	ASSIGNCOPY(currentHeader, currentHeader);
+	currentClassName = aClassName;
+	currentHeader = [currentHeader copy];
 
 	[[self currentPage] setHeader: currentHeader];
 
@@ -416,8 +417,8 @@ presently. */
 {
 	[self weaveNewPage];
 
-	ASSIGN(currentProtocolName, aProtocolName);
-	ASSIGNCOPY(currentHeader, currentHeader);
+	currentProtocolName = aProtocolName;
+	currentHeader = [currentHeader copy];
 
 	[[self currentPage] setHeader: currentHeader];
 
@@ -436,16 +437,16 @@ presently. */
 {
 	[self weavePageForCategoryNamed: aCategoryName className: aClassName];
 
-	ASSIGN(currentClassName, aClassName);
-	ASSIGNCOPY(currentHeader, currentHeader);
+	currentClassName = aClassName;
+	currentHeader = [currentHeader copy];
 
 	[currentHeader setCategoryName: aCategoryName];
 	[currentHeader setClassName: aClassName];
 	// FIXME: Is it really necessary to set both title and name separatly?
 	[currentHeader setTitle: aCategoryName];
 
-	DocElementGroup *category = AUTORELEASE([[DocElementGroup alloc] 
-		initWithHeader: currentHeader subgroupKey: @"task"]);
+	DocElementGroup *category = [[DocElementGroup alloc]
+		initWithHeader: currentHeader subgroupKey: @"task"];
 
 	[(DocCategoryPage *)[self currentPage] addMethodGroup: category];
 
@@ -499,8 +500,8 @@ presently. */
 - (void) weaveFunction: (DocFunction *)aFunction
 {
 	[functionPage addFunction: aFunction];
-
-	[docIndex setProjectRef: [functionPage name] 
+    
+    [docIndex setProjectRef: [functionPage name]
 	          forSymbolName: [aFunction name] 
 	                 ofKind: @"functions"];
 }
@@ -509,14 +510,15 @@ presently. */
 {
 	[macroPage addMacro: aMacro];
 
-	[docIndex setProjectRef: [macroPage name] 
+	[docIndex setProjectRef: [macroPage name]
 	          forSymbolName: [aMacro name] 
 	                 ofKind: @"macros"];
 }
 - (void) weaveConstant: (DocConstant *)aConstant
 {
 	[constantPage addConstant: aConstant];
-	[docIndex setProjectRef: [constantPage name] 
+	
+    [docIndex setProjectRef: [constantPage name]
 	          forSymbolName: [aConstant name] 
 	                 ofKind: @"constants"];
 }
@@ -560,7 +562,7 @@ presently. */
 
 		[categoryPages setObject: page forKey: aClassName];
 
-		[page setHeader: AUTORELEASE([[DocHeader alloc] init])];
+		[page setHeader: [[DocHeader alloc] init]];
 		[[page header] setName: [NSString stringWithFormat: @"%@ Categories", aClassName]];
 		[[page header] setTitle: [NSString stringWithFormat: @"%@ categories documentation", aClassName]];
 		[[page header] setAbstract: [NSString stringWithFormat: @"All the public Categories which extend %@ class.", aClassName]];

@@ -24,20 +24,19 @@ static NSString *root = @"root";
 	NILARG_EXCEPTION_TEST(symbolArraysByKind);
 
 	SUPERINIT;
-	ASSIGN(weaver, aWeaver);
-	ASSIGN(orderedSymbols, symbolArraysByKind);
+	weaver = aWeaver;
+	orderedSymbols = symbolArraysByKind;
 	accumulatedDocElements =
 		[[NSMutableDictionary alloc] initWithObjectsAndKeys: [NSMutableArray array], root, nil];
-	ASSIGN(currentConstructName, root);
+	currentConstructName = root;
 	return self;
 }
 
 - (void) dealloc
 {
-	DESTROY(weaver);
-	DESTROY(orderedSymbols);
-	DESTROY(accumulatedDocElements);
-	[super dealloc];
+	weaver = nil;
+	orderedSymbols = nil;
+	accumulatedDocElements = nil;
 }
 
 // FIXME: Forwarding seems to be broken with -performSelector:withObject:
@@ -88,8 +87,8 @@ static NSString *root = @"root";
 
 - (void) resetAccumulatedDocElements
 {
-	ASSIGN(accumulatedDocElements, [NSMutableDictionary dictionaryWithObject:
-		[accumulatedDocElements objectForKey: root] forKey: root]);
+	accumulatedDocElements = [NSMutableDictionary dictionaryWithObject:
+                                    [accumulatedDocElements objectForKey: root] forKey: root];
 }
 
 - (void) flushAccumulatedDocElementsForConstructNamed: (NSString *)aName
@@ -114,7 +113,7 @@ static NSString *root = @"root";
 
 - (void) weaveHeader: (DocHeader *)aHeader
 {
-	ASSIGN(currentConstructName, root);
+	currentConstructName = root;
 	[weaver weaveHeader: aHeader];
 }
 
@@ -122,7 +121,7 @@ static NSString *root = @"root";
           superclassName: (NSString *)aSuperclassName
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
-	ASSIGN(currentConstructName, aClassName);
+	currentConstructName = aClassName;
 	[weaver weaveClassNamed: aClassName superclassName: aSuperclassName];
 }
 
@@ -130,7 +129,7 @@ static NSString *root = @"root";
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
 	NSString *symbol = [NSString stringWithFormat: @"(%@)", aProtocolName];
-	ASSIGN(currentConstructName, symbol);
+	currentConstructName = symbol;
 	[weaver weaveProtocolNamed: aProtocolName];
 }
 
@@ -139,7 +138,7 @@ static NSString *root = @"root";
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
 	NSString *symbol = [NSString stringWithFormat: @"%@(%@)", aClassName, aCategoryName];
-	ASSIGN(currentConstructName, symbol);
+	currentConstructName = symbol;
 	[weaver weaveCategoryNamed: aCategoryName className: aClassName];
 }
 
@@ -152,35 +151,35 @@ static NSString *root = @"root";
 - (void) weaveFunction: (DocFunction *)aFunction
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
-	ASSIGN(currentConstructName, root);
+	currentConstructName = root;
 	[weaver weaveFunction: aFunction];
 }
 
 - (void) weaveMacro: (DocMacro *)aMacro
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
-	ASSIGN(currentConstructName, root);
+	currentConstructName = root;
 	[weaver weaveMacro: aMacro];
 }
 
 - (void) weaveConstant: (DocConstant *)aConstant
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
-	ASSIGN(currentConstructName, root);
+	currentConstructName = root;
 	[weaver weaveConstant: aConstant];
 }
 
 - (void) weaveOtherDataType: (DocCDataType *)aDataType
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
-	ASSIGN(currentConstructName, root);
+	currentConstructName = root;
 	[weaver weaveOtherDataType: aDataType];
 }
 
 - (void) finishWeaving
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
-	ASSIGN(currentConstructName, root);
+	currentConstructName = root;
 }
 
 - (DocHeader *) currentHeader

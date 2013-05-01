@@ -20,9 +20,6 @@
 - (void) dealloc
 {
 	[self cleanupGraph];
-	[mEdges release];
-	[mNodes release];
-	[super dealloc];
 }
 
 - (void) cleanupGraph
@@ -56,7 +53,7 @@
 	NSString* str = [[NSString alloc] initWithData: data
 				encoding: NSUTF8StringEncoding];
 
-	return [str autorelease];
+	return str;
 }
 
 - (NSValue*) addNode: (NSString*) node

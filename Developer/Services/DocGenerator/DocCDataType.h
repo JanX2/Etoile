@@ -30,7 +30,7 @@ Enum and union are represented with DocConstant -weaveSelector. */
 }
 
 /** The underlying type such as struct, enum, NSString const * etc. */
-@property (retain, nonatomic) NSString * type;
+@property (strong, nonatomic) NSString * type;
 /** Returns whether the current -type is constant-like. e.g. enum or union. */
 @property (readonly) BOOL isConstant;
 

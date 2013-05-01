@@ -61,18 +61,6 @@
 	return self;
 }
 
-- (void) dealloc
-{
-	[xmlParser release];
-	[parserDelegateStack release];
-	[elementClasses release];
-	[symbolElements release];
-	[substitutionElements release];
-	[etdocElements release];
-	[escapedCharacters release];
-	[content release];
-	[super dealloc];
-}
 
 - (void) setWeaver: (id <DocWeaving>)aDocWeaver
 {
@@ -92,7 +80,6 @@
 
 - (void) newContent
 {
-	[content release];
 	content = [NSMutableString new];
 }
 
@@ -110,14 +97,14 @@
 
 - (void) increaseIndentSpaces
 {
-	ASSIGN(indentSpaces, [indentSpaces stringByAppendingString: indentSpaceUnit]);
+	indentSpaces = [indentSpaces stringByAppendingString: indentSpaceUnit];
 }
 
 - (void) decreaseIndentSpaces
 {
 	NSUInteger i = [indentSpaces length] - [indentSpaceUnit length];
 	ETAssert(i >= 0);
-	ASSIGN(indentSpaces, [indentSpaces substringToIndex: i]);
+	indentSpaces = [indentSpaces substringFromIndex: i];
 }
 
 - (void) pushParserDelegate: (id <GSDocParserDelegate>)aDelegate
@@ -192,7 +179,7 @@ didStartElement:(NSString *)elementName
 		return;
 	}
 
-	ASSIGN(currentAttributes, attributeDict);
+	currentAttributes = attributeDict;
 
 	id parserDelegate = [self parserDelegate];
 
@@ -200,7 +187,7 @@ didStartElement:(NSString *)elementName
 	   we switch this delegate, otherwise we continue with the current one. */
 	if ([self elementClassForName: elementName] != nil)
 	{
-		parserDelegate = AUTORELEASE([[self elementClassForName: elementName] new]);
+		parserDelegate = [[self elementClassForName: elementName] new];
 
 	}
 	[self pushParserDelegate: parserDelegate];
@@ -283,7 +270,7 @@ no way exists to disable it. */
 	[self popParserDelegate];
 	/* Discard the content accumulated to handle the element which ends. */
 	[self newContent];
-	DESTROY(currentAttributes);
+	currentAttributes = nil;
 }
 
 
@@ -341,7 +328,6 @@ no way exists to disable it. */
 			[currentHeader setAbstract: [descParser abstract]];
 		}
 		[currentHeader setOverview: [descParser description]];
-		[descParser release];
 	}
 }
 

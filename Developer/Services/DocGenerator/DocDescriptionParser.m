@@ -19,20 +19,12 @@
   return self;
 }
 
-- (void) dealloc
-{
-  [parsed release];
-  [currentTag release];
-  [super dealloc];
-}
-
 - (id) getContent: (Class) aClass for: (NSString*) tag
 {
   if ([parsed objectForKey: tag] == nil)
   {
     id tmp = [aClass new];
     [parsed setObject: tmp forKey: tag];
-    [tmp release];
   }
   return [parsed objectForKey: tag];
 }
@@ -154,8 +146,8 @@ Requires the line argument to be trimmed, no white spaces at the beginning and e
 
 - (void) endTag: (NSString *)aTag
 {
-	ASSIGN(currentTag, nil);
-	/* We delay the @param description parsing, because it might be split on 
+	currentTag = nil;
+	/* We delay the @param description parsing, because it might be split on
 	   several lines. The parsing might be impossible right when @param is 
 	   parsed, because the content to be parsed is on the next line... e.g.
 	   @bla A city in the sea. @param
@@ -172,7 +164,7 @@ Requires the line argument to be trimmed, no white spaces at the beginning and e
 	{
 		[self endTag: currentTag];
 	}
-	ASSIGN(currentTag, aTag);
+	currentTag = aTag;
 }
 
 /* Returns YES when a new tag has been parsed, whether or not the tag content 
@@ -305,7 +297,7 @@ When a single tag is present on the line, unparsedString won't be touched.  */
 
 - (void) reset
 {
-	DESTROY(currentTag);
+	currentTag = nil;
 	[parsed removeAllObjects];
 }
 

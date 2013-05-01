@@ -65,14 +65,14 @@
 
 	SUPERINIT;
 
-	ASSIGN(documentPath, aDocumentPath);
-	ASSIGN(documentType, [aDocumentPath pathExtension]);
+	documentPath = aDocumentPath;
+	documentType = [aDocumentPath pathExtension];
 	if (documentPath != nil)
 	{
-		ASSIGN(documentContent, [NSString stringWithContentsOfFile: aDocumentPath encoding: NSUTF8StringEncoding error: NULL]);
+		documentContent = [NSString stringWithContentsOfFile: aDocumentPath encoding: NSUTF8StringEncoding error: NULL];
 	}
-	ASSIGN(templateContent, [NSString stringWithContentsOfFile: aTemplatePath encoding: NSUTF8StringEncoding error: NULL]);
-	ASSIGN(menuContent, [NSString stringWithContentsOfFile: finalMenuPath encoding: NSUTF8StringEncoding error: NULL]);
+	templateContent = [NSString stringWithContentsOfFile: aTemplatePath encoding: NSUTF8StringEncoding error: NULL];
+	menuContent = [NSString stringWithContentsOfFile: finalMenuPath encoding: NSUTF8StringEncoding error: NULL];
 
 	subheaders = [NSMutableArray new];
 	methods = [NSMutableArray new];
@@ -89,23 +89,6 @@
 	return nil;
 }
 
-- (void) dealloc
-{
-	[documentPath release];
-	[documentType release];
-	[documentContent release];
-	[templateContent release];
-	[menuContent release];
-	[weavedContent release];
-	[header release];
-	[subheaders release];
-	[methods release];
-	[functions release];
-	[constants release];
-	[macros release];
-	[otherDataTypes release];
-	[super dealloc];
-}
 
 - (NSString *) name
 {
@@ -122,8 +105,7 @@
 	NSParameterAssert(nil != content);
 	NSParameterAssert(nil != weavedContent);
 
-	ASSIGN(weavedContent, [weavedContent stringByReplacingOccurrencesOfString: aTag 
-	                                                               withString: content]);
+	weavedContent = [weavedContent stringByReplacingOccurrencesOfString: aTag withString: content];
 }
 
 /* For running etdocgen in Xcode, markdown must be installed in /usr/local/bin 
@@ -164,7 +146,6 @@
 	{
 		NSString *htmlChunk = [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
 		html = [html stringByAppendingString: htmlChunk];
-		RELEASE(htmlChunk);
 	}
 
 	//ETLog(@"For %@, markdown produces HTML output:\n %@", aPath, html);
@@ -272,7 +253,7 @@
 
 - (void) weave
 {
-	ASSIGN(weavedContent, templateContent);
+	weavedContent = templateContent;
 
 	[self insertHeader];
 	[self insertHTMLDocument]; /* Additional HTML content */
@@ -293,7 +274,7 @@
 
 - (void) setHeader: (DocHeader *)aHeader
 {
-	ASSIGN(header, aHeader);
+	header = aHeader;
 }
 
 - (DocHeader *) header
@@ -389,6 +370,9 @@
 	return [DocHTMLElement blankElement];
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
 - (DocHTMLElement *) HTMLRepresentationWithTitle: (NSString *)aTitle 
                                      elements: (NSArray *)elementsByGroup
                    HTMLRepresentationSelector: (SEL)repSelector
@@ -431,5 +415,7 @@
 
 	return html;
 }
+
+#pragma clang diagnostic pop
 
 @end

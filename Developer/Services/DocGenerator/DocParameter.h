@@ -47,11 +47,11 @@ Initializes and returns a new parameter with the given name and type. */
 /** @taskunit Basic Properties */
 
 /** The parameter name. */
-@property (retain, nonatomic) NSString *name;
+@property (strong, nonatomic) NSString *name;
 /** The C or ObjC type attached to the parameter. */
-@property (retain, nonatomic) NSString *type;
+@property (strong, nonatomic) NSString *type;
 /** An optional description of the parameter role and use. */
-@property (retain, nonatomic) NSString *description;
+@property (strong, nonatomic) NSString *description;
 
 /** @taskunit Type Infos */
 

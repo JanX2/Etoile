@@ -24,8 +24,7 @@
 
 - (void) dealloc
 {
-	DESTROY(selectorKeywords);
-	[super dealloc];
+	selectorKeywords = nil;
 }
 
 - (NSString *) signature
@@ -175,7 +174,7 @@
 	}
 	else if ([elementName isEqualToString: @"method"]) /* Closing tag */
 	{
-		DocDescriptionParser *descParser = AUTORELEASE([DocDescriptionParser new]);
+		DocDescriptionParser *descParser = [DocDescriptionParser new];
 
 		[descParser parse: [self rawDescription]];
 		[self addInformationFrom: descParser];
@@ -192,10 +191,10 @@
 
 - (void) parseProgramComponent: (SCKMethod *)programComponent
 {
-    __unused NSString *name = [programComponent name];
-    __unused SCKSourceLocation *declaration = [programComponent declaration];
-    __unused SCKSourceLocation *definition = [programComponent definition];
-    __unused NSString *typeEncoding = [programComponent typeEncoding];
+	__unused NSString *name = [programComponent name];
+	__unused SCKSourceLocation *declaration = [programComponent declaration];
+	__unused SCKSourceLocation *definition = [programComponent definition];
+	__unused NSString *typeEncoding = [programComponent typeEncoding];
 
 }
 

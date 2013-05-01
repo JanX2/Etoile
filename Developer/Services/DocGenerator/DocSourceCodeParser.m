@@ -23,22 +23,21 @@
 
 	SUPERINIT;
 	sourceCollection = [SCKSourceCollection new];
-	sourceFile = (SCKClangSourceFile *)[[sourceCollection sourceFileForPath: aSourceCodePath] retain];
+	sourceFile = (SCKClangSourceFile *)[sourceCollection sourceFileForPath: aSourceCodePath];
 	return self;
 }
 
 - (void) dealloc
 {
-	DESTROY(sourceCollection);
-	DESTROY(sourceFile);
-	[super dealloc];
+	sourceCollection = nil;
+	sourceFile = nil;
 }
 
 - (void) parseAndWeave
 {
 	for (SCKClass *class in [sourceFile classes])
 	{
-		DocHeader *header = [[DocHeader new] autorelease];
+		DocHeader *header = [DocHeader new];
 
 		[header setClassName: [class name]];
 		[pageWeaver weaveHeader: header];
@@ -48,7 +47,7 @@
 
 		for (SCKMethod *method in [class methods])
 		{
-			DocMethod *docMethod = [[DocMethod new] autorelease];
+			DocMethod *docMethod = [DocMethod new];
 			[pageWeaver weaveMethod: docMethod];
 			// FIXME: [docMethod parseProgramComponent: method];
 		}

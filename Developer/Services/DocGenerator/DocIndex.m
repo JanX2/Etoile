@@ -22,7 +22,7 @@ static DocIndex *currentIndex = nil;
 
 + (void) setCurrentIndex: (DocIndex *)anIndex
 {
-	ASSIGN(currentIndex, anIndex);
+	currentIndex = anIndex;
 }
 
 - (id) createRefDictionaryWithMutability: (BOOL)mutable
@@ -42,7 +42,7 @@ static DocIndex *currentIndex = nil;
 {
 	// NILARG_EXCEPTION_TEST(anIndexFile);
 	SUPERINIT;
-	ASSIGN(projectName, @"Untitled");
+	projectName = @"Untitled";
 	indexContent = [[NSDictionary alloc] initWithContentsOfFile: anIndexFile];
 	externalRefs = [self createRefDictionaryWithMutability: NO];
 	projectRefs = [self createRefDictionaryWithMutability: YES];
@@ -52,24 +52,23 @@ static DocIndex *currentIndex = nil;
 
 - (void) dealloc
 {
-	DESTROY(projectName);
-	DESTROY(outputDirectory);
-	DESTROY(indexContent);
-	DESTROY(externalRefs);
-	DESTROY(projectRefs);
-	DESTROY(mergedRefs);
-	[super dealloc];
+	projectName = nil;
+	outputDirectory = nil;
+	indexContent = nil;
+	externalRefs = nil;
+	projectRefs = nil;
+	mergedRefs = nil;
 }
 
 - (void) setProjectName: (NSString *)aName
 {
 	if (aName == nil)
 	{
-		ASSIGN(projectName, @"Untitled");
+        projectName = @"Untitled";
 	}
 	else
 	{
-		ASSIGN(projectName, aName);
+        projectName = aName;
 	}
 }
 

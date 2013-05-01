@@ -24,16 +24,6 @@
 	return self;
 }
 
-- (void) dealloc
-{
-	[rawDescription release];
-	[filteredDescription release];
-	[name release];
-	[task release];
-	[taskUnit release];
-	[ownerSymbolName release];
-	[super dealloc];
-}
 
 + (NSString *) defaultTask
 {
@@ -61,11 +51,11 @@
 {
 	if ([aTask isEqualToString: @""])
 	{
-		ASSIGN(task, nil);
+        task = nil;
 	}
 	else
 	{
-		ASSIGN(task, aTask);
+        task = aTask;
 	}
 }
 
@@ -73,11 +63,11 @@
 {
 	if ([aTask isEqualToString: @""])
 	{
-		ASSIGN(taskUnit, nil);
+        taskUnit = nil;
 	}
 	else
 	{
-		ASSIGN(taskUnit, aTask);
+        taskUnit = aTask;
 	}
 }
 
@@ -86,9 +76,9 @@
 	DocElement *copy = [[self class] allocWithZone: aZone];
 
 	copy->rawDescription = [rawDescription mutableCopyWithZone: aZone];
-	ASSIGN(copy->filteredDescription, filteredDescription);
-	ASSIGN(copy->name, name);
-	ASSIGN(copy->task, task);
+	copy->filteredDescription = filteredDescription;
+	copy->name = name;
+	copy->task = task;
 
 	return copy;
 }
@@ -130,7 +120,7 @@
 	{
 		trimmedDesc = [[self class] forthcomingDescription];
 	}
-	ASSIGN(filteredDescription, trimmedDesc);
+	filteredDescription = trimmedDesc;
 }
 
 - (void) addInformationFrom: (DocDescriptionParser *)aParser
@@ -378,13 +368,6 @@
 	return self;
 }
 
-- (void) dealloc
-{
-	[parameters release];
-	[returnType release];
-	[returnDescription release];
-	[super dealloc];
-}
 
 - (void) setDescription: (NSString *)aDescription forParameter: (NSString *)aName
 {
@@ -467,17 +450,16 @@
 {
 	SUPERINIT;
 	elements = [[NSMutableArray alloc] init];
-	ASSIGN(header, aHeader);
-	ASSIGN(subgroupKey, aKey);
+	header = aHeader;
+	subgroupKey = aKey;
 	return self;
 }
 
 - (void) dealloc
 {
-	DESTROY(elements);
-	DESTROY(header);
-	DESTROY(subgroupKey);
-	[super dealloc];
+	elements = nil;
+	header = nil;
+	subgroupKey = nil;
 }
 
 - (ETKeyValuePair *) firstPairWithKey: (NSString *)aKey inArray: (NSArray *)anArray

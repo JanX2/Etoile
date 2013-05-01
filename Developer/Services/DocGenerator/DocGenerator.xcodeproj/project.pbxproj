@@ -104,11 +104,11 @@
 
 /* Begin PBXFileReference section */
 		0362712A0E00919B005D79FE /* DocDescriptionParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocDescriptionParser.h; sourceTree = "<group>"; };
-		0362712B0E00919B005D79FE /* DocDescriptionParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocDescriptionParser.m; sourceTree = "<group>"; };
+		0362712B0E00919B005D79FE /* DocDescriptionParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DocDescriptionParser.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		036271910E00B263005D79FE /* DocParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocParameter.h; sourceTree = "<group>"; };
 		036271920E00B263005D79FE /* DocParameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocParameter.m; sourceTree = "<group>"; };
 		0362732B0E048FD3005D79FE /* DocElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocElement.h; sourceTree = "<group>"; };
-		0362732C0E048FD3005D79FE /* DocElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocElement.m; sourceTree = "<group>"; };
+		0362732C0E048FD3005D79FE /* DocElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DocElement.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		03FF75310DF9EFED007D79D3 /* DocHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocHeader.h; sourceTree = "<group>"; };
 		03FF75320DF9EFED007D79D3 /* DocHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocHeader.m; sourceTree = "<group>"; };
 		03FF75340DF9F159007D79D3 /* DocHTMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocHTMLElement.h; sourceTree = "<group>"; };
@@ -137,14 +137,14 @@
 		606D338B12946F1500AA7554 /* DocIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocIndex.h; sourceTree = "<group>"; };
 		606D338C12946F1500AA7554 /* DocIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocIndex.m; sourceTree = "<group>"; };
 		608A56EB12C61ED7007CD303 /* DocDeclarationReorderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocDeclarationReorderer.h; sourceTree = "<group>"; };
-		608A56EC12C61ED7007CD303 /* DocDeclarationReorderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocDeclarationReorderer.m; sourceTree = "<group>"; };
+		608A56EC12C61ED7007CD303 /* DocDeclarationReorderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DocDeclarationReorderer.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		609CFEBF17005AF900D01AAB /* SourceCodeKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SourceCodeKit.xcodeproj; path = ../../../Languages/SourceCodeKit/SourceCodeKit.xcodeproj; sourceTree = "<group>"; };
 		60AF049A12B788F800BAF537 /* DocMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocMacro.h; sourceTree = "<group>"; };
 		60AF049B12B788F800BAF537 /* DocMacro.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocMacro.m; sourceTree = "<group>"; };
 		60AF049C12B788F800BAF537 /* DocTOCPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocTOCPage.h; sourceTree = "<group>"; };
 		60AF049D12B788F800BAF537 /* DocTOCPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocTOCPage.m; sourceTree = "<group>"; };
 		60F7F14212AF91970031E9F1 /* DocCDataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocCDataType.h; sourceTree = "<group>"; };
-		60F7F14312AF91970031E9F1 /* DocCDataType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocCDataType.m; sourceTree = "<group>"; };
+		60F7F14312AF91970031E9F1 /* DocCDataType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DocCDataType.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8DD76FA10486AA7600D96B5E /* etdocgen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = etdocgen; sourceTree = BUILT_PRODUCTS_DIR; };
 		A50064241721640300759754 /* DocSourceCodeParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocSourceCodeParser.h; sourceTree = "<group>"; };
 		A50064251721640300759754 /* DocSourceCodeParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocSourceCodeParser.m; sourceTree = "<group>"; };
@@ -429,7 +429,9 @@
 		1DEB927508733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				INSTALL_PATH = /usr/local/bin;
+				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				PRODUCT_NAME = etdocgen;
 			};
 			name = Debug;
@@ -437,7 +439,9 @@
 		1DEB927608733DD40010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				INSTALL_PATH = /usr/local/bin;
+				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				PRODUCT_NAME = etdocgen;
 			};
 			name = Release;
@@ -446,6 +450,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_OBJCPP_ARC_ABI = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = (
@@ -473,6 +479,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_OBJCPP_ARC_ABI = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,

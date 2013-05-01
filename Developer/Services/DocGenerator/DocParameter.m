@@ -26,24 +26,23 @@
 
 - (void) dealloc
 {
-	DESTROY(name);
-	DESTROY(type);
-	DESTROY(description);
-	DESTROY(typePrefix);
-	DESTROY(className);
-	DESTROY(protocolName);
-	DESTROY(typeSuffix);
-	[super dealloc];
+	name = nil;
+	type = nil;
+	description = nil;
+	typePrefix = nil;
+	className = nil;
+	protocolName = nil;
+	typeSuffix = nil;
 }
 
 + (id) parameterWithName: (NSString *) aName type: (NSString *) aType
 {
-	return AUTORELEASE([[DocParameter alloc] initWithName: aName type: aType]);
+	return [[DocParameter alloc] initWithName: aName type: aType];
 }
 
 - (void) setName: (NSString *) aName
 {
-	ASSIGN(name, aName);
+	name = aName;
 }
 
 static inline BOOL isDelimiter(char c)
@@ -51,7 +50,7 @@ static inline BOOL isDelimiter(char c)
 	return (c == ' ' || c == '*' || c == '<' || c == '>');
 }
 
-static inline unsigned int parseTypePrefix(char *rawType, unsigned int length, NSString **typePrefix)
+static inline unsigned int parseTypePrefix(char *rawType, unsigned int length, NSString __strong **typePrefix)
 {
 	char *symbol = calloc(sizeof(char), length);;
 	int i;
@@ -72,8 +71,8 @@ static inline unsigned int parseTypePrefix(char *rawType, unsigned int length, N
 
 	if (foundProtocolOrClassName)
 	{
-		[*typePrefix release];
 		*typePrefix = [[NSString alloc] initWithBytes: (const void *)symbol length: i encoding: NSUTF8StringEncoding];
+		free(symbol);
 		return i;
 	}
 
@@ -82,7 +81,7 @@ static inline unsigned int parseTypePrefix(char *rawType, unsigned int length, N
 	return 0;
 }
 
-static inline unsigned int parseClassOrProtocolName(char *rawType, unsigned int length, NSString **classOrProtocolName)
+static inline unsigned int parseClassOrProtocolName(char *rawType, unsigned int length, __strong NSString **classOrProtocolName)
 {
 	char *symbol = calloc(sizeof(char), length);
 	int i;
@@ -95,13 +94,12 @@ static inline unsigned int parseClassOrProtocolName(char *rawType, unsigned int 
 		symbol[i] = rawType[i];
 	}
 
-	[*classOrProtocolName release];
 	*classOrProtocolName = [[NSString alloc] initWithBytes: (const void *)symbol length: i encoding: NSUTF8StringEncoding];
 	free(symbol);
 	return i;
 }
 
-static inline unsigned int parseTypeSuffix(char *rawType, unsigned int length, NSString **typeSuffix)
+static inline unsigned int parseTypeSuffix(char *rawType, unsigned int length, NSString __strong **typeSuffix)
 {
 	char *suffix = calloc(sizeof(char), length);
 	int i;
@@ -111,7 +109,6 @@ static inline unsigned int parseTypeSuffix(char *rawType, unsigned int length, N
 		suffix[i] = rawType[i];
 	}
 
-	[*typeSuffix release];
 	*typeSuffix = [[NSString alloc] initWithBytes: (const void *)suffix length: i encoding: NSUTF8StringEncoding];
 	free(suffix);
 
@@ -166,7 +163,7 @@ camel case). */
 		}
 		else if (isupper(character))
 		{
-			NSString **classOrProtocolName = (isParsingProtocolName ? &protocolName : &className);
+			NSString __strong **classOrProtocolName = (isParsingProtocolName ? &protocolName : &className);
 			i += parseClassOrProtocolName(unparsedText, strlen(unparsedText), classOrProtocolName);
 			isParsingProtocolName = NO;
 		}
@@ -188,7 +185,7 @@ camel case). */
 
 - (void) setType: (NSString *) aType
 {
-	ASSIGN(type, aType);
+	type = aType;
 	[self parseType: aType];
 }
 

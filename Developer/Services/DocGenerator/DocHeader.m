@@ -24,25 +24,6 @@
 	return self;
 }
 
-- (void) dealloc
-{
-	[title release];
-	[abstract release];
-	[authors release];
-	[overview release];
-	[fileOverview release];
-
-	[className release];
-	[protocolName release];
-	[categoryName release];
-	[superclassName release];
-	[adoptedProtocolNames release];
-	[declaredIn release];
-
-	[group release];
-
-	[super dealloc];
-}
 
 - (id) copyWithZone: (NSZone *)aZone
 {
@@ -54,18 +35,19 @@
 	   reset to nil. e.g. when weaving a new page per class and the classes 
 	   belongs to a single gsdoc file.
 
-	ASSIGN(copy->className, className);
-	ASSIGN(copy->protocolName, protocolName);
-	ASSIGN(copy->categoryName, categoryName);
-	ASSIGN(copy->superClassName, superClassName);
-	copy->adoptedProtocolNames = [adoptedProtocolNames mutableCopyWithZone: aZone];*/
-
+	copy->className = [className retain];
+	copy->protocolName = [protocolName retain];
+	copy->categoryName = [categoryName retain];
+	copy->superclassName = [superclassName retain];
+	copy->adoptedProtocolNames = [adoptedProtocolNames mutableCopyWithZone: aZone]; */
+        
 	copy->adoptedProtocolNames = [[NSMutableArray alloc] init];
-	ASSIGN(copy->abstract, abstract);
-	ASSIGN(copy->overview, overview);
-	ASSIGN(copy->title, title);
-	ASSIGN(copy->group, group);
-
+    
+	copy->abstract = abstract;
+	copy->overview = overview;
+	copy->title = title;
+	copy->group = group;
+    
 	return copy;
 }
 
@@ -103,7 +85,7 @@
 
 - (NSArray *) authors
 {
-	return AUTORELEASE([authors copy]);
+	return [authors copy];
 }
 
 - (void) addAuthor: (NSString *)aName
@@ -126,7 +108,7 @@
 
 - (NSArray *) adoptedProtocolNames
 {
-	return AUTORELEASE([adoptedProtocolNames copy]);
+	return [adoptedProtocolNames copy];
 }
 
 - (void) addAdoptedProtocolName: (NSString *)aName
@@ -143,7 +125,7 @@
 		validDesc = nil;
 	}
 
-	ASSIGN(overview, validDesc);
+	overview = validDesc;
 	// FIXME: redundancy
 	[self setFilteredDescription: aDescription];
 }

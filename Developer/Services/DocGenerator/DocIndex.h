@@ -43,9 +43,9 @@ symbol name in a HTML link. */
 protocol in the GSDoc index. */
 - (BOOL) isInformalProtocolSymbolName: (NSString *)aSymbolName;
 
-@property (retain, nonatomic) NSString *projectName;
-@property (retain, nonatomic) NSString *outputDirectory;
-@property (retain, nonatomic) NSDictionary *externalRefs;
+@property (strong, nonatomic) NSString *projectName;
+@property (strong, nonatomic) NSString *outputDirectory;
+@property (strong, nonatomic) NSDictionary *externalRefs;
 
 - (void) setProjectRef: (NSString *)aRef
          forSymbolName: (NSString *)aSymbol

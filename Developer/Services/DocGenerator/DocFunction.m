@@ -74,6 +74,9 @@
 	}
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
 - (void) parser: (GSDocParser *)parser
      endElement: (NSString *)elementName
     withContent: (NSString *)trimmed
@@ -97,12 +100,13 @@
 		//NSLog(@"Function raw description <%@>", [self rawDescription]);
 		
 		[self addInformationFrom: descParser];
-		[descParser release];
 		
 		[(id)[parser weaver] performSelector: [self weaveSelector] withObject: self];
 		
 		ENDLOG2(name, [self task]);
 	}
 }
+
+#pragma clang diagnostic pop
 
 @end

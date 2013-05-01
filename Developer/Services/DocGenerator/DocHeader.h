@@ -48,9 +48,9 @@
 /** The page title.
 
 See also -[DocElement name] which is a distinct property. */
-@property (retain, nonatomic) NSString *title;
+@property (strong, nonatomic) NSString *title;
 /** A brief summary limited to single line. */
-@property (retain, nonatomic) NSString *abstract;
+@property (strong, nonatomic) NSString *abstract;
 /** The main documentation.
 
 In most cases, the overview describes a class, a category or a protocol that 
@@ -58,35 +58,35 @@ the header introduces. And as such corresponds to the class, category or
 protocol description comment in the code source.
 
 See also -setFileOverview:. */
-@property (retain, nonatomic) NSString *overview;
+@property (strong, nonatomic) NSString *overview;
 /** An additional documentation appended to -overview when the final output is 
 generated.
 
 You should use -setFileOverview: rather than -setOverview:, when the overview 
 is stored outside the code. e.g. in a Markdown file. */
-@property (retain, nonatomic) NSString *fileOverview;
+@property (strong, nonatomic) NSString *fileOverview;
 /** The main authors who contributed to the code or content the header is related to. */
 @property (readonly, nonatomic) NSArray *authors;
 /** Returns the group name parsed from <em>@group</em> markup.
 
 A header or the symbol it represents can belong to one or several groups (only one for now). */
-@property (retain, nonatomic) NSString *group;
+@property (strong, nonatomic) NSString *group;
 
 /** @taskunit Documented Class, Protocol or Category */
 
 /** Adds a protocol name to -adoptedProtocolNames. */
 - (void) addAdoptedProtocolName: (NSString *)aName;
 /** The class presented on the page the header belongs to. */
-@property (retain, nonatomic) NSString *className;
+@property (strong, nonatomic) NSString *className;
 /** The superclass of the class presented on the page the header belongs to.
 
 The class refers to the symbol the header introduces.<br />
 See -className. */
-@property (retain, nonatomic) NSString *superclassName;
+@property (strong, nonatomic) NSString *superclassName;
 /** The category presented on the page the header belongs to. */
-@property (retain, nonatomic) NSString *categoryName;
+@property (strong, nonatomic) NSString *categoryName;
 /** The protocol presented on the page the header belongs to. */
-@property (retain, nonatomic) NSString *protocolName;
+@property (strong, nonatomic) NSString *protocolName;
 /** The protocols to which the class, protocol or category conforms to.
 
 The class, protocol or category refers to the symbol the header introduces.<br />
@@ -95,7 +95,7 @@ See -className, -protocolName and -categoryName. */
 /** The name of the file in which the documented symbol is declared. 
 
 For DocHeader class, that would be DocHeader.h. */
-@property (retain, nonatomic) NSString *declaredIn;
+@property (strong, nonatomic) NSString *declaredIn;
 
 /** @taskunit HTML Generation */
 

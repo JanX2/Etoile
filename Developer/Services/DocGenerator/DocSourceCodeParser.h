@@ -14,8 +14,8 @@
 {
     @private
 	SCKSourceCollection *sourceCollection;
-    SCKClangSourceFile *sourceFile;
-    id <DocWeaving> pageWeaver;
+	SCKClangSourceFile *sourceFile;
+	id <DocWeaving> pageWeaver;
 }
 
 @end
