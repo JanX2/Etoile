@@ -27,37 +27,13 @@
 #import <AppKit/NSButton.h>
 #import <AppKit/NSFont.h>
 #import <AppKit/NSWindow.h>
-
 #import <Foundation/NSTimer.h>
 #import <Foundation/NSInvocation.h>
-#import <Foundation/NSCalendarDate.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSBundle.h>
 #import <Foundation/NSUserDefaults.h>
-
-static inline NSString *
-ShortNameOfDay(int day)
-{
-  return [[[NSUserDefaults standardUserDefaults]
-    objectForKey: NSShortWeekDayNameArray]
-    objectAtIndex: day];
-}
-
-static inline NSString *
-AMPMStringForHour(int hour)
-{
-  NSArray * AMPMArray = [[NSUserDefaults standardUserDefaults]
-    objectForKey: NSAMPMDesignation];
-
-  if (hour < 12)
-    {
-      return [AMPMArray objectAtIndex: 0];
-    }
-  else
-    {
-      return [AMPMArray objectAtIndex: 1];
-    }
-}
+#import <Foundation/NSCalendar.h>
+#import <Foundation/NSDateFormatter.h>
 
 @implementation ClockMenulet
 
@@ -93,6 +69,9 @@ AMPMStringForHour(int hour)
 - (void) dealloc
 {
   [timer invalidate];
+  [gregorian release];
+  [dateFormatter release];
+  [shortDayName release];
   TEST_RELEASE(view);
   DESTROY(calendarWindow);
 
@@ -121,7 +100,10 @@ AMPMStringForHour(int hour)
       timer = [NSTimer scheduledTimerWithTimeInterval: 1.0
                                            invocation: inv
                                               repeats: YES];
-
+      gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+      dateFormatter = [[NSDateFormatter alloc] init];
+      [dateFormatter setDateFormat:@"dd/MM/yyyy HH:mm"];
+      shortDayName = [[dateFormatter shortWeekdaySymbols] retain];
       [self updateClock];
     }
 
@@ -130,47 +112,13 @@ AMPMStringForHour(int hour)
 
 - (void) updateClock
 {
-  NSCalendarDate * date;
-  int newHour, newMinute, newDay;
-
-  date = [NSCalendarDate calendarDate];
-
-  // only redraw every minute
-  newHour = [date hourOfDay];
-  newMinute = [date minuteOfHour];
-  newDay = [date dayOfWeek];
-  if (hour != newHour || minute != newMinute || day != newDay)
-    {
-      BOOL useAmPmTime = [[NSUserDefaults standardUserDefaults]
-        boolForKey: @"UseAMPMTimeIndication"];
-
-      hour = newHour;
-      minute = newMinute;
-      day = newDay;
-
-      if (useAmPmTime)
-        {
-          int h = hour;
-
-          if (h == 0)
-            {
-              h = 12;
-            }
-          else if (h > 12)
-            {
-              h -= 12;
-            }
-
-          [view setTitle: [NSString stringWithFormat:
-            _(@"%@ %d:%02d %@"), ShortNameOfDay(day), h, minute,
-            AMPMStringForHour(hour)]];
-        }
-      else
-        {
-          [view setTitle: [NSString stringWithFormat: _(@"%@ %d:%02d"),
-            ShortNameOfDay(day), hour, minute]];
-        }
-    }
+  NSDate * date = [NSDate date];
+  NSDateComponents *dateComponents = [gregorian components:NSWeekdayCalendarUnit fromDate:date];
+  
+  NSInteger weekDayNum = [dateComponents weekday];
+  NSString *strDate = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle];
+  NSString *dayNum =  [dateFormatter stringFromDate:date];
+  [view setTitle: [NSString stringWithFormat:@"%@ %@ %@", [shortDayName objectAtIndex:weekDayNum], [dayNum substringToIndex:2], strDate]];
 }
 
 - (NSView *) menuletView

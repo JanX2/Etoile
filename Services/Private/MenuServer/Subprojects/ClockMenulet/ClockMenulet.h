@@ -20,19 +20,19 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
 #import <Foundation/NSObject.h>
 #import "../../EtoileMenulet.h"
 
-@class NSButton, NSTimer, NSWindow;
+@class NSButton, NSTimer, NSWindow, NSCalendar, NSDateFormatter;
 
 @interface ClockMenulet : NSObject <EtoileMenulet>
 {
   NSTimer *timer;
   NSButton *view;
   NSWindow *calendarWindow;
-
-  int hour, minute, day;
+  NSCalendar *gregorian;
+  NSDateFormatter *dateFormatter;
+  NSArray *shortDayName;
 }
 
 - (NSView *) menuletView;
