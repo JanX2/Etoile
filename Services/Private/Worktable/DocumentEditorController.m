@@ -12,9 +12,6 @@
 @interface ETCompoundDocumentTemplate : ETItemTemplate
 @end
 
-@interface ETAspectTemplateActionHandler : ETActionHandler
-@end
-
 @implementation DocumentEditorController
 
 - (void) setUpMenus
@@ -224,29 +221,6 @@
 }
 
 @end
-
-@implementation ETAspectTemplateActionHandler
-
-- (unsigned int) dragOperationMaskForDestinationItem: (ETLayoutItem *)item
-                                         coordinator: (ETPickDropCoordinator *)aPickCoordinator
-{
-	BOOL isDragInsideSource = (item != nil && [[item baseItem] isEqual: [aPickCoordinator dragSource]]);
-
-	if (isDragInsideSource)
-	{
-		return NSDragOperationMove;
-	}
-	return NSDragOperationCopy;
-}
-
-- (BOOL) boxingForcedForDroppedItem: (ETLayoutItem *)droppedItem 
-                           metadata: (NSDictionary *)metadata
-{
-	return [[metadata objectForKey: kETPickMetadataWasUsedAsRepresentedObject] boolValue];
-}
-
-@end
-
 
 @implementation ETUIBuilderDemoController
 
