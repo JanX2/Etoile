@@ -22,47 +22,50 @@ void printHelp ()
 {
   NSString* help = 
   @"\n\n"
-  "ETDocGenerator Help\n"
+  "etdocgen Help\n"
   "-------------------\n"
   "\n"
-  "ETDocGenerator generates html pages from a template and one or multiple \n"
-  "original documents (html files, markdown files, gsdoc files, or any \n"
-  "combination of the three).\n"
+  "etdocgen generates HTML pages from a template and one or multiple \n"
+  "source documents. Valid source documents are HTML files, Markdown files, C \n"
+  "and Objective-C header and source files, GSDoc files or any combination of \n"
+  "the previous.\n"
   "\n"
-  "The generated html files are output in the current directory.\n"
+  "The generated HTML files are output in the current directory.\n"
   "\n"
   "Document generation\n"
   "-------------------\n"
   "\n"
-  "ETDocGenerator [-c <code source directory>] [-r <raw source directory>] \n"
+  "etdocgen [-c <code source directory>] [-r <raw source directory>] \n"
   "\t\t[-m <menu file>] -t <template> [-e <external mapping file>] \n"
-  "\t\t[-p <project mapping file>] [<source file 1, source file 2, ...>]\n"
+  "\t\t[<source file 1, source file 2, ...>]\n"
   "\n"
   "\t -n : the name of the documented project. \n"
-  "\t -c : the directory which contains the .gsdoc files (incompatible with \n"
-  "\t      explicit source files)\n"
+  "\t -c : the directory which contains the .h, .m, .c or .gsdoc files \n"
+  "\t      (incompatible with explicit source files). Don't mix GSDoc files \n"
+  "\t      along C and Objective-C files in the same directory unless you are \n"
+  "\t      sure the GSDoc files don't cover the API in the C and Objective-C \n"
+  "\t      files, and overwriting can be ruled out in the documentation output.\n"
   "\t -r : the Markdown and HTML directory which contains the .text and .html \n"
   "\t      files (incompatible with explicit source files)\n"
   "\t -t : the html template file\n"
-  "\t -m : the menu file, if not indicated ETDocGenerator will look for a \n"
-  "\t      menu.html in the raw source directory\n"
-  "\t -e : a file containing an xml plist with a mapping from class names to URL.\n"
+  "\t -m : the menu file, if not indicated etdocgen will look for a menu.html \n"
+  "\t      in the raw source directory\n"
+  "\t -e : a file containing an XML plist with a mapping from class names to URL.\n"
   "\t      If indicated, will add links to the mentioned types in the class methods.\n"
-  "\t -p : a file containing an xml plist with a mapping from class names to URL.\n"
-  "\t      (used for the project classes). If indicated, will add links to the\n"
-  "\t      mentioned types in the class methods.\n\n"
-  "\t -o : the ouput directory where the generated html files are saved.\n"
+  "\t -o : the ouput directory where the generated HTML files are saved.\n"
   "\t      If not indicated, etdocgen uses the current directory.\n"
-  "\t  - : the source file paths (.gsdoc, .text and .html). If indicated, will \n"
-  "\t      cause both -c and -r to be ignored.\n"
+  "\t  - : the source file paths (.h, .c, .m, .gsdoc, .text and .html). If \n"
+  "\t      indicated, will cause both -c and -r to be ignored.\n"
   "\n"
   "Template tags\n"
   "-------------\n"
   "\n"
-  "<!-- etoile-header --> will insert the generated header from a gsdoc file\n"
-  "<!-- etoile-methods --> will insert the methods extracted from a gsdoc file\n"
-  "<!-- etoile-menu --> will insert the content of the menu file\n"
-  "<!-- etoile-document --> will insert the content of the html document\n"
+  "<!-- etoile-header --> will insert the generated header from one or several \n"
+  "GSDoc files or C/Objective-C files.\n"
+  "<!-- etoile-methods --> will insert the methods extracted from either a GSDoc \n"
+  "file or an Objective-C header file.\n"
+  "<!-- etoile-menu --> will insert the content of the menu file.\n"
+  "<!-- etoile-document --> will insert the content of the HTML document.\n"
   "\n";
   
   NSLog(@"%@", help);
@@ -170,7 +173,7 @@ BOOL checkOptions(NSDictionary *options)
 int main (int argc, const char * argv[]) 
 {
 	@autoreleasepool {
-		NSDictionary *options = ETGetOptionsDictionary("hn:c:r:t:m:e:p:o:i:", argc, (char **)argv);
+		NSDictionary *options = ETGetOptionsDictionary("hn:c:r:t:m:e:o:i:", argc, (char **)argv);
 
 		if (checkOptions(options) == NO)
 		{
@@ -185,14 +188,13 @@ int main (int argc, const char * argv[])
 		NSString *templateFile = [options objectForKey: @"t"];
 		NSString *menuFile = [options objectForKey: @"m"];
 		NSString *externalClassFile = [options objectForKey: @"e"];
-		//NSString * projectClassFile = [options objectForKey: @"p"];
 		NSString *outputDir = [options objectForKey: @"o"];;
 		NSNumber *help = [options objectForKey: @"h"];
 
 		if ([help boolValue])
 		{
 			printHelp();
-			return 0;
+			return EXIT_SUCCESS;
 		}
 
 		DocPageWeaver *weaver = [DocPageWeaver alloc];
@@ -216,7 +218,6 @@ int main (int argc, const char * argv[])
 
 		[weaver setMenuFile: menuFile];
 		[weaver setExternalMappingFile: externalClassFile];
-		//[weaver setProjectMappingFile: projectClassFile];
 
 		[[DocIndex currentIndex] setProjectName: projectName];
 
@@ -246,5 +247,5 @@ int main (int argc, const char * argv[])
 		}
 
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
