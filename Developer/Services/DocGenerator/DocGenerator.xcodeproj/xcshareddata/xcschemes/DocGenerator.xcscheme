@@ -68,10 +68,6 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-p ../TestFiles/project-class-mapping.plist "
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
             argument = "-m ../Templates/menu.html"
             isEnabled = "YES">
          </CommandLineArgument>
