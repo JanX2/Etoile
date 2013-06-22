@@ -96,16 +96,30 @@
 	return NSMakeSize(900, 500);
 }
 
+- (NSSize) defaultBrowserTopBarSize
+{
+	NSSize size = [self defaultBrowserSize];
+	size.height= [self defaultIconAndLabelBarHeight];
+	return size;
+}
+
 - (NSSize) defaultBrowserBodySize
 {
 	NSSize size = [self defaultBrowserSize];
-	size.height -= [self defaultIconAndLabelBarHeight];
+	size.height -= [self defaultBrowserTopBarSize].height;
 	return size;
 }
 
 - (CGFloat) defaultSourceListWidth
 {
 	return 180;
+}
+
+- (NSSize) defaultSourceListSize
+{
+	NSSize size = [self defaultBrowserSize];
+	size.width = [self defaultSourceListWidth];
+	return size;
 }
 
 - (CGFloat) defaultContentViewWidth
@@ -129,14 +143,15 @@
 	[controller setPersistentObjectContext: aContext];
 	ETLayoutItemGroup *topBar = [self browserTopBarWithController: controller];
 	ETLayoutItemGroup *body = [self browserBodyWithGroup: (id <ETCollection>)aGroup controller: controller];
-	ETLayoutItemGroup *browser = [self itemGroupWithItems: A(topBar, body)];
+	ETLayoutItemGroup *browser = [self itemGroupWithSize: [self defaultBrowserSize]];
 
 	[browser setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
 	[browser setController: controller];
 	[browser setRepresentedObject: aGroup]; /* For OMBrowserController template lookup needs */
 	[browser setShouldMutateRepresentedObject: NO];
 	[browser setLayout: [ETColumnLayout layout]];
-	[browser setSize: [self defaultBrowserSize]];
+	[browser addItems: A(topBar, body)];
+	
 
 	ETLog(@"\n%@\n", [browser descriptionWithOptions: [NSMutableDictionary dictionaryWithObjectsAndKeys: 
 		A(@"frame", @"autoresizingMask"), kETDescriptionOptionValuesForKeyPaths,
@@ -150,13 +165,13 @@
 	ETLayoutItemGroup *sourceList = [self sourceListWithGroup: aGroup controller: aController];
 	ETLayoutItemGroup *contentViewWrapper = [self contentViewWrapperWithGroup: [[aGroup contentArray] firstObject]
 	                                                               controller: aController];
-	ETLayoutItemGroup *body = [self itemGroupWithRepresentedObject: aGroup];
+	ETLayoutItemGroup *body = [self itemGroupWithSize: [self defaultBrowserBodySize]];
 
 	NSLog(@"Groups in source list %@", [aGroup contentArray]);
 
 	[body setIdentifier: @"browserBody"];
+	[body setRepresentedObject: aGroup];
 	[body setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
-	[body setSize: [self defaultBrowserBodySize]]; // FIXME: Avoid negative size if -setSize: is not called
 	[body setLayout: [ETLineLayout layout]];
 	[body addItems: A(sourceList, contentViewWrapper)];
 
@@ -182,7 +197,7 @@
 
 - (ETLayoutItemGroup *) browserTopBarWithController: (id)aController
 {
-	ETLayoutItemGroup *itemGroup = [self itemGroup];
+	ETLayoutItemGroup *itemGroup = [self itemGroupWithSize: [self defaultBrowserTopBarSize]];
 	ETLayoutItem *newGroupItem = [self buttonWithIconNamed: @"list-add" 
 	                                                   target: aController
 	                                                   action: @selector(addNewTag:)];
@@ -196,38 +211,45 @@
 	                                                     action: @selector(search:)];
 	ETLayoutItem *filterFieldItem = [self searchFieldWithTarget: aController
 	                                                     action: @selector(filter:)];
-	//ETLayoutItemGroup *searchItemGroup = [self itemGroupWithItem: searchFieldItem];
+	ETLayoutItemGroup *leftItemGroup = [self itemGroup];
+	ETLayoutItemGroup *rightItemGroup = [self itemGroup];
 
 	[(NSSearchFieldCell *)[[searchFieldItem view] cell] setSendsSearchStringImmediately: YES];
 
 	[itemGroup setIdentifier: @"browserTopBar"];
-	[itemGroup setWidth: [self defaultBrowserSize].width];
-	[itemGroup setHeight: [self defaultIconAndLabelBarHeight]];
+	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth];
 	[itemGroup setLayout: [ETLineLayout layout]];
-	// FIXME: [[itemGroup layout] setSeparatorTemplateItem: [self flexibleSpaceSeparator]];
-	[itemGroup addItems:
-		A([self barElementFromItem: newGroupItem withLabel: _(@"New Tag…")],
-		[self barElementFromItem: newObjectItem withLabel: _(@"New Object")],
-		[self barElementFromItem: removeItem withLabel: _(@"Remove")],
-		[self barElementFromItem: [self viewPopUpWithController: aController] withLabel: _(@"View")],
-		[self barElementFromItem: filterFieldItem withLabel: _(@"Tag Filter")],
-		[self barElementFromItem: searchFieldItem withLabel: _(@"Search")])];
-	[itemGroup updateLayout];
+	[[itemGroup layout] setSeparatorTemplateItem: [self flexibleSpaceSeparator]];
+
+	[leftItemGroup setLayout: [ETLineLayout layout]];
+	[[leftItemGroup layout] setIsContentSizeLayout: YES];
+	[leftItemGroup addItems:
+	 	A([self barElementFromItem: newGroupItem withLabel: _(@"New Tag…")],
+		  [self barElementFromItem: newObjectItem withLabel: _(@"New Object")],
+		  [self barElementFromItem: removeItem withLabel: _(@"Remove")])];
+
+	[rightItemGroup setLayout: [ETLineLayout layout]];
+	[[rightItemGroup layout] setIsContentSizeLayout: YES];
+	[rightItemGroup addItems:
+		A([self barElementFromItem: [self viewPopUpWithController: aController] withLabel: _(@"View")],
+		  [self barElementFromItem: filterFieldItem withLabel: _(@"Tag Filter")],
+		  [self barElementFromItem: searchFieldItem withLabel: _(@"Search")])];
 	
+	[itemGroup addItems: A(leftItemGroup, rightItemGroup)];
+
 	return itemGroup;
 }
 
 - (ETLayoutItemGroup *) sourceListWithGroup: (id <ETCollection>)aGroup controller: (id)aController
 {
-	ETLayoutItemGroup *itemGroup = [self itemGroupWithRepresentedObject: aGroup];
+	ETLayoutItemGroup *itemGroup = [self itemGroupWithSize: [self defaultSourceListSize]];
 	ETSelectTool *tool = [ETSelectTool tool];
 
 	[tool setAllowsEmptySelection: NO];
 
 	[itemGroup setIdentifier: @"browserSourceList"];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleHeight];
-	[itemGroup setHeight: [self defaultBrowserBodySize].height];
-	[itemGroup setWidth: [self defaultSourceListWidth]];
+	[itemGroup setRepresentedObject: aGroup];
 	[itemGroup setLayout: [ETOutlineLayout layout]];
 	[[itemGroup layout] setContentFont: [NSFont controlContentFontOfSize: [NSFont smallSystemFontSize]]];
 	[[itemGroup layout] setDisplayedProperties: A(@"icon", @"displayName")];
@@ -288,13 +310,12 @@
 {
 	ETLayoutItemGroup *contentView = [self contentViewWithGroup: [[aGroup contentArray] firstObject]
 													 controller: aController];
-	ETLayoutItemGroup *itemGroup = [self itemGroup];
+	// TODO: The width should be computed by the body layout
+	NSSize size = NSMakeSize([self defaultContentViewWidth], [self defaultBrowserBodySize].height);
+	ETLayoutItemGroup *itemGroup = [self itemGroupWithSize: size];
 
 	[itemGroup setIdentifier: @"contentViewWrapper"];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
-	[itemGroup setHeight: [self defaultBrowserBodySize].height];
-	// TODO: The width should be computed by the body layout
-	[itemGroup setWidth: [self defaultContentViewWidth]];
 	[itemGroup setLayout: [ETColumnLayout layout]];
 	[itemGroup addItem: contentView];
 
@@ -303,15 +324,15 @@
 
 - (ETLayoutItemGroup *) contentViewWithGroup: (id <ETCollection>)aGroup controller: (id)aController
 {
-	ETLayoutItemGroup *itemGroup = [self itemGroupWithRepresentedObject: aGroup];
+	// TODO: The width should be computed by the body layout
+	NSSize size = NSMakeSize([self defaultContentViewWidth], [self defaultBrowserBodySize].height);
+	ETLayoutItemGroup *itemGroup = [self itemGroupWithSize: size];
 
 	[itemGroup setIdentifier: @"contentView"];
+	[itemGroup setRepresentedObject: aGroup];
 	/* The controller templates are set up in -[MBEntityViewController init] */
 	//[itemGroup setController: AUTORELEASE([[MBEntityViewController alloc] init])];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
-	[itemGroup setHeight: [self defaultBrowserBodySize].height];
-	// TODO: The width should be computed by the body layout
-	[itemGroup setWidth: [self defaultContentViewWidth]];
 	[itemGroup setHasVerticalScroller: YES];
 	[itemGroup setSource: itemGroup];
 	[itemGroup setLayout: [self listLayoutForBrowser]];	
@@ -335,9 +356,10 @@
                                                  size: (NSSize)aSize
                                            controller: (id)aController
 {
-	ETLayoutItemGroup *itemGroup = [self itemGroupWithRepresentedObject: aTagLibrary];
+	ETLayoutItemGroup *itemGroup = [self itemGroupWithSize: aSize];
 
 	[itemGroup setIdentifier: @"tagFilterEditor"];
+	[itemGroup setRepresentedObject: aTagLibrary];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
 	[itemGroup setSize: aSize];
 	[itemGroup setSource: itemGroup];

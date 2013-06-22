@@ -45,12 +45,12 @@
 
 - (ETLayoutItemGroup *) tagFilterEditorItem
 {
-	return [[self contentViewWrapperItem] itemForIdentifier: @"tagFilterEditor"];
+	return (id)[[self contentViewWrapperItem] itemForIdentifier: @"tagFilterEditor"];
 }
 
 - (ETLayoutItemGroup *) inspectorItem
 {
-	return [[self bodyItem] itemForIdentifier: @"inspector"];
+	return (id)[[self bodyItem] itemForIdentifier: @"inspector"];
 }
 
 - (void) setBrowsedGroup: (id <ETCollection>)aGroup
