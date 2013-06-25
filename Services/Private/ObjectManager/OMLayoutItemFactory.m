@@ -214,7 +214,14 @@
 	ETLayoutItemGroup *leftItemGroup = [self itemGroup];
 	ETLayoutItemGroup *rightItemGroup = [self itemGroup];
 
+	[searchFieldItem setWidth: 140];
 	[(NSSearchFieldCell *)[[searchFieldItem view] cell] setSendsSearchStringImmediately: YES];
+	[searchFieldItem setIdentifier: @"searchField"];
+
+	[filterFieldItem setWidth: 200];
+	[[[[filterFieldItem view] cell] cancelButtonCell] setAction: @selector(resetTagFiltering:)];
+	[[[[filterFieldItem view] cell] cancelButtonCell] setTarget: aController];
+	[filterFieldItem setIdentifier: @"tagFilterField"];
 
 	[itemGroup setIdentifier: @"browserTopBar"];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth];
@@ -348,7 +355,7 @@
 - (ETTokenLayout *) tokenLayoutForTagFilterEditor
 {
 	ETTokenLayout *layout = [ETTokenLayout layout];
-
+	[layout setEditedProperty: @"name"];
 	return layout;
 }
 
@@ -357,9 +364,16 @@
                                            controller: (id)aController
 {
 	ETLayoutItemGroup *itemGroup = [self itemGroupWithSize: aSize];
+	ETController *tagController = AUTORELEASE([ETController new]);
+	[tagController setPersistentObjectContext: [aController persistentObjectContext]];
+	ETItemTemplate *tagTemplate = [ETItemTemplate templateWithItem: [self item] entityName: @"COTag"];
+
+	[tagController setTemplate: tagTemplate forType: [tagController currentObjectType]];
 
 	[itemGroup setIdentifier: @"tagFilterEditor"];
+	[itemGroup setController: tagController];
 	[itemGroup setRepresentedObject: aTagLibrary];
+	[itemGroup setShouldMutateRepresentedObject: YES];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
 	[itemGroup setSize: aSize];
 	[itemGroup setSource: itemGroup];

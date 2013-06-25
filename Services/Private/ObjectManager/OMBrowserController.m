@@ -33,6 +33,11 @@
 	[super dealloc];
 }
 
+- (ETLayoutItemGroup *) topBarItem
+{
+	return (id)[[self content] itemForIdentifier: @"browserTopBar"];
+}
+
 - (ETLayoutItemGroup *) bodyItem
 {
 	return [[self sourceListItem] parentItem];
@@ -41,6 +46,11 @@
 - (ETLayoutItemGroup *) contentViewWrapperItem
 {
 	return [[self contentViewItem] parentItem];
+}
+
+- (ETLayoutItemGroup *) tagFilterFieldItem
+{
+	return (id)[[self topBarItem] itemForIdentifier: @"tagFilterField"];
 }
 
 - (ETLayoutItemGroup *) tagFilterEditorItem
@@ -168,6 +178,24 @@
 	}
 }
 
+- (NSArray *) selectedFilterEditorTags
+{
+	return [[[[self tagFilterEditorItem] selectedItems] mappedCollection] representedObject];
+}
+
+- (void) syncTagFilterFieldFromEditor
+{
+	NSArray *filterTags = [self selectedFilterEditorTags];
+	NSString *filterString = [(id)[[filterTags mappedCollection] name] componentsJoinedByString: @", "];
+	
+	[[self tagFilterFieldItem] setValue: filterString];
+}
+
+- (void) tagFilterEditorSelectionDidChange: (NSNotification *)aNotif
+{
+	[self syncTagFilterFieldFromEditor];
+}
+
 - (BOOL) isTagFilterItem: (ETLayoutItem *)anItem
 {
 	return [[anItem name] isEqual: _(@"Tag Filter")];
@@ -177,7 +205,9 @@
 {
 	NSLog(@"Did become focused item %@", [anItem primitiveDescription]);
 
-	if ([self isTagFilterItem: anItem] == NO)
+	BOOL isTagFilterEditorVisible = ([self tagFilterEditorItem] != nil);
+
+	if ([self isTagFilterItem: anItem] == NO || isTagFilterEditorVisible)
 		return;
 
 	[self showTagFilterEditor];
@@ -187,10 +217,11 @@
 {
 	NSLog(@"Did resign focused item %@", [anItem primitiveDescription]);
 
-	if ([self isTagFilterItem: anItem] == NO)
-		return;
-
-	[self hideTagFilterEditor];
+	/* For a tag just renamed in the tag filter editor */
+	if ([[anItem parentItem] isEqual: [self tagFilterEditorItem]])
+	{
+		[self syncTagFilterFieldFromEditor];
+	}
 }
 
 - (void) showTagFilterEditor
@@ -202,6 +233,8 @@
 	                                                            size: editorSize
 	                                                      controller: self];
 
+	[self startObserveObject: editorItem forNotificationName: ETItemGroupSelectionDidChangeNotification selector: @selector(tagFilterEditorSelectionDidChange:)];
+	
 	[[self contentViewItem] setHeight: [[self contentViewItem] height] - [editorItem height]];
 	[[self contentViewWrapperItem] insertItem: editorItem atIndex: 0];
 }
@@ -210,6 +243,8 @@
 {
 	ETLayoutItem *editorItem = [self tagFilterEditorItem];
 	ETAssert([[self contentViewWrapperItem] containsItem: editorItem]);
+
+	[self stopObserveObject: editorItem forNotificationName: ETItemGroupSelectionDidChangeNotification];
 
 	[[self contentViewItem] setHeight: [[self contentViewItem] height] + [editorItem height]];
 	[[self contentViewWrapperItem] removeItem: editorItem];
@@ -419,6 +454,25 @@
 - (IBAction) filter: (id)sender
 {
 	
+}
+
+- (IBAction) resetTagFiltering: (id)sender
+{
+	id <ETFirstResponderSharingArea> responderArea =
+		[[self tagFilterFieldItem] firstResponderSharingArea];
+	BOOL isEditing = [[responderArea focusedItem] isEqual: [self tagFilterFieldItem]];
+
+	if (isEditing)
+	{
+		[[ETTool activeTool] makeFirstResponder: nil];
+	}
+	/* Setting a nil value is not supported, -[ETLayoutItem syncView:withValue:] 
+	   ignores such a change for a represented object (we might want not to 
+	   ignore if both represented object value are nil, or convert nil to an 
+	   empty string using the cell). */
+	[[self tagFilterFieldItem] setValue: @""];
+
+	[self hideTagFilterEditor];
 }
 
 - (IBAction) doubleClick: (id)sender

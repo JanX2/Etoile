@@ -33,7 +33,10 @@
 @property (nonatomic, retain) ETLayoutItemGroup *contentViewItem;
 @property (nonatomic, readonly) ETLayoutItemGroup *contentViewWrapperItem;
 @property (nonatomic, retain) ETLayoutItemGroup *sourceListItem;
+@property (nonatomic, readonly) ETLayoutItemGroup *topBarItem;
 @property (nonatomic, retain) ETLayoutItem *viewPopUpItem;
+@property (nonatomic, readonly) ETLayoutItem *tagFilterFieldItem;
+@property (nonatomic, readonly) ETLayoutItemGroup *tagFilterEditorItem;
 @property (nonatomic, retain) id <ETCollection> browsedGroup;
 @property (nonatomic, readonly) id selectedObject;
 
@@ -45,6 +48,7 @@
 /** @taskunit Notifications */
 
 - (void) sourceListSelectionDidChange: (NSNotification *)aNotif;
+- (void) tagFilterEditorSelectionDidChange: (NSNotification *)aNotif;
 
 /** @taskunit Edition Coordinator */
 
@@ -79,6 +83,7 @@
 - (IBAction) doubleClick: (id)sender;
 - (IBAction) search: (id)sender;
 - (IBAction) filter: (id)sender;
+- (IBAction) resetTagFiltering: (id)sender;
 - (IBAction) open: (id)sender;
 - (IBAction) openSelection: (id)sender;
 - (IBAction) markVersion: (id)sender;
