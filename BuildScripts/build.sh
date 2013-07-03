@@ -135,6 +135,14 @@ ETOILE_VERSION=${ETOILE_VERSION_override:-"$ETOILE_VERSION"}
 LOG_BASE_DIR=`eval echo $LOG_BASE_DIR`
 LOG_DIR=`eval echo $LOG_DIR`
 
+# Create a build directory if none exists
+
+if [ ! -d "$BUILD_DIR" ]; then
+	mkdir $BUILD_DIR
+else
+	FOUND_EXISTING_BUILD_DIR="yes"	
+fi
+
 # Redirect standard output and error to console and log file
 
 export LOG_SUMMARY_FILE=$BUILD_DIR/build.log
@@ -213,11 +221,12 @@ export FORCE_LLVM_CONFIGURE
 STATUS=0
 FAILED_MODULE=
 
-# Create a build directory if none exists
+# Report if an existing build directory was found 
+#
+# (we want to see this ouput in the build log summary, that's why we don't 
+# report the existence test result immediately above)
 
-if [ ! -d "$BUILD_DIR" ]; then
-	mkdir $BUILD_DIR
-else
+if [ "$FOUND_EXISTING_BUILD_DIR" = "yes" ]; then
 	echo "---> Found existing build directory"
 	echo
 fi
