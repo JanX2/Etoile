@@ -19,14 +19,20 @@
 #import "DocTOCPage.h"
 #import "GSDocParser.h"
 #import "DocPage.h"
+#import "DocSourceCodeParser.h"
 
 @implementation DocPageWeaver
 
 + (Class) parserClassForFileType: (NSString *)aFileExtension
 {
 	if ([aFileExtension isEqual: @"gsdoc"])
+	{
 		return [GSDocParser class];
-
+	}
+	else if ([aFileExtension isEqual: @"h"] || [aFileExtension isEqual: @"m"] || [aFileExtension isEqual: @"c"])
+	{
+		return [DocSourceCodeParser class];
+	}
 	return Nil;
 }
 
@@ -303,7 +309,9 @@ presently. */
 	else
 	{
 		currentParser = [[parserClass alloc] initWithSourceFile: [self currentSourceFile]];
-		[currentParser setWeaver: reorderingWeaver];
+		BOOL needsReordering = [parserClass isSubclassOfClass: [GSDocParser class]];
+
+		[currentParser setWeaver: (needsReordering ? reorderingWeaver: self)];
 		[currentParser parseAndWeave];
 	}
 

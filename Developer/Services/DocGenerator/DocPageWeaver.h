@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <EtoileFoundation/EtoileFoundation.h>
 
-@class DocHeader, DocMethod, DocFunction, DocMacro, DocCDataType, DocConstant, DocPage, DocIndex;
+@class DocHeader, DocMethod, DocFunction, DocMacro, DocCDataType, DocConstant, DocPage, DocIndex, DocSourceCodeParser;
 
 /** @group Weaving and Parsing
     @abstract A documentation source parser reports parsing result to a weaver through this protocol.

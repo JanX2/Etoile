@@ -203,8 +203,10 @@ int main (int argc, const char * argv[])
 		{
 			NSArray *rawSourceDirs = (rawSourceDir != nil ? [NSArray arrayWithObject: rawSourceDir] : [NSArray array]);
 
+			NSArray *fileTypes = A(@"gsdoc", @"igsdoc", @"plist", @"h", @"m", @"c");
+			
 			weaver = [weaver initWithParserSourceDirectory: parserSourceDir
-			                                     fileTypes: A(@"gsdoc", @"igsdoc", @"plist")
+			                                     fileTypes: fileTypes
 			                          rawSourceDirectories: rawSourceDirs
 			                         additionalSourceFiles: explicitSourceFiles
 			                                  templateFile: templateFile];    
