@@ -70,7 +70,7 @@
 	[[itemFactory windowGroup] addItem: [mainItem deepCopy]];
 	return;*/
 
-	[self setTemplate: [ETCompoundDocumentTemplate templateWithItem: mainItem objectClass: Nil]
+	[self setTemplate: [ETCompoundDocumentTemplate templateWithItem: mainItem objectClass: Nil objectGraphContext: [itemFactory objectGraphContext]]
 	          forType: mainType];
 
 	/* Set the type of the documented to be created by default with 'New' in the menu */
@@ -90,10 +90,10 @@
 	[tool setAllowsEmptySelection: NO];
 	[tool setShouldRemoveItemsAtPickTime: NO];
 
-	[[template item] setActionHandler: [ETAspectTemplateActionHandler sharedInstance]];
+	[[template item] setActionHandler: [ETAspectTemplateActionHandler sharedInstanceForObjectGraphContext: [itemFactory objectGraphContext]]];
 	[controller setAllowedPickTypes: A([ETUTI typeWithClass: [NSObject class]])];
 
-	[picker setActionHandler: [ETAspectTemplateActionHandler sharedInstance]];
+	[picker setActionHandler: [ETAspectTemplateActionHandler sharedInstanceForObjectGraphContext: [itemFactory objectGraphContext]]];
 	[picker setSize: NSMakeSize(300, 400)];
 	[picker setController: controller];
 	[picker setSource: picker];
@@ -188,12 +188,12 @@
 
 - (IBAction) undo: (id)sender
 {
-	[[[self activeItem] commitTrack] undo];
+	[[[self activeItem] branch] undo];
 }
 
 - (IBAction) redo: (id)sender
 {
-	[[[self activeItem] commitTrack] redo];
+	[[[self activeItem] branch] redo];
 }
 
 @end
