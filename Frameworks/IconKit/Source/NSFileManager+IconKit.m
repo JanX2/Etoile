@@ -48,8 +48,11 @@
   
   if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
     {
-      result = [fm createDirectoryAtPath: path attributes: nil] ;
-      // May be shouldn't be nil
+      result = [fm createDirectoryAtPath: path
+             withIntermediateDirectories: YES
+                              attributes: nil
+                                   error: nil];
+		// May be shouldn't be nil
     }
   else if (isDir == NO) // A file exists for this path
     {

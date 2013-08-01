@@ -389,12 +389,12 @@ md5_finish(md5_state_t *pms, md5_byte_t digest[16])
 	int i;
 	
 	md5_init(&md5_state);
-	md5_append(&md5_state,(const md5_byte_t *)[self cString],[self length]);
+	md5_append(&md5_state,(const md5_byte_t *)[self UTF8String],[self length]);
 	md5_finish(&md5_state,md5_digest);
 
 	for(i=0;i<16;++i) sprintf(md5_digest_char+i*2,"%02x",md5_digest[i]);
 	
-	return [NSString stringWithCString:md5_digest_char length:32];
+	return [NSString stringWithCString: md5_digest_char encoding: NSUTF8StringEncoding];
 }
 
 @end

@@ -266,7 +266,7 @@ static NSFileManager *fileManager = nil;
   subpath = [path stringByAppendingPathComponent: @"Document"];
   subpath = [subpath stringByAppendingPathComponent: pathComponent];
   
-  result = [fileManager removeFileAtPath: subpath handler: nil];
+  result = [fileManager removeItemAtPath: subpath error: nil];
   if (result == NO)
     {
       NSLog(@"Impossible to invalidate document composited icon cache for the \
@@ -277,7 +277,7 @@ static NSFileManager *fileManager = nil;
   subpath = [path stringByAppendingPathComponent: @"Plugin"];
   subpath = [subpath stringByAppendingPathComponent: pathComponent];
   
-  result = [fileManager removeFileAtPath: subpath handler: nil];
+  result = [fileManager removeItemAtPath: subpath error: nil];
   if (result == NO)
     {
       NSLog(@"Impossible to invalidate plugin composited icon cache for the \
@@ -290,7 +290,7 @@ static NSFileManager *fileManager = nil;
   NSString *path = [self _compositedIconsPath];
   BOOL result = NO;
   
-  result = [fileManager removeFileAtPath: path handler: nil];
+  result = [fileManager removeItemAtPath: path error: nil];
   
   if (result == NO)
     {
