@@ -35,7 +35,7 @@
 
 - (void) parseAndWeave
 {
-	for (SCKClass *class in [sourceFile classes])
+	for (SCKClass *class in [[sourceFile classes] allValues])
 	{
 		DocHeader *header = [DocHeader new];
 
@@ -48,8 +48,8 @@
 		for (SCKMethod *method in [class methods])
 		{
 			DocMethod *docMethod = [DocMethod new];
-			[pageWeaver weaveMethod: docMethod];
 			// FIXME: [docMethod parseProgramComponent: method];
+			[pageWeaver weaveMethod: docMethod];
 		}
 	}
 }
