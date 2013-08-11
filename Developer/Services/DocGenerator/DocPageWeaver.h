@@ -54,7 +54,7 @@ to the weaver through the DocWeaving protocol.<br />
 Parsing usually involves to build new DocElement subclass instances and hand 
 them to the weaver.  */
 @protocol DocSourceParsing
-- (id) initWithSourceFile: (NSString *)aSourceFile;
+- (id) initWithSourceFile: (NSString *)aSourceFile additionalParserFiles: (NSArray *)additionalFiles;
 - (void) setWeaver: (id <DocWeaving>)aDocWeaver;
 - (id <DocWeaving>) weaver;
 - (void) parseAndWeave;
@@ -97,6 +97,7 @@ existing page generation strategy or implement a new one. */
 	/* Documentation Source & Templates */
 	NSArray *sourcePaths;
 	NSMutableArray *sourcePathQueue;
+	NSArray *parserIndexPaths;
 	NSString *templatePath;
 	NSString *templateDirPath;
 	NSString *menuPath;

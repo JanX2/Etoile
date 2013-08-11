@@ -66,6 +66,7 @@ All XML parsing related methods are used internally, you can ignore them. */
 	NSMutableString *content;
 	NSDictionary *currentAttributes;
 	BOOL trimFoundCharacters;
+	NSDictionary *indexContent; /* The .igsdoc index file content */
 }
 
 /** @taskunit Initialization */
@@ -73,7 +74,7 @@ All XML parsing related methods are used internally, you can ignore them. */
 /** Returns a GSDoc parser initialized with the given GSDoc document.
 
 Call -setWeaver: on the returned object to be ready to parse. */
-- (id) initWithSourceFile: (NSString *)aSourceFile;
+- (id) initWithSourceFile: (NSString *)aSourceFile additionalParserFiles: (NSArray *)additionalFiles;
 /** Sets the weaver on which the receiver should call back DocWeaving
 methods while parsing the GSDoc XML provided at initialization time. */
 - (void) setWeaver: (id <DocWeaving>)aDocWeaver;

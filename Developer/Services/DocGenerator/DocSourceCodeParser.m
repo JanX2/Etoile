@@ -14,10 +14,10 @@
 
 - (id) init
 {
-	return [self initWithSourceFile: nil];
+	return [self initWithSourceFile: nil additionalParserFiles: [NSArray array]];
 }
 
-- (id) initWithSourceFile: (NSString *)aSourceCodePath
+- (id) initWithSourceFile: (NSString *)aSourceCodePath additionalParserFiles: (NSArray *)additionalFiles
 {
 	NILARG_EXCEPTION_TEST(aSourceCodePath);
 

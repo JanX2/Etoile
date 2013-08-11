@@ -24,12 +24,15 @@
 
 - (id) init
 {
-	return [self initWithSourceFile: nil];
+	return [self initWithSourceFile: nil additionalParserFiles: [NSArray array]];
 }
 
-- (id) initWithSourceFile: (NSString *)aSourceFile;
+- (id) initWithSourceFile: (NSString *)aSourceFile additionalParserFiles: (NSArray *)additionalFiles
 {
-	NSParameterAssert(aSourceFile != nil);
+	NILARG_EXCEPTION_TEST(aSourceFile);
+	INVALIDARG_EXCEPTION_TEST(additionalFiles,
+		[[additionalFiles pathsMatchingExtensions: [NSArray arrayWithObject: @"igsdoc"]] count] == 1);
+
 	SUPERINIT;
 
 	xmlParser = [[NSXMLParser alloc] initWithContentsOfURL: [NSURL fileURLWithPath: aSourceFile]];
@@ -57,6 +60,8 @@
 	etdocElements = [[NSSet alloc] initWithObjects: @"p", @"code", @"example", @"br", @"em", @"strong", @"var", @"ivar", nil]; 
 	escapedCharacters = [[NSMutableDictionary alloc] initWithObjectsAndKeys: @"&lt;", @"<", @"&gt;", @">", nil];
 	content = [NSMutableString new];
+	indexContent = [[NSDictionary alloc] initWithContentsOfFile:
+		[[additionalFiles pathsMatchingExtensions: [NSArray arrayWithObject: @"igsdoc"]] lastObject]];
 	
 	return self;
 }

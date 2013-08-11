@@ -124,7 +124,7 @@ presently. */
 {
 	SUPERINIT;
 
-	ETAssert([[paths pathsMatchingExtensions: (A(@"igsdoc"))] count] == 1);
+	parserIndexPaths = [paths pathsMatchingExtensions: (A(@"igsdoc"))];
 	docIndex = [[DocHTMLIndex alloc] initWithGSDocIndexFile: 
 		[[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject]];
 	[DocIndex setCurrentIndex: docIndex]; /* Also reset in -weaveCurrentSourcePages */
@@ -308,7 +308,8 @@ presently. */
 	}
 	else
 	{
-		currentParser = [[parserClass alloc] initWithSourceFile: [self currentSourceFile]];
+		currentParser = [[parserClass alloc] initWithSourceFile: [self currentSourceFile]
+		                                  additionalParserFiles: parserIndexPaths];
 		BOOL needsReordering = [parserClass isSubclassOfClass: [GSDocParser class]];
 
 		[currentParser setWeaver: (needsReordering ? reorderingWeaver: self)];
