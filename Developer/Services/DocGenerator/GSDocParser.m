@@ -291,17 +291,21 @@ no way exists to disable it. */
 	/* The main parser is responsible to parse the class, category and protocol attributes */
 	if ([elementName isEqualToString: @"class"]) 
 	{
-			[weaver weaveClassNamed: [attributeDict objectForKey: @"name"]
-			         superclassName: [attributeDict objectForKey: @"super"]];
+		[weaver weaveClassNamed: [attributeDict objectForKey: @"name"]
+		         superclassName: [attributeDict objectForKey: @"super"]];
 	}
 	else if ([elementName isEqualToString: @"category"]) 
 	{
-			[weaver weaveCategoryNamed: [attributeDict objectForKey: @"name"]
-							 className: [attributeDict objectForKey: @"class"]];
+		BOOL isInformalProtocol =
+			[self isInformalProtocolSymbolName: [attributeDict objectForKey: @"name"]];
+
+		[weaver weaveCategoryNamed: [attributeDict objectForKey: @"name"]
+		                 className: [attributeDict objectForKey: @"class"]
+		        isInformalProtocol: isInformalProtocol];
 	}
 	if ([elementName isEqualToString: @"protocol"]) 
 	{
-			[weaver weaveProtocolNamed: [attributeDict objectForKey: @"name"]];
+		[weaver weaveProtocolNamed: [attributeDict objectForKey: @"name"]];
 	}
 }
 
@@ -351,6 +355,12 @@ no way exists to disable it. */
 
 	return [argType stringByTrimmingCharactersInSet: 
 		[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+- (BOOL) isInformalProtocolSymbolName: (NSString *)aSymbolName
+{
+	ETAssert(indexContent != nil);
+	return ([[indexContent objectForKey: @"protocol"] objectForKey: aSymbolName] != nil);
 }
 
 @end

@@ -38,12 +38,10 @@ static DocIndex *currentIndex = nil;
 		[NSMutableDictionary dictionary], @"constants", nil];
 }
 
-- (id) initWithGSDocIndexFile: (NSString *)anIndexFile
+- (id) init
 {
-	// NILARG_EXCEPTION_TEST(anIndexFile);
 	SUPERINIT;
 	projectName = @"Untitled";
-	indexContent = [[NSDictionary alloc] initWithContentsOfFile: anIndexFile];
 	externalRefs = [self createRefDictionaryWithMutability: NO];
 	projectRefs = [self createRefDictionaryWithMutability: YES];
 	mergedRefs = [self createRefDictionaryWithMutability: YES];
@@ -54,7 +52,6 @@ static DocIndex *currentIndex = nil;
 {
 	projectName = nil;
 	outputDirectory = nil;
-	indexContent = nil;
 	externalRefs = nil;
 	projectRefs = nil;
 	mergedRefs = nil;
@@ -76,12 +73,6 @@ static DocIndex *currentIndex = nil;
 {
 	NSAssert(outputDirectory != nil, @"A valid output directory must be set on the documentation index");
 	return outputDirectory;
-}
-
-- (BOOL) isInformalProtocolSymbolName: (NSString *)aSymbolName
-{
-	ETAssert(indexContent != nil);
-	return ([[indexContent objectForKey: @"protocol"] objectForKey: aSymbolName] != nil);
 }
 
 - (void) mergeRefs: (NSDictionary *)otherRefs 

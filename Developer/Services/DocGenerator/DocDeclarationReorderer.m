@@ -135,11 +135,12 @@ static NSString *root = @"root";
 
 - (void) weaveCategoryNamed: (NSString *)aCategoryName
                   className: (NSString *)aClassName
+         isInformalProtocol: (BOOL)isInformalProtocol
 {
 	[self flushAccumulatedDocElementsForConstructNamed: currentConstructName];
 	NSString *symbol = [NSString stringWithFormat: @"%@(%@)", aClassName, aCategoryName];
 	currentConstructName = symbol;
-	[weaver weaveCategoryNamed: aCategoryName className: aClassName];
+	[weaver weaveCategoryNamed: aCategoryName className: aClassName isInformalProtocol: isInformalProtocol];
 }
 
 - (void) weaveMethod: (DocMethod *)aMethod

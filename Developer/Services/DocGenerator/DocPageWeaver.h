@@ -33,7 +33,8 @@ DocWeaving method called back by the parser.  */
           superclassName: (NSString *)aSuperclassName;
 - (void) weaveProtocolNamed: (NSString *)aProtocolName;
 - (void) weaveCategoryNamed: (NSString *)aCategoryName
-                  className: (NSString *)aClassName;
+                  className: (NSString *)aClassName
+         isInformalProtocol: (BOOL)isInformalProtocol;
 - (void) weaveHeader: (DocHeader *)aHeader;
 - (void) weaveMethod: (DocMethod *)aMethod;
 - (void) weaveFunction: (DocFunction *)aFunction;

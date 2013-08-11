@@ -125,8 +125,7 @@ presently. */
 	SUPERINIT;
 
 	parserIndexPaths = [paths pathsMatchingExtensions: (A(@"igsdoc"))];
-	docIndex = [[DocHTMLIndex alloc] initWithGSDocIndexFile: 
-		[[paths pathsMatchingExtensions: A(@"igsdoc")] firstObject]];
+	docIndex = [[DocHTMLIndex alloc] init];
 	[DocIndex setCurrentIndex: docIndex]; /* Also reset in -weaveCurrentSourcePages */
 
 	// FIXME: Retrieve OrderedSymbolDeclarations.plist based on the entire file 
@@ -443,6 +442,7 @@ presently. */
 
 - (void) weaveCategoryNamed: (NSString *)aCategoryName
                   className: (NSString *)aClassName
+         isInformalProtocol: (BOOL)isInformalProtocol
 {
 	[self weavePageForCategoryNamed: aCategoryName className: aClassName];
 
@@ -464,10 +464,12 @@ presently. */
 	NSString *categorySymbol = [NSString stringWithFormat: @"%@(%@)", aClassName, aCategoryName];
 	NSString *kind = @"categories";
 
-	if ([docIndex isInformalProtocolSymbolName: categorySymbol])
+	if (isInformalProtocol)
 	{
+		[currentHeader setIsInformalProtocol: YES];
 		kind = @"protocols";
 	}
+
 	[[self currentHeader] setOwnerSymbolName: categorySymbol];
 	[docIndex setProjectRef: [[self currentPage] name] 
 	          forSymbolName: categorySymbol

@@ -14,7 +14,7 @@
 @implementation DocHeader
 
 @synthesize title, abstract, authors, overview, fileOverview , group;
-@synthesize className, superclassName, protocolName, categoryName, adoptedProtocolNames, declaredIn;
+@synthesize className, superclassName, protocolName, categoryName, adoptedProtocolNames, declaredIn, isInformalProtocol;
 
 - (id) init
 {

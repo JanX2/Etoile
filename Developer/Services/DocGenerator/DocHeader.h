@@ -31,6 +31,7 @@
 	NSString *protocolName;
 	NSString *categoryName;
 	NSString *declaredIn;
+	BOOL isInformalProtocol;
 
 	/* Main Symbol Inheritance (optional) */
 	NSString *superclassName;
@@ -96,6 +97,7 @@ See -className, -protocolName and -categoryName. */
 
 For DocHeader class, that would be DocHeader.h. */
 @property (strong, nonatomic) NSString *declaredIn;
+@property (assign, nonatomic) BOOL isInformalProtocol;
 
 /** @taskunit HTML Generation */
 

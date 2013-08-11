@@ -141,6 +141,12 @@ usually retrieved with -currentAttributes when parsing the element <em>arg</em>,
 and returns the type or a blank string if no type is declared. */
 - (NSString *) argTypeFromArgsAttributes: (NSDictionary *)attributeDict;
 
+/** @taskunit Utility */
+
+/** Returns whether the given symbol name is declared as an an informal
+protocol in the GSDoc index. */
+- (BOOL) isInformalProtocolSymbolName: (NSString *)aSymbolName;
+
 @end
 
 #if DEBUG_PARSING
