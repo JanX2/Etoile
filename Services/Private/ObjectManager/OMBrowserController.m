@@ -250,6 +250,11 @@
 	[[self contentViewWrapperItem] removeItem: editorItem];
 }
 
+- (BOOL) isInspectorHidden
+{
+	return ([self inspectorItem] == nil);
+}
+
 - (void) showInspector
 {
 	NSSize size = NSMakeSize([[OMLayoutItemFactory factory] defaultInspectorWidth], [[self bodyItem] height]);
@@ -414,9 +419,7 @@
 
 - (IBAction) toggleInspector: (id)sender
 {
-	BOOL isInspectorHidden = ([self inspectorItem] == nil);
-
-	if (isInspectorHidden)
+	if ([self isInspectorHidden])
 	{
 		[self showInspector];
 	}

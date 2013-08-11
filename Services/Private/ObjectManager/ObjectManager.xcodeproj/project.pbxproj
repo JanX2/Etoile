@@ -25,20 +25,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		6037746816B9DDBC00B7EEB5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 60988F15163B6B7A009C4F21;
-			remoteInfo = SQLClient;
-		};
-		6037746A16B9DDBC00B7EEB5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6019B880163BFD8400D1986F;
-			remoteInfo = Performance;
-		};
 		6037746C16B9DDBC00B7EEB5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
@@ -178,6 +164,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 66D099C4129AE111006BEDC3;
 			remoteInfo = StoreTest;
+		};
+		6075493D17B7A5C800678090 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 66C3669A17B426BF009ACF2F;
+			remoteInfo = Typewriter;
 		};
 		60E6AC0B147B9B3B00AD684D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -357,11 +350,10 @@
 			isa = PBXGroup;
 			children = (
 				6073460B154176D4002558C7 /* CoreObject.framework */,
-				6037746916B9DDBC00B7EEB5 /* SQLClient.framework */,
-				6037746B16B9DDBC00B7EEB5 /* Performance.framework */,
 				6073460D154176D4002558C7 /* Test */,
 				6073460F154176D4002558C7 /* StoreTest */,
 				6037746D16B9DDBC00B7EEB5 /* BasicPersistence */,
+				6075493E17B7A5C800678090 /* Typewriter.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -442,20 +434,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		6037746916B9DDBC00B7EEB5 /* SQLClient.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SQLClient.framework;
-			remoteRef = 6037746816B9DDBC00B7EEB5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		6037746B16B9DDBC00B7EEB5 /* Performance.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Performance.framework;
-			remoteRef = 6037746A16B9DDBC00B7EEB5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		6037746D16B9DDBC00B7EEB5 /* BasicPersistence */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.executable";
@@ -587,6 +565,13 @@
 			fileType = "compiled.mach-o.executable";
 			path = StoreTest;
 			remoteRef = 6073460E154176D4002558C7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6075493E17B7A5C800678090 /* Typewriter.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Typewriter.app;
+			remoteRef = 6075493D17B7A5C800678090 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		60E6AC0C147B9B3B00AD684D /* IconKit.framework */ = {

@@ -12,24 +12,33 @@
 
 @implementation OMBrowserContentController
 
-- (id) init
+- (id) initWithObjectGraphContext: (COObjectGraphContext *)aContext
 {
-	SUPERINIT;
+	self = [super initWithObjectGraphContext: aContext];
+	if (self == nil)
+		return nil;
+
+	OMLayoutItemFactory *itemFactory =
+		[OMLayoutItemFactory factoryWithObjectGraphContext: aContext];
 
 	/* baseTemplate is used for unknown COObject subclasses and 
 	   baseGroupTemplate is used for unknown COCollection subclasses */
 	ETItemTemplate *noteTemplate =
-		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] itemGroup]
-	                         objectClass: [COContainer class]];
+		[ETItemTemplate templateWithItem: [itemFactory itemGroup]
+	                         objectClass: [COContainer class]
+	                  objectGraphContext: aContext];
 	ETItemTemplate *bookmarkTemplate = 
-		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] item]
-	                         objectClass: [COBookmark class]];
+		[ETItemTemplate templateWithItem: [itemFactory item]
+	                         objectClass: [COBookmark class]
+		              objectGraphContext: aContext];
 	ETItemTemplate *tagTemplate =
-		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] itemGroup]
-	                         objectClass: [COTag class]];
+		[ETItemTemplate templateWithItem: [itemFactory itemGroup]
+	                         objectClass: [COTag class]
+		              objectGraphContext: aContext];
 	ETItemTemplate *libraryTemplate =
-		[ETItemTemplate templateWithItem: [[OMLayoutItemFactory factory] itemGroup]
-	                         objectClass: [COLibrary class]];
+		[ETItemTemplate templateWithItem: [itemFactory itemGroup]
+	                         objectClass: [COLibrary class]
+		              objectGraphContext: aContext];
 	ETItemTemplate *baseTemplate = [self templateForType: [self currentObjectType]];
 	ETItemTemplate *baseGroupTemplate = [self templateForType: [self currentGroupType]];
 
@@ -181,11 +190,13 @@
 	{
 		if ([object isRoot])
 		{
-			[self deletePersistentRootForRootObject: object];
+			[self deletePersistentRoot: [object persistentRoot]];
 		}
 		else
 		{
-			[[object persistentRoot] deleteObject: object];
+			// TODO: Implement something to remove children in parent/children
+			// relationships (e.g. removing a subnode in a note tree structure)
+			ETAssertUnreachable();
 		}
 	}
 }

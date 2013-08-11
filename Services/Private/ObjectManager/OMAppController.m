@@ -12,10 +12,11 @@
 
 @implementation OMAppController
 
-@synthesize currentPresentationTitle;
+@synthesize currentPresentationTitle, editingContext;
 
 - (void) dealloc
 {
+	DESTROY(editingContext);
 	DESTROY(itemFactory);
 	DESTROY(openedGroups);
 	DESTROY(mainUndoTrack);
@@ -23,10 +24,10 @@
 	[super dealloc];
 }
 
-- (id) init
+- (id) initWithObjectGraphContext: (COObjectGraphContext *)aContext
 {
-	self = [super initWithNibName: nil bundle: nil];
-	ASSIGN(itemFactory, [OMLayoutItemFactory factory]);
+	self = [super initWithNibName: nil bundle: nil objectGraphContext: aContext];
+	ASSIGN(itemFactory, [OMLayoutItemFactory factoryWithObjectGraphContext: aContext]);
 	openedGroups = [[NSMutableSet alloc] init];
 	return self;
 }
@@ -43,6 +44,7 @@
 
 - (void) setUpUndoTrack
 {
+#if 0
 	ETUUID *trackUUID = [[NSUserDefaults standardUserDefaults] UUIDForKey: @"OMMainUndoTrackUUID"];
 
 	if (trackUUID == nil)
@@ -59,7 +61,9 @@
 	                                         selector: @selector(didMakeLocalCommit:) 
 	                                             name: COEditingContextDidCommitNotification 
 	                                           object: [COEditingContext currentContext]];
+#endif
 }
+
 
 - (void) setUpEditingContext
 {
@@ -67,8 +71,8 @@
 	//	removeFileAtPath: [@"~/TestObjectStore" stringByExpandingTildeInPath] handler: nil];
 	COEditingContext *ctxt = [COEditingContext contextWithURL: 
 		[NSURL fileURLWithPath: [@"~/TestObjectStore.sqlite" stringByExpandingTildeInPath]]];
-
-	[COEditingContext setCurrentContext: ctxt];
+	ETAssert(ctxt != nil);
+	ASSIGN(editingContext, ctxt);
 }
 
 - (void) setUpAndShowBrowserUI
@@ -87,21 +91,23 @@
 
 - (void) didMakeLocalCommit: (NSNotification *)notif
 {
+#if 0
 	ETUUID *storeUUID = [[[COEditingContext currentContext] store] UUID];
 
 	ETAssert([[[[notif object] store] UUID] isEqual: storeUUID]);
 
 	[mainUndoTrack addRevisions: [[notif userInfo] objectForKey: kCORevisionsKey]];
+#endif
 }
 
 - (IBAction) browseMainGroup: (id)sender
 {
 	OMModelFactory *modelFactory = [[OMModelFactory new] autorelease];
 	ETLayoutItemGroup *browser = [itemFactory browserWithGroup: [modelFactory sourceListGroups]
-	                                            editingContext: [COEditingContext currentContext]];
+	                                            editingContext: [self editingContext]];
 
 	[[itemFactory windowGroup] addObject: browser];
-	[openedGroups addObject: [[COEditingContext currentContext] mainGroup]];
+	[openedGroups addObject: [[self editingContext] mainGroup]];
 }
 
 - (IBAction) undo: (id)sender

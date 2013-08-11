@@ -21,11 +21,16 @@
 /** The controller to supervise the entire ObjectManager application */
 @interface OMAppController : ETDocumentController
 {
+	COEditingContext *editingContext;
 	OMLayoutItemFactory *itemFactory;
 	NSMutableSet *openedGroups;
 	COCustomTrack *mainUndoTrack;
 	NSString *currentPresentationTitle;
 }
+
+/** @taskunit Persistency */
+
+@property (nonatomic, readonly) COEditingContext *editingContext;
 
 /** @taskunit Menu Management */
 
