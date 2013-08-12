@@ -107,7 +107,7 @@
 	                                            editingContext: [self editingContext]];
 
 	[[itemFactory windowGroup] addObject: browser];
-	[openedGroups addObject: [[self editingContext] mainGroup]];
+	[openedGroups addObject: [modelFactory allObjectGroup]];
 }
 
 - (IBAction) undo: (id)sender

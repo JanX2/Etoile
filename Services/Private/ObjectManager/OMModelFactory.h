@@ -31,7 +31,8 @@
 
 /** @taskunit Provided Objects */
 
-- (NSArray *) sourceListGroups;
+@property (nonatomic, readonly) NSArray *sourceListGroups;
+@property (nonatomic, readonly) COGroup *allObjectGroup;
 
 /** @taskunit Demo Content */
 

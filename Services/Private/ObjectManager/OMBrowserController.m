@@ -325,7 +325,7 @@
 - (void) insertNewTagInSelectedTagGroup
 {
 	COEditingContext *ctxt = [self editingContext];
-	COGroup *tag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
+	COGroup *tag = [[ctxt insertNewPersistentRootWithEntityName: @"Anonymous.COTag"] rootObject];
 
 	[tag setName: _(@"Untitled")];
 

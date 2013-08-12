@@ -23,7 +23,7 @@
 
 - (ETOutlineLayout *) listLayoutForBrowser
 {
-	ETOutlineLayout *layout = [ETOutlineLayout layout];
+	ETOutlineLayout *layout = [ETOutlineLayout layoutWithObjectGraphContext: [self objectGraphContext]];
 	// TODO: Show the size once we know how to compute the core object sizes 
 	// (see TODO in +[COObject newEntityDescription])
 	NSArray *headerNames = A(@"", @"Name", @"Modification Date", @"Creation Date", 
@@ -72,12 +72,12 @@
 
 - (ETOutlineLayout *) iconLayoutForBrowser
 {
-	return [ETIconLayout layout];
+	return [ETIconLayout layoutWithObjectGraphContext: [self objectGraphContext]];
 }
 
 - (ETOutlineLayout *) columnLayoutForBrowser
 {
-	return [ETBrowserLayout layout];
+	return [ETBrowserLayout layoutWithObjectGraphContext: [self objectGraphContext]];
 }
 
 - (ETLayout *) noteLayoutForBrowser
@@ -139,7 +139,8 @@
 
 - (ETLayoutItemGroup *) browserWithGroup: (id <ETCollection>)aGroup editingContext: (COEditingContext *)aContext;
 {
-	OMBrowserController *controller = AUTORELEASE([[OMBrowserController alloc] init]);
+	OMBrowserController *controller = AUTORELEASE([[OMBrowserController alloc]
+		initWithObjectGraphContext: [self objectGraphContext]]);
 	[controller setPersistentObjectContext: aContext];
 	ETLayoutItemGroup *topBar = [self browserTopBarWithController: controller];
 	ETLayoutItemGroup *body = [self browserBodyWithGroup: (id <ETCollection>)aGroup controller: controller];
@@ -149,7 +150,7 @@
 	[browser setController: controller];
 	[browser setRepresentedObject: aGroup]; /* For OMBrowserController template lookup needs */
 	[browser setShouldMutateRepresentedObject: NO];
-	[browser setLayout: [ETColumnLayout layout]];
+	[browser setLayout: [ETColumnLayout layoutWithObjectGraphContext: [self objectGraphContext]]];
 	[browser addItems: A(topBar, body)];
 	
 
@@ -172,7 +173,7 @@
 	[body setIdentifier: @"browserBody"];
 	[body setRepresentedObject: aGroup];
 	[body setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
-	[body setLayout: [ETLineLayout layout]];
+	[body setLayout: [ETLineLayout layoutWithObjectGraphContext: [self objectGraphContext]]];
 	[body addItems: A(sourceList, contentViewWrapper)];
 
 	return body;
@@ -225,17 +226,17 @@
 
 	[itemGroup setIdentifier: @"browserTopBar"];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth];
-	[itemGroup setLayout: [ETLineLayout layout]];
+	[itemGroup setLayout: [ETLineLayout layoutWithObjectGraphContext: [self objectGraphContext]]];
 	[[itemGroup layout] setSeparatorTemplateItem: [self flexibleSpaceSeparator]];
 
-	[leftItemGroup setLayout: [ETLineLayout layout]];
+	[leftItemGroup setLayout: [ETLineLayout layoutWithObjectGraphContext: [self objectGraphContext]]];
 	[[leftItemGroup layout] setIsContentSizeLayout: YES];
 	[leftItemGroup addItems:
 	 	A([self barElementFromItem: newGroupItem withLabel: _(@"New Tag…")],
 		  [self barElementFromItem: newObjectItem withLabel: _(@"New Object")],
 		  [self barElementFromItem: removeItem withLabel: _(@"Remove")])];
 
-	[rightItemGroup setLayout: [ETLineLayout layout]];
+	[rightItemGroup setLayout: [ETLineLayout layoutWithObjectGraphContext: [self objectGraphContext]]];
 	[[rightItemGroup layout] setIsContentSizeLayout: YES];
 	[rightItemGroup addItems:
 		A([self barElementFromItem: [self viewPopUpWithController: aController] withLabel: _(@"View")],
@@ -257,7 +258,7 @@
 	[itemGroup setIdentifier: @"browserSourceList"];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleHeight];
 	[itemGroup setRepresentedObject: aGroup];
-	[itemGroup setLayout: [ETOutlineLayout layout]];
+	[itemGroup setLayout: [ETOutlineLayout layoutWithObjectGraphContext: [self objectGraphContext]]];
 	[[itemGroup layout] setContentFont: [NSFont controlContentFontOfSize: [NSFont smallSystemFontSize]]];
 	[[itemGroup layout] setDisplayedProperties: A(@"icon", @"displayName")];
 	[[[itemGroup layout] columnForProperty: @"displayName"] setWidth: [self defaultSourceListWidth]];
@@ -288,11 +289,11 @@
 		// then we wouldn't have to set a controller on each list item (one on 
 		// the source list would be ok).
 		[listItem setController: AUTORELEASE([[ETController alloc] init])];
-		[[listItem controller] setTemplate: [ETItemTemplate templateWithItem: [self item] objectClass: Nil]
+		[[listItem controller] setTemplate: [ETItemTemplate templateWithItem: [self item] objectClass: Nil objectGraphContext: [self objectGraphContext]]
 		                           forType: [[listItem controller] currentGroupType]];
 		if ([[listObject name] isEqual: @"WHAT"])
 		{
-			[[listItem controller] setTemplate: [ETItemTemplate templateWithItem: [self itemGroup] objectClass: Nil]
+			[[listItem controller] setTemplate: [ETItemTemplate templateWithItem: [self itemGroup] objectClass: Nil objectGraphContext: [self objectGraphContext]]
 		                           forType: [ETUTI typeWithClass: [COTagGroup class]]];	
 		}
 		[listItem reload];
@@ -323,7 +324,7 @@
 
 	[itemGroup setIdentifier: @"contentViewWrapper"];
 	[itemGroup setAutoresizingMask: ETAutoresizingFlexibleWidth | ETAutoresizingFlexibleHeight];
-	[itemGroup setLayout: [ETColumnLayout layout]];
+	[itemGroup setLayout: [ETColumnLayout layoutWithObjectGraphContext: [self objectGraphContext]]];
 	[itemGroup addItem: contentView];
 
 	return itemGroup;
@@ -334,6 +335,8 @@
 	// TODO: The width should be computed by the body layout
 	NSSize size = NSMakeSize([self defaultContentViewWidth], [self defaultBrowserBodySize].height);
 	ETLayoutItemGroup *itemGroup = [self itemGroupWithSize: size];
+	OMBrowserContentController *contentController = AUTORELEASE([[OMBrowserContentController alloc]
+		initWithObjectGraphContext: [self objectGraphContext]]);
 
 	[itemGroup setIdentifier: @"contentView"];
 	[itemGroup setRepresentedObject: aGroup];
@@ -343,7 +346,7 @@
 	[itemGroup setHasVerticalScroller: YES];
 	[itemGroup setSource: itemGroup];
 	[itemGroup setLayout: [self listLayoutForBrowser]];	
-	[itemGroup setController: AUTORELEASE([[OMBrowserContentController alloc] init])];
+	[itemGroup setController: contentController];
 	[[itemGroup controller] setPersistentObjectContext: [aController persistentObjectContext]];
 	[itemGroup reload];
 
@@ -354,7 +357,7 @@
 
 - (ETTokenLayout *) tokenLayoutForTagFilterEditor
 {
-	ETTokenLayout *layout = [ETTokenLayout layout];
+	ETTokenLayout *layout = [ETTokenLayout layoutWithObjectGraphContext: [self objectGraphContext]];
 	[layout setEditedProperty: @"name"];
 	return layout;
 }
@@ -364,9 +367,13 @@
                                            controller: (id)aController
 {
 	ETLayoutItemGroup *itemGroup = [self itemGroupWithSize: aSize];
-	ETController *tagController = AUTORELEASE([ETController new]);
+	ETController *tagController = AUTORELEASE([[ETController alloc]
+		initWithObjectGraphContext: [self objectGraphContext]]);
 	[tagController setPersistentObjectContext: [aController persistentObjectContext]];
-	ETItemTemplate *tagTemplate = [ETItemTemplate templateWithItem: [self item] entityName: @"COTag"];
+	ETItemTemplate *tagTemplate =
+		[ETItemTemplate templateWithItem: [self item]
+		                      entityName: @"COTag"
+		              objectGraphContext: [self objectGraphContext]];
 
 	[tagController setTemplate: tagTemplate forType: [tagController currentObjectType]];
 
