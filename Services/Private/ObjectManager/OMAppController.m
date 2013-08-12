@@ -67,8 +67,8 @@
 
 - (void) setUpEditingContext
 {
-	//[[NSFileManager defaultManager] 
-	//	removeFileAtPath: [@"~/TestObjectStore" stringByExpandingTildeInPath] handler: nil];
+	[[NSFileManager defaultManager] 
+		removeFileAtPath: [@"~/TestObjectStore" stringByExpandingTildeInPath] handler: nil];
 	COEditingContext *ctxt = [COEditingContext contextWithURL: 
 		[NSURL fileURLWithPath: [@"~/TestObjectStore.sqlite" stringByExpandingTildeInPath]]];
 	ETAssert(ctxt != nil);
@@ -102,7 +102,8 @@
 
 - (IBAction) browseMainGroup: (id)sender
 {
-	OMModelFactory *modelFactory = [[OMModelFactory new] autorelease];
+	OMModelFactory *modelFactory = [[[OMModelFactory alloc]
+		initWithEditingContext: [self editingContext]] autorelease];
 	ETLayoutItemGroup *browser = [itemFactory browserWithGroup: [modelFactory sourceListGroups]
 	                                            editingContext: [self editingContext]];
 

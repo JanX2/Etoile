@@ -288,7 +288,7 @@
 		// controllers recursively upwards rather than just on the base item
 		// then we wouldn't have to set a controller on each list item (one on 
 		// the source list would be ok).
-		[listItem setController: AUTORELEASE([[ETController alloc] init])];
+		[listItem setController: AUTORELEASE([[ETController alloc] initWithObjectGraphContext: [self objectGraphContext]])];
 		[[listItem controller] setTemplate: [ETItemTemplate templateWithItem: [self item] objectClass: Nil objectGraphContext: [self objectGraphContext]]
 		                           forType: [[listItem controller] currentGroupType]];
 		if ([[listObject name] isEqual: @"WHAT"])

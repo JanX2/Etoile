@@ -32,7 +32,7 @@
 /** @taskunit Provided Objects */
 
 @property (nonatomic, readonly) NSArray *sourceListGroups;
-@property (nonatomic, readonly) COGroup *allObjectGroup;
+@property (nonatomic, readonly) COSmartGroup *allObjectGroup;
 
 /** @taskunit Demo Content */
 

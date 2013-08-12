@@ -38,21 +38,13 @@
 
 - (COSmartGroup *) allObjectGroup
 {
-	COSmartGroup *group = [OMSmartGroup new];
+	COSmartGroup *group = [[OMSmartGroup alloc]
+		initWithObjectGraphContext: [COObjectGraphContext objectGraphContext]];
 	[group setName: _(@"All Objects")];
-	[group setTargetCollection: [[self rootObjects] allObjects]];
-	return group;
-}
-
-- (COSmartGroup *) libraryGroup
-{
-	COSmartGroup *group = [OMSmartGroup new];
-	[group setName: _(@"All Objects")];
-	[group setTargetCollection: [[self rootObjects] allObjects]];
-	[group setQuery: [COQuery queryWithPredicateBlock: ^ BOOL (id object, NSDictionary *bindings)
+	[group setContentBlock: ^ ()
 	{
-		return [object isLibrary];
-	}]];
+		return [[self  rootObjects] allObjects];
+	}];
 	return group;
 }
 
@@ -64,7 +56,8 @@
 - (COSmartGroup *) whereGroup
 {
 	// TODO: Turn whereGroup into a smart group that dynamically computes the content
-	COSmartGroup *group = [OMSmartGroup new];
+	COSmartGroup *group = [[OMSmartGroup alloc]
+		initWithObjectGraphContext: [COObjectGraphContext objectGraphContext]];
 	id <ETCollection> content =
 		[A([self allObjectGroup]) arrayByAddingObjectsFromArray: [self libraries]];
 
@@ -81,7 +74,8 @@
 
 - (COSmartGroup *) whatGroup
 {
-	COSmartGroup *group = [OMSmartGroup new];
+	COSmartGroup *group = [[OMSmartGroup alloc]
+		initWithObjectGraphContext: [COObjectGraphContext objectGraphContext]];
 	[group setName: [_(@"What") uppercaseString]];
 	[group setTargetCollection: [self tagGroups]];
 	return group;
@@ -89,7 +83,8 @@
 
 - (COSmartGroup *) whenGroup
 {
-	COSmartGroup *group = [OMSmartGroup new];
+	COSmartGroup *group = [[OMSmartGroup alloc]
+		initWithObjectGraphContext: [COObjectGraphContext objectGraphContext]];
 	[group setName: [_(@"When") uppercaseString]];
 	return group;
 }
