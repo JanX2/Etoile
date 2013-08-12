@@ -10,158 +10,213 @@
 
 @implementation OMModelFactory
 
+@synthesize editingContext = _editingContext;
+
+- (id) initWithEditingContext: (COEditingContext *)aContext
+{
+	NILARG_EXCEPTION_TEST(aContext);
+	SUPERINIT;
+	ASSIGN(_editingContext, aContext);
+	return self;
+}
+
+- (id) init
+{
+	return [self initWithEditingContext: nil];
+}
+
+- (void) dealloc
+{
+	DESTROY(_editingContext);
+	[super dealloc];
+}
+
+- (NSSet *) rootObjects
+{
+	return (id)[[[[self editingContext] persistentRoots] mappedCollection] rootObject];
+}
+
+- (COSmartGroup *) allObjectGroup
+{
+	COSmartGroup *group = [OMSmartGroup new];
+	[group setName: _(@"All Objects")];
+	[group setTargetCollection: [[self rootObjects] allObjects]];
+	return group;
+}
+
+- (COSmartGroup *) libraryGroup
+{
+	COSmartGroup *group = [OMSmartGroup new];
+	[group setName: _(@"All Objects")];
+	[group setTargetCollection: [[self rootObjects] allObjects]];
+	[group setQuery: [COQuery queryWithPredicateBlock: ^ BOOL (id object, NSDictionary *bindings)
+	{
+		return [object isLibrary];
+	}]];
+	return group;
+}
+
+- (NSArray *) libraries
+{
+	return [[[self editingContext] libraryGroup] contentArray];
+}
+
 - (COSmartGroup *) whereGroup
 {
 	// TODO: Turn whereGroup into a smart group that dynamically computes the content
-	COSmartGroup *whereGroup = [[OMSmartGroup alloc] init];
-	COSmartGroup *mainGroup = [[COEditingContext currentContext] mainGroup];
-	id <ETCollection> content = [A(mainGroup) arrayByAddingObjectsFromArray:
-		[[[COEditingContext currentContext] libraryGroup] contentArray]];
+	COSmartGroup *group = [OMSmartGroup new];
+	id <ETCollection> content =
+		[A([self allObjectGroup]) arrayByAddingObjectsFromArray: [self libraries]];
 
-	[whereGroup setName: [_(@"Where") uppercaseString]];
-	[whereGroup setTargetCollection: content];
+	[group setName: [_(@"Where") uppercaseString]];
+	[group setTargetCollection: content];
 
-	return whereGroup;
+	return group;
+}
+
+- (NSArray *) tagGroups
+{
+	return [[[self editingContext] tagLibrary] tagGroups];
 }
 
 - (COSmartGroup *) whatGroup
 {
-	COSmartGroup *whatGroup = [[OMSmartGroup alloc] init];
-	id <ETCollection> content = [[[COEditingContext currentContext] tagLibrary] tagGroups];
-
-	[whatGroup setName: [_(@"What") uppercaseString]];
-	[whatGroup setTargetCollection: content];
-
-	return whatGroup;
+	COSmartGroup *group = [OMSmartGroup new];
+	[group setName: [_(@"What") uppercaseString]];
+	[group setTargetCollection: [self tagGroups]];
+	return group;
 }
 
 - (COSmartGroup *) whenGroup
 {
-	COSmartGroup *whenGroup = [[OMSmartGroup alloc] init];
-	
-	[whenGroup setName: [_(@"When") uppercaseString]];
-	
-	return whenGroup;
+	COSmartGroup *group = [OMSmartGroup new];
+	[group setName: [_(@"When") uppercaseString]];
+	return group;
+}
+
+- (void) buildCoreObjectGraphDemoIfNeeded
+{
+	COSmartGroup *allObjectGroup = [self allObjectGroup];
+
+	if ([[allObjectGroup content] isEmpty] == NO)
+		return;
+
+	[self buildCoreObjectGraphDemo];
+	[allObjectGroup refresh];
+	ETAssert([allObjectGroup isEmpty] == NO);
 }
 
 - (NSArray *) sourceListGroups
 {
-	COSmartGroup *mainGroup = [[COEditingContext currentContext] mainGroup];
-
-	if ([[mainGroup content] isEmpty])
-	{
-		[self buildCoreObjectGraphDemo];
-		[mainGroup refresh];
-		ETAssert([mainGroup count] > 0);
-	}
-
+	[self buildCoreObjectGraphDemoIfNeeded];
 	return A([self whereGroup], [self whatGroup], [self whenGroup]);
+}
+
+- (id) insertNewRootObjectWithEntityName: (NSString *)anEntityName
+{
+	return [[[self editingContext]
+		insertNewPersistentRootWithEntityName: anEntityName] rootObject];
 }
 
 - (void) buildCoreObjectGraphDemo
 {
-	COEditingContext *ctxt = [COEditingContext currentContext];
+	// TODO: For every library, the name should be made read-only.
 
 	/* Cities */
 
-	COObject *a1 = [ctxt insertObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *a2 = [ctxt insertObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *a3 = [ctxt insertObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *a1 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *a2 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *a3 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
 
 	[a1 setName: @"New York"];
 	[a2 setName: @"London"];
 	[a3 setName: @"Tokyo"];
 
-	COLibrary *cityGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COLibrary"];
+	COLibrary *cityLibrary = [self insertNewRootObjectWithEntityName: @"Anonymous.COLibrary"];
 
-	[cityGroup setName: @"Cities"];
-	[cityGroup addObjects: A(a1, a2, a3)];
+	[cityLibrary setName: @"Cities"];
+	[cityLibrary addObjects: A(a1, a2, a3)];
 
 	/* Pictures */
 
-	COObject *b1 = [ctxt insertObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *b2 = [ctxt insertObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *b3 = [ctxt insertObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *b4 = [ctxt insertObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *b1 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *b2 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *b3 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *b4 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
 
 	[b1 setName: @"Sunset"];
 	[b2 setName: @"Eagle on a snowy Beach"];
 	[b3 setName: @"Cloud"];
 	[b4 setName: @"Fox"];
 
-	COLibrary *pictureGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COLibrary"];
+	COLibrary *pictureLibrary = [self insertNewRootObjectWithEntityName: @"Anonymous.COLibrary"];
 
-	[pictureGroup setName: @"Pictures"];
-	[pictureGroup addObjects: A(b1, b2, b3, b4)];
+	[pictureLibrary setName: @"Pictures"];
+	[pictureLibrary addObjects: A(b1, b2, b3, b4)];
 
 	/* Persons */
 
-	COObject *c1 = [ctxt insertObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *c2 = [ctxt insertObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *c1 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *c2 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
 
 	[c1 setName: @"Ann"];
 	[c2 setName: @"John"];
 
-	COLibrary *personGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COLibrary"];
+	COLibrary *personLibrary = [self insertNewRootObjectWithEntityName: @"Anonymous.COLibrary"];
 
-	[personGroup setName: @"Persons"];
-	[personGroup addObjects: A(c1, c2)];
-
-	/* Libraries */
-
-	// TODO: For every library, the name should be made read-only.
-	//[[ctxt libraryGroup] addObjects: A(cityGroup, pictureGroup, personGroup)];
+	[personLibrary setName: @"Persons"];
+	[personLibrary addObjects: A(c1, c2)];
 	
 	/* Scenery Tag */
 
-	COTag *sceneryTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
+	COTag *sceneryTag = [self insertNewRootObjectWithEntityName: @"Anonymous.COTag"];
 
 	[sceneryTag setName: _(@"scenery")];
 	[sceneryTag addObjects: A(b1, b2)];
 
 	/* Animal Tag */
 
-	COTag *animalTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
+	COTag *animalTag = [self insertNewRootObjectWithEntityName: @"Anonymous.COTag"];
 
 	[animalTag setName: _(@"animal")];
 	[animalTag addObjects: A(b4, b2)];
 
 	/* Rain Tag */
 
-	COTag *rainTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
+	COTag *rainTag = [self insertNewRootObjectWithEntityName: @"Anonymous.COTag"];
 
 	[rainTag setName: _(@"rain")];
 	[rainTag addObjects: A(a2, a3, b3, b4)];
 
 	/* Snow Tag */
 
-	COTag *snowTag = [ctxt insertObjectWithEntityName: @"Anonymous.COTag"];
+	COTag *snowTag = [self insertNewRootObjectWithEntityName: @"Anonymous.COTag"];
 
 	[snowTag setName: _(@"snow")];
 	[rainTag addObjects: A(a1, b2)];
 
 	/* Tag Groups */
 
-	COTagGroup *natureTagGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COTagGroup"];
+	COTagGroup *natureTagGroup = [self insertNewRootObjectWithEntityName: @"Anonymous.COTagGroup"];
 
 	[natureTagGroup setName: _(@"Nature")];
 	[natureTagGroup addObjects: A(sceneryTag, animalTag, rainTag, snowTag)];
 
-	COTagGroup *weatherTagGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COTagGroup"];
+	COTagGroup *weatherTagGroup = [self insertNewRootObjectWithEntityName: @"Anonymous.COTagGroup"];
 
 	[weatherTagGroup setName: _(@"Weather")];
 	[weatherTagGroup addObjects: A(rainTag, snowTag)];
 
-	COTagGroup *unclassifiedTagGroup = [ctxt insertObjectWithEntityName: @"Anonymous.COTagGroup"];
+	COTagGroup *unclassifiedTagGroup = [self insertNewRootObjectWithEntityName: @"Anonymous.COTagGroup"];
 
 	[unclassifiedTagGroup setName: _(@"Unclassified")];
 
 	/* Declare the groups used as tags and commit */
 
-	[[ctxt tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag, snowTag)];
-	[[ctxt tagLibrary] setTagGroups: A(natureTagGroup, weatherTagGroup, unclassifiedTagGroup)];
+	[[[self editingContext] tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag, snowTag)];
+	[[[self editingContext] tagLibrary] setTagGroups: A(natureTagGroup, weatherTagGroup, unclassifiedTagGroup)];
 
-	[ctxt commitWithMetadata: D(@"Object Creation", @"summary",
+	[[self editingContext] commitWithMetadata: D(@"Object Creation", @"summary",
 		@"Created Initial Core Objects", @"shortDescription",
 		@"Created various core objects such as photos, cities etc. organized by tags and libraries", @"longDescription")];
 }

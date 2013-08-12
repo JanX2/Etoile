@@ -17,10 +17,23 @@
 
 @interface OMModelFactory : NSObject
 {
-
+	@private
+	COEditingContext *_editingContext;
 }
 
+/** @taskunit Initialization */
+
+- (id) initWithEditingContext: (COEditingContext *)aContext;
+
+/** @taskunit CoreObject Store Access */
+
+@property (nonatomic, readonly) COEditingContext *editingContext;
+
+/** @taskunit Provided Objects */
+
 - (NSArray *) sourceListGroups;
+
+/** @taskunit Demo Content */
 
 - (void) buildCoreObjectGraphDemo;
 
