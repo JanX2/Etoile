@@ -128,13 +128,15 @@ presently. */
 	docIndex = [[DocHTMLIndex alloc] init];
 	[DocIndex setCurrentIndex: docIndex]; /* Also reset in -weaveCurrentSourcePages */
 
-	// FIXME: Retrieve OrderedSymbolDeclarations.plist based on the entire file 
-	// name and not just the extension.
-	ETAssert([[paths pathsMatchingExtensions: (A(@"plist"))] count] == 1);
-	NSDictionary *orderedSymbolDeclarations = [NSDictionary dictionaryWithContentsOfFile: 
-		[[paths pathsMatchingExtensions: A(@"plist")] firstObject]];
-	reorderingWeaver = (id)[[DocDeclarationReorderer alloc] initWithWeaver: self 
-	                                                     orderedSymbols: orderedSymbolDeclarations];
+	if ([paths pathsMatchingExtensions: A(@"gsdoc")])
+	{
+		// FIXME: Retrieve OrderedSymbolDeclarations.plist based on the entire file
+		// name and not just the extension.
+		ETAssert([[paths pathsMatchingExtensions: (A(@"plist"))] count] == 1);
+		NSDictionary *orderedSymbolDeclarations = [NSDictionary dictionaryWithContentsOfFile: [[paths pathsMatchingExtensions: A(@"plist")]
+																		firstObject]];
+		reorderingWeaver = (id)[[DocDeclarationReorderer alloc] initWithWeaver: self orderedSymbols: orderedSymbolDeclarations];
+	}
 	
 	/* Don't include igsdoc or plist, we don't want to turn them into a page */
 	sourcePaths = [self validSourceFilesInFiles: paths];
@@ -287,6 +289,7 @@ presently. */
 	[weavedPages removeAllObjects];
 	currentParser = nil;
 
+	ETAssert([docIndex projectName] != nil);
 	NSSet *skippedFileNames = S(@"ClassesTOC.gsdoc", 
 		[[docIndex projectName] stringByAppendingPathExtension: @"gsdoc"]);
 
