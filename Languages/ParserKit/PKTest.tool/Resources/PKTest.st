@@ -250,6 +250,7 @@ NSObject subclass: SmalltalkTool [
 		content := NSFileManager defaultManager contentsAtPath: './simple.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
 		match := parser match: contentString rule: 'OmetaList'.
+		ETTranscript show: match; cr.
 		calc := PKParser new.
 		calc setRules: match reduce.
 		calc setDelegate: Calculator new.

@@ -1,0 +1,9 @@
+Calc : EtoileBase
+{
+	Exp  <- OPEN Exp:exp CLOSE -> exp /
+			Num:v1 PLUS Exp:v2 -> [add: v1 with: v2] / 
+			Num:v1 STAR Exp:v2 -> [multiply: v1 with: v2 ]  /
+			Num:exp 		   -> exp
+	Num <- [0-9]:exp Spacing   -> [ buildValue: exp ]
+}
+
