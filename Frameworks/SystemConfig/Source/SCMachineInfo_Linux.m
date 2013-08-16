@@ -57,12 +57,23 @@ my_round (float x)
       }
 }
 
+/* Returns the value of the memSize from the meminfo file.
+ * Slex's fixme: I will reimplement this file from scratch with a BSD license.
+ */
 + (unsigned long long) realMemory
 {
-  // The size of /proc/kcore on Linux gives the total memory
-  return [[[NSFileManager defaultManager]
-    fileAttributesAtPath: @"/proc/kcore" traverseLink: YES]
-    fileSize];
+    NSEnumerator *e = [[[NSString stringWithContentsOfFile:@"/proc/meminfo"]
+							componentsSeparatedByString: @"\n"]
+							objectEnumerator];
+	NSString * line = [e nextObject];
+    if ([line hasPrefix: @"MemTotal"])
+      {
+		NSArray * comps = [line componentsSeparatedByString: @":"];
+		NSString *memSize = [comps objectAtIndex:1];
+		return [memSize intValue] * 1024;
+	  }
+	  
+	 return 0; 
 }
 
 + (unsigned int) cpuMHzSpeed

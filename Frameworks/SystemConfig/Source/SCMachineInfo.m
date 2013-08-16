@@ -31,6 +31,7 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSBundle.h>
 #import <Foundation/NSString.h>
+#import <Foundation/Foundation.h>
 
 #import <sys/utsname.h>
 
@@ -166,13 +167,13 @@ humanReadableNumber (double value, unsigned int unitScale, NSString *unit,
 + (NSString *) humanReadableRealMemory
 {
   if ([self platformSupported])
-    {
+  {
       return humanReadableNumber ((double) [self realMemory], 1024, @"B", 1);
-    }
+  }
   else
-    {
+  {
       return _(@"(unknown)");
-    }
+  }
 }
 
 /**
