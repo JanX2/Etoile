@@ -62,18 +62,18 @@ my_round (float x)
  */
 + (unsigned long long) realMemory
 {
-    NSEnumerator *e = [[[NSString stringWithContentsOfFile:@"/proc/meminfo"]
-							componentsSeparatedByString: @"\n"]
-							objectEnumerator];
+	NSEnumerator *e = [[[NSString stringWithContentsOfFile:@"/proc/meminfo"] 
+								componentsSeparatedByString: @"\n"]
+								objectEnumerator];
 	NSString * line = [e nextObject];
-    if ([line hasPrefix: @"MemTotal"])
-      {
+	if ([line hasPrefix: @"MemTotal"])
+	{
 		NSArray * comps = [line componentsSeparatedByString: @":"];
 		NSString *memSize = [comps objectAtIndex:1];
 		return [memSize intValue] * 1024;
-	  }
+	}
 	  
-	 return 0; 
+	return 0; 
 }
 
 + (unsigned int) cpuMHzSpeed

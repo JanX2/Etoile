@@ -31,7 +31,6 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSBundle.h>
 #import <Foundation/NSString.h>
-#import <Foundation/Foundation.h>
 
 #import <sys/utsname.h>
 
