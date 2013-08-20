@@ -232,8 +232,8 @@ NSObject subclass: SmalltalkTool [
 		parser setDelegate: PKParserASTGenerator new.
 		match := parser match: contentString rule: 'OmetaList'.
 
-		ETTranscript show: 'Root action '; show: match matchAction; cr.
-		ETTranscript show: 'Match: '; show: match; cr.
+		"ETTranscript show: 'Root action '; show: match matchAction; cr.
+		ETTranscript show: 'Match: '; show: match; cr."
 		ETTranscript show: match reduce; cr.
 	]
 

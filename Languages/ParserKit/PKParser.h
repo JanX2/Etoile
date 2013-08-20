@@ -2,7 +2,6 @@
 
 @interface PKParser: NSObject
 {
-	@private
 	id input;
 	id rules;
 	id delegate;
@@ -19,4 +18,24 @@
 - (void)setDelegate: (id)delegate;
 
 - (id)match: (id)inputStream rule: (NSString*)ruleName;
+@end
+
+@interface PKParserAbstractGenerator : NSObject
+{
+	id delegate;
+	id specialCharToChar;
+}
+@end
+
+
+@interface PKParserASTGenerator : PKParserAbstractGenerator
+{
+	id externalParsers;
+	id inputStreamDeclaration;
+	id tempDecl;
+	id methodStatements;
+	id currentTempsCount;
+}
+ 
+- (id)genTemp;
 @end

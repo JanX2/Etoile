@@ -5,7 +5,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 #
 VERSION = 0.1
 FRAMEWORK_NAME = ParserKit
-
+BUNDLE_NAME = ParserKitTest
 
 ${FRAMEWORK_NAME}_OBJC_FILES = \
 	NSInvocation+pkextention.m\
@@ -14,8 +14,9 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 #PKMain.m
 
 ${FRAMEWORK_NAME}_OBJCFLAGS = -std=c99 -g -Wno-unused-value
-${FRAMEWORK_NAME}_LDFLAGS += -g -lgmp -lEtoileFoundation -lgnustep-gui\
+${FRAMEWORK_NAME}_LDFLAGS += -g -lgmp -lEtoileFoundation \
 	-L/usr/local/lib -march=native
+
 
 ${FRAMEWORK_NAME}_HEADER_FILES += PKParser.h\
 	PKInputStream.h\
@@ -24,11 +25,17 @@ ${FRAMEWORK_NAME}_HEADER_FILES += PKParser.h\
 ${FRAMEWORK_NAME}_SMALLTALK_FILES += ParserKit.st
 
 ADDITIONAL_OBJCFLAGS +=  -march=native
-
 ${TOOL_NAME}_CFLAGS += -Wno-implicit -g 
 
+${BUNDLE_NAME}_OJCFLAGS = -std=c99 -g -Wno-unused-value
+${BUNDLE_NAME}_LDFLAGS += -g -lgmp -lEtoileFoundation -lLanguageKit -lParserKit \
+	-L/usr/local/lib -L./ParserKit.framework/Versions/Current/ -march=native
+${BUNDLE_NAME}_OBJC_FILES = \
+	Tests/PKParserASTGeneratorTest.m
+${BUNDLE_NAME}_OBJC_LIBS += -lUnitKit
 
 include ../../smalltalk.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 include $(GNUSTEP_MAKEFILES)/framework.make
+include $(GNUSTEP_MAKEFILES)/bundle.make
 
