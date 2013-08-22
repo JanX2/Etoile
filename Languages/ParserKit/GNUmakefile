@@ -31,7 +31,8 @@ ${BUNDLE_NAME}_OJCFLAGS = -std=c99 -g -Wno-unused-value
 ${BUNDLE_NAME}_LDFLAGS += -g -lgmp -lEtoileFoundation -lLanguageKit -lParserKit \
 	-L/usr/local/lib -L./ParserKit.framework/Versions/Current/ -march=native
 ${BUNDLE_NAME}_OBJC_FILES = \
-	Tests/PKParserASTGeneratorTest.m
+	Tests/PKParserASTGeneratorTest.m\
+	Tests/PKParseMatchTest.m
 ${BUNDLE_NAME}_OBJC_LIBS += -lUnitKit
 
 include ../../smalltalk.make

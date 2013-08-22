@@ -1400,14 +1400,14 @@ NSObject subclass: PKInputStream [
     | memo stream position positionStack environmentStack |
 
     initWithStream: input [
-	super init.
-	stream := input.
-	memo := NSMutableDictionary new.
-	positionStack := NSMutableArray new.
-	position := 0.
-	environmentStack := PKEnvironmentStack new.
-	self
-]
+		super init.
+		stream := input.
+		memo := NSMutableDictionary new.
+		positionStack := NSMutableArray new.
+		position := 0.
+		environmentStack := PKEnvironmentStack new.
+		self
+	]
 
 	description [
 		^(self substreamWithRange: (NSValue rangeWithLocation: position length: (self length) - position)), ' pos: ', positionStack description
@@ -2422,7 +2422,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		methodStatements addObject: ( LKAssignExpr assignWithTarget: match expr: first).
 		ifTest := LKMessageSend messageWithSelectorName: 'isFailure'.
 		ifTest setTarget: match.
-		test := LKIfStatement ifStatementWithCondition: ifTest then: { second } else: { first }.
+		test := LKIfStatement ifStatementWithCondition: ifTest then: { second } else: { match }.
 		^test
 	]
 
@@ -2567,7 +2567,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	]
 
 	" Gets a match of the specified length. "
-	getMatchOfLength: len [
+	genMatchOfLength: len [
 		| msg |
 		msg := LKMessageSend messageWithSelectorName: 'getMatchWithInput:length:'
 		arguments: { inputStreamDeclaration . len }.
@@ -2575,7 +2575,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		^msg
 	]
 
-	getEmptyMatch [
+	genEmptyMatch [
 		| msg |
 		msg := LKMessageSend messageWithSelectorName: 'getEmptyMatch:'
 		arguments: { inputStreamDeclaration }.
@@ -2639,7 +2639,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		isAtEnd := LKMessageSend messageWithSelectorName: 'atEnd'.
 		isAtEnd setTarget: inputStreamDeclaration.
 		^LKIfStatement ifStatementWithCondition: isAtEnd
-		                                   then: { self getEmptyMatch }
+		                                   then: { self genEmptyMatch }
 		                                   else: { self getFailureWithDescription: 'Expected end of stream' cause: nil }
 
 	]

@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-
+#import <LanguageKit/LanguageKit.h>
 @interface PKParser: NSObject
 {
 	id input;
@@ -18,6 +18,33 @@
 - (void)setDelegate: (id)delegate;
 
 - (id)match: (id)inputStream rule: (NSString*)ruleName;
+
+- (id)getEmptyMatch: (id) list;
+@end
+
+@interface PKInputStream : NSObject
+{
+	id memo;
+	id stream;
+	id position;
+	id positionStack;
+	id environmentStack;
+}
+- (id)initWithStream: (id) input;
+@end
+
+@interface PKParseMatch : NSObject
+{
+	id input;
+	id range;
+	id action;
+	id delegate;
+}
+- (id) initWithInput: (id) list length: (id) length;
+- (id) isSuccess;
+- (id) isFailure;
+- (id) isEmpty;
+- (id) matchText;
 @end
 
 @interface PKParserAbstractGenerator : NSObject
