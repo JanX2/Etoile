@@ -30,7 +30,8 @@
 	id positionStack;
 	id environmentStack;
 }
-- (id)initWithStream: (id) input;
+- (id) lastPosition;
+- (id) initWithStream: (id) input;
 @end
 
 @interface PKParseMatch : NSObject
@@ -40,6 +41,7 @@
 	id action;
 	id delegate;
 }
+- (id) sequenceWith: (id) match;
 - (id) initWithInput: (id) list length: (id) length;
 - (id) isSuccess;
 - (id) isFailure;
