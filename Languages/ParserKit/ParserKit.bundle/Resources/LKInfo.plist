@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Sources</key>
+	<array>
+		<string>Utils.st</string>
+		<string>PKDelayActionArray.st</string>
+		<string>ParserKit.st</string>
+	</array>
+	<key>Classes</key>
+	<array>
+		<string>PKInputStream</string>
+		<string>PKTokenExpression</string>
+		<string>PKParseMatch</string>
+		<string>PKParseFail</string>
+		<string>PKParseAction</string>
+		<string>PKMatchRangeNotice</string>
+		<string>PKParseRestriction</string>
+		<string>PKParsePredicate</string>
+		<string>PKDelayActionArray</string>
+	</array>
+	<key>PrincipalClass</key>
+	<string>Test</string>
+</dict>
+</plist>

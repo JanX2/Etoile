@@ -22,7 +22,9 @@ ${FRAMEWORK_NAME}_HEADER_FILES += PKParser.h\
 	PKInputStream.h\
 	PKMatches.h
 
-${FRAMEWORK_NAME}_SMALLTALK_FILES += ParserKit.st
+${FRAMEWORK_NAME}_SMALLTALK_BUNDLES += ParserKit.bundle
+SMALLTALK_BUNDLE_ST_FILES = ./ParserKit.bundle/Resources/ParserKit.st\
+	./ParserKit.bundle/Resources/Utils.st
 
 ADDITIONAL_OBJCFLAGS +=  -march=native
 ${TOOL_NAME}_CFLAGS += -Wno-implicit -g 

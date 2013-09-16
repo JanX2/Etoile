@@ -31,184 +31,11 @@
 
 "
 ============================================================================
-  
- Helper and convenience classes and categories
-
-============================================================================
-"
-
-NSObject subclass: PKTranscriptController [
-	| +inDebugMode |
-
-	+setDebugMode: value [ inDebugMode := value ]
-	+isInDebugMode [ ^inDebugMode ]
-
-]
-
-ETTranscript extend [
-
-	+setDebugMode: value [
-		PKTranscriptController setDebugMode: value
-	]
-    +debug: output [
-		 PKTranscriptController isInDebugMode ifTrue: [ self show: output]
-	 ]
-
-	+debugCr [
-		PKTranscriptController isInDebugMode ifTrue: [ self cr]
-	]
-]
-
-NSMutableDictionary extend [
-	at: key ifAbsentDo: aBlock [
-		| return |
-		return := self objectForKey: key.
-		return == nil ifTrue: [
-			return := aBlock value
-		].
-		^return	
-	]
-
-	at: key ifAbsentPut: aBlock [
-		^self at: key ifAbsentDo: [
-			self setValue: aBlock value forKey: key.
-			self objectForKey: key
-		]
-	]
-]
-
-NSString extend [
-
-	concat: other [
-		^self stringByAppendingString: other
-	]
-
-	asInputStream [
-		^PKInputStream alloc initWithStream: self
-	]
-
-	matchSize [ ^self length ]
-	count [ ^self length]
-	isEmpty [^self length = 0]
-	isNotEmpty [^self length > 0 ]
-
-	isLessThan: other [
-		^(self integerValue) < (other integerValue)
-	]
-
-	asExp [
-		^PKTokenExpression new initWithPattern: self
-	]
-]
-
-
-NSObject extend [
-	canReduce [^false]
-	isExplicitAction [ ^ false ]
-	matchSize [ ^1 ]
-	isArray [^false]
-	joinAll [ ^self ]
-	sequenceAll [ ^self ]
-	asArray [ ^{ self } ]
-]
-
-NSArray extend [
-	joinAll [
-		| exp |
-		exp := nil.
-		self do: [ :value |
-			(exp == nil)
-                ifTrue: [
-					exp := value asExp]
-				ifFalse: [exp := exp or: value asExp].
-		].
-		^exp
-	]
-	sequenceAll [
-		| exp |
-		exp := nil.
-		self do: [ :value |
-			(exp == nil)
-                ifTrue: [
-					exp := value asExp]
-				ifFalse: [exp := exp seq: value asExp].
-		].
-		^exp
-	]
-
-	asArray [ ^self ]
-]
-
-
-"
-============================================================================
 
   Classes to implement semantic actions
 
 ============================================================================
 "
-
-"
- The delayed action array records a number of delayed invocations so that they
- can be executed after parsing was successful.
-"
-NSObject subclass: NSDelayActionArray [
-	| anArray |
-
-	init [
-		super init.
-		anArray := NSMutableArray new.
-	]
-
-	addObject: anObject [
-		anArray addObject: anObject
-	]
-
-	addAction: anObject [
-		(anObject isArray and: (anObject == nil) not)
-			ifTrue: [anObject do: [:each | self addObject: each]]
-			ifFalse: [self addObject: anObject].
-		^self
-	]
-
-	isArray [^true]
-
-	do: aBlock [
-		anArray do: aBlock
-	]
-
-	isExplicitAction [ ^true ]
-
-	canReduce [^true]
-	reduceOn: target [
-		| result implicit |
-		" Find out whether the array only contains implicit actions. In
-		  this case, we want to rejoin them. "
-		implicit := anArray leftFoldWithInitialValue: true
-		                                   intoBlock: [ :acc :each | acc and: (each isExplicitAction not) ].
-		result := anArray map: [:each | 
-			each canReduce 
-                   ifTrue: [each reduceOn: target]
-				   ifFalse: [each]].
-		(1 = result count) ifTrue: [ result := result objectAtIndex: 0]
-			ifFalse: [
-				implicit ifTrue: [
-				" FIXME: Define generic protocol so that this
-				  works for something other than strings. "
-					result := result componentsJoinedByString: '']
-			].
-		
-		^result.
-	]
-
-	description [
-		^anArray leftFoldWithInitialValue: 'Delay:'
-		                        intoBlock: [ :acc :action |
-			'Delay:' = acc ifTrue: [acc, ' ', action description]
-		                   ifFalse: [acc, ', ', action description]
-		]           	
-	]
-]
 
 
 NSObject subclass: PKMatchRangeNotice [
@@ -1540,7 +1367,7 @@ NSObject subclass: PKParseMatch [
 			ifFalse: [ NSException raise: 'ParserKit' format: 'Can not add the range, it is not contiguous'].
 		newMatch := self class alloc copyInitWith: input range: (NSValue rangeWithLocation: range location length: (range length + match  range length)).
 		(action == nil and: match matchAction == nil) ifFalse: [
-			newMatch attachAction: NSDelayActionArray new.
+			newMatch attachAction: PKDelayActionArray new.
 			" It is important to attach the verbatim matches from matches that do not require actions,
 			  but only if it's no the empty match (esp. since every sequence matching starts with the
 			  empty match."
