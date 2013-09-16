@@ -454,12 +454,17 @@ parentRevisionForNewBranch: (CORevisionID *)parentRevisionForNewBranch
             self.mergingBranch = nil;
         }
         
+        NSMutableDictionary *mdCopy = [[NSMutableDictionary alloc] initWithDictionary: metadata];
+        mdCopy[kCOMetadataPersistentRootUUID] = [[[self persistentRoot] persistentRootUUID] stringValue];
+        mdCopy[kCOMetadataBranchUUID] = [_UUID stringValue];
+        
         CORevisionID *revId = [store writeRevisionWithItemGraph: _objectGraph
-                                                       metadata: metadata
+                                                       metadata: mdCopy
                                                parentRevisionID: _currentRevisionID
                                           mergeParentRevisionID: mergeParent
+		                                             branchUUID: _UUID
                                                   modifiedItems: changedItemUUIDs
-                                             error: NULL];        
+                                                          error: NULL];        
         
         BOOL ok = [store setCurrentRevision: revId
                                tailRevision: nil
