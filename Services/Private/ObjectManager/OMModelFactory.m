@@ -211,9 +211,12 @@
 	[[[self editingContext] tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag, snowTag)];
 	[[[self editingContext] tagLibrary] setTagGroups: A(natureTagGroup, weatherTagGroup, unclassifiedTagGroup)];
 
-	[[self editingContext] commitWithMetadata: D(@"Object Creation", @"summary",
-		@"Created Initial Core Objects", @"shortDescription",
-		@"Created various core objects such as photos, cities etc. organized by tags and libraries", @"longDescription")];
+	[[self editingContext] commitWithType: @"Object Creation"
+	                     shortDescription: @"Created Initial Core Objects"];
+	// TODO: Decide whether we support long description or not
+	//[[self editingContext] commitWithMetadata: D(@"Object Creation", @"summary",
+	//	@"Created Initial Core Objects", @"shortDescription",
+	//	@"Created various core objects such as photos, cities etc. organized by tags and libraries", @"longDescription")];
 }
 
 @end

@@ -530,7 +530,7 @@
 	if ([[self selectedObjectInContentView] isPersistent] == NO)
 		return;
 
-	COTrack *track = [[self selectedObjectInContentView] commitTrack];
+	id <COTrack> track = [[self selectedObjectInContentView] branch];
 	ETLayoutItemGroup *browser =
 		[[ETLayoutItemFactory factory] historyBrowserWithRepresentedObject: track
 		                                                             title: nil];

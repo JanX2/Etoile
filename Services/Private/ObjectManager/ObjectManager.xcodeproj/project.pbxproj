@@ -158,19 +158,40 @@
 			remoteGlobalIDString = 791B4E2D1299C79300CCF472;
 			remoteInfo = Test;
 		};
-		6073460E154176D4002558C7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 66D099C4129AE111006BEDC3;
-			remoteInfo = StoreTest;
-		};
 		6075493D17B7A5C800678090 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 66C3669A17B426BF009ACF2F;
 			remoteInfo = Typewriter;
+		};
+		60BED8BC17EDDD42005776CC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
+		60BED8BE17EDDD42005776CC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6686BDAB12592BDA0065DE1A;
+			remoteInfo = CoreObject;
+		};
+		60BED8C017EDDD42005776CC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = IconKit;
+		};
+		60BED8C717EDDD43005776CC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 60734604154176D4002558C7 /* CoreObject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 66550BED17D51C8800327657;
+			remoteInfo = BenchmarkCoreObject;
 		};
 		60E6AC0B147B9B3B00AD684D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -351,7 +372,7 @@
 			children = (
 				6073460B154176D4002558C7 /* CoreObject.framework */,
 				6073460D154176D4002558C7 /* Test */,
-				6073460F154176D4002558C7 /* StoreTest */,
+				60BED8C817EDDD43005776CC /* BenchmarkCoreObject */,
 				6037746D16B9DDBC00B7EEB5 /* BasicPersistence */,
 				6075493E17B7A5C800678090 /* Typewriter.app */,
 			);
@@ -380,6 +401,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				60BED8BD17EDDD42005776CC /* PBXTargetDependency */,
+				60BED8BF17EDDD42005776CC /* PBXTargetDependency */,
+				60BED8C117EDDD42005776CC /* PBXTargetDependency */,
 				6068BE341474289900953B26 /* PBXTargetDependency */,
 			);
 			name = ObjectManager;
@@ -560,18 +584,18 @@
 			remoteRef = 6073460C154176D4002558C7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6073460F154176D4002558C7 /* StoreTest */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = StoreTest;
-			remoteRef = 6073460E154176D4002558C7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		6075493E17B7A5C800678090 /* Typewriter.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = Typewriter.app;
 			remoteRef = 6075493D17B7A5C800678090 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		60BED8C817EDDD43005776CC /* BenchmarkCoreObject */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = BenchmarkCoreObject;
+			remoteRef = 60BED8C717EDDD43005776CC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		60E6AC0C147B9B3B00AD684D /* IconKit.framework */ = {
@@ -618,6 +642,21 @@
 			isa = PBXTargetDependency;
 			name = EtoileUI;
 			targetProxy = 6068BE331474289900953B26 /* PBXContainerItemProxy */;
+		};
+		60BED8BD17EDDD42005776CC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileFoundation;
+			targetProxy = 60BED8BC17EDDD42005776CC /* PBXContainerItemProxy */;
+		};
+		60BED8BF17EDDD42005776CC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CoreObject;
+			targetProxy = 60BED8BE17EDDD42005776CC /* PBXContainerItemProxy */;
+		};
+		60BED8C117EDDD42005776CC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = IconKit;
+			targetProxy = 60BED8C017EDDD42005776CC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

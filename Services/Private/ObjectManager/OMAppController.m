@@ -113,12 +113,12 @@
 
 - (IBAction) undo: (id)sender
 {
-	[mainUndoTrack undo];
+	[mainUndoTrack undoWithEditingContext: [self editingContext]];
 }
 
 - (IBAction) redo: (id)sender
 {
-	[mainUndoTrack redo];
+	[mainUndoTrack redoWithEditingContext: [self editingContext]];
 }
 
 - (IBAction) browseUndoHistory: (id)sender

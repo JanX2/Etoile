@@ -190,7 +190,7 @@
 	{
 		if ([object isRoot])
 		{
-			[self deletePersistentRoot: [object persistentRoot]];
+			[[object persistentRoot] setDeleted: YES];
 		}
 		else
 		{
