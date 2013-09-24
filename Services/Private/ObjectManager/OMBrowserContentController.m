@@ -113,14 +113,14 @@
 	[[self editingContext] commit];
 }
 
-- (void) objectDidBeginEditing: (ETLayoutItem *)anItem
+- (void)subjectDidBeginEditingForItem: (ETLayoutItem *)anItem property: (NSString *)aKey
 {
-	ETLog(@"Did begin editing in %@", anItem);
+	ETLog(@"Did begin editing for %@ - %@", anItem, aKey);
 }
 
-- (void) objectDidEndEditing: (ETLayoutItem *)anItem
+- (void)subjectDidEndEditingForItem: (ETLayoutItem *)anItem property: (NSString *)aKey
 { 	
-	ETLog(@"Did end editing in %@", anItem);
+	ETLog(@"Did end editing for %@ - %@", anItem, aKey);
 
 	NSString *shortDesc = [NSString stringWithFormat: @"Renamed to %@", [[anItem representedObject] name]];
 
