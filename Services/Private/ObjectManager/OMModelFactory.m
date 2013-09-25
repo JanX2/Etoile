@@ -17,6 +17,7 @@
 	NILARG_EXCEPTION_TEST(aContext);
 	SUPERINIT;
 	ASSIGN(_editingContext, aContext);
+	[self registerEntityDescriptionsOfCoreObjectGraphDemo];
 	return self;
 }
 
@@ -113,51 +114,75 @@
 		insertNewPersistentRootWithEntityName: anEntityName] rootObject];
 }
 
+- (void) registerEntityDescriptionsOfCoreObjectGraphDemo
+{
+	[self registerEntityDescriptionWithName: @"OMCity" parent: @"COObject"];
+	[self registerEntityDescriptionWithName: @"OMPicture" parent: @"COObject"];
+	[self registerEntityDescriptionWithName: @"OMPerson" parent: @"COObject"];
+}
+
+- (void) registerEntityDescriptionWithName: (NSString *)aName parent: (NSString *)aParentName
+{
+	ETModelDescriptionRepository *repo = [[self editingContext] modelRepository];
+	ETEntityDescription *entity = [ETEntityDescription descriptionWithName: aName];
+	
+	[entity setParent: [repo descriptionForName: aParentName]];
+	
+	[repo addDescription: entity];
+	
+	ETEntityDescription *libraryEntity =
+		[COLibrary makeEntityDescriptionWithName: [aName stringByAppendingString: @"Library"]
+	                                 contentType: aName];
+	
+	[repo addUnresolvedDescription: libraryEntity];
+	[repo resolveNamedObjectReferences];
+}
+
 - (void) buildCoreObjectGraphDemo
 {
 	// TODO: For every library, the name should be made read-only.
 
 	/* Cities */
 
-	COObject *a1 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *a2 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *a3 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *a1 = [self insertNewRootObjectWithEntityName: @"OMCity"];
+	COObject *a2 = [self insertNewRootObjectWithEntityName: @"OMCity"];
+	COObject *a3 = [self insertNewRootObjectWithEntityName: @"OMCity"];
 
 	[a1 setName: @"New York"];
 	[a2 setName: @"London"];
 	[a3 setName: @"Tokyo"];
 
-	COLibrary *cityLibrary = [self insertNewRootObjectWithEntityName: @"Anonymous.COLibrary"];
+	COLibrary *cityLibrary = [self insertNewRootObjectWithEntityName: @"OMCityLibrary"];
 
 	[cityLibrary setName: @"Cities"];
 	[cityLibrary addObjects: A(a1, a2, a3)];
 
 	/* Pictures */
 
-	COObject *b1 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *b2 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *b3 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *b4 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *b1 = [self insertNewRootObjectWithEntityName: @"OMPicture"];
+	COObject *b2 = [self insertNewRootObjectWithEntityName: @"OMPicture"];
+	COObject *b3 = [self insertNewRootObjectWithEntityName: @"OMPicture"];
+	COObject *b4 = [self insertNewRootObjectWithEntityName: @"OMPicture"];
 
 	[b1 setName: @"Sunset"];
 	[b2 setName: @"Eagle on a snowy Beach"];
 	[b3 setName: @"Cloud"];
 	[b4 setName: @"Fox"];
 
-	COLibrary *pictureLibrary = [self insertNewRootObjectWithEntityName: @"Anonymous.COLibrary"];
+	COLibrary *pictureLibrary = [self insertNewRootObjectWithEntityName: @"OMPictureLibrary"];
 
 	[pictureLibrary setName: @"Pictures"];
 	[pictureLibrary addObjects: A(b1, b2, b3, b4)];
 
 	/* Persons */
 
-	COObject *c1 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
-	COObject *c2 = [self insertNewRootObjectWithEntityName: @"Anonymous.COObject"];
+	COObject *c1 = [self insertNewRootObjectWithEntityName: @"OMPerson"];
+	COObject *c2 = [self insertNewRootObjectWithEntityName: @"OMPerson"];
 
 	[c1 setName: @"Ann"];
 	[c2 setName: @"John"];
 
-	COLibrary *personLibrary = [self insertNewRootObjectWithEntityName: @"Anonymous.COLibrary"];
+	COLibrary *personLibrary = [self insertNewRootObjectWithEntityName: @"OMPersonLibrary"];
 
 	[personLibrary setName: @"Persons"];
 	[personLibrary addObjects: A(c1, c2)];

@@ -82,6 +82,18 @@
 	[[self history] addObject: aGroup];
 }
 
+- (id) allSelectedObjectsInContentView
+{
+	NSArray *selectedObjects =
+		[[[[self contentViewItem] selectedItemsInLayout] mappedCollection] representedObject];
+	
+	if ([selectedObjects isEmpty])
+	{
+		selectedObjects = A([self browsedGroup]);
+	}
+	return selectedObjects;
+}
+
 - (id) selectedObjectInContentView
 {
 	id selectedObject = [[[[self contentViewItem] selectedItemsInLayout] firstObject] representedObject];
@@ -536,6 +548,56 @@
 		                                                             title: nil];
 
 	[[[ETLayoutItemFactory factory] windowGroup] addItem: browser];
+}
+
+- (NSString *) nameForCopiedObject: (COObject *)copiedObject
+{
+	NSSet *existingNames =
+		[NSSet setWithArray: (id)[(id)[[[self browsedGroup] contentArray] mappedCollection] name]];
+	NSString *baseName = [[copiedObject name] stringByAppendingString: _(@" Copy")];
+	NSString *name = baseName;
+	NSUInteger nbOfVisibleCopies = 0;
+
+	while ([existingNames containsObject: name])
+	{
+		name = [NSString stringWithFormat: @"%@ %lu", baseName, (unsigned long)++nbOfVisibleCopies];
+	}
+	return name;
+}
+
+- (IBAction) duplicate: (id)sender
+{
+	for (COObject *object in [self allSelectedObjectsInContentView])
+	{
+		COObject *copiedObject = [[[object branch] makeCopyFromRevision: [object revision]] rootObject];
+
+		// FIXME: The new name is not committed
+		[copiedObject setName: [self nameForCopiedObject: copiedObject]];
+
+		/* Update Library */
+
+		COLibrary *library = [[self editingContext] libraryForContentType: [object entityDescription]];
+		ETAssert(library != nil);
+
+		[library insertObject: copiedObject
+		              atIndex: [[library contentArray] indexOfObject: object]
+		                 hint: nil];
+		
+		/* Apply Same Tagging */
+
+		for (COTag *tag in [object tags])
+		{
+			[tag insertObject: copiedObject
+			          atIndex: [[tag contentArray] indexOfObject: object]
+			             hint: nil];
+		}
+	}
+
+	NSArray *names = (id)[[[self allSelectedObjectsInContentView] mappedCollection] name];
+	NSString *desc =
+		[NSString stringWithFormat: @"Duplicate %@", [names componentsJoinedByString: @", "]];
+
+	[[self editingContext] commitWithType: @"Object Copy" shortDescription: desc];
 }
 
 - (IBAction) export: (id)sender

@@ -124,6 +124,7 @@
 
 	NSString *shortDesc = [NSString stringWithFormat: @"Renamed to %@", [[anItem representedObject] name]];
 
+	//ETAssert([[[anItem representedObject] objectGraphContext] hasChanges]);
 	[[[anItem representedObject] persistentRoot] commitWithType: @"Object Renaming"
 	                                           shortDescription: shortDesc];
 }

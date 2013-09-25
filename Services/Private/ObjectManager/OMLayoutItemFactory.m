@@ -461,6 +461,8 @@
 	                action: @selector(performClose:)
 	         keyEquivalent: @""];
 
+	[menu addItem: [NSMenuItem separatorItem]];
+
 	[menu addItemWithTitle: _(@"Mark Current Version as…")
 	                action: @selector(markVersion:)
 	         keyEquivalent: @""];
@@ -474,6 +476,10 @@
 	         keyEquivalent: @""];
 			
 	[menu addItem: [NSMenuItem separatorItem]];
+
+	[menu addItemWithTitle: _(@"Duplicate")
+	                action: @selector(duplicate:)
+	         keyEquivalent: @""];
 
 	[menu addItemWithTitle: _(@"Export…")
 	                action: @selector(export:)

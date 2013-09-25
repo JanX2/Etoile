@@ -36,6 +36,7 @@
 
 /** @taskunit Demo Content */
 
+- (void) registerEntityDescriptionsOfCoreObjectGraphDemo;
 - (void) buildCoreObjectGraphDemo;
 
 @end

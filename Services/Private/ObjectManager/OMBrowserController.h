@@ -89,6 +89,7 @@
 - (IBAction) markVersion: (id)sender;
 - (IBAction) revertTo: (id)sender;
 - (IBAction) browseHistory: (id)sender;
+- (IBAction) duplicate: (id)sender;
 - (IBAction) export: (id)sender;
 
 @end
