@@ -78,6 +78,14 @@
 	    FileName = GSScrollerUpArrow.9.png;
 	    NinePatch = YES;
 	};
+	GSScrollerLeftArrow = {
+	    FileName = GSScrollerLeftArrow.9.png;
+	    NinePatch = YES;
+	};
+	GSScrollerRightArrow = {
+	    FileName = GSScrollerRightArrow.9.png;
+	    NinePatch = YES;
+	};
 	GSScrollerVerticalKnob = {
 	    FileName = "Scrollbar-vertical-thumb.9.png";
 	    NinePatch = YES;
@@ -87,11 +95,11 @@
 	    NinePatch = YES;
 	};
 	GSTableCorner = {
-	    FileName = TableHeader.9.png;
+	    FileName = BrowserHeader.9.png;
 	    NinePatch = YES;
 	};
 	GSTableHeader = {
-	    FileName = TableHeader.9.png;
+	    FileName = BrowserHeader.9.png;
 	    NinePatch = YES;
 	};
 	GSTableHeaderHighlighted = {
@@ -181,7 +189,7 @@
 	    FileName = SquareButtonSelected.9.png;
 	    NinePatch = YES;
 	};
-	SNSBezelBorder = {
+	NSBezelBorder = {
 	    FileName = Textbox.9.png;
 	    NinePatch = YES;
 	};
