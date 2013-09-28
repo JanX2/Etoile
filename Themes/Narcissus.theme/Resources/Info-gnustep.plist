@@ -8,6 +8,7 @@
 	GSScrollerButtonsOffset = 0.0;	
 	GSScrollViewNoInnerBorder = YES;
 	GSScrollerKnobOvershoot = 1.0;
+	GSScrollerDefaultWidth = 16.0;
     };
     GSThemeIcon = Thematic.png;
     GSThemeTiles = {
