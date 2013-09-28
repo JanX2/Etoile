@@ -7,6 +7,8 @@
 	GSBackHandlesWindowDecorations = NO;
 	GSScrollerButtonsOffset = 0.0;	
 	GSScrollViewNoInnerBorder = YES;
+	GSScrollerKnobOvershoot = 1.0;
+	GSScrollerDefaultWidth = 16.0;
     };
     GSThemeIcon = Thematic.png;
     GSThemeTiles = {
@@ -62,10 +64,6 @@
 	    FileName = Progress-horizontal-fill.tiff;
 	    FillStyle = Repeat;
 	};
-	GSScrollerDownArrow = {
-	    FileName = GSScrollerDownArrow.9.png;
-	    NinePatch = YES;
-	};
 	GSScrollerHorizontalKnob = {
 	    FileName = "Scrollbar-horizontal-thumb.9.png";
 	    NinePatch = YES;
@@ -78,6 +76,34 @@
 	    FileName = GSScrollerUpArrow.9.png;
 	    NinePatch = YES;
 	};
+	GSScrollerDownArrow = {
+	    FileName = GSScrollerDownArrow.9.png;
+	    NinePatch = YES;
+	};
+	GSScrollerLeftArrow = {
+	    FileName = GSScrollerLeftArrow.9.png;
+	    NinePatch = YES;
+	};
+	GSScrollerRightArrow = {
+	    FileName = GSScrollerRightArrow.9.png;
+	    NinePatch = YES;
+	};
+        GSScrollerUpArrowHighlighted = {
+            FileName = GSScrollerUpArrowHighlighted.9.png;
+            NinePatch = YES;
+        };
+        GSScrollerDownArrowHighlighted = {
+            FileName = GSScrollerDownArrowHighlighted.9.png;
+            NinePatch = YES;
+        };
+        GSScrollerLeftArrowHighlighted = {
+            FileName = GSScrollerLeftArrowHighlighted.9.png;
+            NinePatch = YES;
+        };
+        GSScrollerRightArrowHighlighted = {
+            FileName = GSScrollerRightArrowHighlighted.9.png;
+            NinePatch = YES;
+        };
 	GSScrollerVerticalKnob = {
 	    FileName = "Scrollbar-vertical-thumb.9.png";
 	    NinePatch = YES;
@@ -181,7 +207,7 @@
 	    FileName = SquareButtonSelected.9.png;
 	    NinePatch = YES;
 	};
-	SNSBezelBorder = {
+	NSBezelBorder = {
 	    FileName = Textbox.9.png;
 	    NinePatch = YES;
 	};
