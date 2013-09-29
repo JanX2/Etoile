@@ -215,6 +215,10 @@
 	  FileName = BrowserHeader.9.png;
 	  NinePatch = YES;
 	};
+	GSMenuTitleBackground = {
+	  FileName = MenuTitleBackground.9.png;
+	  NinePatch = YES;
+	};
     };
     GSThemeVersion = 0.1;
     NSPrincipalClass = NesedahTheme;
