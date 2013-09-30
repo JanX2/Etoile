@@ -9,10 +9,11 @@
 	GSBrowserUseBezels = NO;
 	GSBrowserVerticalPadding = 0;
 	GSScrollViewNoInnerBorder = YES;
-	GSScrollerButtonsOffset = "0.0";
+	GSScrollerButtonsOffset = 0;
 	GSScrollerDefaultWidth = "16.0";
 	GSScrollerKnobOvershoot = "1.0";
 	NSMenuInterfaceStyle = NSNextStepInterfaceStyle;
+	GSScrollViewUseBottomCorner = NO;
     };
     GSThemeIcon = "Thematic.png";
     GSThemeTiles = {
@@ -221,6 +222,10 @@
 	};
 	NSTexturedSquareBezelStyleSelected = {
 	    FileName = "SquareButtonSelected.9.png";
+	    NinePatch = YES;
+	};
+	GSScrollViewBottomCorner = {
+	    FileName = "GSScrollViewBottomCorner.9.png";
 	    NinePatch = YES;
 	};
     };
