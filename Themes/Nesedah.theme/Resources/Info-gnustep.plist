@@ -228,6 +228,14 @@
 	    FileName = "GSScrollViewBottomCorner.9.png";
 	    NinePatch = YES;
 	};
+	GSSliderHorizontalSlot = {
+	    FileName = "SliderTrackHorizontal.9.png";
+	    NinePatch = YES;
+	};
+	GSSliderVerticalSlot = {
+	    FileName = "SliderTrackVertical.9.png";
+	    NinePatch = YES;
+	};
     };
     GSThemeVersion = "0.1";
     NSExecutable = Nesedah;
