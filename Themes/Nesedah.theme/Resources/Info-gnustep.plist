@@ -183,6 +183,23 @@
 	    FileName = "Button-selected.9.png";
 	    NinePatch = YES;
 	};
+	GSPopUpButton = {
+	    FileName = "Button-unselected.9.png";
+	    NinePatch = YES;
+	};
+	GSPopUpButtonDisabled = {
+	    FileName = "Button-disabled.9.png";
+	    NinePatch = YES;
+	};
+	GSPopUpButtonHighlighted = {
+	    FileName = "Button-highlighted.9.png";
+	    NinePatch = YES;
+	};
+	GSPopUpButtonSelected = {
+	    FileName = "Button-selected.9.png";
+	    NinePatch = YES;
+	};
+
 	NSSegmentStyleTexturedSquare = {
 	    FileName = "SegmentedCell-unselected.9.png";
 	    NinePatch = YES;
