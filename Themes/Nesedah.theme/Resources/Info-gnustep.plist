@@ -14,6 +14,9 @@
 	GSScrollerKnobOvershoot = "1.0";
 	NSMenuInterfaceStyle = NSNextStepInterfaceStyle;
 	GSScrollViewUseBottomCorner = NO;
+	GSMenuBarHeight = 22;
+	GSMenuItemHeight = 20;
+	GSMenuSeparatorHeight = 5;
     };
     GSThemeIcon = "Thematic.png";
     GSThemeTiles = {
@@ -71,6 +74,10 @@
 	};
 	GSMenuVerticalItemSelected = {
 	    FileName = "GSMenuItemSelected.png";
+	    NinePatch = YES;
+	};
+	GSMenuSeparatorItem = {
+ 	    FileName = "GSMenuSeparatorItem.9.png";
 	    NinePatch = YES;
 	};
 	GSProgressIndicatorBarDeterminate = {
