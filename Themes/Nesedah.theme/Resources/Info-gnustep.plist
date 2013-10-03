@@ -252,11 +252,11 @@
 	    FileName = "GSScrollViewBottomCorner.9.png";
 	    NinePatch = YES;
 	};
-	GSSliderHorizontalSlot = {
+	GSSliderHorizontalTrack = {
 	    FileName = "SliderTrackHorizontal.9.png";
 	    NinePatch = YES;
 	};
-	GSSliderVerticalSlot = {
+	GSSliderVerticalTrack = {
 	    FileName = "SliderTrackVertical.9.png";
 	    NinePatch = YES;
 	};
