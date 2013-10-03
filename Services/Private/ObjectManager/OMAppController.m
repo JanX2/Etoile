@@ -42,9 +42,8 @@
 	ASSIGN(currentPresentationTitle,  _(@"List"));
 }
 
-- (void) setUpUndoTrack
+- (void) setUpUndoTrack: (BOOL)clear
 {
-#if 0
 	ETUUID *trackUUID = [[NSUserDefaults standardUserDefaults] UUIDForKey: @"OMMainUndoTrackUUID"];
 
 	if (trackUUID == nil)
@@ -53,26 +52,40 @@
 		[[NSUserDefaults standardUserDefaults] setUUID: trackUUID 
 		                                        forKey: @"OMMainUndoTrackUUID"];
 	}
-	mainUndoTrack = [[COCustomTrack alloc] initWithUUID: trackUUID 
-	                                     editingContext: [COEditingContext currentContext]];
 
-	/* For pushing revisions on the track */
-	[[NSNotificationCenter defaultCenter] addObserver: self 
-	                                         selector: @selector(didMakeLocalCommit:) 
-	                                             name: COEditingContextDidCommitNotification 
-	                                           object: [COEditingContext currentContext]];
-#endif
+	ASSIGN(mainUndoTrack, [[COUndoStackStore defaultStore] stackForName: [trackUUID stringValue]]);
+	
+	if (clear)
+	{
+		[mainUndoTrack clear];
+	}
 }
 
-
-- (void) setUpEditingContext
+- (NSString *) storePath
 {
-	[[NSFileManager defaultManager] 
-		removeFileAtPath: [@"~/TestObjectStore" stringByExpandingTildeInPath] handler: nil];
-	COEditingContext *ctxt = [COEditingContext contextWithURL: 
-		[NSURL fileURLWithPath: [@"~/TestObjectStore.sqlite" stringByExpandingTildeInPath]]];
+	return [@"~/TestObjectStore" stringByExpandingTildeInPath];
+}
+
+- (void) setUpEditingContext: (BOOL)clear
+{
+	if (clear && [[NSFileManager defaultManager] fileExistsAtPath: [self storePath]])
+	{
+		NSError *error = nil;
+		[[NSFileManager defaultManager] removeItemAtPath: [self storePath]
+		                                           error: &error];
+		ETAssert(error == nil);
+	}
+	COEditingContext *ctxt =
+		[COEditingContext contextWithURL: [NSURL fileURLWithPath: [self storePath]]];
 	ETAssert(ctxt != nil);
+
 	ASSIGN(editingContext, ctxt);
+
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+	 	   selector: @selector(didCommit:)
+	 	       name: COEditingContextDidCommitNotification
+	 	     object: editingContext];
 }
 
 - (void) setUpAndShowBrowserUI
@@ -83,21 +96,24 @@
 
 - (void) applicationDidFinishLaunching: (NSNotification *)notif
 {
+	BOOL clear = YES;
+
 	[self setUpMenus];
-	[self setUpEditingContext];
-	[self setUpUndoTrack];
+	[self setUpEditingContext: clear];
+	[self setUpUndoTrack: clear];
 	[self setUpAndShowBrowserUI];
 }
 
-- (void) didMakeLocalCommit: (NSNotification *)notif
+- (void) didCommit: (NSNotification *)notif
 {
-#if 0
-	ETUUID *storeUUID = [[[COEditingContext currentContext] store] UUID];
+	COCommand *command = [[notif userInfo] objectForKey: kCOCommandKey];
+	ETAssert(command != nil);
 
-	ETAssert([[[[notif object] store] UUID] isEqual: storeUUID]);
+	ETLog(@"Recording command %@ on %@", command, mainUndoTrack);
 
-	[mainUndoTrack addRevisions: [[notif userInfo] objectForKey: kCORevisionsKey]];
-#endif
+	// FIXME: This is a private API
+	[mainUndoTrack recordCommandInverse: command];
+	ETAssert([mainUndoTrack currentNode] != nil);
 }
 
 - (IBAction) browseMainGroup: (id)sender
@@ -123,6 +139,7 @@
 
 - (IBAction) browseUndoHistory: (id)sender
 {
+	ETAssert(mainUndoTrack != nil);
 	ETLayoutItemGroup *browser = [[ETLayoutItemFactory factory] 
 		historyBrowserWithRepresentedObject: mainUndoTrack title: nil];
 
