@@ -260,6 +260,10 @@
 	    FileName = "SliderTrackVertical.9.png";
 	    NinePatch = YES;
 	};
+	GSBoxBorder = {
+	    FileName = "Box.9.png";
+	    NinePatch = YES;
+	};
     };
     GSThemeVersion = "0.1";
     NSExecutable = Nesedah;
