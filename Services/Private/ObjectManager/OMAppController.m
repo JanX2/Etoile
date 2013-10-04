@@ -44,6 +44,7 @@
 
 - (void) setUpUndoTrack: (BOOL)clear
 {
+	ETAssert([self editingContext] != nil);
 	ETUUID *trackUUID = [[NSUserDefaults standardUserDefaults] UUIDForKey: @"OMMainUndoTrackUUID"];
 
 	if (trackUUID == nil)
@@ -54,7 +55,8 @@
 	}
 
 	ASSIGN(mainUndoTrack, [[COUndoStackStore defaultStore] stackForName: [trackUUID stringValue]]);
-	
+	[mainUndoTrack setEditingContext: [self editingContext]];
+
 	if (clear)
 	{
 		[mainUndoTrack clear];
@@ -107,12 +109,16 @@
 - (void) didCommit: (NSNotification *)notif
 {
 	COCommand *command = [[notif userInfo] objectForKey: kCOCommandKey];
-	ETAssert(command != nil);
+	BOOL isUndoOrRedo = (command == nil);
+
+	if (isUndoOrRedo)
+		return;
 
 	ETLog(@"Recording command %@ on %@", command, mainUndoTrack);
 
 	// FIXME: This is a private API
-	[mainUndoTrack recordCommandInverse: command];
+	[mainUndoTrack recordCommand: command];
+	
 	ETAssert([mainUndoTrack currentNode] != nil);
 }
 
