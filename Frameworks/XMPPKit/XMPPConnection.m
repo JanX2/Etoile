@@ -28,7 +28,7 @@ static NSMutableDictionary * connections = nil;
 static NSDictionary * STANZA_CLASSES;
 static NSDictionary * STANZA_KEYS;
 
-#define SET_STATE(x) do { isa = [XMPP ## x ## Connection class]; NSLog(@"Entering state %s", #x); } while(0)
+#define SET_STATE(x) do { object_setClass(self, [XMPP ## x ## Connection class]); NSLog(@"Entering state %s", #x); } while(0)
 
 @interface NSObject( XMLLogging)
 + (void) logIncomingXML:(NSString*)xml;
