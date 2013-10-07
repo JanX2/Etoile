@@ -38,6 +38,18 @@
 	    FileName = "Button-selected.9.png";
 	    NinePatch = YES;
 	};
+	NSShadowlessSquareBezelStyle = {
+	    FileName = "NSShadowlessSquareBezelStyle.9.png";
+	    NinePatch = YES;
+	};
+	NSShadowlessSquareBezelStyleHighlighted = {
+	    FileName = "NSShadowlessSquareBezelStyleHighlighted.9.png";
+	    NinePatch = YES;
+	};
+        NSShadowlessSquareBezelStyleSelected = {
+            FileName = "NSShadowlessSquareBezelStyleHighlighted.9.png";
+            NinePatch = YES;
+        };
 	GSColorWell = {
 	    FileName = "Button-unselected.9.png";
 	    NinePatch = YES;
