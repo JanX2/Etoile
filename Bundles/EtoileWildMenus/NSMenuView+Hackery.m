@@ -35,6 +35,11 @@ enum {
   BottomBorderOffset = 1
 };
 
+@interface NSMenuView (Private)
+- (CGFloat) yOriginForItem:(int)item;
+- (CGFloat) totalHeight;
+- (CGFloat) heightForItem: (NSInteger)idx;
+@end
 
 @implementation NSMenuView (Hackery)
 - (NSRect) rectOfItemAtIndex: (int)index
@@ -49,28 +54,27 @@ enum {
   /* Fiddle with the origin so that the item rect is shifted 1 pixel over
    */
   theRect.size = _cellSize;
-
+  
   if (_horizontal == NO)
     { 
       if (![_attachedMenu _ownedByPopUp])
         {
-          theRect.origin.y = 1 + (_cellSize.height * ([_itemCells count] - 
-						  index - 1));
-          theRect.origin.x = 1;
-          theRect.size.width -= 1;
+		  	theRect.origin.y = 1 + [self yOriginForItem: index];
+          	theRect.origin.x = 1;
+          	theRect.size.width -= 1;
         }
       else
         {
-          theRect.origin.y = _cellSize.height * ([_itemCells count] - index - 1);
-      	  theRect.origin.x = _leftBorderOffset;
+			theRect.origin.y = [self yOriginForItem: index];
+			theRect.origin.x = _leftBorderOffset;
         }
     }
   else
     {
       // FIXME: or remove?
       theRect.origin.x = _cellSize.width * (index + 1);
-      theRect.origin.y = 0;
-    }
+	  theRect.origin.y = 0;
+  	}
       
   /* NOTE: This returns the correct NSRect for drawing cells, but nothing
    * else (unless we are a popup). This rect will have to be modified for
@@ -268,16 +272,16 @@ enum {
   if (_horizontal == YES)
     {
       [self setFrameSize: NSMakeSize(((howMany + 1) * _cellSize.width),
-                                     _cellSize.height + _leftBorderOffset)];
+                                      [self heightForItem: 0] + _leftBorderOffset)];
       [_titleView setFrame: NSMakeRect (0, 0,
-                                        _cellSize.width, _cellSize.height + 1)];
+                                        _cellSize.width,  [self heightForItem: 0] + 1)];
     }
   else
     {
       [self setFrameSize: NSMakeSize(_cellSize.width + _leftBorderOffset,
-        (howMany * _cellSize.height) + [EtoileMenuTitleView height] +
+        [self totalHeight] + [EtoileMenuTitleView height] +
         BottomBorderOffset)];
-      [_titleView setFrame: NSMakeRect (0, howMany * _cellSize.height +
+      [_titleView setFrame: NSMakeRect (0, [self totalHeight] +
         BottomBorderOffset, NSWidth (_bounds), [EtoileMenuTitleView height])];
     }
      
