@@ -17,6 +17,8 @@
 	GSMenuBarHeight = 22;
 	GSMenuItemHeight = 20;
 	GSMenuSeparatorHeight = 5;
+	GSScrollerArrowsSameEnd = YES;
+	GSScrollerScrollsByPage = YES;
     };
     GSThemeIcon = "Thematic.png";
     GSThemeTiles = {
