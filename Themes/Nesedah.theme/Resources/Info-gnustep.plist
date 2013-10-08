@@ -3,6 +3,7 @@
 	"Jesse Ross",
 	"Eric Wasylishen"
     );
+    GSThemeDetails = "";
     GSThemeDomain = {
 	GSBackHandlesWindowDecorations = NO;
 	GSBrowserColumnSeparation = 0;
@@ -21,6 +22,7 @@
 	NSMenuInterfaceStyle = NSNextStepInterfaceStyle;
     };
     GSThemeIcon = "Thematic.png";
+    GSThemeLicense = "";
     GSThemeTiles = {
 	GSBoxBorder = {
 	    FileName = "Box.9.png";
@@ -38,24 +40,16 @@
 	    FileName = "Button-selected.9.png";
 	    NinePatch = YES;
 	};
-	NSShadowlessSquareBezelStyle = {
-	    FileName = "NSShadowlessSquareBezelStyle.9.png";
-	    NinePatch = YES;
-	};
-	NSShadowlessSquareBezelStyleHighlighted = {
-	    FileName = "NSShadowlessSquareBezelStyleHighlighted.9.png";
-	    NinePatch = YES;
-	};
-        NSShadowlessSquareBezelStyleSelected = {
-            FileName = "NSShadowlessSquareBezelStyleHighlighted.9.png";
-            NinePatch = YES;
-        };
 	GSColorWell = {
 	    FileName = "Button-unselected.9.png";
 	    NinePatch = YES;
 	};
 	GSColorWellHighlighted = {
 	    FileName = "Button-highlighted.9.png";
+	    NinePatch = YES;
+	};
+	GSMenuCloseButton = {
+	    FileName = "Blank.9.png";
 	    NinePatch = YES;
 	};
 	GSMenuHorizontalBackground = {
@@ -261,6 +255,18 @@
 	    FileName = "SegmentedCell-selected.9.png";
 	    NinePatch = YES;
 	};
+	NSShadowlessSquareBezelStyle = {
+	    FileName = "NSShadowlessSquareBezelStyle.9.png";
+	    NinePatch = YES;
+	};
+	NSShadowlessSquareBezelStyleHighlighted = {
+	    FileName = "NSShadowlessSquareBezelStyleHighlighted.9.png";
+	    NinePatch = YES;
+	};
+	NSShadowlessSquareBezelStyleSelected = {
+	    FileName = "NSShadowlessSquareBezelStyleHighlighted.9.png";
+	    NinePatch = YES;
+	};
 	NSTextFieldRoundedBezel = {
 	    FileName = "Textbox.9.png";
 	    NinePatch = YES;
@@ -277,8 +283,20 @@
 	    FileName = "SquareButtonSelected.9.png";
 	    NinePatch = YES;
 	};
-	GSMenuCloseButton = {
-	    FileName = "Blank.9.png";
+	NSTopTabsBezelBorder = {
+	    FileName = "TabView.9.png";
+	    NinePatch = YES;
+	};
+	GSTabViewSelectedTabFill = {
+	    FileName = "GSTabViewSelectedTabFill.9.png";
+	    NinePatch = YES;
+	};
+	GSTabViewUnSelectedTabFill = {
+	    FileName = "GSTabViewUnSelectedTabFill.9.png";
+	    NinePatch = YES;
+	};
+	GSTabViewBackgroundTabFill = {
+	    FileName = "GSTabViewBackgroundTabFill.9.png";
 	    NinePatch = YES;
 	};
     };
