@@ -24,149 +24,41 @@
     GSThemeIcon = "Thematic.png";
     GSThemeLicense = "";
     GSThemeTiles = {
-	GSBoxBorder = {
-	    FileName = "GSBoxBorder.9.png";
-	    NinePatch = YES;
-	};
-	GSBrowserHeader = {
-	    FileName = "GSBrowserHeader.9.png";
-	    NinePatch = YES;
-	};
 	GSButton = {
 	    FileName = "NSButton.9.png";
-	    NinePatch = YES;
 	};
 	GSButtonSelected = {
 	    FileName = "NSButtonSelected.9.png";
-	    NinePatch = YES;
 	};
 	GSColorWell = {
 	    FileName = "NSButton.9.png";
-	    NinePatch = YES;
 	};
 	GSColorWellHighlighted = {
 	    FileName = "NSButtonHighlighted.9.png";
-	    NinePatch = YES;
 	};
 	GSMenuCloseButton = {
 	    FileName = "Blank.9.png";
-	    NinePatch = YES;
 	};
 	GSMenuHorizontalBackground = {
 	    FileName = "Blank.9.png";
-	    NinePatch = YES;
 	};
 	GSMenuHorizontalItem = {
 	    FileName = "Blank.9.png";
-	    NinePatch = YES;
 	};
 	GSMenuHorizontalItemHighlighted = {
 	    FileName = "GSMenuItemSelected.png";
-	    NinePatch = YES;
 	};
 	GSMenuHorizontalItemSelected = {
 	    FileName = "GSMenuItemSelected.png";
-	    NinePatch = YES;
-	};
-	GSMenuSeparatorItem = {
-	    FileName = "GSMenuSeparatorItem.9.png";
-	    NinePatch = YES;
-	};
-	GSMenuTitleBackground = {
-	    FileName = "GSMenuTitleBackground.9.png";
-	    NinePatch = YES;
-	};
-	GSMenuVerticalBackground = {
-	    FileName = "GSMenuVerticalBackground.9.png";
-	    NinePatch = YES;
 	};
 	GSMenuVerticalItem = {
 	    FileName = "Blank.9.png";
-	    NinePatch = YES;
-	};
-	GSMenuVerticalItemHighlighted = {
-	    FileName = "GSMenuVerticalItemHighlighted.9.png";
-	    NinePatch = YES;
 	};
 	GSMenuVerticalItemSelected = {
 	    FileName = "Blank.9.png";
-	    NinePatch = YES;
 	};
 	GSProgressIndicatorBarDeterminate = {
 	    FileName = "Progress-horizontal-fill.tiff";
-	    FillStyle = Repeat;
-	};
-	GSScrollViewBottomCorner = {
-	    FileName = "GSScrollViewBottomCorner.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerDownArrow = {
-	    FileName = "GSScrollerDownArrow.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerDownArrowHighlighted = {
-	    FileName = "GSScrollerDownArrowHighlighted.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerHorizontalKnob = {
-	    FileName = "GSScrollerHorizontalKnob.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerHorizontalSlot = {
-	    FileName = "GSScrollerHorizontalSlot.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerLeftArrow = {
-	    FileName = "GSScrollerLeftArrow.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerLeftArrowHighlighted = {
-	    FileName = "GSScrollerLeftArrowHighlighted.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerRightArrow = {
-	    FileName = "GSScrollerRightArrow.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerRightArrowHighlighted = {
-	    FileName = "GSScrollerRightArrowHighlighted.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerUpArrow = {
-	    FileName = "GSScrollerUpArrow.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerUpArrowHighlighted = {
-	    FileName = "GSScrollerUpArrowHighlighted.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerVerticalKnob = {
-	    FileName = "GSScrollerVerticalKnob.9.png";
-	    NinePatch = YES;
-	};
-	GSScrollerVerticalSlot = {
-	    FileName = "GSScrollerVerticalSlot.9.png";
-	    NinePatch = YES;
-	};
-	GSSliderHorizontalTrack = {
-	    FileName = "GSSliderHorizontalTrack.9.png";
-	    NinePatch = YES;
-	};
-	GSSliderVerticalTrack = {
-	    FileName = "GSSliderVerticalTrack.9.png";
-	    NinePatch = YES;
-	};
-	GSTableCorner = {
-	    FileName = "GSTableCorner.9.png";
-	    NinePatch = YES;
-	};
-	GSTableHeader = {
-	    FileName = "GSTableHeader.9.png";
-	    NinePatch = YES;
-	};
-	GSTableHeaderHighlighted = {
-	    FileName = "GSTableHeaderHighlighted.9.png";
-	    NinePatch = YES;
 	};
 	GSWindowBackground = {
 	    FileName = "WindowBackground.png";
@@ -181,107 +73,45 @@
 	};
 	GSWindowResizeBar = {
 	    FileName = "WindowResize.9.png";
-	    NinePatch = YES;
 	};
 	GSWindowTitleBar = {
 	    FileName = "Titlebar.9.png";
-	    NinePatch = YES;
-	};
-	NSBezelBorder = {
-	    FileName = "NSBezelBorder.9.png";
-	    NinePatch = YES;
-	};
-	NSButton = {
-	    FileName = "NSButton.9.png";
-	    NinePatch = YES;
-	};
-	NSButtonDisabled = {
-	    FileName = "NSButtonDisabled.9.png";
-	    NinePatch = YES;
-	};
-	NSButtonHighlighted = {
-	    FileName = "NSButtonHighlighted.9.png";
-	    NinePatch = YES;
-	};
-	NSButtonSelected = {
-	    FileName = "NSButtonSelected.9.png";
-	    NinePatch = YES;
 	};
 	NSSegmentStyleTexturedSquare = {
 	    FileName = "SegmentedCell-unselected.9.png";
-	    NinePatch = YES;
 	};
 	NSSegmentStyleTexturedSquareRoundedLeft = {
 	    FileName = "SegmentedCellRoundedLeft-unselected.9.png";
-	    NinePatch = YES;
 	};
 	NSSegmentStyleTexturedSquareRoundedLeftRoundedRight = {
 	    FileName = "SegmentedCell-unselected.9.png";
-	    NinePatch = YES;
 	};
 	NSSegmentStyleTexturedSquareRoundedLeftRoundedRightSelected = {
 	    FileName = "SegmentedCell-selected.9.png";
-	    NinePatch = YES;
 	};
 	NSSegmentStyleTexturedSquareRoundedLeftSelected = {
 	    FileName = "SegmentedCellRoundedLeft-selected.9.png";
-	    NinePatch = YES;
 	};
 	NSSegmentStyleTexturedSquareRoundedRight = {
 	    FileName = "SegmentedCell-unselected.9.png";
-	    NinePatch = YES;
 	};
 	NSSegmentStyleTexturedSquareRoundedRightSelected = {
 	    FileName = "SegmentedCell-selected.9.png";
-	    NinePatch = YES;
 	};
 	NSSegmentStyleTexturedSquareSelected = {
 	    FileName = "SegmentedCell-selected.9.png";
-	    NinePatch = YES;
-	};
-	NSShadowlessSquareBezelStyle = {
-	    FileName = "NSShadowlessSquareBezelStyle.9.png";
-	    NinePatch = YES;
-	};
-	NSShadowlessSquareBezelStyleHighlighted = {
-	    FileName = "NSShadowlessSquareBezelStyleHighlighted.9.png";
-	    NinePatch = YES;
-	};
-	NSShadowlessSquareBezelStyleSelected = {
-	    FileName = "NSShadowlessSquareBezelStyleHighlighted.9.png";
-	    NinePatch = YES;
 	};
 	NSTextFieldRoundedBezel = {
 	    FileName = "NSBezelBorder.9.png";
-	    NinePatch = YES;
 	};
 	NSTextFieldSquareBezel = {
 	    FileName = "NSBezelBorder.9.png";
-	    NinePatch = YES;
 	};
 	NSTexturedSquareBezelStyle = {
 	    FileName = "NSShadowlessSquareBezelStyle.9.png";
-	    NinePatch = YES;
 	};
 	NSTexturedSquareBezelStyleSelected = {
 	    FileName = "NSShadowlessSquareBezelStyleHighlighted.9.png";
-	    NinePatch = YES;
-	};
-	NSTopTabsBezelBorder = {
-	    FileName = "NSTopTabsBezelBorder.9.png";
-	    NinePatch = YES;
-	};
-	GSTabViewSelectedTabFill = {
-	    FileName = "GSTabViewSelectedTabFill.9.png";
-	    NinePatch = YES;
-	};
-	GSTabViewUnSelectedTabFill = {
-	    FileName = "GSTabViewUnSelectedTabFill.9.png";
-	    NinePatch = YES;
-	};
-	GSTabViewBackgroundTabFill = {
-	    FileName = "GSTabViewBackgroundTabFill.9.png";
-	    NinePatch = YES;
 	};
     };
     GSThemeVersion = "0.1";
