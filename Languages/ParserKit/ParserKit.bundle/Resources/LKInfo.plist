@@ -8,9 +8,11 @@
 		<string>PKDelayActionArray.st</string>
 		<string>ParserKit.st</string>
 		<string>PKInputStream.st</string>
+		<string>PKEnvironmentStack.st</string>
 	</array>
 	<key>Classes</key>
 	<array>
+		<string>PKEnvironmentStack</string>
 		<string>PKInputStream</string>
 		<string>PKTokenExpression</string>
 		<string>PKParseMatch</string>

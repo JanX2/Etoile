@@ -26,7 +26,8 @@ ${FRAMEWORK_NAME}_SMALLTALK_BUNDLES += ParserKit.bundle
 ST_FILES = ParserKit.st\
 	Utils.st\
 	PKDelayActionArray.st\
-	PKInputStream.st
+	PKInputStream.st\
+	PKEnvironmentStack.st
 
 SMALLTALK_BUNDLE_ST_FILES=$(addprefix ./ParserKit.bundle/Resources/,$(ST_FILES))
 ADDITIONAL_OBJCFLAGS +=  -march=native
