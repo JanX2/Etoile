@@ -54,8 +54,8 @@
 		                                        forKey: @"OMMainUndoTrackUUID"];
 	}
 
-	ASSIGN(mainUndoTrack, [[COUndoStackStore defaultStore] stackForName: [trackUUID stringValue]]);
-	[mainUndoTrack setEditingContext: [self editingContext]];
+	ASSIGN(mainUndoTrack, [COUndoTrack trackForName: [trackUUID stringValue]
+	                             withEditingContext: [self editingContext]]);
 
 	if (clear)
 	{
@@ -135,12 +135,12 @@
 
 - (IBAction) undo: (id)sender
 {
-	[mainUndoTrack undoWithEditingContext: [self editingContext]];
+	[mainUndoTrack undo];
 }
 
 - (IBAction) redo: (id)sender
 {
-	[mainUndoTrack redoWithEditingContext: [self editingContext]];
+	[mainUndoTrack redo];
 }
 
 - (IBAction) browseUndoHistory: (id)sender

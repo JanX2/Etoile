@@ -7,6 +7,7 @@
  */
 
 #import "OMBrowserContentController.h"
+#import "OMConstants.h"
 #import "OMLayoutItemFactory.h"
 #import "OMAppController.h"
 
@@ -90,8 +91,31 @@
 {
 	// TODO: COSmartGroup doesn't respond to -objectType. COCollection and
 	// COSmartGroup could implement a new COCollection protocol. Not sure it's needed.
+	// TODO: Support returning nil -currentObjectType. Not sure it is a good
+	// idea, because it involves changing various COController methods.
 	ETUTI *contentType = [[[[self content] representedObject] ifResponds] objectType];
 	return (contentType !=  nil ? contentType : [super currentObjectType]);
+}
+
+#pragma mark -
+#pragma mark Object Insertion and Deletion Actions
+
+- (void) add: (id)sender
+{
+	BOOL isMutableCollection = ([[self currentObjectType] isEqual: kETTemplateObjectType] == NO);
+
+	// TODO: Implement toolbar item validation to assert rather than return
+	if (isMutableCollection == NO)
+		return;
+
+	ETLog(@" === Add %@ === ", [self currentObjectType]);
+
+	[super add: sender];
+	
+	NSString *type = [[[[self content] lastItem] subject] typeDescription];
+
+	[[self editingContext] commitWithType: @"Object Creation"
+						 shortDescription: [NSString stringWithFormat: @"Created New %@", type]];
 }
 
 - (void) addTag: (COGroup *)aTag
@@ -99,6 +123,8 @@
 	ETItemTemplate *template = [self templateForType: [self currentGroupType]];
 	[self insertItem: [template newItemWithRepresentedObject: aTag options: nil] 
 	         atIndex: ETUndeterminedIndex];
+	[[self editingContext] commitWithType: @"Object Creation"
+						 shortDescription: @"Created New Tag"];
 }
 
 - (IBAction) remove: (id)sender
@@ -110,7 +136,8 @@
 
 	/* Delete persistent roots or particular inner objects  */
 	[[self editingContext] deleteObjects: [NSSet setWithArray: selectedObjects]];
-	[[self editingContext] commit];
+	[[self editingContext] commitWithType: @"Object Deletion"
+	                     shortDescription: @"Deleted one or several objects"];
 }
 
 - (void)subjectDidBeginEditingForItem: (ETLayoutItem *)anItem property: (NSString *)aKey
@@ -122,11 +149,13 @@
 { 	
 	ETLog(@"Did end editing for %@ - %@", anItem, aKey);
 
-	NSString *shortDesc = [NSString stringWithFormat: @"Renamed to %@", [[anItem representedObject] name]];
+	NSDictionary *metadata = D(A([[anItem representedObject] name]), kCOCommitMetadataShortDescriptionArguments);
 
 	//ETAssert([[[anItem representedObject] objectGraphContext] hasChanges]);
-	[[[anItem representedObject] persistentRoot] commitWithType: @"Object Renaming"
-	                                           shortDescription: shortDesc];
+	[[[anItem representedObject] persistentRoot] commitWithIdentifier: kOMCommitRename
+															 metadata: metadata
+														   undoTracks: nil
+																error: NULL];
 }
 
 - (NSInteger)menuInsertionIndex

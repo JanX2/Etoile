@@ -1,0 +1,15 @@
+{
+    "types":
+	{
+		"renaming": "Object Renaming"
+	},
+
+	"descriptors":
+	{
+		"rename":
+		{
+			"type": "renaming",
+		  	"shortDescription": "Renamed to %@"
+		}
+	}
+}

@@ -24,7 +24,7 @@
 	COEditingContext *editingContext;
 	OMLayoutItemFactory *itemFactory;
 	NSMutableSet *openedGroups;
-	COUndoStack *mainUndoTrack;
+	COUndoTrack *mainUndoTrack;
 	NSString *currentPresentationTitle;
 }
 

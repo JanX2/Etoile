@@ -17,6 +17,8 @@
 		609C0221170D762B00D01AAB /* OMBrowserContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 609C0220170D762600D01AAB /* OMBrowserContentController.m */; };
 		609C0224170D788400D01AAB /* OMCollectionAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 609C0223170D788200D01AAB /* OMCollectionAdditions.m */; };
 		609C0227170D7B0000D01AAB /* OMController.m in Sources */ = {isa = PBXBuildFile; fileRef = 609C0226170D7AFE00D01AAB /* OMController.m */; };
+		60B98EDC180461C200D1FFFF /* Commits in Resources */ = {isa = PBXBuildFile; fileRef = 60B98EDA180461C200D1FFFF /* Commits */; };
+		60B98EDF18046C3C00D1FFFF /* OMConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 60B98EDE18046C3C00D1FFFF /* OMConstants.m */; };
 		60E6AB15147AB5EC00AD684D /* OMBrowserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E6AB14147AB5EC00AD684D /* OMBrowserController.m */; };
 		60E6AC0D147B9B4200AD684D /* IconKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60E6AC0C147B9B3B00AD684D /* IconKit.framework */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -225,6 +227,9 @@
 		609C0223170D788200D01AAB /* OMCollectionAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMCollectionAdditions.m; sourceTree = "<group>"; };
 		609C0225170D7AFC00D01AAB /* OMController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMController.h; sourceTree = "<group>"; };
 		609C0226170D7AFE00D01AAB /* OMController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMController.m; sourceTree = "<group>"; };
+		60B98EDB180461C200D1FFFF /* English */ = {isa = PBXFileReference; lastKnownFileType = folder; name = English; path = English.lproj/Commits; sourceTree = "<group>"; };
+		60B98EDD18046BCC00D1FFFF /* OMConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMConstants.h; sourceTree = "<group>"; };
+		60B98EDE18046C3C00D1FFFF /* OMConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMConstants.m; sourceTree = "<group>"; };
 		60E6AB13147AB5EC00AD684D /* OMBrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMBrowserController.h; sourceTree = "<group>"; };
 		60E6AB14147AB5EC00AD684D /* OMBrowserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMBrowserController.m; sourceTree = "<group>"; };
 		60E6AC07147B9B3B00AD684D /* IconKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = IconKit.xcodeproj; path = ../../../Frameworks/IconKit/IconKit.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -314,6 +319,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				60B98EDD18046BCC00D1FFFF /* OMConstants.h */,
+				60B98EDE18046C3C00D1FFFF /* OMConstants.m */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -323,6 +330,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107310486CEB800E47090 /* ObjectManager-Info.plist */,
+				60B98EDA180461C200D1FFFF /* Commits */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
 			);
@@ -614,6 +622,7 @@
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
+				60B98EDC180461C200D1FFFF /* Commits in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -632,6 +641,7 @@
 				609C0221170D762B00D01AAB /* OMBrowserContentController.m in Sources */,
 				609C0224170D788400D01AAB /* OMCollectionAdditions.m in Sources */,
 				609C0227170D7B0000D01AAB /* OMController.m in Sources */,
+				60B98EDF18046C3C00D1FFFF /* OMConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,6 +685,14 @@
 				1DDD58150DA1D0A300B32029 /* English */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		60B98EDA180461C200D1FFFF /* Commits */ = {
+			isa = PBXVariantGroup;
+			children = (
+				60B98EDB180461C200D1FFFF /* English */,
+			);
+			name = Commits;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
