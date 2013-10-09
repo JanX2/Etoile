@@ -30,7 +30,10 @@
 	id positionStack;
 	id environmentStack;
 }
-- (id) lastPosition;
+- (id) position;
+- (unsigned long long) length;
+- (id) stream;
+-(id) lastPosition;
 - (id) initWithStream: (id) input;
 @end
 

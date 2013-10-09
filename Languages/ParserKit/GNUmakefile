@@ -23,9 +23,12 @@ ${FRAMEWORK_NAME}_HEADER_FILES += PKParser.h\
 	PKMatches.h
 
 ${FRAMEWORK_NAME}_SMALLTALK_BUNDLES += ParserKit.bundle
-SMALLTALK_BUNDLE_ST_FILES = ./ParserKit.bundle/Resources/ParserKit.st\
-	./ParserKit.bundle/Resources/Utils.st
+ST_FILES = ParserKit.st\
+	Utils.st\
+	PKDelayActionArray.st\
+	PKInputStream.st
 
+SMALLTALK_BUNDLE_ST_FILES=$(addprefix ./ParserKit.bundle/Resources/,$(ST_FILES))
 ADDITIONAL_OBJCFLAGS +=  -march=native
 ${TOOL_NAME}_CFLAGS += -Wno-implicit -g 
 
@@ -34,7 +37,9 @@ ${BUNDLE_NAME}_LDFLAGS += -g -lgmp -lEtoileFoundation -lLanguageKit -lParserKit 
 	-L/usr/local/lib -L./ParserKit.framework/Versions/Current/ -march=native
 ${BUNDLE_NAME}_OBJC_FILES = \
 	Tests/PKParserASTGeneratorTest.m\
-	Tests/PKParseMatchTest.m
+	Tests/PKParseMatchTest.m\
+	Tests/PKInputStreamTest.m
+
 ${BUNDLE_NAME}_OBJC_LIBS += -lUnitKit
 
 include ../../smalltalk.make
