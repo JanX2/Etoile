@@ -33,7 +33,7 @@
 
 - (COUndoTrack *) undoTrack
 {
-	return [[ETApp delegate] mainUndoTrack];
+	return [(OMAppController *)[ETApp delegate] mainUndoTrack];
 }
 
 - (void) handleCommitError: (NSError *)error

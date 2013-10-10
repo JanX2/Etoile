@@ -116,9 +116,6 @@
 
 	ETLog(@"Recording command %@ on %@", command, mainUndoTrack);
 
-	// FIXME: This is a private API
-	[mainUndoTrack recordCommand: command];
-	
 	ETAssert([mainUndoTrack currentNode] != nil);
 }
 
