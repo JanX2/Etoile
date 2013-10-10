@@ -154,7 +154,7 @@
 	//ETAssert([[[anItem representedObject] objectGraphContext] hasChanges]);
 	[[[anItem representedObject] persistentRoot] commitWithIdentifier: kOMCommitRename
 															 metadata: metadata
-														   undoTracks: nil
+														   undoTrack: nil
 																error: NULL];
 }
 
