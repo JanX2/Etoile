@@ -7,6 +7,7 @@
  */
 
 #import "OMController.h"
+#import "OMAppController.h"
 
 @implementation OMController
 
@@ -28,6 +29,16 @@
 		return [(COPersistentRoot *)[self persistentObjectContext] parentContext];
 	}
 	return (COEditingContext *)[self persistentObjectContext];
+}
+
+- (COUndoTrack *) undoTrack
+{
+	return [[ETApp delegate] mainUndoTrack];
+}
+
+- (void) handleCommitError: (NSError *)error
+{
+	ETAssert(error == nil);
 }
 
 - (NSArray *) selectedObjects

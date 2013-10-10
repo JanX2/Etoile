@@ -10,4 +10,8 @@
 
 /* Commit Descriptor Identifiers */
 
+NSString * const kOMCommitBuildDemo = @"org.etoile-project.ObjectManager.build-demo";
 NSString * const kOMCommitRename = @"org.etoile-project.ObjectManager.rename";
+NSString * const kOMCommitCreate =  @"org.etoile-project.ObjectManager.create";
+NSString * const kOMCommitDelete =  @"org.etoile-project.ObjectManager.delete";
+NSString * const kOMCommitDuplicate =  @"org.etoile-project.ObjectManager.duplicate";

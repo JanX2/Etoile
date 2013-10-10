@@ -111,20 +111,33 @@
 	ETLog(@" === Add %@ === ", [self currentObjectType]);
 
 	[super add: sender];
-	
-	NSString *type = [[[[self content] lastItem] subject] typeDescription];
 
-	[[self editingContext] commitWithType: @"Object Creation"
-						 shortDescription: [NSString stringWithFormat: @"Created New %@", type]];
+	// FIXME: Localize the object type
+	NSString *objType = [[[[self content] lastItem] subject] typeDescription];
+	NSDictionary *metadata = D(A(objType), kCOCommitMetadataShortDescriptionArguments);
+	NSError *error = nil;
+
+	[[self editingContext] commitWithIdentifier: kOMCommitCreate
+	                                   metadata: metadata
+	                                  undoTrack: nil
+	                                      error: &error];
+	[self handleCommitError: error];
 }
 
+/**
+ * If a New Tag action occurs, this means the content view is showing a tag 
+ * group.
+ *
+ * -insertNewTagInSelectedGroup uses -addTag: on the content controller to 
+ * add the tag root object not yet visible to the tag group.
+ *
+ * The change is committed in -insertNewTagInSelectedGroup.
+ */
 - (void) addTag: (COGroup *)aTag
 {
 	ETItemTemplate *template = [self templateForType: [self currentGroupType]];
 	[self insertItem: [template newItemWithRepresentedObject: aTag options: nil] 
 	         atIndex: ETUndeterminedIndex];
-	[[self editingContext] commitWithType: @"Object Creation"
-						 shortDescription: @"Created New Tag"];
 }
 
 - (IBAction) remove: (id)sender
@@ -136,8 +149,13 @@
 
 	/* Delete persistent roots or particular inner objects  */
 	[[self editingContext] deleteObjects: [NSSet setWithArray: selectedObjects]];
-	[[self editingContext] commitWithType: @"Object Deletion"
-	                     shortDescription: @"Deleted one or several objects"];
+
+	NSError *error = nil;
+
+	[[self editingContext] commitWithIdentifier: kOMCommitDelete
+	                                  undoTrack: [self undoTrack]
+	                                      error: &error];
+	[self handleCommitError: error];
 }
 
 - (void)subjectDidBeginEditingForItem: (ETLayoutItem *)anItem property: (NSString *)aKey
@@ -149,13 +167,16 @@
 { 	
 	ETLog(@"Did end editing for %@ - %@", anItem, aKey);
 
+	// TODO: Validate the changes and their scope precisely
+	//ETAssert([[[anItem representedObject] objectGraphContext] hasChanges]);
+	NSError *error = nil;
 	NSDictionary *metadata = D(A([[anItem representedObject] name]), kCOCommitMetadataShortDescriptionArguments);
 
-	//ETAssert([[[anItem representedObject] objectGraphContext] hasChanges]);
 	[[[anItem representedObject] persistentRoot] commitWithIdentifier: kOMCommitRename
 															 metadata: metadata
-														   undoTrack: nil
+														    undoTrack: [self undoTrack]
 																error: NULL];
+	[self handleCommitError: error];
 }
 
 - (NSInteger)menuInsertionIndex

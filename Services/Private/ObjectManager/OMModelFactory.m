@@ -7,23 +7,26 @@
  */
 
 #import "OMModelFactory.h"
+#import "OMConstants.h"
 
 @implementation OMModelFactory
 
-@synthesize editingContext = _editingContext;
+@synthesize editingContext = _editingContext, undoTrack = _undoTrack;
 
 - (id) initWithEditingContext: (COEditingContext *)aContext
+                    undoTrack: (COUndoTrack *)aUndoTrack
 {
 	NILARG_EXCEPTION_TEST(aContext);
 	SUPERINIT;
 	ASSIGN(_editingContext, aContext);
+	ASSIGN(_undoTrack, aUndoTrack);
 	[self registerEntityDescriptionsOfCoreObjectGraphDemo];
 	return self;
 }
 
 - (id) init
 {
-	return [self initWithEditingContext: nil];
+	return [self initWithEditingContext: nil undoTrack: nil];
 }
 
 - (void) dealloc
@@ -235,13 +238,15 @@
 
 	[[[self editingContext] tagLibrary] addObjects: A(rainTag, sceneryTag, animalTag, snowTag)];
 	[[[self editingContext] tagLibrary] setTagGroups: A(natureTagGroup, weatherTagGroup, unclassifiedTagGroup)];
+	
 
-	[[self editingContext] commitWithType: @"Object Creation"
-	                     shortDescription: @"Created Initial Core Objects"];
-	// TODO: Decide whether we support long description or not
-	//[[self editingContext] commitWithMetadata: D(@"Object Creation", @"summary",
-	//	@"Created Initial Core Objects", @"shortDescription",
-	//	@"Created various core objects such as photos, cities etc. organized by tags and libraries", @"longDescription")];
+	NSError *error = nil;
+
+	[[self editingContext] commitWithIdentifier: kOMCommitBuildDemo
+	                                  undoTrack: [self undoTrack]
+	                                      error: &error];
+	// TODO: Error handling
+	ETAssert(error == nil);
 }
 
 @end

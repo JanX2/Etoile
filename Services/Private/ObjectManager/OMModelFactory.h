@@ -19,15 +19,18 @@
 {
 	@private
 	COEditingContext *_editingContext;
+	COUndoTrack *_undoTrack;
 }
 
 /** @taskunit Initialization */
 
-- (id) initWithEditingContext: (COEditingContext *)aContext;
+- (id) initWithEditingContext: (COEditingContext *)aContext
+                    undoTrack: (COUndoTrack *)aUndoTrack;
 
-/** @taskunit CoreObject Store Access */
+/** @taskunit CoreObject Access */
 
 @property (nonatomic, readonly) COEditingContext *editingContext;
+@property (nonatomic, readonly) COUndoTrack *undoTrack;
 
 /** @taskunit Provided Objects */
 

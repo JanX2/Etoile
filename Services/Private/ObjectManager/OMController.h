@@ -23,6 +23,8 @@
 
 - (COPersistentRoot *)persistentRootFromSelection;
 - (COEditingContext *) editingContext;
+- (COUndoTrack *) undoTrack;
+- (void) handleCommitError: (NSError *)error;
 
 /** @taskunit Selection Interaction */
 

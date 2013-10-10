@@ -10,6 +10,7 @@
 #import "OMAppController.h"
 #import "OMBrowserContentController.h"
 #import "OMCollectionAdditions.h"
+#import "OMConstants.h"
 #import "OMLayoutItemFactory.h"
 
 @implementation OMBrowserController
@@ -344,7 +345,16 @@
 	/* Will invoke -addObject: on the Tag group */
 	[(OMBrowserContentController *)[contentViewItem controller] addTag: tag];
 
-	[ctxt commitWithType: @"Tag Creation" shortDescription: @"Created Tag"];
+	// FIXME: Look up the object type correctly and localize
+	NSString *objType = @"Tag";
+	NSDictionary *metadata = D(A(objType), kCOCommitMetadataShortDescriptionArguments);
+	NSError *error = nil;
+
+	[[self editingContext] commitWithIdentifier: kOMCommitCreate
+	                                   metadata: metadata
+	                                  undoTrack: [self undoTrack]
+	                                      error: &error];
+	[self handleCommitError: error];
 }
 
 - (IBAction) addNewTag: (id)sender
@@ -594,10 +604,14 @@
 	}
 
 	NSArray *names = (id)[[[self allSelectedObjectsInContentView] mappedCollection] name];
-	NSString *desc =
-		[NSString stringWithFormat: @"Duplicate %@", [names componentsJoinedByString: @", "]];
+	NSDictionary *metadata = D(A([names componentsJoinedByString: @", "]), kCOCommitMetadataShortDescriptionArguments);
+	NSError *error = nil;
 
-	[[self editingContext] commitWithType: @"Object Copy" shortDescription: desc];
+	[[self editingContext] commitWithIdentifier: kOMCommitDuplicate 
+	                                   metadata: metadata
+	                                  undoTrack: [self undoTrack]
+	                                      error: &error];
+	[self handleCommitError: error];
 }
 
 - (IBAction) export: (id)sender

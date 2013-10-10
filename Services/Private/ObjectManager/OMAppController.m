@@ -12,7 +12,7 @@
 
 @implementation OMAppController
 
-@synthesize currentPresentationTitle, editingContext;
+@synthesize currentPresentationTitle, editingContext, mainUndoTrack;
 
 - (void) dealloc
 {
@@ -124,8 +124,9 @@
 
 - (IBAction) browseMainGroup: (id)sender
 {
-	OMModelFactory *modelFactory = [[[OMModelFactory alloc]
-		initWithEditingContext: [self editingContext]] autorelease];
+	OMModelFactory *modelFactory =
+		[[[OMModelFactory alloc] initWithEditingContext: [self editingContext]
+	                                          undoTrack: mainUndoTrack] autorelease];
 	ETLayoutItemGroup *browser = [itemFactory browserWithGroup: [modelFactory sourceListGroups]
 	                                            editingContext: [self editingContext]];
 

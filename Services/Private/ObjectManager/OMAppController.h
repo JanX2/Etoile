@@ -31,6 +31,7 @@
 /** @taskunit Persistency */
 
 @property (nonatomic, readonly) COEditingContext *editingContext;
+@property (nonatomic, readonly) COUndoTrack *mainUndoTrack;
 
 /** @taskunit Menu Management */
 

@@ -10,4 +10,9 @@
 
 /* Commit Descriptor Identifiers */
 
+extern NSString * const kOMCommitBuildDemo;
+
 extern NSString * const kOMCommitRename;
+extern NSString * const kOMCommitCreate;
+extern NSString * const kOMCommitDelete;
+extern NSString * const kOMCommitDuplicate;
