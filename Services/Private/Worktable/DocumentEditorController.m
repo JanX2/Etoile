@@ -145,12 +145,12 @@
 - (void) rememberOpenedDocumentItem: (ETLayoutItem *)anItem
 {
 	NSArray *openedDocUUIDs = [self openedDocumentUUIDsFromDefaults];
-	ETUUID *persistentRootUUID = [[anItem persistentRoot] persistentRootUUID];
+	ETUUID *persistentRootUUID = [[anItem persistentRoot] UUID];
 
-	if ([openedDocUUIDs containsObject: persistentRootUUID])
+	if ([openedDocUUIDs containsObject: UUID])
 		return;
 
-	openedDocUUIDs = [openedDocUUIDs arrayByAddingObject: persistentRootUUID];
+	openedDocUUIDs = [openedDocUUIDs arrayByAddingObject: UUID];
 	[[NSUserDefaults standardUserDefaults] setObject: [[openedDocUUIDs mappedCollection] stringValue]
 	                                          forKey: @"kETOpenedDocumentUUIDs"];
 }
@@ -158,12 +158,12 @@
 - (void) rememberClosedDocumentItem: (ETLayoutItem *)anItem
 {
 	NSArray *openedDocUUIDs = [self openedDocumentUUIDsFromDefaults];
-	ETUUID *persistentRootUUID = [[anItem persistentRoot] persistentRootUUID];
+	ETUUID *persistentRootUUID = [[anItem persistentRoot] UUID];
 
-	if ([openedDocUUIDs containsObject: persistentRootUUID] == NO)
+	if ([openedDocUUIDs containsObject: UUID] == NO)
 		return;
 
-	openedDocUUIDs = [openedDocUUIDs arrayByRemovingObject: persistentRootUUID];
+	openedDocUUIDs = [openedDocUUIDs arrayByRemovingObject: UUID];
 	[[NSUserDefaults standardUserDefaults] setObject: openedDocUUIDs 
 	                                          forKey: @"kETOpenedDocumentUUIDs"];
 }
