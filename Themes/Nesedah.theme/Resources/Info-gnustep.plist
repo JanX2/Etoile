@@ -20,6 +20,7 @@
 	GSScrollerKnobOvershoot = "1.0";
 	GSScrollerScrollsByPage = YES;
 	NSMenuInterfaceStyle = NSNextStepInterfaceStyle;
+	NSTitleBarFont = Helvetica;
     };
     GSThemeIcon = "Thematic.png";
     GSThemeLicense = "";
