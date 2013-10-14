@@ -58,9 +58,6 @@
 	GSMenuVerticalItemSelected = {
 	    FileName = "Blank.9.png";
 	};
-	GSProgressIndicatorBarDeterminate = {
-	    FileName = "Progress-horizontal-fill.tiff";
-	};
 	GSWindowBackground = {
 	    FileName = "WindowBackground.png";
 	    HorizontalDivision = 20;
