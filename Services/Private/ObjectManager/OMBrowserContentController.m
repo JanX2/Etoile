@@ -124,6 +124,135 @@
 	[self handleCommitError: error];
 }
 
+// NOTE: All Objects Group is refreshed in -[OMBrowserController remove:]
+- (IBAction) remove: (id)sender
+{
+	NSArray *selectedObjects = [self selectedObjects];
+
+	if ([selectedObjects isEmpty])
+		return;
+
+	for (COObject *object in selectedObjects)
+	{
+		// TODO: Implement something to remove children in parent/children
+		// relationships (e.g. removing a subnode in a note tree structure)
+		ETAssert([object isRoot]);
+
+		[[object persistentRoot] setDeleted: YES];
+
+		/* Update Library */
+
+		COLibrary *library = [[self editingContext] libraryForContentType: [object entityDescription]];
+		ETAssert(library != nil);
+
+		[library removeObject: object];
+		
+		/* Update Tagging */
+
+		for (COTag *tag in [object tags])
+		{
+			[tag removeObject: object];
+		}
+		
+		if ([object isKindOfClass: [COTag class]] == NO)
+			continue;
+
+		for (COTagGroup *tagGroup in [(COTag *)object tagGroups])
+		{
+			[tagGroup removeObject: object];
+		}
+	}
+
+	NSError *error = nil;
+
+	[[self editingContext] commitWithIdentifier: kOMCommitDelete
+	                                  undoTrack: [self undoTrack]
+	                                      error: &error];
+	[self handleCommitError: error];
+}
+
+- (NSArray *) objects
+{
+	return [[[[self content] items] mappedCollection] representedObject];
+}
+
+- (NSString *) nameForCopiedObject: (COObject *)copiedObject
+{
+	NSSet *existingNames =
+		[NSSet setWithArray: (id)[[[self objects] mappedCollection] name]];
+	NSString *baseName = [[copiedObject name] stringByAppendingString: _(@" Copy")];
+	NSString *name = baseName;
+	NSUInteger nbOfVisibleCopies = 0;
+	
+	while ([existingNames containsObject: name])
+	{
+		name = [NSString stringWithFormat: @"%@ %lu", baseName, (unsigned long)++nbOfVisibleCopies];
+	}
+	return name;
+}
+
+// NOTE: All Objects Group is refreshed in -[OMBrowserController duplicate:]
+- (IBAction) duplicate: (id)sender
+{
+	NSArray *selectedObjects = [self selectedObjects];
+
+	if ([selectedObjects isEmpty])
+		return;
+
+	for (COObject *object in selectedObjects)
+	{
+		// TODO: Implement something to copy children in parent/children
+		// relationships (e.g. copying a subnode in a note tree structure)
+		ETAssert([object isRoot]);
+
+		COBranch *branch = [[object objectGraphContext] branch];
+		COObject *copiedObject =
+			[[branch makeCopyFromRevision: [branch currentRevision]] rootObject];
+
+		// FIXME: The new name is not committed
+		[copiedObject setName: [self nameForCopiedObject: copiedObject]];
+
+		/* Update Library */
+
+		COLibrary *library = [[self editingContext] libraryForContentType: [object entityDescription]];
+		ETAssert(library != nil);
+
+		[library insertObject: copiedObject
+		              atIndex: [[library contentArray] indexOfObject: object]
+		                 hint: nil];
+		
+		/* Apply Same Tagging */
+
+		for (COTag *tag in [object tags])
+		{
+			[tag insertObject: copiedObject
+			          atIndex: [[tag contentArray] indexOfObject: object]
+			             hint: nil];
+		}
+		
+		if ([object isKindOfClass: [COTag class]] == NO)
+			continue;
+
+		for (COTagGroup *tagGroup in [(COTag *)object tagGroups])
+		{
+			[tagGroup insertObject: copiedObject
+			               atIndex: [[tagGroup contentArray] indexOfObject: object]
+			                  hint: nil];
+		}
+	}
+
+	NSArray *names = (id)[[selectedObjects mappedCollection] name];
+	NSDictionary *metadata = D(A([names componentsJoinedByString: @", "]), kCOCommitMetadataShortDescriptionArguments);
+	NSError *error = nil;
+
+	[[self editingContext] commitWithIdentifier: kOMCommitDuplicate 
+	                                   metadata: metadata
+	                                  undoTrack: [self undoTrack]
+	                                      error: &error];
+	[self handleCommitError: error];
+}
+
+
 /**
  * If a New Tag action occurs, this means the content view is showing a tag 
  * group.
@@ -140,23 +269,8 @@
 	         atIndex: ETUndeterminedIndex];
 }
 
-- (IBAction) remove: (id)sender
-{
-	NSArray *selectedObjects = [self selectedObjects];
-
-	if ([selectedObjects isEmpty])
-		return;
-
-	/* Delete persistent roots or particular inner objects  */
-	[[self editingContext] deleteObjects: [NSSet setWithArray: selectedObjects]];
-
-	NSError *error = nil;
-
-	[[self editingContext] commitWithIdentifier: kOMCommitDelete
-	                                  undoTrack: [self undoTrack]
-	                                      error: &error];
-	[self handleCommitError: error];
-}
+#pragma mark -
+#pragma mark Editing
 
 - (void)subjectDidBeginEditingForItem: (ETLayoutItem *)anItem property: (NSString *)aKey
 {
@@ -178,6 +292,9 @@
 																error: NULL];
 	[self handleCommitError: error];
 }
+
+#pragma mark -
+#pragma mark Menu Management
 
 - (NSInteger)menuInsertionIndex
 {
@@ -221,6 +338,9 @@
 	}
 	ASSIGN(menuProvider, anObject);
 }
+
+#pragma mark -
+#pragma mark Notifications
 
 - (void) contentSelectionDidChange: (NSNotification *)aNotif
 {

@@ -28,7 +28,7 @@
 
 }
 
-/** @taskunit Accessing UI and Model Objects */
+/** @taskunit Accessing UI Objects */
 
 @property (nonatomic, retain) ETLayoutItemGroup *contentViewItem;
 @property (nonatomic, readonly) ETLayoutItemGroup *contentViewWrapperItem;
@@ -37,10 +37,15 @@
 @property (nonatomic, retain) ETLayoutItem *viewPopUpItem;
 @property (nonatomic, readonly) ETLayoutItem *tagFilterFieldItem;
 @property (nonatomic, readonly) ETLayoutItemGroup *tagFilterEditorItem;
+
+/** @taskunit Accessing Model Objects */
+
 @property (nonatomic, retain) id <ETCollection> browsedGroup;
-@property (nonatomic, readonly) id selectedObject;
+@property (nonatomic, readonly) COSmartGroup *allObjectGroup;
 
 /** @taskunit Selection */
+
+@property (nonatomic, readonly) id selectedObject;
 
 - (id) selectedObjectInContentView;
 - (id) selectedObjectsInSourceList;

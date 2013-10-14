@@ -37,6 +37,7 @@ content is presented in an ObjectManager window */
 /** @taskunit Actions */
 
 - (IBAction) remove: (id)sender;
+- (IBAction) duplicate: (id)sender;
 
 @end
 

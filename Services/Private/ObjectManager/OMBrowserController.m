@@ -34,6 +34,9 @@
 	[super dealloc];
 }
 
+#pragma mark - 
+#pragma mark Accessing UI Objects
+
 - (ETLayoutItemGroup *) topBarItem
 {
 	return (id)[[self content] itemForIdentifier: @"browserTopBar"];
@@ -64,6 +67,14 @@
 	return (id)[[self bodyItem] itemForIdentifier: @"inspector"];
 }
 
+- (ETLayoutItemGroup *) whatGroupItem
+{
+	return (id)[sourceListItem itemAtIndex: 1];
+}
+
+#pragma mark -
+#pragma mark Accessing Model Objects
+
 - (void) setBrowsedGroup: (id <ETCollection>)aGroup
 {
 	ETAssert(aGroup != nil);
@@ -82,6 +93,31 @@
 
 	[[self history] addObject: aGroup];
 }
+
+- (COSmartGroup *) allObjectGroup
+{
+	// TODO: Fragile way to access All Objects
+	return [[[self whereGroup] contentArray] firstObject];
+}
+
+- (ETHistory *)history
+{
+	// TODO: Return 'Recently Visted' from WHEN group
+	return nil;
+}
+
+- (COGroup *) whereGroup
+{
+	return [[sourceListItem firstItem] representedObject];
+}
+
+- (COGroup *) whenGroup
+{
+	return [[sourceListItem lastItem] representedObject];
+}
+
+#pragma mark -
+#pragma mark Selection
 
 - (id) allSelectedObjectsInContentView
 {
@@ -109,27 +145,6 @@
 - (NSArray *) selectedObjectsInSourceList
 {
 	return [[[[self sourceListItem] selectedItemsInLayout] mappedCollection] representedObject];
-}
-
-- (ETHistory *)history
-{
-	// TODO: Return 'Recently Visted' from WHEN group
-	return nil;
-}
-
-- (COGroup *) whereGroup
-{
-	return [[sourceListItem firstItem] representedObject];
-}
-
-- (ETLayoutItemGroup *) whatGroupItem
-{
-	return (id)[sourceListItem itemAtIndex: 1];
-}
-
-- (COGroup *) whenGroup
-{
-	return [[sourceListItem lastItem] representedObject];
 }
 
 - (NSSet *) selectedTags
@@ -168,6 +183,9 @@
 	return tagFilteredGroup;
 }
 
+#pragma mark -
+#pragma mark Notifications
+
 - (void) sourceListSelectionDidChange: (NSNotification *)aNotif
 {
 	ETLog(@"Did change selection in %@", [aNotif object]);
@@ -190,6 +208,9 @@
 		[self setBrowsedGroup: [self unionGroupWithTags: [self selectedTags]]];
 	}
 }
+
+#pragma mark -
+#pragma mark Edition Coordinator
 
 - (NSArray *) selectedFilterEditorTags
 {
@@ -236,6 +257,9 @@
 		[self syncTagFilterFieldFromEditor];
 	}
 }
+
+#pragma mark -
+#pragma mark Presentation
 
 - (void) showTagFilterEditor
 {
@@ -374,6 +398,7 @@
 - (IBAction) remove: (id)sender
 {
 	[[contentViewItem controller] remove: sender];
+	[[self allObjectGroup] refresh];
 }
 
 #pragma mark -
@@ -452,7 +477,7 @@
 }
 
 #pragma mark -
-#pragma Other Object Actions
+#pragma mark Other Object Actions
 
 - (IBAction) search: (id)sender
 {
@@ -560,58 +585,10 @@
 	[[[ETLayoutItemFactory factory] windowGroup] addItem: browser];
 }
 
-- (NSString *) nameForCopiedObject: (COObject *)copiedObject
-{
-	NSSet *existingNames =
-		[NSSet setWithArray: (id)[(id)[[[self browsedGroup] contentArray] mappedCollection] name]];
-	NSString *baseName = [[copiedObject name] stringByAppendingString: _(@" Copy")];
-	NSString *name = baseName;
-	NSUInteger nbOfVisibleCopies = 0;
-
-	while ([existingNames containsObject: name])
-	{
-		name = [NSString stringWithFormat: @"%@ %lu", baseName, (unsigned long)++nbOfVisibleCopies];
-	}
-	return name;
-}
-
 - (IBAction) duplicate: (id)sender
 {
-	for (COObject *object in [self allSelectedObjectsInContentView])
-	{
-		COObject *copiedObject = [[[object branch] makeCopyFromRevision: [object revision]] rootObject];
-
-		// FIXME: The new name is not committed
-		[copiedObject setName: [self nameForCopiedObject: copiedObject]];
-
-		/* Update Library */
-
-		COLibrary *library = [[self editingContext] libraryForContentType: [object entityDescription]];
-		ETAssert(library != nil);
-
-		[library insertObject: copiedObject
-		              atIndex: [[library contentArray] indexOfObject: object]
-		                 hint: nil];
-		
-		/* Apply Same Tagging */
-
-		for (COTag *tag in [object tags])
-		{
-			[tag insertObject: copiedObject
-			          atIndex: [[tag contentArray] indexOfObject: object]
-			             hint: nil];
-		}
-	}
-
-	NSArray *names = (id)[[[self allSelectedObjectsInContentView] mappedCollection] name];
-	NSDictionary *metadata = D(A([names componentsJoinedByString: @", "]), kCOCommitMetadataShortDescriptionArguments);
-	NSError *error = nil;
-
-	[[self editingContext] commitWithIdentifier: kOMCommitDuplicate 
-	                                   metadata: metadata
-	                                  undoTrack: [self undoTrack]
-	                                      error: &error];
-	[self handleCommitError: error];
+	[(OMBrowserContentController *)[contentViewItem controller] duplicate: sender];
+	[[self allObjectGroup] refresh];
 }
 
 - (IBAction) export: (id)sender
