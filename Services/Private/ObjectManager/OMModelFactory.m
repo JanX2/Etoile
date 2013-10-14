@@ -20,6 +20,7 @@
 	SUPERINIT;
 	ASSIGN(_editingContext, aContext);
 	ASSIGN(_undoTrack, aUndoTrack);
+	[self registerAdditionalPropertyDescriptions];
 	[self registerEntityDescriptionsOfCoreObjectGraphDemo];
 	return self;
 }
@@ -115,6 +116,32 @@
 {
 	return [[[self editingContext]
 		insertNewPersistentRootWithEntityName: anEntityName] rootObject];
+}
+
+- (void) registerAdditionalPropertyDescriptions
+{
+	ETAssert([self editingContext] != nil);
+
+	// NOTE: Could be put in a package description plist or something similar.
+	ETModelDescriptionRepository *repo = [[self editingContext] modelRepository];
+	ETEntityDescription *dateType = [repo entityDescriptionForClass: [NSDate class]];
+	ETEntityDescription *entity = [repo entityDescriptionForClass: [COObject class]];
+
+	ETPropertyDescription *modificationDate =
+		[ETPropertyDescription descriptionWithName: @"modificationDate" type: dateType];
+	ETPropertyDescription *creationDate =
+		[ETPropertyDescription descriptionWithName: @"creationDate" type: dateType];
+	
+	[entity addPropertyDescription: modificationDate];
+	[entity addPropertyDescription: creationDate];
+
+	[repo addDescription: creationDate];
+	[repo addDescription: modificationDate];
+
+	NSMutableArray *warnings = [NSMutableArray array];
+
+	[repo checkConstraints: warnings];
+	ETAssert([warnings isEmpty]);
 }
 
 - (void) registerEntityDescriptionsOfCoreObjectGraphDemo

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
+		601C1D6F180C4DE400CED07E /* COObject+ObjectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 601C1D6E180C4DE400CED07E /* COObject+ObjectManager.m */; };
 		6068BE081474286400953B26 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6068BDF21474283C00953B26 /* EtoileFoundation.framework */; };
 		6068BE301474287F00953B26 /* EtoileUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6068BE1B1474287900953B26 /* EtoileUI.framework */; };
 		6068BE37147429E000953B26 /* OMAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6068BE36147429E000953B26 /* OMAppController.m */; };
@@ -212,6 +213,8 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		601C1D6D180C4DE400CED07E /* COObject+ObjectManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COObject+ObjectManager.h"; sourceTree = "<group>"; };
+		601C1D6E180C4DE400CED07E /* COObject+ObjectManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COObject+ObjectManager.m"; sourceTree = "<group>"; };
 		6068BDE81474283C00953B26 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		6068BE0C1474287900953B26 /* EtoileUI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileUI.xcodeproj; path = ../../../Frameworks/EtoileUI/EtoileUI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		6068BE35147429E000953B26 /* OMAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMAppController.h; sourceTree = "<group>"; };
@@ -270,6 +273,8 @@
 				609C01A81705ED8900D01AAB /* OMModelFactory.m */,
 				609C0222170D788000D01AAB /* OMCollectionAdditions.h */,
 				609C0223170D788200D01AAB /* OMCollectionAdditions.m */,
+				601C1D6D180C4DE400CED07E /* COObject+ObjectManager.h */,
+				601C1D6E180C4DE400CED07E /* COObject+ObjectManager.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -642,6 +647,7 @@
 				609C0224170D788400D01AAB /* OMCollectionAdditions.m in Sources */,
 				609C0227170D7B0000D01AAB /* OMController.m in Sources */,
 				60B98EDF18046C3C00D1FFFF /* OMConstants.m in Sources */,
+				601C1D6F180C4DE400CED07E /* COObject+ObjectManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
