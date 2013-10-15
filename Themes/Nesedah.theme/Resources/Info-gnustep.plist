@@ -58,6 +58,9 @@
 	GSMenuVerticalItemSelected = {
 	    FileName = "Blank.9.png";
 	};
+	GSMenuVerticalItemDisabled = {
+	    FileName = "Blank.9.png";
+	};
 	GSWindowBackground = {
 	    FileName = "WindowBackground.png";
 	    HorizontalDivision = 20;
