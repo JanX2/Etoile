@@ -21,6 +21,7 @@
 	GSScrollerScrollsByPage = YES;
 	NSMenuInterfaceStyle = NSNextStepInterfaceStyle;
 	NSTitleBarFont = Helvetica;
+	GSScrollViewScrollersOverlapBorders = YES;
     };
     GSThemeIcon = "Thematic.png";
     GSThemeLicense = "";
