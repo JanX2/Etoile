@@ -211,6 +211,9 @@
 	NSFocusRing = {
 	    FileName = "Blank.9.png";
 	};
+	GSColorWellInnerBorder = {
+	    FileName = "Textbox.9.png";
+	};
     };
     GSThemeVersion = "0.1";
 }
