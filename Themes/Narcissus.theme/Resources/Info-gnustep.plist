@@ -4,7 +4,6 @@
 	"Eric Wasylishen"
     );
     GSThemeDomain = {
-	GSBackHandlesWindowDecorations = NO;
 	GSBrowserColumnSeparation = 0;
 	GSBrowserUseBezels = NO;
 	GSBrowserVerticalPadding = 0;
@@ -21,6 +20,8 @@
 	GSScrollerScrollsByPage = YES;
 	GSBrowserColumnSeparation = 0;
 	GSBrowserVerticalPadding = 0;
+	NSTitleBarFont = Helvetica;
+	GSScrollViewScrollersOverlapBorders = YES;
     };
     GSThemeIcon = "Thematic.png";
     GSThemeTiles = {
@@ -70,6 +71,9 @@
 	    FileName = "GSMenuItemSelected.png";
             NinePatch = YES;
 	};
+	GSMenuVerticalItemDisabled = {
+	    FileName = "Blank.9.png";
+	};
 	GSMenuSeparatorItem = {
  	    FileName = "GSMenuSeparatorItem.9.png";
 	    NinePatch = YES;
@@ -105,24 +109,6 @@
 	};
 	GSScrollerUpArrow = {
 	    FileName = "GSScrollerUpArrow.9.png";
-	};
-	GSScrollerUpArrowHighlighted = {
-	    FileName = "GSScrollerUpArrowHighlighted.9.png";
-	};
-	GSScrollerVerticalKnob = {
-	    FileName = "Scrollbar-vertical-thumb.9.png";
-	};
-	GSScrollerVerticalSlot = {
-	    FileName = "Scrollbar-vertical-slot.9.png";
-	};
-	GSTableCorner = {
-	    FileName = "TableHeader.9.png";
-	};
-	GSTableHeader = {
-	    FileName = "TableHeader.9.png";
-	};
-	GSTableHeaderHighlighted = {
-	    FileName = "TableHeaderSelected.9.png";
 	};
 	GSWindowBackground = {
 	    FileName = "WindowBackground.png";
@@ -222,8 +208,9 @@
 	GSBoxBorder = {
 	    FileName = "Box.9.png";
 	};
+	NSFocusRing = {
+	    FileName = "Blank.9.png";
+	};
     };
     GSThemeVersion = "0.1";
-    NSExecutable = Nesedah;
-    NSPrincipalClass = NesedahTheme;
 }
