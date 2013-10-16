@@ -115,6 +115,9 @@
 	NSTexturedSquareBezelStyleSelected = {
 	    FileName = "NSShadowlessSquareBezelStyleHighlighted.9.png";
 	};
+        GSColorWellInnerBorder = {
+            FileName = "NSBezelBorder.9.png";
+        };
     };
     GSThemeVersion = "0.1";
     NSExecutable = Nesedah;
