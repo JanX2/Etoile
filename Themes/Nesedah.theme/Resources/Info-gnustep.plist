@@ -19,9 +19,10 @@
 	GSScrollerDefaultWidth = "16.0";
 	GSScrollerKnobOvershoot = "1.0";
 	GSScrollerScrollsByPage = YES;
-	NSMenuInterfaceStyle = NSNextStepInterfaceStyle;
+	NSMenuInterfaceStyle = GSWindowMakerInterfaceStyle; /* Align submenu with selected item */
 	NSTitleBarFont = Helvetica;
 	GSScrollViewScrollersOverlapBorders = YES;
+	GSMenuSubmenuHorizontalOverlap = 2;
     };
     GSThemeIcon = "Thematic.png";
     GSThemeLicense = "";
