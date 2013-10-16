@@ -11,7 +11,7 @@
 	GSScrollerButtonsOffset = 0;
 	GSScrollerDefaultWidth = "16.0";
 	GSScrollerKnobOvershoot = "1.0";
-	NSMenuInterfaceStyle = NSNextStepInterfaceStyle;
+	NSMenuInterfaceStyle = GSWindowMakerInterfaceStyle;
 	GSScrollViewUseBottomCorner = NO;
 	GSMenuBarHeight = 22;
 	GSMenuItemHeight = 20;
@@ -22,6 +22,8 @@
 	GSBrowserVerticalPadding = 0;
 	NSTitleBarFont = Helvetica;
 	GSScrollViewScrollersOverlapBorders = YES;
+	GSMenuSubmenuHorizontalOverlap = 1;
+	GSMenuSubmenuVerticalOverlap = 1;
     };
     GSThemeIcon = "Thematic.png";
     GSThemeTiles = {
@@ -77,6 +79,9 @@
 	GSMenuSeparatorItem = {
  	    FileName = "GSMenuSeparatorItem.9.png";
 	    NinePatch = YES;
+	};
+	GSMenuCloseButton = {
+	    FileName = "Blank.9.png";
 	};
 	GSProgressIndicatorBarDeterminate = {
 	    FileName = "Progress-horizontal-fill.tiff";
@@ -213,6 +218,18 @@
 	};
 	GSColorWellInnerBorder = {
 	    FileName = "Textbox.9.png";
+	};
+	NSImageFramePhoto = {
+	    FileName = "Textbox.9.png";
+	};
+	NSImageFrameGrayBezel = {
+	    FileName = "Textbox.9.png";
+	};
+	NSImageFrameGroove = {
+	    FileName = "Textbox.9.png";
+	};
+	NSImageFrameButton = {
+	    FileName = "Button-unselected.9.png";
 	};
     };
     GSThemeVersion = "0.1";
