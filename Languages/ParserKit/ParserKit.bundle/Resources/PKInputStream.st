@@ -29,6 +29,10 @@ NSObject subclass: PKInputStream [
 		environmentStack popEnvironment.
 	]
 
+	bind: name range: aRange [
+		self bind: name object: (self fromRange: aRange)
+	]
+
 	bind: name object: anObject [
 		environmentStack setValue: anObject forKey: name
 

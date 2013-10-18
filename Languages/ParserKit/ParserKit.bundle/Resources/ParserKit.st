@@ -1162,7 +1162,7 @@ NSObject subclass: PKParseMatch [
 
 	bind: name [
 		action == nil
-            ifTrue: [input bind: name object: (input fromRange: range)]
+            ifTrue: [input bind: name range: range]
 			ifFalse: [input bind: name action: action match: self. action := nil]
 	]
 	

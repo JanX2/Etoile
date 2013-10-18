@@ -39,7 +39,8 @@ ${BUNDLE_NAME}_LDFLAGS += -g -lgmp -lEtoileFoundation -lLanguageKit -lParserKit 
 ${BUNDLE_NAME}_OBJC_FILES = \
 	Tests/PKParserASTGeneratorTest.m\
 	Tests/PKParseMatchTest.m\
-	Tests/PKInputStreamTest.m
+	Tests/PKInputStreamTest.m\
+	Tests/PKEnvironmentTest.m
 
 ${BUNDLE_NAME}_OBJC_LIBS += -lUnitKit
 

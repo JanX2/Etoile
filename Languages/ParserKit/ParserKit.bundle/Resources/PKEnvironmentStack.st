@@ -1,6 +1,6 @@
 
 
-"The environment stack maintains a scoped list of all bound variables in an 
+"The environment stack maintains a scoped list of all bound variables and action in an 
  OMeta parse tree."
 NSObject subclass: PKEnvironmentStack [
 	| environmentStack top |
