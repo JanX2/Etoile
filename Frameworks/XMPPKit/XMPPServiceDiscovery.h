@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 #import "XMPPDispatcher.h"
+#import "XMPPDiscoInfo.h"
+#import "XMPPDiscoItems.h"
 
 @class XMPPAccount;
 @class XMPPConnection;
@@ -24,6 +26,8 @@
 	NSMutableDictionary * capabilitiesPerJID;
 	NSMutableDictionary * featuresForCapabilities;
 	NSMutableSet * myFeatures;
+	XMPPDiscoInfo * info;
+	XMPPDiscoItems * items;
 }
 - (XMPPServiceDiscovery*) initWithAccount:(XMPPAccount*)account;
 /**
@@ -57,4 +61,12 @@
  * Adds a feature to the list this client advertises.
  */
 - (void) addFeature:(NSString*)aFeature;
+/**
+ * Returns the info ivar, instantiated after a service discovery for disco#info namespace
+ */
+- (XMPPDiscoInfo*) info;
+/**
+ * Returns the item ivar, instantiated after a service discovery for dico#item namespace
+ */
+- (XMPPDiscoItems*) items;
 @end

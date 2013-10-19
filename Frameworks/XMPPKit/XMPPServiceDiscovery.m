@@ -90,13 +90,13 @@ static NSString * xmlnsXMPPDiscoItems = @"http://jabber.org/protocol/disco#items
 }
 - (NSArray*) identitiesForJID:(JID*)aJid node:(NSString*)aNode
 {
-	NSDictionary * info = [self infoForJID:aJid node:aNode];
-	return [info objectForKey:@"identities"];
+	NSDictionary * infoDictionary = [self infoForJID:aJid node:aNode];
+	return [infoDictionary objectForKey:@"identities"];
 }
 - (NSArray*) featuresForJID:(JID*)aJid node:(NSString*)aNode
 {
-	NSDictionary * info = [self infoForJID:aJid node:aNode];
-	return [info objectForKey:@"features"];
+	NSDictionary * infoDictionary = [self infoForJID:aJid node:aNode];
+	return [infoDictionary objectForKey:@"features"];
 }
 - (NSArray*) itemsForJID:(JID*)aJid node:(NSString*)aNode
 {
@@ -147,8 +147,8 @@ static NSString * xmlnsXMPPDiscoItems = @"http://jabber.org/protocol/disco#items
 		}
 		case IQ_TYPE_RESULT:
 		{
-			XMPPDiscoInfo * info = [[anIQ children] objectForKey:@"DiscoInfo"];
-			XMPPDiscoItems * items = [[anIQ children] objectForKey:@"DiscoItems"];
+			info = [[anIQ children] objectForKey:@"XMPPDiscoInfo"];
+			items = [[anIQ children] objectForKey:@"XMPPDiscoItems"];
 			if(info != nil)
 			{
 				NSDictionary * nodeInfo = D([info identities], @"identities",
@@ -202,6 +202,16 @@ static NSString * xmlnsXMPPDiscoItems = @"http://jabber.org/protocol/disco#items
 - (void) addFeature:(NSString*)aFeature
 {
 	[myFeatures addObject:aFeature];
+}
+
+- (XMPPDiscoInfo*) info
+{
+	return info;
+}
+
+- (XMPPDiscoItems*) items
+{
+	return items;
 }
 
 

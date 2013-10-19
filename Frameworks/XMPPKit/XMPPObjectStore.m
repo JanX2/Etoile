@@ -422,7 +422,7 @@ static NSDictionary *CHILD_CLASSES;
                 [handler startElement: _name attributes: _attributes];
                 return;
         }
-        if ([[parser parentHandler] respondsToSelector:@selector(addChild:forKey:)]) //occhio qui a questa modifica
+        if ([[parser parentHandler] respondsToSelector:@selector(addChild:forKey:)])
         {
                 [[parser parentHandler] addChild: [_attributes objectForKey: @"backend"] 
                               forKey: @"backendName"];
