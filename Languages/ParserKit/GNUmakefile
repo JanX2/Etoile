@@ -30,7 +30,8 @@ ST_FILES = ParserKit.st\
 	PKEnvironmentStack.st\
 	Expressions/PKParseExpression.st\
 	Expressions/PKDotExpression.st\
-	Expressions/PKAlphabeticExpression.st
+	Expressions/PKAlphabeticExpression.st\
+	Expressions/PKUppercaseExpression.st
 
 SMALLTALK_BUNDLE_ST_FILES=$(addprefix ./ParserKit.bundle/Resources/,$(ST_FILES))
 ADDITIONAL_OBJCFLAGS +=  -march=native
@@ -45,7 +46,8 @@ ${BUNDLE_NAME}_OBJC_FILES = \
 	Tests/PKInputStreamTest.m\
 	Tests/PKEnvironmentTest.m\
 	Tests/PKDotExpressionTest.m\
-	Tests/PKAlphabeticExpressionTest.m
+	Tests/PKAlphabeticExpressionTest.m\
+	Tests/PKUppercaseExpressionTest.m
 
 ${BUNDLE_NAME}_OBJC_LIBS += -lUnitKit
 

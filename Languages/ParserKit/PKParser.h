@@ -96,3 +96,6 @@
 
 @interface PKAlphabeticExpression : PKParseExpression
 @end
+
+@interface PKUppercaseExpression : PKParseExpression
+@end
