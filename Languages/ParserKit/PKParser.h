@@ -99,3 +99,6 @@
 
 @interface PKUppercaseExpression : PKParseExpression
 @end
+
+@interface PKLowercaseExpression : PKParseExpression
+@end

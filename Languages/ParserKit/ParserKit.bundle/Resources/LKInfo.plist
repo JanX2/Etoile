@@ -13,9 +13,11 @@
 		<string>Expressions/PKDotExpression.st</string>
 		<string>Expressions/PKAlphabeticExpression.st</string>
 		<string>Expressions/PKUppercaseExpression.st</string>
+		<string>Expressions/PKLowercaseExpression.st</string>
 	</array>
 	<key>Classes</key>
 	<array>
+		<string>PKLowercaseExpression</string>
 		<string>PKAlphabeticExpression</string>
 		<string>PKUppercaseExpression</string>
 		<string>PKDotExpression</string>
