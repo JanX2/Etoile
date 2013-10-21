@@ -11,9 +11,11 @@
 		<string>PKEnvironmentStack.st</string>
 		<string>Expressions/PKParseExpression.st</string>
 		<string>Expressions/PKDotExpression.st</string>
+		<string>Expressions/PKAlphabeticExpression.st</string>
 	</array>
 	<key>Classes</key>
 	<array>
+		<string>PKAlphabeticExpression</string>
 		<string>PKDotExpression</string>
 		<string>PKEnvironmentStack</string>
 		<string>PKParseExpression</string>

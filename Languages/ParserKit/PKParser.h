@@ -37,6 +37,12 @@
 - (id) initWithStream: (id) input;
 @end
 
+@interface PKParseFail: NSObject
+{
+}
+- (id) isSuccess;
+@end
+
 @interface PKParseMatch : NSObject
 {
 	id input;
@@ -86,4 +92,7 @@
 @end
 
 @interface PKDotExpression : PKParseExpression
+@end
+
+@interface PKAlphabeticExpression : PKParseExpression
 @end
