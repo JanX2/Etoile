@@ -75,4 +75,15 @@
 @interface PKEnvironmentStack : NSObject
 @end
 
+@interface PKParseExpression : NSObject
+{
+}
+- (id) parseInput: (id)list withCurrentParser: (id)parser delegate: (id)delegate ifFailed: (id)aBlock;
+- (id) parseInput: (id)list withCurrentParser: (id)parser ifFailed: (id)aBlock;
+- (id) parseInput: (id)list withCurrentParser: (id)parser delegate: (id)delegate;
+- (id) parseInput: (id)list withCurrentParser: (id)parser;
+- (id) parseInput: (id)list;
+@end
 
+@interface PKDotExpression : PKParseExpression
+@end

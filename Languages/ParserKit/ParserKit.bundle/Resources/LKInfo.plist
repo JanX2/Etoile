@@ -9,10 +9,14 @@
 		<string>ParserKit.st</string>
 		<string>PKInputStream.st</string>
 		<string>PKEnvironmentStack.st</string>
+		<string>Expressions/PKParseExpression.st</string>
+		<string>Expressions/PKDotExpression.st</string>
 	</array>
 	<key>Classes</key>
 	<array>
+		<string>PKDotExpression</string>
 		<string>PKEnvironmentStack</string>
+		<string>PKParseExpression</string>
 		<string>PKInputStream</string>
 		<string>PKTokenExpression</string>
 		<string>PKParseMatch</string>

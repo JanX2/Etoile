@@ -27,7 +27,9 @@ ST_FILES = ParserKit.st\
 	Utils.st\
 	PKDelayActionArray.st\
 	PKInputStream.st\
-	PKEnvironmentStack.st
+	PKEnvironmentStack.st\
+	Expressions/PKParseExpression.st\
+	Expressions/PKDotExpression.st
 
 SMALLTALK_BUNDLE_ST_FILES=$(addprefix ./ParserKit.bundle/Resources/,$(ST_FILES))
 ADDITIONAL_OBJCFLAGS +=  -march=native
@@ -40,7 +42,8 @@ ${BUNDLE_NAME}_OBJC_FILES = \
 	Tests/PKParserASTGeneratorTest.m\
 	Tests/PKParseMatchTest.m\
 	Tests/PKInputStreamTest.m\
-	Tests/PKEnvironmentTest.m
+	Tests/PKEnvironmentTest.m\
+	Tests/PKDotExpressionTest.m
 
 ${BUNDLE_NAME}_OBJC_LIBS += -lUnitKit
 
